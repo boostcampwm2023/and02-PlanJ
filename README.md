@@ -28,7 +28,7 @@
 
 ## 기획/디자인 링크
 
-figma: 
+figma: https://www.figma.com/file/KqMXmZMlsOcWORVrjwDlA0/%EC%A0%9C%EC%9D%B4%EC%96%B4%EB%A6%AC-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&t=Hw8rauNdQrBPUdai-6
 
 ## 커밋 템플릿, 이슈 템플릿 : 개발 작업을 위한 공통 자료
 
