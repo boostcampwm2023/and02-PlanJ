@@ -26,14 +26,9 @@
 + 프로젝트 진행 사항 공유 및 프로젝트 진행 중 질문이 있는 경우 노션, 슬랙에 전달
 
 
-## 기획/디자인 링크
 
-figma: https://www.figma.com/file/KqMXmZMlsOcWORVrjwDlA0/%EC%A0%9C%EC%9D%B4%EC%96%B4%EB%A6%AC-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&t=Hw8rauNdQrBPUdai-6
+[피그마](https://www.figma.com/file/KqMXmZMlsOcWORVrjwDlA0/%EC%A0%9C%EC%9D%B4%EC%96%B4%EB%A6%AC-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&t=Hw8rauNdQrBPUdai-6)
 
-## 커밋 템플릿, 이슈 템플릿 : 개발 작업을 위한 공통 자료
+[백로그](https://www.notion.so/My-Todo-List-dd283b9bfff24ac7817d79e304acbd4e)
 
-notion: https://www.notion.so/My-Todo-List-dd283b9bfff24ac7817d79e304acbd4e
-
-## 회의록/이슈/위키 연결 : 협업과 개발 과정의 문서 자료
-
-wiki: https://github.com/boostcampwm2023/and02-MyTodoList/wiki
+[위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
