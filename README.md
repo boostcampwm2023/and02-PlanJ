@@ -27,8 +27,10 @@
 
 
 
+
+## 문서
 [피그마](https://www.figma.com/file/KqMXmZMlsOcWORVrjwDlA0/%EC%A0%9C%EC%9D%B4%EC%96%B4%EB%A6%AC-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&t=Hw8rauNdQrBPUdai-6)
 
-[백로그](https://www.notion.so/My-Todo-List-dd283b9bfff24ac7817d79e304acbd4e)
+[백로그](https://www.notion.so/7fa14444e88047af8cc3e970d0003171)
 
 [위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
