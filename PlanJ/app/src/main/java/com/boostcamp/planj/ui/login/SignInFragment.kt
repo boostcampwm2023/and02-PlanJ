@@ -29,6 +29,10 @@ class SignInFragment : Fragment() {
     }
 
     private fun setListener() {
+        binding.btnSignInLogin.setOnClickListener {
+            findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
+        }
+
         binding.btnSignInSignUp.setOnClickListener {
             findNavController().navigate(R.id.action_signInFragment_to_signUpFragment2)
         }

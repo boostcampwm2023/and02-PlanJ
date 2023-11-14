@@ -13,4 +13,6 @@
     <string name="complete">완료</string>
     <string name="day">일</string>
     <string name="dayNumber">19</string>
+    <string name="nickname">닉네임</string>
+    <string name="password_check">비밀번호 확인</string>
 </resources>
