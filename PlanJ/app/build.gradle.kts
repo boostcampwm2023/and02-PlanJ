@@ -66,8 +66,7 @@ dependencies {
     //okhttp3
     implementation(libs.okhttp)
     // define any required OkHttp artifacts without version
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
+    implementation(libs.logging.interceptor)
 
     //room
     implementation (libs.androidx.room.runtime)
