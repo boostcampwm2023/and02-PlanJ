@@ -23,6 +23,9 @@ class SignUpViewModel : ViewModel() {
     private val _nicknameState = MutableLiveData<NicknameState>()
     val nicknameState: LiveData<NicknameState> = _nicknameState
 
+    private val _isEnable = MutableLiveData(false)
+    val isEnable: LiveData<Boolean> = _isEnable
+
     private val regexEmail = Regex("""^([A-z0-9_\-.]+)@([A-z0-9_\-]+)\.([a-zA-Z]{2,5})$""")
     private val regexEnglish = Regex("""[A-z]""")
     private val regexNum = Regex("""[0-9]""")
@@ -33,6 +36,8 @@ class SignUpViewModel : ViewModel() {
             _emailState.value =
                 if (regexEmail.matches(userEmail)) EmailState.AVAILABLE else EmailState.ERROR_FORMAT
         }
+
+        checkEnable()
     }
 
     fun checkPwd() {
@@ -52,6 +57,8 @@ class SignUpViewModel : ViewModel() {
                         if (userPwd == userPwdConfirm) PwdConfirmState.AVAILABLE else PwdConfirmState.ERROR
                 }
             }
+
+            checkEnable()
         }
     }
 
@@ -61,6 +68,8 @@ class SignUpViewModel : ViewModel() {
                 PwdConfirmState.AVAILABLE
             else
                 PwdConfirmState.ERROR
+
+        checkEnable()
     }
 
     fun checkNickname() {
@@ -68,5 +77,12 @@ class SignUpViewModel : ViewModel() {
             _nicknameState.value =
                 if (userNickname.length in 1..12) NicknameState.AVAILABLE else NicknameState.ERROR_LENGTH
         }
+
+        checkEnable()
+    }
+
+    private fun checkEnable() {
+        _isEnable.value =
+            (emailState.value == EmailState.AVAILABLE && pwdState.value == PwdState.AVAILABLE && pwdConfirmState.value == PwdConfirmState.AVAILABLE && nicknameState.value == NicknameState.AVAILABLE)
     }
 }
