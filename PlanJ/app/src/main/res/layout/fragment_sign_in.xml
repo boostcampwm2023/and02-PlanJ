@@ -8,7 +8,7 @@
     tools:context=".ui.login.SignInFragment">
 
     <ImageView
-        android:id="@+id/iv_login_logo"
+        android:id="@+id/iv_sign_in_logo"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="40dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_login_id"
+        android:id="@+id/layout_sign_in_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -29,7 +29,7 @@
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_login_logo">
+        app:layout_constraintTop_toBottomOf="@id/iv_sign_in_logo">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_login_pwd"
+        android:id="@+id/layout_sign_in_pwd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -49,7 +49,7 @@
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_login_id">
+        app:layout_constraintTop_toBottomOf="@id/layout_sign_in_id">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -59,40 +59,39 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login_login"
+        android:id="@+id/btn_sign_in_login"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/round_main1_background"
+        android:background="@drawable/round_main1"
         android:text="@string/login"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_login_pwd" />
+        app:layout_constraintTop_toBottomOf="@id/layout_sign_in_pwd" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login_signup"
+        android:id="@+id/btn_sign_in_sign_up"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/round_white_background_stroke"
-        android:text="@string/signup"
+        android:background="@drawable/round_white_stroke"
+        android:text="@string/sign_up"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_login_login" />
+        app:layout_constraintTop_toBottomOf="@id/btn_sign_in_login" />
 
     <View
-        android:id="@+id/view_login_left_line"
         android:layout_width="100dp"
         android:layout_height="1dp"
         android:background="@color/gray"
-        app:layout_constraintBottom_toBottomOf="@id/tv_login_easy"
-        app:layout_constraintRight_toLeftOf="@id/tv_login_easy"
-        app:layout_constraintTop_toTopOf="@id/tv_login_easy" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_sign_in_easy"
+        app:layout_constraintRight_toLeftOf="@id/tv_sign_in_easy"
+        app:layout_constraintTop_toTopOf="@id/tv_sign_in_easy" />
 
     <TextView
-        android:id="@+id/tv_login_easy"
+        android:id="@+id/tv_sign_in_easy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
@@ -100,19 +99,16 @@
         android:text="@string/easy_login"
         android:textColor="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/view_login_left_line"
-        app:layout_constraintRight_toLeftOf="@id/view_login_right_line"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_login_signup" />
+        app:layout_constraintTop_toBottomOf="@id/btn_sign_in_sign_up" />
 
     <View
-        android:id="@+id/view_login_right_line"
         android:layout_width="100dp"
         android:layout_height="1dp"
         android:background="@color/gray"
-        app:layout_constraintBottom_toBottomOf="@id/tv_login_easy"
-        app:layout_constraintLeft_toRightOf="@id/tv_login_easy"
-        app:layout_constraintTop_toTopOf="@id/tv_login_easy" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_sign_in_easy"
+        app:layout_constraintLeft_toRightOf="@id/tv_sign_in_easy"
+        app:layout_constraintTop_toTopOf="@id/tv_sign_in_easy" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -122,5 +118,5 @@
         android:src="@drawable/img_naver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_login_easy" />
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_easy" />
 </androidx.constraintlayout.widget.ConstraintLayout>
