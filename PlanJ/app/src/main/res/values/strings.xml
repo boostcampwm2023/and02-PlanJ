@@ -8,4 +8,6 @@
     <string name="application_logo">Application Logo</string>
     <string name="easy_login">간편 로그인</string>
     <string name="naver_easy_login">네이버 간편 로그인</string>
+    <string name="nickname">닉네임</string>
+    <string name="password_check">비밀번호 확인</string>
 </resources>
