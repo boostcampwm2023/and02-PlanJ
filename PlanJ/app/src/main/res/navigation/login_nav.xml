@@ -12,9 +12,9 @@
         tools:layout="@layout/activity_main" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.boostcamp.planj.ui.login.LoginFragment"
+        android:name="com.boostcamp.planj.ui.login.SignInFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_signin" >
         <action
             android:id="@+id/action_loginFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
