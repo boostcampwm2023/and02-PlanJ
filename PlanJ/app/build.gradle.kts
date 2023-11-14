@@ -63,9 +63,22 @@ dependencies {
     implementation (libs.retrofit)
     implementation(libs.converter.gson)
 
+    //okhttp3
+    implementation(libs.okhttp)
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
     //room
     implementation (libs.androidx.room.runtime)
     annotationProcessor (libs.androidx.room.compiler)
     kapt (libs.androidx.room.compiler)
+
+
+    //jetpack navigation
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
+
 
 }
