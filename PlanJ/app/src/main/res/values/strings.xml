@@ -8,4 +8,9 @@
     <string name="application_logo">Application Logo</string>
     <string name="easy_login">간편 로그인</string>
     <string name="naver_easy_login">네이버 간편 로그인</string>
+    <string name="fail">실패</string>
+    <string name="schedule">일정</string>
+    <string name="complete">완료</string>
+    <string name="day">일</string>
+    <string name="dayNumber">19</string>
 </resources>
