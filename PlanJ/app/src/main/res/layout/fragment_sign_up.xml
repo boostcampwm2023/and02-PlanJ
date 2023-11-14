@@ -47,9 +47,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:afterTextChanged="@{() -> viewModel.checkEmail()}"
                 android:inputType="textEmailAddress"
                 android:maxWidth="488dp"
-                android:text="@{viewModel.userEmail}" />
+                android:text="@={viewModel.userEmail}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -68,9 +69,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:afterTextChanged="@{() -> viewModel.checkPwd()}"
                 android:inputType="textPassword"
                 android:maxWidth="488dp"
-                android:text="@{viewModel.userPwd}" />
+                android:text="@={viewModel.userPwd}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -89,9 +91,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:afterTextChanged="@{() -> viewModel.checkPwdConfirm()}"
                 android:inputType="textPassword"
                 android:maxWidth="488dp"
-                android:text="@{viewModel.userPwdConfirm}" />
+                android:text="@={viewModel.userPwdConfirm}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -110,9 +113,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:afterTextChanged="@{() -> viewModel.checkNickname()}"
                 android:inputType="text"
                 android:maxWidth="488dp"
-                android:text="@{viewModel.userNickname}" />
+                android:text="@={viewModel.userNickname}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
