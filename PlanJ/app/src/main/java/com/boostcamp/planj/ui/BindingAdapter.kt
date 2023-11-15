@@ -6,7 +6,7 @@ import com.boostcamp.planj.ui.login.PwdState
 import com.google.android.material.textfield.TextInputLayout
 
 @BindingAdapter("emailError")
-fun TextInputLayout.setEmailError(emailState: EmailState?) {
+fun TextInputLayout.setEmailError(emailState: EmailState) {
     error = when (emailState) {
         EmailState.ERROR_FORMAT -> "이메일 형식이 옳지 않습니다."
         EmailState.ERROR_EXIST -> "이미 존재하는 이메일입니다."
@@ -15,7 +15,7 @@ fun TextInputLayout.setEmailError(emailState: EmailState?) {
 }
 
 @BindingAdapter("pwdError")
-fun TextInputLayout.setPwdError(pwdState: PwdState?) {
+fun TextInputLayout.setPwdError(pwdState: PwdState) {
     error = when (pwdState) {
         PwdState.ERROR_LENGTH -> "비밀번호 길이는 8자 이상 16자 이하입니다."
         PwdState.ERROR_ENGLISH -> "비밀번호는 영문을 포함해야 합니다."
