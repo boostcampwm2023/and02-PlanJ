@@ -5,6 +5,7 @@ import { ConflictException, Injectable, InternalServerErrorException, Unauthoriz
 import * as bcrypt from "bcryptjs";
 import { ulid } from "ulid";
 import { UserLoginDto } from "./dto/user-login.dto";
+import { HttpResponse } from "../utils/http.response";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -12,7 +13,7 @@ export class UserRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.createEntityManager());
   }
 
-  async register(createUserDto: CreateUserDto): Promise<JSON> {
+  async register(createUserDto: CreateUserDto): Promise<string> {
     const { email, password, nickname } = createUserDto;
 
     const userExist = await this.checkUserExists(email);
@@ -27,10 +28,12 @@ export class UserRepository extends Repository<UserEntity> {
 
     try {
       await this.save(user);
-      return JSON.parse(`{
-        "message": "회원가입 성공",
-        "statusCode": "201"
-    }`);
+      const body: HttpResponse = {
+        message: "회원가입 성공",
+        statusCode: 201,
+      }
+
+      return JSON.stringify(body);
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -48,7 +51,12 @@ export class UserRepository extends Repository<UserEntity> {
     const user = await this.findOne({ where: { email: email } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      return "login success";
+      const body: HttpResponse = {
+        message: "로그인 성공",
+        statusCode: 200
+      }
+
+      return JSON.stringify(body);
     }
     throw new UnauthorizedException("login failed");
   }

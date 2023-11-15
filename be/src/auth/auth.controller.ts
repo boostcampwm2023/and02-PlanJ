@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe } from "@nestjs/common";
+import {Controller, Post, Body, ValidationPipe, HttpCode, HttpStatus} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -8,12 +8,15 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("/register")
-  async register(@Body(ValidationPipe) dto: CreateUserDto): Promise<JSON> {
-    return this.authService.register(dto);
+  async register(@Body() dto: CreateUserDto): Promise<JSON> {
+    const result = await this.authService.register(dto);
+    return JSON.parse(result);
   }
 
   @Post("/login")
-  login(@Body(ValidationPipe) dto: UserLoginDto) {
-    return this.authService.login(dto);
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() dto: UserLoginDto): Promise<JSON> {
+    const result = await this.authService.login(dto);
+    return JSON.parse(result);
   }
 }
