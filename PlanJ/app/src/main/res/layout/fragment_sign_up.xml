@@ -126,6 +126,7 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/selector_enable"
             android:enabled="@{viewModel.isEnable}"
+            android:onClick="@{() -> viewModel.postSignUp()}"
             android:text="@string/sign_up"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"

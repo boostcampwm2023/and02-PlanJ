@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSignUpBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     private lateinit var binding: FragmentSignUpBinding
@@ -29,12 +31,12 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setListener()
+        setObserver()
     }
 
-    private fun setListener() {
-        binding.btnSignUpSignUp.setOnClickListener {
-            findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+    private fun setObserver() {
+        viewModel.isComplete.observe(viewLifecycleOwner) { isComplete ->
+            if (isComplete) findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
         }
     }
 
