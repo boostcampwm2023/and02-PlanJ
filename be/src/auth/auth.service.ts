@@ -3,6 +3,7 @@ import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "./user.repository";
+import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Injectable()
 export class AuthService {
@@ -21,5 +22,9 @@ export class AuthService {
 
   async deleteAccount(dto: UserLoginDto): Promise<string> {
     return await this.userRepository.deleteAccount(dto);
+  }
+
+  update(dto: UserModifyDto): Promise<string> {
+    return this.userRepository.updateInfo(dto);
   }
 }

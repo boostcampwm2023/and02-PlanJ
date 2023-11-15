@@ -6,6 +6,7 @@ import * as bcrypt from "bcryptjs";
 import { ulid } from "ulid";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { HttpResponse } from "../utils/http.response";
+import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -74,5 +75,27 @@ export class UserRepository extends Repository<UserEntity> {
 
       return JSON.stringify(body);
     }
+  }
+
+  async updateInfo(modifyDto: UserModifyDto) {
+    const { email, nickname } = modifyDto;
+    const user = await this.findOne({ where: {email: email }});
+
+    if (!user) {
+      throw new UnauthorizedException("가입한 사용자가 아님");
+    }
+
+    user.nickname = nickname;
+    await this.update({email: email},{nickname: nickname});
+
+    const body: HttpResponse = {
+      message: "정보 수정 성공",
+      statusCode: 200,
+      data: {
+        updatedNickname: nickname
+      }
+    }
+
+    return JSON.stringify(body);
   }
 }
