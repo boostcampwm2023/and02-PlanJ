@@ -2,10 +2,13 @@ package com.boostcamp.planj.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.network.ApiResult
 import com.boostcamp.planj.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +31,7 @@ class SignUpViewModel @Inject constructor(
     private val _pwdConfirmState = MutableStateFlow(PwdConfirmState.NONE)
     val pwdConfirmState: StateFlow<PwdConfirmState> = _pwdConfirmState
 
-    private val _nicknameState = MutableStateFlow<NicknameState>(NicknameState.NONE)
+    private val _nicknameState = MutableStateFlow(NicknameState.NONE)
     val nicknameState: StateFlow<NicknameState> = _nicknameState
 
     private val _isEnable = MutableStateFlow(false)
@@ -36,6 +39,9 @@ class SignUpViewModel @Inject constructor(
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
+
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast = _showToast.asSharedFlow()
 
     private val regexEmail = Regex("""^([A-z0-9_\-.]+)@([A-z0-9_\-]+)\.([a-zA-Z]{2,5})$""")
     private val regexEnglish = Regex("""[A-z]""")
@@ -96,13 +102,21 @@ class SignUpViewModel @Inject constructor(
 
     fun postSignUp() {
         viewModelScope.launch {
-            // TODO: 결과에 따른 처리 필요
-            val result = loginRepository.postSignUp(
-                userEmail.value,
-                userPwd.value,
-                userNickname.value
-            )
-            _isComplete.value = result
+            val apiResult =
+                loginRepository.postSignUp(userEmail.value, userPwd.value, userNickname.value)
+            when (apiResult) {
+                is ApiResult.Success -> {
+                    _isComplete.value = true
+                    _showToast.emit("회원가입이 완료되었습니다.")
+                }
+
+                is ApiResult.Error -> {
+                    when (apiResult.statusCode) {
+                        409 -> _emailState.value = EmailState.ERROR_EXIST
+                        else -> _showToast.emit("Error")
+                    }
+                }
+            }
         }
     }
 }

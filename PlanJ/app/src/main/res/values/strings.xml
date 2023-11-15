@@ -16,5 +16,5 @@
     <string name="nickname">닉네임</string>
     <string name="password_check">비밀번호 확인</string>
     <string name="password_confirm_error">비밀번호가 일치하지 않습니다.</string>
-    <string name="nickname_length_error">닉네임은 길이는 1자 이상 12자 이하입니다.</string>
+    <string name="nickname_length_error">닉네임은 길이는 2자 이상 12자 이하입니다.</string>
 </resources>
