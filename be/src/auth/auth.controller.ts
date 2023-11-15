@@ -1,4 +1,4 @@
-import {Controller, Post, Body, ValidationPipe, HttpCode, HttpStatus} from "@nestjs/common";
+import { Controller, Post, Body, HttpCode, HttpStatus, Delete } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -17,6 +17,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: UserLoginDto): Promise<JSON> {
     const result = await this.authService.login(dto);
+    return JSON.parse(result);
+  }
+
+  @Delete("/delete")
+  async deleteAccount(@Body() dto: UserLoginDto) {
+    const result = await this.authService.deleteAccount(dto);
     return JSON.parse(result);
   }
 }
