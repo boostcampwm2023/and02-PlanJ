@@ -1,7 +1,9 @@
 package com.boostcamp.planj.data.repository
 
-import android.util.Log
+import com.boostcamp.planj.data.model.LoginResponse
+import com.boostcamp.planj.data.model.SignInRequest
 import com.boostcamp.planj.data.model.SignUpRequest
+import com.boostcamp.planj.data.network.ApiResult
 import com.boostcamp.planj.data.network.PlanJAPI
 import javax.inject.Inject
 
@@ -13,15 +15,23 @@ class LoginRepositoryImpl @Inject constructor(
         userEmail: String,
         userPwd: String,
         userNickname: String
-    ): Boolean {
-        val userRequest = SignUpRequest(userEmail, userPwd, userNickname)
+    ): ApiResult<LoginResponse> {
+        val response = apiService.postSignUp(SignUpRequest(userEmail, userPwd, userNickname))
+        if (response.isSuccessful) {
+            response.body()?.let { loginResponse ->
+                return ApiResult.Success(loginResponse)
+            }
+        }
+        return ApiResult.Error(response.code())
+    }
 
-        // TODO: 응답 코드에 따른 처리 필요
-        Log.d("postSignUp요청", userRequest.toString())
-        val response = apiService.postSignUp(userRequest)
-        Log.d("postSignUp결과코드", response.code().toString())
-        Log.d("postSignUp결과메시지", response.message())
-        Log.d("postSignUp결과바디", response.body().toString())
-        return response.isSuccessful
+    override suspend fun postSignIn(userEmail: String, userPwd: String): ApiResult<LoginResponse> {
+        val response = apiService.postSignIn(SignInRequest(userEmail, userPwd))
+        if (response.isSuccessful) {
+            response.body()?.let { loginResponse ->
+                return ApiResult.Success(loginResponse)
+            }
+        }
+        return ApiResult.Error(response.code())
     }
 }
