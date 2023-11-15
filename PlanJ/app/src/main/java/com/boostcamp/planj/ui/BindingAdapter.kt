@@ -1,6 +1,12 @@
 package com.boostcamp.planj.ui
 
+import android.graphics.Color
+import android.graphics.Paint
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.google.android.material.textfield.TextInputLayout
@@ -21,4 +27,34 @@ fun TextInputLayout.setPwdError(pwdState: PwdState) {
         PwdState.ERROR_CONTENTS -> "비밀번호는 영문, 숫자, 특수문자를 1자이상 포함해야 합니다."
         else -> null
     }
+}
+
+
+@BindingAdapter("participation")
+fun TextView.setParticipation(schedule : Schedule){
+    if(schedule.members.size < 2) {
+        visibility = View.GONE
+        return
+    }
+    text = "${schedule.doneMembers?.size ?: 0} / ${schedule.members.size}"
+}
+
+@BindingAdapter("checkFail")
+fun ImageView.checkFail(schedule: Schedule){
+    visibility = if(!schedule.finished && schedule.failed){
+        View.VISIBLE
+    }else
+        View.GONE
+}
+
+@BindingAdapter("setTitle")
+fun TextView.setTitle(schedule: Schedule){
+    if(schedule.finished) {
+        paintFlags =
+            paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    }
+    if(schedule.failed){
+        setTextColor(Color.RED)
+    }
+    text = schedule.title
 }
