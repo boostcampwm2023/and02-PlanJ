@@ -11,11 +11,11 @@ export class AuthService {
     private userRepository: UserRepository,
   ) {}
 
-  async register(dto: CreateUserDto): Promise<JSON> {
-    return this.userRepository.register(dto);
+  async register(dto: CreateUserDto): Promise<string> {
+    return await this.userRepository.register(dto);
   }
 
-  login(dto: UserLoginDto) {
-    return this.userRepository.login(dto);
+  async login(dto: UserLoginDto): Promise<string> {
+    return await this.userRepository.login(dto);
   }
 }
