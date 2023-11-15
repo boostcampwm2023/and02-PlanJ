@@ -13,18 +13,26 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/day"
+            android:id="@+id/tv_day_week"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/day"
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/tv_day_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/dayNumber"
             android:textAlignment="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_day_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
