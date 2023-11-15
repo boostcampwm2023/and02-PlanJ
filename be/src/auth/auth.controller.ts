@@ -8,7 +8,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("/register")
-  async register(@Body(ValidationPipe) dto: CreateUserDto): Promise<string> {
+  async register(@Body(ValidationPipe) dto: CreateUserDto): Promise<JSON> {
     return this.authService.register(dto);
   }
 
