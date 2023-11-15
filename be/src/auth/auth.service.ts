@@ -16,6 +16,10 @@ export class AuthService {
   }
 
   async login(dto: UserLoginDto): Promise<string> {
-    return await this.userRepository.login(dto);
+    return JSON.stringify(await this.userRepository.login(dto));
+  }
+
+  async deleteAccount(dto: UserLoginDto): Promise<string> {
+    return await this.userRepository.deleteAccount(dto);
   }
 }

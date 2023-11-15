@@ -31,7 +31,7 @@ export class UserRepository extends Repository<UserEntity> {
       const body: HttpResponse = {
         message: "회원가입 성공",
         statusCode: 201,
-      }
+      };
 
       return JSON.stringify(body);
     } catch (error) {
@@ -46,18 +46,33 @@ export class UserRepository extends Repository<UserEntity> {
     return user !== null;
   }
 
-  async login(loginDto: UserLoginDto): Promise<string> {
-    const { email, password } = loginDto;
+  async login(userLoginDto: UserLoginDto): Promise<HttpResponse> {
+    const { email, password } = userLoginDto;
     const user = await this.findOne({ where: { email: email } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const body: HttpResponse = {
         message: "로그인 성공",
-        statusCode: 200
-      }
+        statusCode: 200,
+      };
+
+      return body;
+    }
+    throw new UnauthorizedException("로그인 실패");
+  }
+
+  async deleteAccount(userLogindto: UserLoginDto): Promise<string> {
+    const loginResult = await this.login(userLogindto);
+    if (loginResult.statusCode === 200) {
+      const { email } = userLogindto;
+      await this.softDelete({ email: email });
+
+      const body: HttpResponse = {
+        message: "회원탈퇴 완료",
+        statusCode: 200,
+      };
 
       return JSON.stringify(body);
     }
-    throw new UnauthorizedException("login failed");
   }
 }
