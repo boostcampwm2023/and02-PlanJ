@@ -6,7 +6,7 @@ import * as bcrypt from "bcryptjs";
 import { ulid } from "ulid";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { HttpResponse } from "../utils/http.response";
-import {UserModifyDto} from "./dto/user-modify.dto";
+import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {

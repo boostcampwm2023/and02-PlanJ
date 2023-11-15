@@ -3,7 +3,7 @@ import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "./user.repository";
-import {UserModifyDto} from "./dto/user-modify.dto";
+import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Injectable()
 export class AuthService {

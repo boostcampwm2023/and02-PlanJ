@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch } from "@ne
 import { AuthService } from "./auth.service";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
-import {UserModifyDto} from "./dto/user-modify.dto";
+import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Controller("/api/auth")
 export class AuthController {
