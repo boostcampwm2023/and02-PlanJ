@@ -14,6 +14,7 @@ export class AuthController {
   }
 
   @Post("/login")
+  @HttpCode(HttpStatus.OK)
   async login(@Body() dto: UserLoginDto): Promise<JSON> {
     const result = await this.authService.login(dto);
     return JSON.parse(result);
