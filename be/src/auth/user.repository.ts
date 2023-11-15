@@ -15,6 +15,11 @@ export class UserRepository extends Repository<UserEntity> {
   async register(createUserDto: CreateUserDto): Promise<string> {
     const { email, password, nickname } = createUserDto;
 
+    const userExist = await this.checkUserExists(email);
+    if (userExist) {
+      throw new ConflictException("해당 이메일로는 가입할 수 없습니다.");
+    }
+
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -24,11 +29,15 @@ export class UserRepository extends Repository<UserEntity> {
       await this.save(user);
       return `${email}님 회원가입 완료되었습니다.`;
     } catch (error) {
-      if (error.code === "23505") {
-        throw new ConflictException("이미 존재하는 유저이름입니다.");
-      }
       throw new InternalServerErrorException();
     }
+  }
+
+  private async checkUserExists(email: string) {
+    const user = await this.findOne({
+      where: { email: email },
+    });
+    return user !== null;
   }
 
   async login(loginDto: UserLoginDto): Promise<string> {
