@@ -2,10 +2,13 @@ package com.boostcamp.planj.ui.main
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentTodayBinding
 import com.boostcamp.planj.ui.main.adapter.ScheduleAdapter
 import java.text.SimpleDateFormat
@@ -39,8 +42,37 @@ class TodayFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.today = today
         initAdapter()
+        toggleClickListener()
+    }
 
-
+    private fun toggleClickListener() {
+        binding.ivMainTodaytogglebtn.setOnClickListener {
+            if(binding.framelayoutMainToday.visibility == View.VISIBLE){
+                binding.ivMainTodaytogglebtn.setImageResource(R.drawable.ic_arrow_right)
+                binding.framelayoutMainToday.visibility = View.GONE
+            }else{
+                binding.ivMainTodaytogglebtn.setImageResource(R.drawable.ic_drop_arrow)
+                binding.framelayoutMainToday.visibility = View.VISIBLE
+            }
+        }
+        binding.ivMainCompletetogglebtn.setOnClickListener {
+            if(binding.framelayoutMainComplete.visibility == View.VISIBLE){
+                binding.ivMainCompletetogglebtn.setImageResource(R.drawable.ic_arrow_right)
+                binding.framelayoutMainComplete.visibility = View.GONE
+            }else{
+                binding.ivMainCompletetogglebtn.setImageResource(R.drawable.ic_drop_arrow)
+                binding.framelayoutMainComplete.visibility = View.VISIBLE
+            }
+        }
+        binding.ivMainFailtogglebtn.setOnClickListener {
+            if(binding.framelayoutMainFail.visibility == View.VISIBLE){
+                binding.ivMainFailtogglebtn.setImageResource(R.drawable.ic_arrow_right)
+                binding.framelayoutMainFail.visibility = View.GONE
+            }else{
+                binding.ivMainFailtogglebtn.setImageResource(R.drawable.ic_drop_arrow)
+                binding.framelayoutMainFail.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun initAdapter() {
