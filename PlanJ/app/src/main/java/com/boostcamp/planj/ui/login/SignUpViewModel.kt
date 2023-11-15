@@ -3,8 +3,16 @@ package com.boostcamp.planj.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.repository.LoginRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignUpViewModel : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val loginRepository: LoginRepository
+) : ViewModel() {
 
     val userEmail = MutableLiveData<String>()
     val userPwd = MutableLiveData<String>()
@@ -25,6 +33,9 @@ class SignUpViewModel : ViewModel() {
 
     private val _isEnable = MutableLiveData(false)
     val isEnable: LiveData<Boolean> = _isEnable
+
+    private val _isComplete = MutableLiveData<Boolean>()
+    val isComplete: LiveData<Boolean> = _isComplete
 
     private val regexEmail = Regex("""^([A-z0-9_\-.]+)@([A-z0-9_\-]+)\.([a-zA-Z]{2,5})$""")
     private val regexEnglish = Regex("""[A-z]""")
@@ -84,5 +95,17 @@ class SignUpViewModel : ViewModel() {
     private fun checkEnable() {
         _isEnable.value =
             (emailState.value == EmailState.AVAILABLE && pwdState.value == PwdState.AVAILABLE && pwdConfirmState.value == PwdConfirmState.AVAILABLE && nicknameState.value == NicknameState.AVAILABLE)
+    }
+
+    fun postSignUp() {
+        viewModelScope.launch {
+            // TODO: 결과에 따른 처리 필요
+            val result = loginRepository.postSignUp(
+                userEmail.value.toString(),
+                userPwd.value.toString(),
+                userNickname.value.toString()
+            )
+            _isComplete.value = result
+        }
     }
 }
