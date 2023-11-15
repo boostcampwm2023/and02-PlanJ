@@ -5,7 +5,7 @@ enum class EmailState {
 }
 
 enum class PwdState {
-    NONE, AVAILABLE, ERROR_LENGTH, ERROR_ENGLISH, ERROR_NUM, ERROR_SPECIAL
+    NONE, AVAILABLE, ERROR_LENGTH, ERROR_CONTENTS
 }
 
 enum class PwdConfirmState {
