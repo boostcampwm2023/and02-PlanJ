@@ -12,7 +12,7 @@ export class UserRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.createEntityManager());
   }
 
-  async register(createUserDto: CreateUserDto): Promise<string> {
+  async register(createUserDto: CreateUserDto): Promise<JSON> {
     const { email, password, nickname } = createUserDto;
 
     const userExist = await this.checkUserExists(email);
@@ -27,7 +27,10 @@ export class UserRepository extends Repository<UserEntity> {
 
     try {
       await this.save(user);
-      return `${email}님 회원가입 완료되었습니다.`;
+      return JSON.parse(`{
+        "message": "회원가입 성공",
+        "statusCode": "201"
+    }`);
     } catch (error) {
       throw new InternalServerErrorException();
     }

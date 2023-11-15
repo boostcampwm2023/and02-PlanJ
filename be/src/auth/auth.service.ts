@@ -11,7 +11,7 @@ export class AuthService {
     private userRepository: UserRepository,
   ) {}
 
-  async register(dto: CreateUserDto): Promise<string> {
+  async register(dto: CreateUserDto): Promise<JSON> {
     return this.userRepository.register(dto);
   }
 
