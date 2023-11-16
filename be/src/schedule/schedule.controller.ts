@@ -16,8 +16,9 @@ export class ScheduleController {
   getWeeklySchedule() {}
 
   @Post("/add")
-  addSchedule(@Body() dto: AddScheduleDto) {
-    return this.scheduleService.addSchedule(dto);
+  async addSchedule(@Body() dto: AddScheduleDto): Promise<JSON> {
+    const result = await this.scheduleService.addSchedule(dto);
+    return JSON.parse(result);
   }
 
   @Patch("/update")

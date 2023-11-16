@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { InjectRepository } from "@nestjs/typeorm";
+import { ScheduleRepository } from "./schedule.repository";
 
 @Injectable()
 export class ScheduleService {
@@ -9,8 +10,8 @@ export class ScheduleService {
     private scheduleRepository: ScheduleRepository,
   ) {}
 
-  addSchedule(dto: AddScheduleDto) {
-    return this.scheduleRepository.addSchedule(dto);
+  async addSchedule(dto: AddScheduleDto): Promise<string> {
+    return await this.scheduleRepository.addSchedule(dto);
   }
 
   getDaily() {}
