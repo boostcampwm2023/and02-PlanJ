@@ -3,7 +3,7 @@ package com.boostcamp.planj.ui.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boostcamp.planj.data.Schedule
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.ItemWeekEndBinding
 import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
 import com.boostcamp.planj.databinding.ItemWeekStartBinding
@@ -23,6 +23,7 @@ class WeekScheduleAdapter(private val scheduleList: List<Schedule>) :
         //TODO : 일정 여러가지 보여 줄 뷰홀더 3개 추가해야함
         val binding =
             ItemWeekScheduleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
         return WeekScheduleViewHolder(binding)
     }
 
