@@ -20,4 +20,17 @@
     <string name="email_condition">*******@****.***</string>
     <string name="password_condition">영문, 숫자, 특수문자 1자이상 포함, 8자 이상 16자 이하</string>
     <string name="nickname_condition">2자 이상 12자 이하</string>
+    <string name="Complete">완료</string>
+    <string name="add_schedule">일정 추가</string>
+    <string name="uncategorized">미분류</string>
+    <string name="enter_title">제목을 입력해주세요</string>
+    <string name="start">시작</string>
+    <string name="not_set">설정 안함</string>
+    <string name="end">종료</string>
+    <string name="alarm">알림</string>
+    <string name="repeat_setting">반복 설정</string>
+    <string name="location">위치</string>
+    <string name="memo">추가 메모</string>
+    <string name="category">카테고리</string>
+    <string name="memo_length">%s/255</string>
 </resources>
