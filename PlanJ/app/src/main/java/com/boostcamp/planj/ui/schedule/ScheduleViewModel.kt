@@ -1,10 +1,8 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +26,7 @@ class ScheduleViewModel @Inject constructor(
     val locationInfo = MutableStateFlow<String?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 
-    val categoryList : StateFlow<List<String>> =
+    val categoryList: StateFlow<List<String>> =
         mainRepository.getCategories()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
