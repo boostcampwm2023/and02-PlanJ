@@ -1,6 +1,6 @@
 import { CreateUserDto } from "./dto/create-user.dto";
 import { DataSource, Repository } from "typeorm";
-import { UserEntity } from "./user.entity";
+import { UserEntity } from "./entity/user.entity";
 import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import * as bcrypt from "bcryptjs";
 import { ulid } from "ulid";
