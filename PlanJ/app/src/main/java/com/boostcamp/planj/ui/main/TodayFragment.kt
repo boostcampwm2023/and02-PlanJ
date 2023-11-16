@@ -8,20 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentTodayBinding
 import com.boostcamp.planj.ui.main.adapter.ScheduleAdapter
 import com.boostcamp.planj.ui.main.adapter.SegmentScheduleAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 
+@AndroidEntryPoint
 class TodayFragment : Fragment() {
     private var _binding: FragmentTodayBinding? = null
     private val binding get() = _binding!!
     private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
+    private val viewModel : TodayViewModel by viewModels()
     //더미 일정
     private val dummyList = DummySchedule.getDummyList()
 
@@ -39,8 +43,14 @@ class TodayFragment : Fragment() {
         }
         initBinding(today)
         initAdapter()
+        dummyInsertRoom()
     }
 
+    private fun dummyInsertRoom() {
+        dummyList.forEach {
+            viewModel.insertSchedule(it)
+        }
+    }
     private fun initBinding(today: String) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.today = today
