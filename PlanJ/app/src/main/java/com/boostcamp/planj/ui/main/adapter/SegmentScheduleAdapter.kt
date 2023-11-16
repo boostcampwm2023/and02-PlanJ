@@ -4,11 +4,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.ui.main.SwipeListener
 
-class SegmentScheduleAdapter(private val scheduleList : List<Schedule>) : ListAdapter<String, SegmentScheduleAdapterViewHolder>(diffUtil) {
+class SegmentScheduleAdapter(private val scheduleList : List<Schedule>,
+    private val swipeListener: SwipeListener) : ListAdapter<String, SegmentScheduleAdapterViewHolder>(diffUtil) {
 
     override fun onBindViewHolder(holder: SegmentScheduleAdapterViewHolder, position: Int) {
-        holder.bind(currentList[position], scheduleList)
+        holder.bind(currentList[position], scheduleList, swipeListener)
     }
 
     override fun onCreateViewHolder(

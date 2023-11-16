@@ -20,5 +20,5 @@ class TypeConverter {
     fun fromUserList(value: List<User>? ) : String? = Gson().toJson(value)
 
     @TypeConverter
-    fun toUserList(value: String?) : List<User>? = Gson().fromJson(value, Array<User>::class.java).toList()
+    fun toUserList(value: String?) : List<User>? = Gson().fromJson(value, Array<User>::class.java)?.toList()
 }
