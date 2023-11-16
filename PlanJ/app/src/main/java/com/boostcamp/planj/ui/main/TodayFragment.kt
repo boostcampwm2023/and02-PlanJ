@@ -2,18 +2,22 @@ package com.boostcamp.planj.ui.main
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.FragmentTodayBinding
-import com.boostcamp.planj.ui.main.adapter.ScheduleAdapter
 import com.boostcamp.planj.ui.main.adapter.SegmentScheduleAdapter
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
@@ -25,9 +29,12 @@ class TodayFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
-    private val viewModel : TodayViewModel by viewModels()
+    private val viewModel: TodayViewModel by viewModels()
+
     //더미 일정
     private val dummyList = DummySchedule.getDummyList()
+
+    private lateinit var swipeListener : SwipeListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,23 +49,33 @@ class TodayFragment : Fragment() {
             "${str_date[0]}월 ${str_date[1]}일"
         }
         initBinding(today)
-        initAdapter()
-        dummyInsertRoom()
-    }
+        swipeListener = SwipeListener {position ->
+            val deleteSchedule = viewModel.deleteSchedule(position)
+            Snackbar.make(view, "Book has deleted", Snackbar.LENGTH_SHORT).apply {
+                setAction("Undo") {
+                    viewModel.insertSchedule(deleteSchedule)
+                }
+            }.show()
+        }
 
-    private fun dummyInsertRoom() {
-        dummyList.forEach {
-            viewModel.insertSchedule(it)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.schedules.collectLatest {
+                    initAdapter(it)
+                }
+            }
         }
     }
+
+
     private fun initBinding(today: String) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.today = today
     }
 
 
-    private fun initAdapter() {
-        segmentScheduleAdapter = SegmentScheduleAdapter(dummyList)
+    private fun initAdapter(scheduleList: List<Schedule>) {
+        segmentScheduleAdapter = SegmentScheduleAdapter(scheduleList, swipeListener)
         binding.rvMainSchedule.adapter = segmentScheduleAdapter
         val list = resources.getStringArray(R.array.today_list).toList()
         segmentScheduleAdapter.submitList(list)

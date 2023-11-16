@@ -28,4 +28,19 @@ class TodayViewModel @Inject constructor(
             mainRepository.insertSchedule(schedule)
         }
     }
+
+    fun deleteSchedule(position : Int) : Schedule{
+        val schedule = schedules.value[position]
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.deleteSchedule(schedule)
+        }
+        return schedule
+    }
+
+    fun saveSchedule(position : Int){
+        val schedule = schedules.value[position]
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.insertSchedule(schedule)
+        }
+    }
 }
