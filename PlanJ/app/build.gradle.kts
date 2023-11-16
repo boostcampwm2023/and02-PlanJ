@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.plugin.hilt.android)
     kotlin("kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -62,7 +63,6 @@ dependencies {
     //retrofit
     implementation (libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
 
     //okhttp3
     implementation(libs.okhttp)
@@ -73,6 +73,7 @@ dependencies {
     implementation (libs.androidx.room.runtime)
     annotationProcessor (libs.androidx.room.compiler)
     kapt (libs.androidx.room.compiler)
+    implementation("androidx.room:room-ktx:2.5.0")
 
 
     //jetpack navigation
@@ -80,5 +81,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
 
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
 
 }
