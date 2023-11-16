@@ -2,6 +2,8 @@ package com.boostcamp.planj.data.di
 
 import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.LoginRepositoryImpl
+import com.boostcamp.planj.data.repository.MainRepository
+import com.boostcamp.planj.data.repository.MainRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,9 @@ abstract class RepositoryModule {
     abstract fun provideLoginRepository(
         loginRepositoryImpl: LoginRepositoryImpl
     ): LoginRepository
+
+    @Binds
+    abstract fun provideMainRepository(
+        mainRepositoryImpl: MainRepositoryImpl
+    ): MainRepository
 }
