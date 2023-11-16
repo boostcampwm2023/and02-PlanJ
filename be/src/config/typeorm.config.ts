@@ -1,15 +1,20 @@
+import { ConfigService, ConfigType } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import * as dotenv from "dotenv";
+import dbConfig from "./dbConfig";
 
-dotenv.config();
-
-export const typeORMConfig: TypeOrmModuleOptions = {
-  type: "mysql",
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT, 10),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  entities: [__dirname + "/../**/*.entity.{js,ts}"],
-  synchronize: true,
-};
+export class TypeOrmConfigService {
+  static createTypeOrmOptions(configService: ConfigService): TypeOrmModuleOptions {
+    // TODO: JOI 적용하기
+    const config: ConfigType<typeof dbConfig> = configService.get("db");
+    return {
+      type: "mysql",
+      host: config.host,
+      port: parseInt(config.port),
+      username: config.username,
+      password: config.password,
+      database: config.database,
+      entities: [__dirname + "/../**/*.entity{.ts,.js}"],
+      synchronize: true,
+    };
+  }
+}
