@@ -8,5 +8,9 @@ interface MainRepository {
 
     fun getSchedules() : Flow<List<Schedule>>
 
-    fun insertSchedule(schedule: Schedule)
+    suspend fun insertSchedule(schedule: Schedule)
+
+    suspend fun deleteSchedule(schedule: Schedule)
+
+    fun getCategories() : Flow<List<String>>
 }
