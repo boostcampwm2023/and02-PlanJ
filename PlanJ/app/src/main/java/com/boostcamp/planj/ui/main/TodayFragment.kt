@@ -37,9 +37,13 @@ class TodayFragment : Fragment() {
             val str_date = t_dateFormat.format(t_date).split("-")
             "${str_date[0]}월 ${str_date[1]}일"
         }
+        initBinding(today)
+        initAdapter()
+    }
+
+    private fun initBinding(today: String) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.today = today
-        initAdapter()
     }
 
 
