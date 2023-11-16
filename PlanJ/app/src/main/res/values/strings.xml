@@ -20,4 +20,10 @@
     <string name="email_condition">*******@****.***</string>
     <string name="password_condition">영문, 숫자, 특수문자 1자이상 포함, 8자 이상 16자 이하</string>
     <string name="nickname_condition">2자 이상 12자 이하</string>
+
+    <string-array name="today_list">
+        <item>일정</item>
+        <item>완료</item>
+        <item>실패</item>
+    </string-array>
 </resources>
