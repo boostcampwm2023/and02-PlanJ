@@ -1,5 +1,6 @@
 import {BaseEntity, Column, Entity, OneToMany, PrimaryColumn} from "typeorm";
 import {ScheduleEntity} from "./schedule.entity";
+import {ParticipantEntity} from "./participant.entity";
 
 @Entity("ScheduleMeta")
 export class ScheduleMetaEntity extends BaseEntity {
@@ -25,4 +26,9 @@ export class ScheduleMetaEntity extends BaseEntity {
         cascade: true,
     })
     children: ScheduleEntity[];
+
+    @OneToMany(() => ParticipantEntity, (participant) => participant.meta, {
+        cascade: true,
+    })
+    participant: ParticipantEntity[];
 }
