@@ -1,7 +1,12 @@
 package com.boostcamp.planj.data.model
 
+import androidx.annotation.Nullable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "schedules")
 data class Schedule(
-    val scheduleId : String,
+    @PrimaryKey val scheduleId : String,
     val title : String,
     val memo : String?,
     val startTime : String?,

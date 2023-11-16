@@ -8,7 +8,7 @@ import com.boostcamp.planj.data.model.User
 
 
 @Database(entities = [User::class, Schedule::class], version = 1, exportSchema = false)
-@TypeConverters()
+@TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 

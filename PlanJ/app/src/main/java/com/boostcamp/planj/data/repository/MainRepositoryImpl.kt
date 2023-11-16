@@ -10,10 +10,10 @@ class MainRepositoryImpl @Inject constructor(
 ) : MainRepository {
 
     override fun insertSchedule(schedule: Schedule) {
-        TODO("Not yet implemented")
+        db.scheduleDao().insertSchedule(schedule)
     }
 
     override fun getSchedules(): Flow<List<Schedule>> {
-        TODO("Not yet")
+        return db.scheduleDao().getSchedules()
     }
 }
