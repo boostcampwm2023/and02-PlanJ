@@ -1,4 +1,16 @@
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class ScheduleService {}
+export class ScheduleService {
+    add() {
+
+    }
+
+    getDaily() {
+
+    }
+
+    getWeekly() {
+
+    }
+}
