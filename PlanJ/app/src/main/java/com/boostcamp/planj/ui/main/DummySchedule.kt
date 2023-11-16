@@ -11,8 +11,8 @@ object DummySchedule {
                 scheduleId = "1",
                 title = "일정1",
                 memo = null,
-                startTime = "2023/11/14 09:00",
-                endTime = "2023/11/15 18:00",
+                startTime = "2023-11-14T09:00:00.00",
+                endTime = "2023-11-15T18:00:00.00",
                 repeat = null,
                 members = listOf(
                     User("1")
@@ -29,7 +29,7 @@ object DummySchedule {
                 title = "일정2",
                 memo = null,
                 startTime = null,
-                endTime = "2023/11/15 17:00",
+                endTime = "2023-11-15T17:00:00.00",
                 repeat = null,
                 members = listOf(
                     User("1"),
@@ -49,7 +49,7 @@ object DummySchedule {
                 title = "일정3",
                 memo = null,
                 startTime = null,
-                endTime = "2023/11/15 18:00",
+                endTime = "2023-11-15T18:00:00.00",
                 repeat = Repetition(
                     "1",
                     "매주",
@@ -75,8 +75,8 @@ object DummySchedule {
                 scheduleId = "4",
                 title = "일정4",
                 memo = null,
-                startTime = "2023/11/13 12:00",
-                endTime = "2023/11/15 18:00",
+                startTime = "2023-11-13T12:00:00.00",
+                endTime = "2023-11-15T18:00:00.00",
                 repeat = null,
                 members = listOf(
                     User("1")
@@ -95,7 +95,7 @@ object DummySchedule {
                 title = "일정5",
                 memo = null,
                 startTime = null,
-                endTime = "2023/11/15 12:00",
+                endTime = "2023-11-15T12:00:00.00",
                 repeat = Repetition(
                     "1",
                     "매일",
@@ -117,7 +117,7 @@ object DummySchedule {
                 title = "일정6",
                 memo = null,
                 startTime = null,
-                endTime = "2023/11/15 11:00",
+                endTime = "2023-11-15T11:00:00.00",
                 repeat = null,
                 members = listOf(
                     User("1")
