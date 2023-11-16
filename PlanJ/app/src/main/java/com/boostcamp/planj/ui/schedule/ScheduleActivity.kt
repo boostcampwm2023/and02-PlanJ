@@ -3,10 +3,12 @@ package com.boostcamp.planj.ui.schedule
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.planj.databinding.ActivityScheduleBinding
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -32,6 +34,16 @@ class ScheduleActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isComplete.collect { isComplete ->
                     if (isComplete) finish()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.categoryList.collect { categoryList ->
+                    (binding.layoutScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
+                        categoryList.toTypedArray()
+                    )
                 }
             }
         }

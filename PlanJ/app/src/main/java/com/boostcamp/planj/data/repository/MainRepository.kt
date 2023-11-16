@@ -11,4 +11,6 @@ interface MainRepository {
     suspend fun insertSchedule(schedule: Schedule)
 
     suspend fun deleteSchedule(schedule: Schedule)
+
+    fun getCategories() : Flow<List<String>>
 }
