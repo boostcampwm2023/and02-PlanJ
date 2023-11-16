@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentTodayBinding
 import com.boostcamp.planj.ui.main.adapter.ScheduleAdapter
+import com.boostcamp.planj.ui.main.adapter.SegmentScheduleAdapter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Date
@@ -19,10 +20,7 @@ import java.util.Locale
 class TodayFragment : Fragment() {
     private var _binding: FragmentTodayBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var todaySchedule : ScheduleAdapter
-    private lateinit var completeSchedule : ScheduleAdapter
-    private lateinit var failSchedule : ScheduleAdapter
+    private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
     //더미 일정
     private val dummyList = DummySchedule.getDummyList()
@@ -42,51 +40,14 @@ class TodayFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.today = today
         initAdapter()
-        toggleClickListener()
     }
 
-    private fun toggleClickListener() {
-        binding.ivMainTodaytogglebtn.setOnClickListener {
-            if(binding.framelayoutMainToday.visibility == View.VISIBLE){
-                binding.ivMainTodaytogglebtn.setImageResource(R.drawable.ic_arrow_right)
-                binding.framelayoutMainToday.visibility = View.GONE
-            }else{
-                binding.ivMainTodaytogglebtn.setImageResource(R.drawable.ic_drop_arrow)
-                binding.framelayoutMainToday.visibility = View.VISIBLE
-            }
-        }
-        binding.ivMainCompletetogglebtn.setOnClickListener {
-            if(binding.framelayoutMainComplete.visibility == View.VISIBLE){
-                binding.ivMainCompletetogglebtn.setImageResource(R.drawable.ic_arrow_right)
-                binding.framelayoutMainComplete.visibility = View.GONE
-            }else{
-                binding.ivMainCompletetogglebtn.setImageResource(R.drawable.ic_drop_arrow)
-                binding.framelayoutMainComplete.visibility = View.VISIBLE
-            }
-        }
-        binding.ivMainFailtogglebtn.setOnClickListener {
-            if(binding.framelayoutMainFail.visibility == View.VISIBLE){
-                binding.ivMainFailtogglebtn.setImageResource(R.drawable.ic_arrow_right)
-                binding.framelayoutMainFail.visibility = View.GONE
-            }else{
-                binding.ivMainFailtogglebtn.setImageResource(R.drawable.ic_drop_arrow)
-                binding.framelayoutMainFail.visibility = View.VISIBLE
-            }
-        }
-    }
 
     private fun initAdapter() {
-        todaySchedule = ScheduleAdapter()
-        completeSchedule = ScheduleAdapter()
-        failSchedule = ScheduleAdapter()
-
-        binding.rvMainTodayschedule.adapter = todaySchedule
-        binding.rvMainCompleteschedule.adapter = completeSchedule
-        binding.rvMainFailschedule.adapter = failSchedule
-
-        todaySchedule.submitList(dummyList.filter { !it.finished })
-        completeSchedule.submitList(dummyList.filter { it.finished && !it.failed })
-        failSchedule.submitList(dummyList.filter { it.finished && it.failed })
+        segmentScheduleAdapter = SegmentScheduleAdapter(dummyList)
+        binding.rvMainSchedule.adapter = segmentScheduleAdapter
+        val list = resources.getStringArray(R.array.today_list).toList()
+        segmentScheduleAdapter.submitList(list)
     }
 
     override fun onCreateView(

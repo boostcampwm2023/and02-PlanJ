@@ -25,6 +25,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,7 +34,8 @@
         </activity>
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="false">
+            android:exported="true">
+
         </activity>
     </application>
 
