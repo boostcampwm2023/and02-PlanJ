@@ -1,0 +1,5 @@
+# IDEs and editors
+.idea
+
+# 환경 변수
+/be/.env
