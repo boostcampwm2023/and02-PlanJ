@@ -7,6 +7,10 @@ import com.boostcamp.planj.data.model.Schedule
 
 class ScheduleAdapter : ListAdapter<Schedule, ScheduleViewHolder>(diffUtil) {
 
+    init {
+        setHasStableIds(true)
+    }
+
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
