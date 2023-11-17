@@ -35,16 +35,20 @@
 
 [위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
 
-<details>
-<summary>1주차</summary>
-<div markdown="1">
 
-</div>
-</details>
 <details>
 <summary>2주차</summary>
 <div markdown="1">
 
+  ## 2주 계확
+  - [X] 로그인, 회원가입 백엔드와 연결하여 이메일 로그인만 가능하게 구현
+  - [X] 메인화면 UI 구성
+  - [ ] 오늘, 주간 UI 구성
+  - [X] Room 연결
+  - [ ] 오늘, 주간 일정 요청, 응답
+  - [ ]   
+
+  ## 2주차 결과
 </div>
 </details>
 <details>
