@@ -13,7 +13,7 @@
 <td align="center"><a href="https://github.com/ganjanggejang"><img src="https://github.com/ganjanggejang.png" width="100px;" alt=""/><br /><sub><b>하준수</b></sub></a><br /></td>
 </tr>
 </tbody>
-</table
+</table>
 
 
 ## 협업 전략 (브랜치 구조와 분업하기, 의존적인 작업하기)
@@ -34,3 +34,34 @@
 [백로그](https://www.notion.so/7fa14444e88047af8cc3e970d0003171)
 
 [위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
+
+<details>
+<summary>1주차</summary>
+<div markdown="1">
+
+</div>
+</details>
+<details>
+<summary>2주차</summary>
+<div markdown="1">
+
+</div>
+</details>
+<details>
+<summary>3주차</summary>
+<div markdown="1">
+
+</div>
+</details>
+<details>
+<summary>4주차</summary>
+<div markdown="1">
+
+</div>
+</details>
+<details>
+<summary>5주차</summary>
+<div markdown="1">
+
+</div>
+</details>
