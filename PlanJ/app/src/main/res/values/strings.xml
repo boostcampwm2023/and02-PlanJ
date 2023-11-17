@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">PlanJ</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">이메일</string>
+    <string name="password">비밀번호</string>
+    <string name="sign_up">회원가입</string>
+    <string name="login">로그인</string>
+    <string name="application_logo">Application Logo</string>
+    <string name="easy_login">간편 로그인</string>
+    <string name="naver_easy_login">네이버 간편 로그인</string>
+    <string name="fail">실패</string>
+    <string name="schedule">일정</string>
+    <string name="complete">완료</string>
+    <string name="day">일</string>
+    <string name="dayNumber">19</string>
+    <string name="nickname">닉네임</string>
+    <string name="password_check">비밀번호 확인</string>
+    <string name="password_confirm_error">비밀번호가 일치하지 않습니다.</string>
+    <string name="nickname_length_error">닉네임은 길이는 2자 이상 12자 이하입니다.</string>
+    <string name="email_condition">*******@****.***</string>
+    <string name="password_condition">영문, 숫자, 특수문자 1자이상 포함, 8자 이상 16자 이하</string>
+    <string name="nickname_condition">2자 이상 12자 이하</string>
+    <string name="Complete">완료</string>
+    <string name="add_schedule">일정 추가</string>
+    <string name="uncategorized">미분류</string>
+    <string name="enter_title">제목을 입력해주세요</string>
+    <string name="start">시작</string>
+    <string name="not_set">설정 안함</string>
+    <string name="end">종료</string>
+    <string name="alarm">알림</string>
+    <string name="repeat_setting">반복 설정</string>
+    <string name="location">위치</string>
+    <string name="memo">추가 메모</string>
+    <string name="category">카테고리</string>
+    <string name="memo_length">%s/255</string>
+    <string-array name="today_list">
+        <item>일정</item>
+        <item>완료</item>
+        <item>실패</item>
+    </string-array>
+</resources>

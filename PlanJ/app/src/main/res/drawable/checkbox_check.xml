@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_outline_circle" android:gravity="center"/>
+    <item android:drawable="@drawable/ic_circle" android:width="16dp" android:height="16dp" android:gravity="center"/>
+</layer-list>
