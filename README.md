@@ -47,7 +47,10 @@
   - [X] Room 연결
   - [ ] 오늘, 주간 일정 요청, 응답
 
-  ## 2주차 결과
+  ## 2주차 결과  
+  - 회원가입 & 로그인  
+    <img src = "https://github.com/boostcampwm2023/and02-PlanJ/assets/101437398/afa95369-f631-4df0-a04a-820d5e404827" width="35%" height="35%">    <img src = "https://github.com/boostcampwm2023/and02-PlanJ/assets/101437398/0e056384-dbae-46b9-875e-de8565ee6337" width="35%" height="35%">
+    
 </div>
 </details>
 <details>
