@@ -13,7 +13,7 @@
 <td align="center"><a href="https://github.com/ganjanggejang"><img src="https://github.com/ganjanggejang.png" width="100px;" alt=""/><br /><sub><b>하준수</b></sub></a><br /></td>
 </tr>
 </tbody>
-</table
+</table>
 
 
 ## 협업 전략 (브랜치 구조와 분업하기, 의존적인 작업하기)
