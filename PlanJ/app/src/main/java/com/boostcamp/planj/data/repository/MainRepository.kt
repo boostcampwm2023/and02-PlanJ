@@ -1,8 +1,8 @@
 package com.boostcamp.planj.data.repository
 
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import kotlinx.coroutines.flow.Flow
-
 
 interface MainRepository {
 
@@ -12,5 +12,7 @@ interface MainRepository {
 
     suspend fun deleteSchedule(schedule: Schedule)
 
-    fun getCategories() : Flow<List<String>>
+    fun getCategories(): Flow<List<String>>
+
+    suspend fun insertCategory(category: Category)
 }

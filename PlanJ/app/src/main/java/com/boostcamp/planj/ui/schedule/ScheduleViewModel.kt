@@ -1,5 +1,6 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
@@ -11,6 +12,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,10 +26,14 @@ class ScheduleViewModel @Inject constructor(
     val selectedCategory = MutableStateFlow("")
     val scheduleTitle = MutableStateFlow("")
     val startTime = MutableStateFlow("설정 안함")
+    val scheduleEndDate = MutableStateFlow("")
+    val scheduleEndTime = MutableStateFlow("23:59")
     val alarmInfo = MutableStateFlow("")
     val repeatInfo = MutableStateFlow("설정 안함")
     val locationInfo = MutableStateFlow<String?>(null)
     val userMemo = MutableStateFlow<String?>(null)
+
+    private val dateFormat = SimpleDateFormat("yyyy/MM/dd")
 
     val categoryList: StateFlow<List<String>> =
         mainRepository.getCategories()
@@ -33,6 +42,19 @@ class ScheduleViewModel @Inject constructor(
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
 
+    init {
+        setEndDate()
+    }
+
+    private fun setEndDate() {
+        scheduleEndDate.value = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate.now()
+                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+        } else {
+            dateFormat.format(Date())
+        }
+    }
+
     fun saveSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
             val newSchedule = Schedule(
@@ -40,7 +62,7 @@ class ScheduleViewModel @Inject constructor(
                 title = scheduleTitle.value,
                 memo = userMemo.value,
                 startTime = "2023-11-14T17:00:11",
-                endTime = "2023-11-16T18:00:11",
+                endTime = "${scheduleEndDate.value}T1${scheduleEndTime.value}",
                 categoryTitle = selectedCategory.value,
                 repeat = null,
                 members = listOf(),
