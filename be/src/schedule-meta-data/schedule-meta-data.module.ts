@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { ScheduleMetaDataService } from './schedule-meta-data.service';
+import { ScheduleMetaDataService } from "./schedule-meta-data.service";
 
 @Module({
-  providers: [ScheduleMetaDataService]
+  providers: [ScheduleMetaDataService],
 })
 export class ScheduleMetaDataModule {}
