@@ -27,13 +27,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/top_complete_menu"
-                app:navigationIcon="@drawable/ic_arrow_back">
+                app:menu="@menu/top_schedule_menu"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:title="@string/schedule">
 
                 <TextView
+                    android:id="@+id/tv_schedule_top"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_schedule"
+                    android:text="@string/schedule"
                     android:textColor="@color/black"
                     android:textSize="24sp" />
 
@@ -64,6 +66,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
+                android:enabled="@{viewModel.isEditMode}"
                 android:gravity="center_vertical"
                 app:boxStrokeWidth="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -79,7 +82,7 @@
                     android:inputType="none"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
-                    android:text="@={viewModel.selectedCategory}"
+                    android:text="@={viewModel.scheduleCategory}"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,8 +98,9 @@
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:background="@null"
+                android:enabled="@{viewModel.isEditMode()}"
                 android:gravity="center_vertical"
-                android:hint="@string/enter_title"
+                android:hint="@string/schedule_title"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:maxLines="1"
@@ -392,6 +396,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:background="@drawable/round_light_gray"
+                android:enabled="@{viewModel.isEditMode}"
                 android:gravity="top"
                 android:minHeight="150dp"
                 android:padding="12dp"

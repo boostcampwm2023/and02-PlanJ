@@ -19,7 +19,4 @@ interface ScheduleDao {
 
     @Query("SELECT * FROM schedules")
     fun getSchedules() : Flow<List<Schedule>>
-
-    @Query("SELECT categoryTitle FROM schedules GROUP BY categoryTitle")
-    fun getCategories() : Flow<List<String>>
 }

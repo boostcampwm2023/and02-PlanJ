@@ -23,7 +23,8 @@ class ScheduleViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    val selectedCategory = MutableStateFlow("")
+    val scheduleCategory = MutableStateFlow("")
+    val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
     val startTime = MutableStateFlow("설정 안함")
     val scheduleEndDate = MutableStateFlow("")
@@ -38,6 +39,9 @@ class ScheduleViewModel @Inject constructor(
     val categoryList: StateFlow<List<String>> =
         mainRepository.getCategories()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private val _isEditMode = MutableStateFlow(false)
+    val isEditMode: StateFlow<Boolean> = _isEditMode
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
@@ -55,7 +59,16 @@ class ScheduleViewModel @Inject constructor(
         }
     }
 
-    fun saveSchedule() {
+    fun startEditingSchedule() {
+        _isEditMode.value = true
+    }
+
+    fun deleteSchedule() {
+        // TODO: 일정 삭제 요청
+    }
+
+    fun completeEditingSchedule() {
+        // TODO: 일정 수정 요청으로 변경하기
         viewModelScope.launch(Dispatchers.IO) {
             val newSchedule = Schedule(
                 scheduleId = scheduleTitle.value,
@@ -63,7 +76,7 @@ class ScheduleViewModel @Inject constructor(
                 memo = userMemo.value,
                 startTime = "2023-11-14T17:00:11",
                 endTime = "${scheduleEndDate.value}T1${scheduleEndTime.value}",
-                categoryTitle = selectedCategory.value,
+                categoryTitle = scheduleCategory.value,
                 repeat = null,
                 members = listOf(),
                 doneMembers = null,
@@ -72,8 +85,7 @@ class ScheduleViewModel @Inject constructor(
                 failed = false
             )
             mainRepository.insertSchedule(newSchedule)
-            _isComplete.value = true
+            _isEditMode.value = false
         }
     }
-
 }
