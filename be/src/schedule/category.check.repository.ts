@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { CategoryEntity } from "src/category/entity/category.entity";
@@ -18,6 +18,10 @@ export class CategoryCheckRepository extends Repository<CategoryEntity> {
     const category = await this.findOne({
       where: { categoryUuid: categoryUuid },
     });
+
+    if (category === null) {
+      throw new NotFoundException("존재하지 않는 category uuid");
+    }
     return category;
   }
 }
