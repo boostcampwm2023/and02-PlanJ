@@ -33,6 +33,10 @@
     <string name="memo">추가 메모</string>
     <string name="category">카테고리</string>
     <string name="memo_length">%s/255</string>
+    <string name="weekSchedule">주간 일정</string>
+    <string name="completeSchedule">성공한 일정\n</string>
+    <string name="failSchedule">실패한 일정\n</string>
+    <string name="haveSchedule">남은 일정\n</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>
