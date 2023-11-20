@@ -17,9 +17,9 @@
         />
 
     <item
-        android:id="@+id/activity_schedule"
-        android:title="일정 추가"
-        android:icon="@drawable/ic_add"
+        android:id="@+id/fragment_friend_list"
+        android:title="친구"
+        android:icon="@drawable/ic_person"
         app:showAsAction="always"
         />
 

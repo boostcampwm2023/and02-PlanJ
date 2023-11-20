@@ -1,17 +1,14 @@
 package com.boostcamp.planj.ui.main.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
-import com.boostcamp.planj.databinding.ItemTodayScheduleBinding
+import com.boostcamp.planj.databinding.ItemListScheduleBinding
 import com.boostcamp.planj.ui.main.SwipeListener
-import com.google.android.material.snackbar.Snackbar
 
-class SegmentScheduleAdapterViewHolder(private val binding: ItemTodayScheduleBinding) :
+class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     lateinit var item: ScheduleSegment
@@ -36,7 +33,7 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemTodayScheduleBin
             }
 
         ItemTouchHelper(itemTouchHelperCallback).apply {
-            attachToRecyclerView(binding.rvMainSchedule)
+            attachToRecyclerView(binding.rvListSchedule)
         }
     }
 
@@ -45,7 +42,7 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemTodayScheduleBin
         this.listener = swipeListener
         binding.tvMainScheduleTitle.text = item.segmentTitle
         val scheduleAdapter = ScheduleAdapter()
-        binding.rvMainSchedule.adapter = scheduleAdapter
+        binding.rvListSchedule.adapter = scheduleAdapter
         scheduleAdapter.submitList(item.scheduleList)
 
     }
@@ -53,7 +50,7 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemTodayScheduleBin
     companion object {
         fun from(parent: ViewGroup): SegmentScheduleAdapterViewHolder {
             return SegmentScheduleAdapterViewHolder(
-                ItemTodayScheduleBinding.inflate(
+                ItemListScheduleBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

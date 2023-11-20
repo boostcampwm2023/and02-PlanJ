@@ -64,16 +64,18 @@ class TodayFragment : Fragment() {
         initBinding(today)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest {
                     Log.d("UISTATE", "$it")
-                    when(it){
+                    when (it) {
                         UiState.Success -> {
-                            binding.rvMainSchedule.visibility = View.VISIBLE
+                            binding.rvListSchedule.visibility = View.VISIBLE
                         }
+
                         UiState.Loading -> {
-                            binding.rvMainSchedule.visibility = View.GONE
+                            binding.rvListSchedule.visibility = View.GONE
                         }
+
                         UiState.Error -> {}
                     }
                 }
@@ -84,7 +86,7 @@ class TodayFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.schedules.collectLatest {
                     val list = resources.getStringArray(R.array.today_list)
-                    it.sortedBy { schedule ->  schedule.scheduleId }
+                    it.sortedBy { schedule -> schedule.scheduleId }
                     val segment = listOf(
                         it.filter { s -> !s.finished },
                         it.filter { s -> s.finished && !s.failed },
@@ -101,13 +103,11 @@ class TodayFragment : Fragment() {
 
         swipeListener = SwipeListener { schedule ->
 
-                viewModel.deleteSchedule(schedule)
+            viewModel.deleteSchedule(schedule)
 
             Snackbar.make(view, "Book has deleted", Snackbar.LENGTH_SHORT).apply {
                 setAction("Undo") {
-
-                        viewModel.insertSchedule(schedule)
-
+                    viewModel.insertSchedule(schedule)
                 }
             }.show()
         }
@@ -123,7 +123,7 @@ class TodayFragment : Fragment() {
 
     private fun initAdapter() {
         segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener)
-        binding.rvMainSchedule.adapter = segmentScheduleAdapter
+        binding.rvListSchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }
 
