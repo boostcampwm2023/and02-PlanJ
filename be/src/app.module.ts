@@ -6,6 +6,7 @@ import { TypeOrmConfigService } from "./config/typeorm.config";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ScheduleApiModule } from "./schedule-api/schedule-api.module";
 import { AuthApiModule } from "./auth-api/auth-api.module";
+import { CategoryApiModule } from './category-api/category-api.module';
 import dbConfig from "./config/dbConfig";
 
 @Module({
@@ -22,6 +23,7 @@ import dbConfig from "./config/dbConfig";
     }),
     ScheduleApiModule,
     AuthApiModule,
+    CategoryApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
