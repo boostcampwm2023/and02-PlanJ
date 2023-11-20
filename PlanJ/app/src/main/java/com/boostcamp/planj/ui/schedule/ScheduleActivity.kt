@@ -18,6 +18,14 @@ class ScheduleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScheduleBinding
     private val viewModel: ScheduleViewModel by viewModels()
 
+    private val repetitionSettingDialog by lazy {
+        RepetitionSettingDialog()
+    }
+
+    private val alarmSettingDialog by lazy {
+        AlarmSettingDialog()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,6 +96,18 @@ class ScheduleActivity : AppCompatActivity() {
 
         binding.tbSchedule.setNavigationOnClickListener {
             finish()
+        }
+
+        binding.tvScheduleRepetitionSetting.setOnClickListener {
+            repetitionSettingDialog.show(supportFragmentManager, "반복 설정")
+        }
+
+        binding.tvScheduleAlarmSetting.setOnClickListener {
+            alarmSettingDialog.show(supportFragmentManager, "알림 설정")
+        }
+
+        binding.ivScheduleMap.setOnClickListener {
+            // TODO: 지도 이동
         }
     }
 

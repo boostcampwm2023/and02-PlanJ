@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
@@ -30,9 +31,25 @@ fun TextInputLayout.setPwdError(pwdState: PwdState) {
 }
 
 @BindingAdapter("memoLength")
-fun TextView.setMemoLength(memo: String?){
+fun TextView.setMemoLength(memo: String?) {
     val memoLength = "${memo?.length ?: 0}/255"
     text = memoLength
+}
+
+@BindingAdapter("repetitionInfo")
+fun TextView.setRepetitionInfo(repetition: Repetition?) {
+    text = if (repetition == null) {
+        "설정 안함"
+    } else if (repetition.cycleType == "daily") {
+        "${repetition.cycleCountDaily}일마다 반복"
+    } else {
+        "${repetition.cycleCountWeekly}주마다 반복"
+    }
+}
+
+@BindingAdapter("alarmInfo")
+fun TextView.setAlarmInfo(alarmInfo: String?) {
+    text = if (alarmInfo.isNullOrEmpty()) "설정 안함" else alarmInfo
 }
 
 @BindingAdapter("participation")

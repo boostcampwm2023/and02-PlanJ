@@ -20,7 +20,6 @@
     <string name="email_condition">*******@****.***</string>
     <string name="password_condition">영문, 숫자, 특수문자 1자이상 포함, 8자 이상 16자 이하</string>
     <string name="nickname_condition">2자 이상 12자 이하</string>
-    <string name="Complete">완료</string>
     <string name="add_schedule">일정 추가</string>
     <string name="uncategorized">미분류</string>
     <string name="schedule_title">제목</string>
@@ -28,13 +27,20 @@
     <string name="not_set">설정 안함</string>
     <string name="end">종료</string>
     <string name="alarm">알림</string>
-    <string name="repeat_setting">반복 설정</string>
+    <string name="repetition">반복</string>
     <string name="location">위치</string>
     <string name="memo">추가 메모</string>
     <string name="category">카테고리</string>
     <string name="memo_length">%s/255</string>
     <string name="edit_schedule">수정</string>
     <string name="delete_schedule">삭제</string>
+    <string name="schedule_title_condition">25자 이내</string>
+    <string name="cancel">취소</string>
+    <string name="daily">매일</string>
+    <string name="weekly">매주</string>
+    <string name="end_time">종료 시간</string>
+    <string name="departure_time">출발 시간</string>
+    <string name="delete_start_date_time">시작 날짜 삭제</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

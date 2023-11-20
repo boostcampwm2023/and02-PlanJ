@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.boostcamp.planj.ui.schedule.ScheduleViewModel" />
@@ -108,9 +110,10 @@
                     android:background="@null"
                     android:enabled="@{viewModel.isEditMode()}"
                     android:gravity="center_vertical"
-                    android:hint="@string/schedule_title"
+                    android:hint="@string/schedule_title_condition"
                     android:importantForAutofill="no"
                     android:inputType="text"
+                    android:maxLength="25"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@={viewModel.scheduleTitle}"
@@ -142,23 +145,25 @@
                     android:id="@+id/tv_schedule_start_empty"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
+                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
-                    android:text="@{viewModel.startTime}"
+                    android:text="@string/not_set"
                     android:textSize="16sp"
+                    android:visibility="@{viewModel.scheduleStartDate == null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
                     app:layout_constraintTop_toBottomOf="@id/et_schedule_title" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_schedule_start"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="20dp"
-                    android:visibility="gone"
+                    android:visibility="@{viewModel.scheduleStartDate == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
                     app:layout_constraintTop_toBottomOf="@id/et_schedule_title">
@@ -167,21 +172,40 @@
                         android:id="@+id/tv_schedule_start_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:enabled="@{viewModel.isEditMode}"
                         android:maxLines="1"
-                        android:paddingHorizontal="4dp"
-                        android:text="2023/11/23"
-                        android:textSize="16sp" />
+                        android:padding="4dp"
+                        android:text="@{viewModel.scheduleStartDate}"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_schedule_start_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:enabled="@{viewModel.isEditMode}"
                         android:maxLines="1"
-                        android:paddingHorizontal="4dp"
-                        android:text="17:00"
-                        android:textSize="16sp" />
-                </LinearLayout>
+                        android:padding="4dp"
+                        android:text="@{viewModel.scheduleStartTime}"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_schedule_start_date"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/delete_start_date_time"
+                        android:onClick="@{() -> viewModel.resetStartTime()}"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_delete"
+                        android:visibility="@{viewModel.isEditMode? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"
@@ -208,6 +232,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
@@ -221,6 +246,7 @@
                     android:id="@+id/tv_schedule_end_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
@@ -251,42 +277,17 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
 
                 <TextView
-                    android:id="@+id/tv_schedule_alarm1"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_schedule_alarm_setting"
+                    alarmInfo="@{viewModel.alarmInfo}"
+                    android:layout_width="0dp"
                     android:layout_height="60dp"
+                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:paddingStart="24dp"
-                    android:text="종료 시간"
+                    android:paddingHorizontal="24dp"
                     android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_alarm"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
-
-                <EditText
-                    android:id="@+id/et_schedule_alarm"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:backgroundTint="@color/gray"
-                    android:gravity="center"
-                    android:importantForAutofill="no"
-                    android:inputType="numberDecimal"
-                    android:maxLength="2"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:text="@{viewModel.alarmInfo}"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@id/tv_schedule_alarm1"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
-
-                <TextView
-                    android:id="@+id/tv_schedule_alarm2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="분 전"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@id/et_schedule_alarm"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
 
                 <com.google.android.material.divider.MaterialDivider
@@ -297,29 +298,30 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_alarm" />
 
                 <TextView
-                    android:id="@+id/tv_schedule_repeat"
+                    android:id="@+id/tv_schedule_repetition"
                     android:layout_width="160dp"
                     android:layout_height="60dp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
-                    android:text="@string/repeat_setting"
+                    android:text="@string/repetition"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_alarm" />
 
                 <TextView
-                    android:id="@+id/tv_schedule_repeat_setting"
+                    android:id="@+id/tv_schedule_repetition_setting"
+                    repetitionInfo="@{viewModel.repetitionInfo}"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
+                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
-                    android:text="@{viewModel.repeatInfo}"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_schedule_repeat"
+                    app:layout_constraintStart_toEndOf="@id/tv_schedule_repetition"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_alarm" />
 
                 <com.google.android.material.divider.MaterialDivider
@@ -327,7 +329,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repeat" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
 
                 <TextView
                     android:id="@+id/tv_schedule_location"
@@ -340,20 +342,24 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repeat" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tv_schedule_selected_location"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
+                    android:background="@null"
+                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@{viewModel.locationInfo}"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_location"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repeat" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
 
                 <ImageView
                     android:id="@+id/iv_schedule_map"
@@ -407,6 +413,8 @@
                     android:background="@drawable/round_light_gray"
                     android:enabled="@{viewModel.isEditMode}"
                     android:gravity="top"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
                     android:minHeight="150dp"
                     android:padding="12dp"
                     android:text="@={viewModel.userMemo}"

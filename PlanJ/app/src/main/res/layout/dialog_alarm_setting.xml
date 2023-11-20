@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="20dp">
+
+    <TextView
+        android:id="@+id/tv_alarm_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:text="@string/alarm"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/rg_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_alarm_title">
+
+        <RadioButton
+            android:id="@+id/rb_alarm_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_set"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rb_alarm_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/end_time"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/layout_alarm_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="종료 시간"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_alarm_before_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:maxLines="1"
+                android:minWidth="50dp"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="분 전"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <RadioButton
+            android:id="@+id/rb_alarm_departure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/departure_time"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/layout_alarm_departure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="출발 시간"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_alarm_before_departure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:maxLines="1"
+                android:minWidth="50dp"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="분 전"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tv_repeat_complete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/complete"
+        android:textColor="@color/main3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_alarm" />
+
+    <TextView
+        android:id="@+id/tv_repeat_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/cancel"
+        android:textColor="#FF5E5E"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/tv_repeat_complete"
+        app:layout_constraintTop_toTopOf="@id/tv_repeat_complete" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

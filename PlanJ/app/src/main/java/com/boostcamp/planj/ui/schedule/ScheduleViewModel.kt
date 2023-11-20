@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.schedule
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,11 +27,12 @@ class ScheduleViewModel @Inject constructor(
     val scheduleCategory = MutableStateFlow("")
     val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
-    val startTime = MutableStateFlow("설정 안함")
+    val scheduleStartDate = MutableStateFlow<String?>("2023/11/20")
+    val scheduleStartTime = MutableStateFlow<String?>("23:59")
     val scheduleEndDate = MutableStateFlow("")
     val scheduleEndTime = MutableStateFlow("23:59")
     val alarmInfo = MutableStateFlow("")
-    val repeatInfo = MutableStateFlow("설정 안함")
+    val repetitionInfo = MutableStateFlow<Repetition?>(null)
     val locationInfo = MutableStateFlow<String?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 
@@ -74,10 +76,10 @@ class ScheduleViewModel @Inject constructor(
                 scheduleId = scheduleTitle.value,
                 title = scheduleTitle.value,
                 memo = userMemo.value,
-                startTime = "2023-11-14T17:00:11",
-                endTime = "${scheduleEndDate.value}T1${scheduleEndTime.value}",
+                startTime = "${scheduleStartDate.value}T${scheduleStartTime.value}",
+                endTime = "${scheduleEndDate.value}T${scheduleEndTime.value}",
                 categoryTitle = scheduleCategory.value,
-                repeat = null,
+                repeat = repetitionInfo.value,
                 members = listOf(),
                 doneMembers = null,
                 location = locationInfo.value,
@@ -87,5 +89,10 @@ class ScheduleViewModel @Inject constructor(
             mainRepository.insertSchedule(newSchedule)
             _isEditMode.value = false
         }
+    }
+
+    fun resetStartTime() {
+        scheduleStartDate.value = null
+        scheduleStartTime.value = null
     }
 }
