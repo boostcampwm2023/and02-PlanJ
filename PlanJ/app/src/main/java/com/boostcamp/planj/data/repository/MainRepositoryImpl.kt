@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
-    private val db : AppDatabase
+    private val db: AppDatabase
 ) : MainRepository {
 
     override suspend fun insertSchedule(schedule: Schedule) {
@@ -16,7 +16,12 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun deleteSchedule(schedule: Schedule) {
         db.scheduleDao().deleteSchedule(schedule)
     }
+
     override fun getSchedules(): Flow<List<Schedule>> {
         return db.scheduleDao().getSchedules()
+    }
+
+    override fun getCategories(): Flow<List<String>> {
+        return db.scheduleDao().getCategories()
     }
 }

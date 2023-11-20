@@ -55,18 +55,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tb_schedule" />
 
-        <TextView
-            android:id="@+id/tv_schedule_selected_category"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_schedule_category"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:gravity="center_vertical"
-            android:maxLines="1"
-            android:paddingHorizontal="24dp"
-            android:text="@{viewModel.selectedCategory}"
-            android:textSize="16sp"
+            app:boxStrokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_schedule_category"
-            app:layout_constraintTop_toBottomOf="@id/tb_schedule" />
+            app:layout_constraintTop_toBottomOf="@id/tb_schedule">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_schedule_selected_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="none"
+                android:maxLines="1"
+                android:text="@={viewModel.selectedCategory}"
+                android:paddingHorizontal="24dp"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="0dp"
