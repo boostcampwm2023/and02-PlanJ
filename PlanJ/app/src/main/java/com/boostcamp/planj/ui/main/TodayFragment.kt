@@ -33,10 +33,6 @@ class TodayFragment : Fragment() {
     private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
     private val viewModel: TodayViewModel by viewModels()
-
-    //더미 일정
-    private val dummyList = DummySchedule.getDummyList()
-
     private lateinit var swipeListener: SwipeListener
 
 
