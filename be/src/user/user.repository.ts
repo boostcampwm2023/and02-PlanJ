@@ -22,6 +22,8 @@ export class UserRepository extends Repository<UserEntity> {
       throw new ConflictException("해당 이메일로는 가입할 수 없습니다.");
     }
 
+    const userUuid = ulid();
+
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -29,7 +31,7 @@ export class UserRepository extends Repository<UserEntity> {
     const formattedDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
 
     const user = this.create({
-      userId: ulid(),
+      userUuid: userUuid,
       email: email,
       password: hashedPassword,
       nickname: nickname,
@@ -41,10 +43,14 @@ export class UserRepository extends Repository<UserEntity> {
       const body: HttpResponse = {
         message: "회원가입 성공",
         statusCode: 201,
+        data: {
+          userUuid: userUuid,
+        },
       };
 
       return JSON.stringify(body);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }
@@ -64,6 +70,9 @@ export class UserRepository extends Repository<UserEntity> {
       const body: HttpResponse = {
         message: "로그인 성공",
         statusCode: 200,
+        data: {
+          userUuid: user.userUuid,
+        },
       };
 
       return body;

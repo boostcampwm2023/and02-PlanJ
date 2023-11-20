@@ -1,9 +1,9 @@
-import { IsDate, IsDateString, IsNotEmpty, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
 
 export class AddScheduleDto {
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  userUuid: string;
 
   @IsString()
   @IsNotEmpty()

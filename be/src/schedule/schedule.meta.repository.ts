@@ -12,7 +12,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
   }
 
   async addScheduleMeta(dto: AddScheduleDto): Promise<void> {
-    const { userId, title, description, startAt, endAt } = dto;
+    const { title, description, startAt, endAt } = dto;
 
     const startTime = startAt.split("T")[1];
     const endTime = endAt.split("T")[1];
