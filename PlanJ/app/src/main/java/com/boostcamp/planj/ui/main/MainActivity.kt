@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.ActivityMainBinding
 import com.boostcamp.planj.ui.schedule.ScheduleActivity
+import com.boostcamp.planj.ui.schedule.ScheduleDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -19,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,9 +32,7 @@ class MainActivity : AppCompatActivity() {
         floatingButtonVisibleListener()
 
         binding.fbAddSchedule.setOnClickListener {
-            val intent = Intent(this, ScheduleActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
+            ScheduleDialog(this).show()
         }
     }
 
