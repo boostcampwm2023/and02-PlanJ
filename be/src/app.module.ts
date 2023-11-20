@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { AuthModule } from "./auth/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmConfigService } from "./config/typeorm.config";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ScheduleApiModule } from "./schedule-api/schedule-api.module";
+import { AuthApiModule } from "./auth-api/auth-api.module";
 import dbConfig from "./config/dbConfig";
 
 @Module({
@@ -20,8 +20,8 @@ import dbConfig from "./config/dbConfig";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => TypeOrmConfigService.createTypeOrmOptions(configService),
     }),
-    AuthModule,
     ScheduleApiModule,
+    AuthApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
