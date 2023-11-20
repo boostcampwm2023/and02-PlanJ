@@ -112,6 +112,7 @@ class TodayFragment : Fragment() {
             }.show()
         }
         initAdapter()
+        binding.executePendingBindings()
     }
 
 

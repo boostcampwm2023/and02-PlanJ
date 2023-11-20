@@ -43,8 +43,7 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
         binding.tvMainScheduleTitle.text = item.segmentTitle
         val scheduleAdapter = ScheduleAdapter()
         binding.rvListSchedule.adapter = scheduleAdapter
-        scheduleAdapter.submitList(item.scheduleList)
-
+        scheduleAdapter.submitList(this.item.scheduleList)
     }
 
     companion object {
