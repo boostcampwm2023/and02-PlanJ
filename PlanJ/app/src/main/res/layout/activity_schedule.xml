@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.boostcamp.planj.ui.schedule.ScheduleViewModel" />
@@ -83,9 +84,9 @@
             android:hint="@string/enter_title"
             android:importantForAutofill="no"
             android:inputType="text"
-            android:text="@={viewModel.scheduleTitle}"
             android:maxLines="1"
             android:paddingHorizontal="24dp"
+            android:text="@={viewModel.scheduleTitle}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_schedule_category" />
@@ -129,8 +130,8 @@
             android:layout_height="60dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:paddingHorizontal="20dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
             app:layout_constraintTop_toBottomOf="@id/et_schedule_title">
@@ -374,9 +375,9 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:text="@={viewModel.userMemo}"
             android:layout_marginHorizontal="16dp"
             android:background="@drawable/round_light_gray"
+            android:text="@={viewModel.userMemo}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

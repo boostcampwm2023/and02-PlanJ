@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 data class CalendarVO(
-    var dayNumber: String = "", 
+    var dayNumber: String = "",
     var dayOfWeek: String = ""
 )
 

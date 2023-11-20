@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/item_complete"
-        android:title="@string/complete"
         android:icon="@drawable/ic_check"
+        android:title="@string/complete"
         app:showAsAction="always" />
 </menu>

@@ -9,7 +9,7 @@ import com.boostcamp.planj.databinding.FragmentFriendListBinding
 
 class FriendListFragment : Fragment() {
 
-    private var _binding : FragmentFriendListBinding? = null
+    private var _binding: FragmentFriendListBinding? = null
     private val binding get() = _binding!!
 
 

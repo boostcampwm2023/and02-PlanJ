@@ -11,14 +11,16 @@ import kotlinx.serialization.json.Json
 class TypeConverter {
 
     @TypeConverter
-    fun fromRepetitionList(value: Repetition? ) : String? = Gson().toJson(value)
+    fun fromRepetitionList(value: Repetition?): String? = Gson().toJson(value)
 
     @TypeConverter
-    fun toRepetitionList(value: String?) : Repetition? = Gson().fromJson(value, Repetition::class.java)
+    fun toRepetitionList(value: String?): Repetition? =
+        Gson().fromJson(value, Repetition::class.java)
 
     @TypeConverter
-    fun fromUserList(value: List<User>? ) : String? = Gson().toJson(value)
+    fun fromUserList(value: List<User>?): String? = Gson().toJson(value)
 
     @TypeConverter
-    fun toUserList(value: String?) : List<User>? = Gson().fromJson(value, Array<User>::class.java)?.toList()
+    fun toUserList(value: String?): List<User>? =
+        Gson().fromJson(value, Array<User>::class.java)?.toList()
 }

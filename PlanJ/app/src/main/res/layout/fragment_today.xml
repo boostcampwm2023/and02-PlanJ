@@ -18,7 +18,6 @@
             android:layout_height="match_parent">
 
 
-
             <TextView
                 android:id="@+id/tv_today_today"
                 android:layout_width="wrap_content"
@@ -36,11 +35,10 @@
                 android:id="@+id/rv_list_schedule"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_today_today"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_today_today" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

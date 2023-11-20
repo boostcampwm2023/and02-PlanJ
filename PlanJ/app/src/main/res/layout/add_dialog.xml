@@ -4,9 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_background"
-    android:paddingVertical="20dp"
     android:paddingHorizontal="20dp"
-    >
+    android:paddingVertical="20dp">
 
 
     <TextView
@@ -25,16 +24,15 @@
         android:id="@+id/dialog_category_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="카테고리"
         android:textColor="@color/main3"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/schedule_title"
-        app:layout_constraintTop_toTopOf="@id/category"
         app:layout_constraintBottom_toBottomOf="@id/category"
         app:layout_constraintEnd_toStartOf="@id/category"
-        android:layout_marginEnd="8dp"
-        />
+        app:layout_constraintStart_toStartOf="@id/schedule_title"
+        app:layout_constraintTop_toTopOf="@id/category" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/category"
@@ -42,11 +40,11 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/dialog_category_title"
         app:layout_constraintTop_toBottomOf="@id/dialog_title"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
         app:layout_constraintVertical_chainStyle="packed">
 
         <AutoCompleteTextView
@@ -54,9 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_category_backgroud"
-            android:outlineProvider="none"
             android:inputType="none"
-            />
+            android:outlineProvider="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,17 +66,17 @@
         app:counterEnabled="true"
         app:counterMaxLength="25"
         app:hintEnabled="false"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/category">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_schedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="text"
-            android:imeOptions="actionDone"
             android:hint="제목"
+            android:imeOptions="actionDone"
+            android:inputType="text"
             android:maxLength="25"
             android:maxLines="1" />
 
@@ -91,9 +88,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:text="추가"
         android:textColor="@color/main3"
         android:textStyle="bold"
-        android:text="추가"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/schedule_title" />
 
@@ -103,9 +100,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:text="취소"
         android:textColor="#FF5E5E"
         android:textStyle="bold"
-        android:text="취소"
         app:layout_constraintEnd_toStartOf="@id/bt_add_schedule"
         app:layout_constraintTop_toBottomOf="@id/schedule_title" />
 

@@ -20,7 +20,7 @@ class ScheduleAdapter : ListAdapter<Schedule, ScheduleViewHolder>(diffUtil) {
     }
 
 
-    companion object{
+    companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Schedule>() {
             override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
                 return oldItem == newItem

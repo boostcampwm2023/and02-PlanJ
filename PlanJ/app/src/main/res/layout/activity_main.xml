@@ -59,13 +59,12 @@
         android:id="@+id/fb_add_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp"
-        app:icon="@drawable/ic_add"
         android:backgroundTint="@color/main1"
+        app:icon="@drawable/ic_add"
         app:iconTint="@color/white"
-        />
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

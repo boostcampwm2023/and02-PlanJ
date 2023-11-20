@@ -12,5 +12,5 @@ import com.boostcamp.planj.data.model.User
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
-    abstract fun scheduleDao() : ScheduleDao
+    abstract fun scheduleDao(): ScheduleDao
 }

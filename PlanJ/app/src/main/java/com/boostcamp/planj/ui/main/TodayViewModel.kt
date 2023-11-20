@@ -41,8 +41,6 @@ class TodayViewModel @Inject constructor(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 
-
-
     fun insertSchedule(schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO) {
             mainRepository.insertSchedule(schedule)

@@ -18,5 +18,5 @@ interface ScheduleDao {
     suspend fun deleteSchedule(schedule: Schedule)
 
     @Query("SELECT * FROM schedules")
-    fun getSchedules() : Flow<List<Schedule>>
+    fun getSchedules(): Flow<List<Schedule>>
 }

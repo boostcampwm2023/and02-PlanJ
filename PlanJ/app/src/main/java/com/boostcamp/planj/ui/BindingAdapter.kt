@@ -31,8 +31,8 @@ fun TextInputLayout.setPwdError(pwdState: PwdState) {
 
 
 @BindingAdapter("participation")
-fun TextView.setParticipation(schedule : Schedule){
-    if(schedule.members.size < 2) {
+fun TextView.setParticipation(schedule: Schedule) {
+    if (schedule.members.size < 2) {
         visibility = View.GONE
         return
     }
@@ -40,20 +40,20 @@ fun TextView.setParticipation(schedule : Schedule){
 }
 
 @BindingAdapter("checkFail")
-fun ImageView.checkFail(schedule: Schedule){
-    visibility = if(!schedule.finished && schedule.failed){
+fun ImageView.checkFail(schedule: Schedule) {
+    visibility = if (!schedule.finished && schedule.failed) {
         View.VISIBLE
-    }else
+    } else
         View.GONE
 }
 
 @BindingAdapter("setTitle")
-fun TextView.setTitle(schedule: Schedule){
-    if(schedule.finished) {
+fun TextView.setTitle(schedule: Schedule) {
+    if (schedule.finished) {
         paintFlags =
             paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
-    if(schedule.failed){
+    if (schedule.failed) {
         setTextColor(Color.RED)
     }
     text = schedule.title
