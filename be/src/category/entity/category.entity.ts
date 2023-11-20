@@ -1,5 +1,15 @@
+import { ScheduleMetaEntity } from "src/schedule/entity/schedule.meta.entity";
 import { UserEntity } from "src/user/entity/user.entity";
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity("Category")
 export class CategoryEntity extends BaseEntity {
@@ -26,4 +36,9 @@ export class CategoryEntity extends BaseEntity {
   })
   @JoinColumn({ name: "user_id" })
   user: UserEntity;
+
+  @OneToMany(() => ScheduleMetaEntity, (scheduleMeta) => scheduleMeta.category, {
+    cascade: true,
+  })
+  scheduleMeta: ScheduleMetaEntity[];
 }
