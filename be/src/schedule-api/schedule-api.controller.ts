@@ -17,7 +17,6 @@ export class ScheduleApiController {
 
   @Post("/add")
   async addSchedule(@Body() dto: AddScheduleDto): Promise<JSON> {
-    console.log("스케줄api컨트롤러");
     const result = await this.scheduleService.addSchedule(dto);
     return JSON.parse(result);
   }
