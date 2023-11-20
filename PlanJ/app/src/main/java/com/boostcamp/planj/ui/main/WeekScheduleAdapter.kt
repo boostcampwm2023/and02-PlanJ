@@ -8,31 +8,73 @@ import com.boostcamp.planj.databinding.ItemWeekEndBinding
 import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
 import com.boostcamp.planj.databinding.ItemWeekStartBinding
 
-class WeekScheduleAdapter(private val scheduleList: List<Schedule>) :
-    RecyclerView.Adapter<WeekScheduleAdapter.WeekScheduleViewHolder>() {
+class WeekScheduleAdapter(/*private val scheduleList: List<Schedule>, private val viewNum: Int*/
+                          private val scheduleTypeList: MutableList<ScheduleType>
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    class WeekScheduleViewHolder(private val binding: ItemWeekScheduleBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Schedule) {
-            binding.vwScheduleTitle.text = item.title
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
+        when (viewType) {
+            0 -> {
+                return StartScheduleViewHolder(
+                    ItemWeekStartBinding.inflate(
+                        LayoutInflater.from(
+                            parent.context
+                        ), parent, false
+                    )
+                )
+            }
+
+
+            2 -> {
+                return EndScheduleViewHolder(
+                    ItemWeekEndBinding.inflate(
+                        LayoutInflater.from(
+                            parent.context
+                        ), parent, false
+                    )
+                )
+
+            }
+
+            else -> {
+                return TodayScheduleViewHolder(
+                    ItemWeekScheduleBinding.inflate(
+                        LayoutInflater.from(
+                            parent.context
+                        ), parent, false
+                    )
+                )
+
+            }
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekScheduleViewHolder {
-        //TODO : 일정 여러가지 보여 줄 뷰홀더 3개 추가해야함
-        val binding =
-            ItemWeekScheduleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
-        return WeekScheduleViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
-        return scheduleList.size
+
+        return scheduleTypeList.size
     }
 
-    override fun onBindViewHolder(holder: WeekScheduleViewHolder, position: Int) {
-        holder.bind(scheduleList[position])
+    override fun getItemViewType(position: Int): Int {
+        return scheduleTypeList[position].viewType
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (scheduleTypeList[position].viewType) {
+            0 -> {
+                (holder as StartScheduleViewHolder).bind(scheduleTypeList[position].schedule)
+            }
+
+            1 -> {
+                (holder as TodayScheduleViewHolder).bind(scheduleTypeList[position].schedule)
+            }
+
+            2 -> {
+                (holder as EndScheduleViewHolder).bind(scheduleTypeList[position].schedule)
+            }
+        }
     }
 
     class StartScheduleViewHolder(binding: ItemWeekStartBinding) :

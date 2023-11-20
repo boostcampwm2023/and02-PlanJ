@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.main
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,28 +37,31 @@ class WeekFragment : Fragment() {
 
         var week_day: Array<String> = resources.getStringArray(R.array.calendar_day)
 
-        calendarAdapter = CalendarAdapter(calendarList, scheduleList)
+        var month: Int
+
 
         calendarList.run {
             val dateFormat =
                 DateTimeFormatter.ofPattern("dd").withLocale(Locale.forLanguageTag("ko"))
-            val monthFormat =
-                DateTimeFormatter.ofPattern("yyyy-MM-").withLocale(Locale.forLanguageTag("ko"))
+            val monthFormat = DateTimeFormatter.ofPattern("yyyy-MM-").withLocale(Locale.forLanguageTag("ko"))
 
-            //val localDate = LocalDateTime.now().format(monthFormat)
+            month = LocalDateTime.now().format(monthFormat).split("-")[1].toInt()
 
             var preSunday: LocalDateTime =
                 LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
+            if(LocalDateTime.now().dayOfWeek==DayOfWeek.SUNDAY){
+                preSunday= LocalDateTime.now()
+            }
 
             for (i in 0..6) {
 
-                calendarList.apply {
+                calendarList.run {
                     add(CalendarVO(preSunday.plusDays(i.toLong()).format(dateFormat), week_day[i]))
                 }
             }
-
-
         }
+
+        calendarAdapter = CalendarAdapter(calendarList, scheduleList, month)
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)
     }
