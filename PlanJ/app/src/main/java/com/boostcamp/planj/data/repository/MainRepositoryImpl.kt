@@ -1,6 +1,7 @@
 package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.db.AppDatabase
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -22,6 +23,14 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override fun getCategories(): Flow<List<String>> {
-        return db.scheduleDao().getCategories()
+        return db.categoryDao().getCategories()
+    }
+
+    override suspend fun insertCategory(category: Category) {
+        db.categoryDao().insertCategory(category)
+    }
+
+    override fun getAllCategories(): Flow<List<Category>> {
+        return db.categoryDao().getAllCategory()
     }
 }

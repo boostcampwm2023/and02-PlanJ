@@ -11,7 +11,7 @@
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/fragment_list"
-        android:name="com.boostcamp.planj.ui.main.ListFragment"
+        android:name="com.boostcamp.planj.ui.main.CategoryFragment"
         android:label="ListFragment" />
     <fragment
         android:id="@+id/fragment_user"

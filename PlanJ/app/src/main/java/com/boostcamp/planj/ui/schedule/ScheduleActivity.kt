@@ -3,10 +3,10 @@ package com.boostcamp.planj.ui.schedule
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.ActivityScheduleBinding
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +23,7 @@ class ScheduleActivity : AppCompatActivity() {
 
         binding = ActivityScheduleBinding.inflate(layoutInflater)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
 
         setContentView(binding.root)
         setObserver()
@@ -30,6 +31,14 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun setObserver() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isEditMode.collect { isEditMode ->
+                    updateToolbar(isEditMode)
+                }
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isComplete.collect { isComplete ->
@@ -41,6 +50,9 @@ class ScheduleActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categoryList.collect { categoryList ->
+                    (binding.layoutScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
+                        categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
+                    )
                     (binding.layoutScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
                         categoryList.toTypedArray()
                     )
@@ -50,13 +62,41 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun setListener() {
-        binding.tbSchedule.setOnMenuItemClickListener {
-            viewModel.saveSchedule()
-            true
+        binding.tbSchedule.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.item_schedule_edit -> {
+                    viewModel.startEditingSchedule()
+                    true
+                }
+
+                R.id.item_schedule_delete -> {
+                    viewModel.deleteSchedule()
+                    finish()
+                    true
+                }
+
+                R.id.item_schedule_complete -> {
+                    viewModel.completeEditingSchedule()
+                    true
+                }
+
+                else -> {
+                    false
+                }
+            }
         }
 
         binding.tbSchedule.setNavigationOnClickListener {
             finish()
         }
+    }
+
+    private fun updateToolbar(isEditMode: Boolean) {
+        with(binding.tbSchedule.menu) {
+            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
+            findItem(R.id.item_schedule_delete).isVisible = !isEditMode
+            findItem(R.id.item_schedule_complete).isVisible = isEditMode
+        }
+        binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
     }
 }

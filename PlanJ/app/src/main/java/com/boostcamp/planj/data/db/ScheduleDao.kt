@@ -24,4 +24,5 @@ interface ScheduleDao {
     @Query("SELECT categoryTitle FROM schedules")
     fun getCategories(): Flow<List<String>>
 
+
 }

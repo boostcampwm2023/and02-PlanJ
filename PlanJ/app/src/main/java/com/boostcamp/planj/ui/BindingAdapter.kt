@@ -4,8 +4,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
@@ -29,6 +32,11 @@ fun TextInputLayout.setPwdError(pwdState: PwdState) {
     }
 }
 
+@BindingAdapter("memoLength")
+fun TextView.setMemoLength(memo: String?){
+    val memoLength = "${memo?.length ?: 0}/255"
+    text = memoLength
+}
 
 @BindingAdapter("participation")
 fun TextView.setParticipation(schedule: Schedule) {
@@ -57,4 +65,13 @@ fun TextView.setTitle(schedule: Schedule) {
         setTextColor(Color.RED)
     }
     text = schedule.title
+}
+
+
+@BindingAdapter("setCategoryBackground")
+fun LinearLayout.setBackground(item : Category){
+    if(item.categoryId == "0")
+        setBackgroundResource(R.drawable.round_r8_main1)
+    else
+        setBackgroundResource(R.drawable.round_r8_main2)
 }
