@@ -1,10 +1,14 @@
-import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { ParticipantEntity } from "../../schedule/entity/participant.entity";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { CategoryEntity } from "src/category/entity/category.entity";
 
 @Entity("User")
+// @Unique(["email"])
 export class UserEntity extends BaseEntity {
-  @PrimaryColumn({ name: "user_id" })
-  userId: string;
+  @PrimaryGeneratedColumn({ name: "user_id" })
+  userId: number;
+
+  @Column({ length: 26, name: "user_uuid" })
+  userUuid: string;
 
   @Column({ length: 60 })
   email: string;
@@ -18,7 +22,7 @@ export class UserEntity extends BaseEntity {
   @Column({ type: "timestamp", name: "created_at" })
   createdAt: Date;
 
-  @DeleteDateColumn({ type: "timestamp", name: "delete_at" })
+  @Column({ default: null, type: "timestamp", name: "updated_at" })
   updatedAt?: Date | null;
 
   @Column({ default: false })
@@ -33,8 +37,8 @@ export class UserEntity extends BaseEntity {
   /*
    * relation
    * */
-  @OneToMany(() => ParticipantEntity, (participant) => participant.user, {
+  @OneToMany(() => CategoryEntity, (category) => category.user, {
     cascade: true,
   })
-  participant: ParticipantEntity[];
+  category: CategoryEntity[];
 }
