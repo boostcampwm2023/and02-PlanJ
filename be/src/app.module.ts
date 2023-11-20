@@ -4,8 +4,8 @@ import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmConfigService } from "./config/typeorm.config";
-import { ScheduleModule } from "./schedule/schedule.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ScheduleApiModule } from "./schedule-api/schedule-api.module";
 import dbConfig from "./config/dbConfig";
 
 @Module({
@@ -21,7 +21,7 @@ import dbConfig from "./config/dbConfig";
       useFactory: (configService: ConfigService) => TypeOrmConfigService.createTypeOrmOptions(configService),
     }),
     AuthModule,
-    ScheduleModule,
+    ScheduleApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
