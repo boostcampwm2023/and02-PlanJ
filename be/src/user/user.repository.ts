@@ -25,7 +25,16 @@ export class UserRepository extends Repository<UserEntity> {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = this.create({ userId: ulid(), email: email, password: hashedPassword, nickname: nickname });
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 19).replace("T", " ");
+
+    const user = this.create({
+      userId: ulid(),
+      email: email,
+      password: hashedPassword,
+      nickname: nickname,
+      createdAt: formattedDate,
+    });
 
     try {
       await this.save(user);
