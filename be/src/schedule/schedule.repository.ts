@@ -4,6 +4,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ulid } from "ulid";
 import { ScheduleEntity } from "./entity/schedule.entity";
 import { HttpResponse } from "src/utils/http.response";
+import { ScheduleMetaEntity } from "./entity/schedule.meta.entity";
 
 @Injectable()
 export class ScheduleRepository extends Repository<ScheduleEntity> {
@@ -11,18 +12,20 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
     super(ScheduleEntity, dataSource.createEntityManager());
   }
 
-  async addSchedule(dto: AddScheduleDto) {
+  async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetaEntity) {
     const { startAt, endAt } = dto;
 
-    const scheduleId = ulid();
+    const scheduleUuid = ulid();
+
     const schedule = this.create({
-      scheduleId,
+      scheduleUuid,
       startAt,
       endAt,
       finished: false,
       failed: false,
       remindMemo: "",
       last: true,
+      parent: scheduleMetadata,
     });
 
     try {
@@ -31,7 +34,7 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
         message: "일정 추가 성공",
         statusCode: 200,
         data: {
-          scheduleId: scheduleId,
+          scheduleUuid: scheduleUuid,
         },
       };
 
