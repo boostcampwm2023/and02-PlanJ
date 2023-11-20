@@ -1,9 +1,9 @@
-import { ScheduleService } from "./schedule.service";
+import { ScheduleService } from "../schedule/schedule.service";
 import { Controller, Post, Get, Patch, Delete, Query, Body } from "@nestjs/common";
-import { AddScheduleDto } from "./dto/add-schedule.dto";
+import { AddScheduleDto } from "../schedule/dto/add-schedule.dto";
 
 @Controller("/api/schedule")
-export class ScheduleController {
+export class ScheduleApiController {
   constructor(private scheduleService: ScheduleService) {}
 
   @Get("/daily")

@@ -1,10 +1,10 @@
-import {BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn} from "typeorm";
+import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { Exclude } from "class-transformer";
-import {ParticipantEntity} from "../../schedule/entity/participant.entity";
+import { ParticipantEntity } from "../../schedule/entity/participant.entity";
 
 @Entity("User")
 export class UserEntity extends BaseEntity {
-  @PrimaryColumn({name:"user_id"})
+  @PrimaryColumn({ name: "user_id" })
   userId: string;
 
   @Column({ length: 60 })
@@ -23,12 +23,12 @@ export class UserEntity extends BaseEntity {
   @DeleteDateColumn({ type: "timestamp", name: "delete_at" })
   deletedAt?: Date | null;
 
-  @Column({ nullable: true, name:"accept_notification" })
+  @Column({ nullable: true, name: "accept_notification" })
   acceptNotification: boolean;
 
   /*
-  * relation
-  * */
+   * relation
+   * */
   @OneToMany(() => ParticipantEntity, (participant) => participant.user, {
     cascade: true,
   })

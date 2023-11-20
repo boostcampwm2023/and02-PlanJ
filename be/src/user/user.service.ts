@@ -6,7 +6,7 @@ import { UserRepository } from "./user.repository";
 import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Injectable()
-export class AuthService {
+export class UserService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
