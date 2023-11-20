@@ -1,11 +1,12 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ScheduleEntity } from "./schedule.entity";
-import { ParticipantEntity } from "./participant.entity";
+import { UserEntity } from "src/user/entity/user.entity";
+import { CategoryEntity } from "src/category/entity/category.entity";
 
 @Entity("ScheduleMeta")
 export class ScheduleMetaEntity extends BaseEntity {
-  @PrimaryColumn({ name: "meta_id" })
-  metaId: string;
+  @PrimaryGeneratedColumn({ name: "metadata_id" })
+  metadataId: number;
 
   @Column({ length: 20 })
   title: string;
@@ -22,13 +23,21 @@ export class ScheduleMetaEntity extends BaseEntity {
   /*
    * relation
    */
-  @OneToMany(() => ScheduleEntity, (schedule) => schedule.scheduleId, {
+  @OneToMany(() => ScheduleEntity, (schedule) => schedule.parent, {
     cascade: true,
   })
   children: ScheduleEntity[];
 
-  @OneToMany(() => ParticipantEntity, (participant) => participant.meta, {
-    cascade: true,
+  @ManyToOne(() => CategoryEntity, (category) => category.scheduleMeta, {
+    onDelete: "CASCADE",
   })
-  participant: ParticipantEntity[];
+  @JoinColumn({ name: "category_id" })
+  category: CategoryEntity;
+
+  // participant 추가 시 삭제될 관계
+  @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "user_id" })
+  user: UserEntity;
 }

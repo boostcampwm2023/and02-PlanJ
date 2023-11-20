@@ -1,10 +1,10 @@
-import { ScheduleService } from "../schedule/schedule.service";
 import { Controller, Post, Get, Patch, Delete, Query, Body } from "@nestjs/common";
 import { AddScheduleDto } from "../schedule/dto/add-schedule.dto";
+import { ScheduleApiService } from "./schedule-api.service";
 
 @Controller("/api/schedule")
 export class ScheduleApiController {
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(private scheduleApiService: ScheduleApiService) {}
 
   @Get("/daily")
   getDailySchedule(@Query("userId") userId: string, @Query("date") date: Date) {
@@ -17,7 +17,7 @@ export class ScheduleApiController {
 
   @Post("/add")
   async addSchedule(@Body() dto: AddScheduleDto): Promise<JSON> {
-    const result = await this.scheduleService.addSchedule(dto);
+    const result = await this.scheduleApiService.addSchedule(dto);
     return JSON.parse(result);
   }
 
