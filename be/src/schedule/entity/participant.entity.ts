@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { UserEntity } from "../../auth/entity/user.entity";
+import { UserEntity } from "../../user/entity/user.entity";
 import { ScheduleMetaEntity } from "./schedule.meta.entity";
 import { JoinColumn } from "typeorm";
 
