@@ -1,12 +1,21 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ScheduleEntity } from "./schedule.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 
 @Entity("ScheduleMeta")
 export class ScheduleMetaEntity extends BaseEntity {
-  @PrimaryColumn({ name: "meta_id" })
-  metaId: string;
+  @PrimaryGeneratedColumn({ name: "metadata_id" })
+  metadataId: number;
 
   @Column({ length: 20 })
   title: string;
@@ -23,7 +32,7 @@ export class ScheduleMetaEntity extends BaseEntity {
   /*
    * relation
    */
-  @OneToMany(() => ScheduleEntity, (schedule) => schedule.scheduleId, {
+  @OneToMany(() => ScheduleEntity, (schedule) => schedule.parent, {
     cascade: true,
   })
   children: ScheduleEntity[];
