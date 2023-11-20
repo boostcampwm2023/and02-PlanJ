@@ -29,6 +29,11 @@ fun TextInputLayout.setPwdError(pwdState: PwdState) {
     }
 }
 
+@BindingAdapter("memoLength")
+fun TextView.setMemoLength(memo: String?){
+    val memoLength = "${memo?.length ?: 0}/255"
+    text = memoLength
+}
 
 @BindingAdapter("participation")
 fun TextView.setParticipation(schedule : Schedule){
