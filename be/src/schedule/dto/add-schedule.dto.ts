@@ -7,6 +7,10 @@ export class AddScheduleDto {
 
   @IsString()
   @IsNotEmpty()
+  categoryUuid: string;
+
+  @IsString()
+  @IsNotEmpty()
   title: string;
 
   @IsString()

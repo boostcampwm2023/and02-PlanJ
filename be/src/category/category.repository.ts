@@ -15,8 +15,10 @@ export class CategoryRepository extends Repository<CategoryEntity> {
   async add(dto: AddCategoryDto, user: UserEntity): Promise<string> {
     const { categoryName, createdAt } = dto;
 
+    const categoryUuid = ulid();
+
     const category = this.create({
-      categoryUuid: ulid(),
+      categoryUuid: categoryUuid,
       categoryName: categoryName,
       createdAt: createdAt,
       user: user,
@@ -29,6 +31,9 @@ export class CategoryRepository extends Repository<CategoryEntity> {
       const body: HttpResponse = {
         message: "카테고리 생성",
         statusCode: 201,
+        data: {
+          categoryUuid: categoryUuid,
+        },
       };
 
       return JSON.stringify(body);
