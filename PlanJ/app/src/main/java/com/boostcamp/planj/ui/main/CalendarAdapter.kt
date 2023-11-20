@@ -41,7 +41,7 @@ class CalendarAdapter(
 
             val now = LocalDate.now()
                 .format(DateTimeFormatter.ofPattern("dd").withLocale(Locale.forLanguageTag("ko")))
-
+            /*val now="14"*/
             val haveStart = temp.filter {
                 it.startTime != null && it.startTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
                     .toInt()
