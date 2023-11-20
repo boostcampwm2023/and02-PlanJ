@@ -56,7 +56,6 @@
             android:background="@drawable/dialog_category_backgroud"
             android:outlineProvider="none"
             android:inputType="none"
-            style="@style/Custom.AutoCompleteText"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -75,10 +74,13 @@
         app:layout_constraintTop_toBottomOf="@id/category">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_schedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="text"
-            android:hint="aaa"
+            android:imeOptions="actionDone"
+            android:hint="제목"
+            android:maxLength="25"
             android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>

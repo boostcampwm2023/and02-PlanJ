@@ -4,7 +4,7 @@
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            android:id="@+id/iv_main_todaytogglebtn"
+            android:id="@+id/iv_list_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp" />
@@ -17,7 +17,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@id/iv_main_todaytogglebtn"
+            app:layout_constraintTop_toBottomOf="@id/iv_list_toggle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
@@ -28,7 +28,7 @@
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
-            android:id="@+id/iv_main_todaytogglebtn"
+            android:id="@+id/iv_list_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp" >
@@ -45,7 +45,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@id/iv_main_todaytogglebtn"
+            app:layout_constraintTop_toBottomOf="@id/iv_list_toggle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
@@ -61,7 +61,7 @@
 
         <OnClick
             app:clickAction="transitionToEnd"
-            app:targetId="@id/iv_main_todaytogglebtn"
+            app:targetId="@id/iv_list_toggle"
             />
     </Transition>
 
@@ -73,7 +73,7 @@
 
         <OnClick
             app:clickAction="transitionToEnd"
-            app:targetId="@id/iv_main_todaytogglebtn"
+            app:targetId="@id/iv_list_toggle"
             />
     </Transition>
 
