@@ -3,10 +3,7 @@ package com.boostcamp.planj.ui.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-<<<<<<< HEAD
-=======
 import com.boostcamp.planj.data.model.Schedule
->>>>>>> And
 import com.boostcamp.planj.databinding.ItemWeekEndBinding
 import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
 import com.boostcamp.planj.databinding.ItemWeekStartBinding
