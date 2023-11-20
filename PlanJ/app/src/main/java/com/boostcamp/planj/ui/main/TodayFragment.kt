@@ -39,6 +39,16 @@ class TodayFragment : Fragment() {
 
     private lateinit var swipeListener: SwipeListener
 
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentTodayBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val today = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -102,7 +112,6 @@ class TodayFragment : Fragment() {
             }.show()
         }
         initAdapter()
-
     }
 
 
@@ -118,14 +127,6 @@ class TodayFragment : Fragment() {
         segmentScheduleAdapter.submitList(emptyList())
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTodayBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onDestroyView() {
         _binding = null
