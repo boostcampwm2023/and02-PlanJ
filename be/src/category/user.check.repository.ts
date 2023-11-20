@@ -9,12 +9,12 @@ export class UserCheckRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.createEntityManager());
   }
 
-  async check(dto: AddCategoryDto): Promise<UserEntity> {
+  async checkByUserUuid(dto: AddCategoryDto): Promise<UserEntity> {
     const { userUuid } = dto;
-    return await this.getUserId(userUuid);
+    return await this.getUserEntity(userUuid);
   }
 
-  private async getUserId(userUuid: string) {
+  private async getUserEntity(userUuid: string) {
     const user = await this.findOne({
       where: { userUuid: userUuid },
     });

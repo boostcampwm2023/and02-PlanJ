@@ -16,7 +16,7 @@ export class CategoryService {
   ) {}
 
   async add(dto: AddCategoryDto): Promise<string> {
-    const user = await this.userCheckRepository.check(dto);
+    const user = await this.userCheckRepository.checkByUserUuid(dto);
     return await this.categoryRepository.add(dto, user);
   }
 }
