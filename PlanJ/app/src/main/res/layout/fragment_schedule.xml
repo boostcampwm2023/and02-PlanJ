@@ -93,6 +93,7 @@
                         android:maxLines="1"
                         android:paddingHorizontal="24dp"
                         android:text="@={viewModel.scheduleCategory}"
+                        android:textColor="@color/selector_text_color"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,6 +118,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@={viewModel.scheduleTitle}"
+                    android:textColor="@color/selector_text_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_category" />
@@ -150,6 +152,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@string/not_set"
+                    android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     android:visibility="@{viewModel.scheduleStartDate == null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -176,6 +179,7 @@
                         android:maxLines="1"
                         android:padding="4dp"
                         android:text="@{viewModel.scheduleStartDate}"
+                        android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -189,6 +193,7 @@
                         android:maxLines="1"
                         android:padding="4dp"
                         android:text="@{viewModel.scheduleStartTime}"
+                        android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/tv_schedule_start_date"
@@ -237,6 +242,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
                     android:text="@{viewModel.scheduleEndDate}"
+                    android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_end"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_end"
@@ -251,6 +257,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
                     android:text="@{viewModel.scheduleEndTime}"
+                    android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_end"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_end_date"
@@ -291,7 +298,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
                         android:text='@{viewModel.doneMembers.size + "/" + viewModel.members.size}'
-                        android:textColor="@color/gray"
+                        android:textColor="@color/main3"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_category_participants"
                         app:layout_constraintStart_toEndOf="@id/tv_category_participants"
@@ -307,15 +314,16 @@
                         app:layout_constraintTop_toTopOf="@id/tv_category_participants" />
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_schedule_participants"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_category_participants"
                         tools:listitem="@layout/item_participant" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -347,6 +355,7 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
+                    android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_alarm"
@@ -381,6 +390,7 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
+                    android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_repetition"
@@ -418,6 +428,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@{viewModel.locationInfo}"
+                    android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_location"
@@ -476,10 +487,11 @@
                     android:enabled="@{viewModel.isEditMode}"
                     android:gravity="top"
                     android:importantForAutofill="no"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:minHeight="150dp"
                     android:padding="12dp"
                     android:text="@={viewModel.userMemo}"
+                    android:textColor="@color/selector_text_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

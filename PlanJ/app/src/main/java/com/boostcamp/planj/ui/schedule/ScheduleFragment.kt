@@ -58,6 +58,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        initAdapter()
         setObserver()
         setListener()
 
@@ -68,6 +69,11 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    private fun initAdapter() {
+        val adapter = ScheduleParticipantAdapter(viewModel.members.value)
+        binding.rvScheduleParticipants.adapter = adapter
     }
 
     private fun setObserver() {
