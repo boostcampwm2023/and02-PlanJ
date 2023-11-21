@@ -3,18 +3,24 @@ package com.boostcamp.planj.ui.category
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.databinding.DialogAddCategoryBinding
 
-class CategoryDialog(private val title: String = "", private val listener: (Category) -> Unit) :
+enum class CategoryState{
+    EMPTY, EXIST, SUCCESS
+}
+
+class CategoryDialog(private val title: String = "", private val listener: (Category) -> CategoryState) :
     DialogFragment() {
     private lateinit var binding: DialogAddCategoryBinding
 
@@ -46,10 +52,30 @@ class CategoryDialog(private val title: String = "", private val listener: (Cate
         }
         binding.tvDialogCategorySuccess.setOnClickListener {
             val title = binding.tietDialogCategoryInputCategoryName.text.toString()
-            listener(Category(title, title))
-            dismiss()
+            Log.d("listener", "${listener(Category(title, title))}")
+            when(listener(Category(title, title))){
+                CategoryState.EXIST -> {
+                    binding.tietDialogCategoryInputCategoryName.error = "같은 카테고리가 존재합니다."
+                    getFocus()
+                }
+                CategoryState.EMPTY -> {
+                    binding.tietDialogCategoryInputCategoryName.error = "값이 비어있습니다."
+                    getFocus()
+                }
+                CategoryState.SUCCESS -> {
+                    dismiss()
+                }
+            }
         }
 
+        binding.tietDialogCategoryInputCategoryName.addTextChangedListener {
+            binding.tietDialogCategoryInputCategoryName.error = null
+        }
+
+        getFocus()
+    }
+
+    private fun getFocus() {
         binding.tietDialogCategoryInputCategoryName.requestFocus()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             binding.tietDialogCategoryInputCategoryName.windowInsetsController?.show(

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
@@ -67,6 +68,10 @@ class ScheduleDialog(
         binding.tvDialogScheduleSuccess.setOnClickListener {
             val category = binding.actvDialogScheduleCategorySelect.text.toString()
             val title = binding.tietDialogScheduleInputTitleSchedule.text.toString()
+            if(title.isEmpty()) {
+                binding.tietDialogScheduleInputTitleSchedule.error = "비어있습니다."
+                return@setOnClickListener
+            }
             listener(
                 Schedule(
                     (0..Int.MAX_VALUE).random().toString(),
@@ -84,6 +89,10 @@ class ScheduleDialog(
                 )
             )
             dismiss()
+        }
+
+        binding.tietDialogScheduleInputTitleSchedule.addTextChangedListener {
+            binding.tietDialogScheduleInputTitleSchedule.error = null
         }
     }
 

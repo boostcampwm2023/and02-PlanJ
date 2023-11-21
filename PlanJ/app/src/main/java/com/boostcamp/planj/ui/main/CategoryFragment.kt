@@ -19,6 +19,7 @@ import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.databinding.FragmentCategoryBinding
 
 import com.boostcamp.planj.ui.category.CategoryDialog
+import com.boostcamp.planj.ui.category.CategoryState
 import com.boostcamp.planj.ui.main.adapter.CategoryListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
