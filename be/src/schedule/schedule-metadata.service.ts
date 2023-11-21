@@ -7,7 +7,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 
 @Injectable()
-export class AddScheduleMetadataService {
+export class ScheduleMetadataService {
   constructor(
     @InjectRepository(ScheduleMetaRepository)
     private scheduleMetaRepository: ScheduleMetaRepository,

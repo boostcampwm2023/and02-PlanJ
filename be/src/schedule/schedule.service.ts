@@ -5,7 +5,7 @@ import { ScheduleMetaEntity } from "./entity/schedule.meta.entity";
 import { ScheduleRepository } from "./schedule.repository";
 
 @Injectable()
-export class AddScheduleService {
+export class ScheduleService {
   constructor(
     @InjectRepository(ScheduleRepository)
     private scheduleRepository: ScheduleRepository,

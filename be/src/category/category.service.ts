@@ -3,9 +3,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CategoryRepository } from "./category.repository";
 import { UserEntity } from "src/user/entity/user.entity";
 import { AddCategoryDto } from "./dto/add-category.dto";
+import { CategoryEntity } from "./entity/category.entity";
 
 @Injectable()
-export class AddCategoryService {
+export class CategoryService {
   constructor(
     @InjectRepository(CategoryRepository)
     private categoryRepository: CategoryRepository,
@@ -13,5 +14,9 @@ export class AddCategoryService {
 
   async addCategory(dto: AddCategoryDto, user: UserEntity): Promise<string> {
     return await this.categoryRepository.add(dto, user);
+  }
+
+  async getCategoryEntity(categoryUuid: string): Promise<CategoryEntity> {
+    return await this.categoryRepository.checkByCategoryUuid(categoryUuid);
   }
 }

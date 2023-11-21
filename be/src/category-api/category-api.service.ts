@@ -1,17 +1,17 @@
 import { Injectable } from "@nestjs/common";
-import { AddCategoryService } from "src/category/add-category.service";
+import { CategoryService } from "src/category/category.service";
 import { AddCategoryDto } from "src/category/dto/add-category.dto";
-import { GetUserEntityService } from "src/category/get-user-entity.service";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class CategoryApiService {
   constructor(
-    private getUserEntityService: GetUserEntityService,
-    private addCategoryService: AddCategoryService,
+    private userService: UserService,
+    private categoryService: CategoryService,
   ) {}
 
   async add(dto: AddCategoryDto): Promise<string> {
-    const user = await this.getUserEntityService.getUserEntity(dto);
-    return await this.addCategoryService.addCategory(dto, user);
+    const user = await this.userService.getUserEntity(dto.userUuid);
+    return await this.categoryService.addCategory(dto, user);
   }
 }
