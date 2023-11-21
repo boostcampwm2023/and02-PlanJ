@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui.main
+package com.boostcamp.planj.ui.main.week
 
 import android.graphics.Color
 import android.os.Build
@@ -6,15 +6,26 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.FragmentWeekBinding
+import com.boostcamp.planj.ui.main.DummySchedule
+import com.boostcamp.planj.ui.main.week.adapter.CalendarAdapter
+import com.boostcamp.planj.ui.main.week.adapter.CalendarVO
+import com.boostcamp.planj.ui.main.week.adapter.ScheduleSimpleVIewAdapter
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -35,6 +46,19 @@ class WeekFragment : Fragment() {
 
 
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentWeekBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initAdapter(scheduleList: List<Schedule>) {
@@ -77,12 +101,15 @@ class WeekFragment : Fragment() {
         )
 
         countFinish.setSpan(
-            ForegroundColorSpan(Color.GREEN),
+            ForegroundColorSpan(Color.BLUE),
             binding.btnWeekFinish.text.length,
             countFinish.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         binding.btnWeekFinish.text = countFinish
+        binding.btnWeekFinish.setOnClickListener {
+            makeDialog(finishList, true)
+        }
 
 
         val failList = scheduleList.filter { schedule: Schedule -> schedule.failed }
@@ -97,30 +124,48 @@ class WeekFragment : Fragment() {
         )
         binding.btnWeekFail.text = countFail
 
+        binding.btnWeekFail.setOnClickListener {
+            makeDialog(failList, true)
+        }
+
 
         val haveList = scheduleList.filter { schedule: Schedule -> schedule.finished.not() }
         val countHave =
             SpannableString(binding.btnWeekHave.text.toString().plus("${haveList.size}"))
 
         countHave.setSpan(
-            ForegroundColorSpan(Color.BLUE),
+            ForegroundColorSpan(Color.BLACK),
             binding.btnWeekHave.text.length,
             countHave.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         binding.btnWeekHave.text = countHave
+
+        binding.btnWeekHave.setOnClickListener {
+            makeDialog(haveList, true)
+        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentWeekBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    fun makeDialog(list: List<Schedule>, complete: Boolean) {
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
+        val layoutInflater = LayoutInflater.from(context)
+        val view = layoutInflater.inflate(R.layout.dailog_schedule_result, null)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(view)
+            .create()
+
+        val close = view.findViewById<ImageView>(R.id.iv_dialog_close)
+        close.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        val scheduleView = view.findViewById<RecyclerView>(R.id.rv_dialog_week_schedule)
+        scheduleView.adapter = ScheduleSimpleVIewAdapter(list)
+        scheduleView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+
+        dialog.show()
     }
 
 }
