@@ -1,9 +1,11 @@
 package com.boostcamp.planj.data.db
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.boostcamp.planj.data.model.Category
 import kotlinx.coroutines.flow.Flow
 
@@ -21,5 +23,12 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories")
     fun getAllCategory(): Flow<List<Category>>
+
+
+    @Delete
+    fun deleteCategory(category: Category)
+
+    @Update
+    fun updateCategory(category: Category)
 
 }

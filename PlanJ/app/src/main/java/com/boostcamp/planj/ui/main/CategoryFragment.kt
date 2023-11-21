@@ -15,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
 import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.databinding.FragmentCategoryBinding
 
 import com.boostcamp.planj.ui.category.CategoryDialog
@@ -62,15 +63,31 @@ class CategoryFragment : Fragment() {
             val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity()
             findNavController().navigate(action)
         }
-        categoryAdapter = CategoryListAdapter(clickListener)
+        val popUpMenuListener = object : CategoryPopUpMenuListener {
+            override fun delete(category: Category) {
+                viewModel.deleteCategory(category)
+            }
+
+            override fun edit(title: String) {
+                addCategoryDialog(title)
+            }
+        }
+        categoryAdapter = CategoryListAdapter(clickListener, popUpMenuListener)
         binding.rvCategoryCategoryLit.adapter = categoryAdapter
         categoryAdapter.submitList(emptyList())
     }
 
-    fun addCategoryDialog(){
-        val dialog = CategoryDialog{
-            viewModel.insertCategory(it)
+    fun addCategoryDialog(title : String = ""){
+        val dialog = if(title == ""){
+            CategoryDialog {
+                viewModel.insertCategory(it)
+            }
+        } else {
+            CategoryDialog(title) {
+                viewModel.updateCategory(Category(title, it.categoryName))
+            }
         }
+
         activity?.supportFragmentManager?.let { dialog.show(it, null) }
     }
 

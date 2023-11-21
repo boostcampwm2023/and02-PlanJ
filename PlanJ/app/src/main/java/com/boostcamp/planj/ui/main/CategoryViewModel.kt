@@ -26,4 +26,16 @@ class CategoryViewModel @Inject constructor(
             mainRepository.insertCategory(category)
         }
     }
+
+    fun deleteCategory(category: Category){
+        viewModelScope.launch(Dispatchers.IO){
+            mainRepository.deleteCategory(category)
+        }
+    }
+
+    fun updateCategory(category: Category){
+        viewModelScope.launch(Dispatchers.IO){
+            mainRepository.updateCategory(category)
+        }
+    }
 }

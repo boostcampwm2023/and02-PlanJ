@@ -15,20 +15,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tb_main"
-        android:padding="16dp"
+        android:padding="8dp"
         android:layout_margin="8dp"
         app:setCategoryBackground="@{category}"
         >
 
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{category.categoryName}"
             android:textColor="@color/black"
             android:layout_marginStart="8dp"
+            android:layout_weight="9"
             android:textStyle="bold"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_category_pop_up_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&#8942;"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            />
+
 
     </LinearLayout>
 </layout>

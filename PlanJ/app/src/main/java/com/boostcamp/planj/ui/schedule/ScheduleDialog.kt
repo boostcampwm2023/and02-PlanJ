@@ -1,9 +1,12 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
@@ -33,6 +36,18 @@ class ScheduleDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        binding.tietDialogScheduleInputTitleSchedule.requestFocus()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            binding.tietDialogScheduleInputTitleSchedule.windowInsetsController?.show(
+                WindowInsetsCompat.Type.ime())
+        }else{
+            activity?.let {
+                WindowInsetsControllerCompat(it.window, binding.tietDialogScheduleInputTitleSchedule)
+                    .show(WindowInsetsCompat.Type.ime())
+            }
+        }
         binding.tvDialogCategoryCancel.setOnClickListener {
             dismiss()
         }
