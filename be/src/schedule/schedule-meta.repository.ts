@@ -29,9 +29,13 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
   }
 
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetaEntity[]> {
+    const todayStart = date.toString().split("T")[0] + "T00:00:00";
+    const todayEnd = date.toString().split("T")[0] + "T23:59:59";
+
     const founds = await this.createQueryBuilder("schedule_metadata")
       .leftJoinAndSelect("schedule_metadata.children", "schedule")
-      .andWhere(":date < schedule.endAt", { date: date })
+      .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
+      .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
       .getMany();
 
     console.log("get All Schedule");
