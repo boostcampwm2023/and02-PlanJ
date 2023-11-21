@@ -7,4 +7,11 @@
 
     <style name="Theme.PlanJ" parent="Base.Theme.PlanJ" />
 
+
+    <style name="dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <!-- status bar 노랑색으로 설정 -->
+<!--        <item name="android:statusBarColor">#FFFF00</item>-->
+    </style>
 </resources>

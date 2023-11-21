@@ -32,12 +32,9 @@ class MainActivity : AppCompatActivity() {
         floatingButtonVisibleListener()
 
         binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(this)
-            dialog.show()
-            dialog.setAddSchedule {
-                viewModel.insertSchedule(it)
-            }
-
+            ScheduleDialog().show(
+                supportFragmentManager, null
+            )
         }
     }
 

@@ -65,8 +65,8 @@ class CategoryFragment : Fragment() {
     }
 
     fun addCategoryDialog(){
-        val dialog = CategoryDialog(requireContext())
-        dialog.show()
+        val dialog = CategoryDialog()
+        activity?.supportFragmentManager?.let { dialog.show(it, null) }
         dialog.setAddCategory {
             viewModel.insertCategory(it)
         }
