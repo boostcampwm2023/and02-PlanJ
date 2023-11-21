@@ -13,7 +13,10 @@ export class ScheduleApiController {
   }
 
   @Get("/weekly")
-  getWeeklySchedule() {}
+  async getWeeklySchedule(@Query("userUuid") userUuid: string, @Query("date") date: Date) {
+    const result = await this.scheduleApiService.getWeeklySchedule(userUuid, date);
+    return JSON.parse(result);
+  }
 
   @Post("/add")
   async addSchedule(@Body() dto: AddScheduleDto): Promise<JSON> {

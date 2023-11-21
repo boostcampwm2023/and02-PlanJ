@@ -38,8 +38,21 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
       .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
       .getMany();
 
-    console.log("get All Schedule");
-    founds.forEach((e) => console.log(e));
+    return founds;
+  }
+
+  async getAllScheduleByWeek(user: UserEntity, firstDay: Date, lastDay: Date): Promise<ScheduleMetaEntity[]> {
+    console.log(firstDay, lastDay);
+
+    const weekStart = firstDay.toISOString().split("T")[0] + "T00:00:00";
+    const weekEnd = lastDay.toISOString().split("T")[0] + "T23:59:59";
+
+    const founds = await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
+      .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd ", { weekStart, weekEnd })
+      .getMany();
+
     return founds;
   }
 }

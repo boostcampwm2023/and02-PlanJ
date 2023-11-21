@@ -46,4 +46,44 @@ export class ScheduleMetaService {
 
     return JSON.stringify(body);
   }
+
+  async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<string> {
+    const { firstDay, lastDay } = this.getWeekRange(date);
+
+    const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByWeek(user, firstDay, lastDay);
+
+    const schedules = rawSchedules.flatMap((scheduleMeta) => {
+      return scheduleMeta.children.map((schedule) => ({
+        scheduleUuid: schedule.scheduleUuid,
+        title: scheduleMeta.title,
+        description: scheduleMeta.description,
+        startAt: schedule.startAt,
+        endAt: schedule.endAt,
+        finished: schedule.finished,
+        failed: schedule.failed,
+        remindMemo: schedule.remindMemo,
+      }));
+    });
+
+    const body: HttpResponse = {
+      message: "주간 일정 조회 성공",
+      statusCode: 200,
+      data: schedules,
+    };
+
+    return JSON.stringify(body);
+  }
+
+  private getWeekRange(date: Date) {
+    const dateObj = new Date(date);
+    const firstDay = new Date(date);
+    firstDay.setDate(dateObj.getDate() - dateObj.getDay());
+    firstDay.toISOString();
+
+    const lastDay = new Date(date);
+    lastDay.setDate(dateObj.getDate() + (6 - dateObj.getDay()));
+    lastDay.toISOString();
+
+    return { firstDay, lastDay };
+  }
 }

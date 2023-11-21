@@ -26,5 +26,8 @@ export class ScheduleApiService {
     return await this.scheduleMetaService.getAllScheduleByDate(user, date);
   }
 
-  getWeekly() {}
+  async getWeeklySchedule(userUuid: string, date: Date): Promise<string> {
+    const user = await this.userService.getUserEntity(userUuid);
+    return await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+  }
 }
