@@ -9,15 +9,15 @@ import com.boostcamp.planj.ui.main.CategoryClickListener
 class CategoryListAdapter(private val clickListener: CategoryClickListener) : ListAdapter<Category, CategoryListAdapterViewHolder>(diffUtil) {
 
 
-    override fun onBindViewHolder(holder: CategoryListAdapterViewHolder, position: Int) {
-        holder.onBind(currentList[position], clickListener)
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): CategoryListAdapterViewHolder {
         return CategoryListAdapterViewHolder.from(parent)
+    }
+
+    override fun onBindViewHolder(holder: CategoryListAdapterViewHolder, position: Int) {
+        holder.onBind(currentList[position], clickListener)
     }
 
 

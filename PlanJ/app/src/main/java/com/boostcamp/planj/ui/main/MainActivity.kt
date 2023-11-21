@@ -2,8 +2,6 @@ package com.boostcamp.planj.ui.main
 
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -26,13 +24,17 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setJetpackNavigation()
-
         floatingButtonVisibleListener()
+        setListener()
+    }
 
+    private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            ScheduleDialog().show(
+            val dialog = ScheduleDialog {
+                viewModel.insertSchedule(it)
+            }
+            dialog.show(
                 supportFragmentManager, null
             )
         }

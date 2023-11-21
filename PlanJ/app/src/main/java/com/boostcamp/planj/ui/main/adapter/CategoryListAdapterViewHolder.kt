@@ -8,9 +8,10 @@ import com.boostcamp.planj.databinding.ItemListCategoryBinding
 import com.boostcamp.planj.databinding.ItemScheduleBinding
 import com.boostcamp.planj.ui.main.CategoryClickListener
 
-class CategoryListAdapterViewHolder(private val binding : ItemListCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
+class CategoryListAdapterViewHolder(private val binding: ItemListCategoryBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    fun onBind(item : Category, clickListener: CategoryClickListener){
+    fun onBind(item: Category, clickListener: CategoryClickListener) {
         binding.category = item
         binding.executePendingBindings()
 
@@ -19,7 +20,7 @@ class CategoryListAdapterViewHolder(private val binding : ItemListCategoryBindin
         }
     }
 
-    companion object{
+    companion object {
         fun from(parent: ViewGroup): CategoryListAdapterViewHolder {
             return CategoryListAdapterViewHolder(
                 ItemListCategoryBinding.inflate(

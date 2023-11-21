@@ -44,7 +44,10 @@ class CategoryFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.view = this
         initAdapter()
+        setObserver()
+    }
 
+    private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categories.collectLatest {
@@ -60,16 +63,15 @@ class CategoryFragment : Fragment() {
             findNavController().navigate(action)
         }
         categoryAdapter = CategoryListAdapter(clickListener)
-        binding.rvCategory.adapter = categoryAdapter
+        binding.rvCategoryCategoryLit.adapter = categoryAdapter
         categoryAdapter.submitList(emptyList())
     }
 
     fun addCategoryDialog(){
-        val dialog = CategoryDialog()
-        activity?.supportFragmentManager?.let { dialog.show(it, null) }
-        dialog.setAddCategory {
+        val dialog = CategoryDialog{
             viewModel.insertCategory(it)
         }
+        activity?.supportFragmentManager?.let { dialog.show(it, null) }
     }
 
     override fun onDestroyView() {

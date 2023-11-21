@@ -58,18 +58,23 @@ class TodayFragment : Fragment() {
             "${str_date[0]}월 ${str_date[1]}일"
         }
         initBinding(today)
+        setObserver()
+        initAdapter(view)
+        binding.executePendingBindings()
+    }
 
+    private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest {
                     Log.d("UISTATE", "$it")
                     when (it) {
                         UiState.Success -> {
-                            binding.rvListSchedule.visibility = View.VISIBLE
+                            binding.rvTodayListSchedule.visibility = View.VISIBLE
                         }
 
                         UiState.Loading -> {
-                            binding.rvListSchedule.visibility = View.GONE
+                            binding.rvTodayListSchedule.visibility = View.GONE
                         }
 
                         UiState.Error -> {}
@@ -96,7 +101,16 @@ class TodayFragment : Fragment() {
                 }
             }
         }
+    }
 
+
+    private fun initBinding(today: String) {
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.today = today
+    }
+
+
+    private fun initAdapter(view: View) {
         swipeListener = SwipeListener { schedule ->
 
             viewModel.deleteSchedule(schedule)
@@ -108,20 +122,8 @@ class TodayFragment : Fragment() {
                 setAnchorView(R.id.bottom_navigation)
             }.show()
         }
-        initAdapter()
-        binding.executePendingBindings()
-    }
-
-
-    private fun initBinding(today: String) {
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.today = today
-    }
-
-
-    private fun initAdapter() {
         segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener)
-        binding.rvListSchedule.adapter = segmentScheduleAdapter
+        binding.rvTodayListSchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }
 

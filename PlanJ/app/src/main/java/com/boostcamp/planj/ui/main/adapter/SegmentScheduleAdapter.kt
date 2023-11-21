@@ -16,15 +16,15 @@ class SegmentScheduleAdapter(
         setHasStableIds(true)
     }
 
-    override fun onBindViewHolder(holder: SegmentScheduleAdapterViewHolder, position: Int) {
-        holder.bind(currentList[position], swipeListener)
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): SegmentScheduleAdapterViewHolder {
         return SegmentScheduleAdapterViewHolder.from(parent)
+    }
+
+    override fun onBindViewHolder(holder: SegmentScheduleAdapterViewHolder, position: Int) {
+        holder.bind(currentList[position], swipeListener)
     }
 
 

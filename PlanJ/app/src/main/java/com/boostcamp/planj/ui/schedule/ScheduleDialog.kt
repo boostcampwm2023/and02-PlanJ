@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.databinding.AddDialogBinding
+import com.boostcamp.planj.databinding.DialogAddDialogBinding
 
-class ScheduleDialog : DialogFragment() {
-    private lateinit var binding: AddDialogBinding
+class ScheduleDialog(
+    private val listener: (Schedule) -> Unit
+) : DialogFragment() {
+    private lateinit var binding: DialogAddDialogBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,22 +26,20 @@ class ScheduleDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = AddDialogBinding.inflate(inflater, container, false)
+        binding = DialogAddDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btCancel.setOnClickListener {
+        binding.tvDialogCategoryCancel.setOnClickListener {
             dismiss()
         }
-    }
 
-    fun setAddSchedule(listener: (Schedule) -> Unit) {
-        binding.btAddSchedule.setOnClickListener {
+        binding.tvDialogScheduleSuccess.setOnClickListener {
             val category = "미분류"
-            val title = binding.etSchedule.text.toString()
+            val title = binding.actvDialogScheduleCategorySelect.text.toString()
             listener(
                 Schedule(
                     (0..Int.MAX_VALUE).random().toString(),

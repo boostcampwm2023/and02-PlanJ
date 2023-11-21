@@ -5,18 +5,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Schedule
 
-class ScheduleAdapter : ListAdapter<Schedule, ScheduleViewHolder>(diffUtil) {
+class ScheduleAdapter : ListAdapter<Schedule, ScheduleAdapterViewHolder>(diffUtil) {
 
     init {
         setHasStableIds(true)
     }
 
-    override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ScheduleAdapterViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
-        return ScheduleViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleAdapterViewHolder {
+        return ScheduleAdapterViewHolder.from(parent)
     }
 
 

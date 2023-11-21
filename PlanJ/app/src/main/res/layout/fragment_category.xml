@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tb_main"
+            android:id="@+id/tb_category_main"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_main"
+            app:layout_constraintTop_toBottomOf="@id/tb_category_main"
             app:layout_constraintBottom_toBottomOf="parent"
             >
 
@@ -53,7 +53,7 @@
                 android:background="@color/white">
 
                 <LinearLayout
-                    android:id="@+id/layout_add_category"
+                    android:id="@+id/layout_category_add_category"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -84,7 +84,7 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_category"
+                    android:id="@+id/rv_category_category_lit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -92,7 +92,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_add_category" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_category_add_category" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

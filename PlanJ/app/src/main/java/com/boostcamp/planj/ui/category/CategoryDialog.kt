@@ -1,9 +1,5 @@
 package com.boostcamp.planj.ui.category
 
-import android.app.Dialog
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,20 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.databinding.AddCategoryBinding
+import com.boostcamp.planj.databinding.DialogAddCategoryBinding
 
-class CategoryDialog() : DialogFragment() {
-    private lateinit var binding : AddCategoryBinding
+class CategoryDialog(private val listener: (Category) -> Unit) : DialogFragment() {
+    private lateinit var binding: DialogAddCategoryBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = AddCategoryBinding.inflate(layoutInflater)
+        binding = DialogAddCategoryBinding.inflate(layoutInflater)
         isCancelable = true
         setStyle(STYLE_NO_TITLE, R.style.dialog)
-        binding.btCancel.setOnClickListener {
-            dismiss()
-        }
     }
 
 
@@ -33,12 +26,18 @@ class CategoryDialog() : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = AddCategoryBinding.inflate(layoutInflater)
+        binding = DialogAddCategoryBinding.inflate(layoutInflater)
         return binding.root
     }
-    fun setAddCategory(listener : (Category) -> Unit){
-        binding.btAddCategory.setOnClickListener {
-            val title = binding.etCategory.text.toString()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.tvDialogCategoryCancel.setOnClickListener {
+            dismiss()
+        }
+
+        binding.tvDialogCategorySuccess.setOnClickListener {
+            val title = binding.tietDialogCategoryInputCategoryName.text.toString()
             listener(Category(title, title))
             dismiss()
         }
