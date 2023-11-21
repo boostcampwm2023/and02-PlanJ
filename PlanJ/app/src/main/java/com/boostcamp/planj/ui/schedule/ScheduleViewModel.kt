@@ -35,7 +35,7 @@ class ScheduleViewModel @Inject constructor(
     val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
 
     val alarmInfo = MutableStateFlow("")
-    val repetitionInfo = MutableStateFlow<Repetition?>(null)
+    val repetitionInfo = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
     val locationInfo = MutableStateFlow<String?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 

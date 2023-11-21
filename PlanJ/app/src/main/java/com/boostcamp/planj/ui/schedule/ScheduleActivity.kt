@@ -161,10 +161,16 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable("repetitionInfo", viewModel.repetitionInfo.value)
+            repetitionSettingDialog.arguments = bundle
             repetitionSettingDialog.show(supportFragmentManager, "반복 설정")
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("alarmInfo", viewModel.alarmInfo.value)
+            alarmSettingDialog.arguments = bundle
             alarmSettingDialog.show(supportFragmentManager, "알림 설정")
         }
 

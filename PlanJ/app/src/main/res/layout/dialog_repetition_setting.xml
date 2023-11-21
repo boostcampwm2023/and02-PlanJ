@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="20dp"
     android:paddingVertical="20dp">
@@ -29,6 +29,7 @@
             android:id="@+id/rb_dialog_repetition_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="false"
             android:text="@string/not_set"
             android:textSize="16sp" />
 
@@ -36,6 +37,7 @@
             android:id="@+id/rb_dialog_repetition_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="false"
             android:text="@string/daily"
             android:textSize="16sp" />
 

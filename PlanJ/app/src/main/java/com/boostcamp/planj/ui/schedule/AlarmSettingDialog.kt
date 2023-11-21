@@ -30,6 +30,12 @@ class AlarmSettingDialog : DialogFragment() {
         setListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        context?.setDialogSize(this)
+    }
+
     private fun setVisibility() {
         with(binding) {
             rgDialogAlarmMode.setOnCheckedChangeListener { _, i ->
