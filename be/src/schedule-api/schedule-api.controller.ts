@@ -6,11 +6,11 @@ import { ScheduleApiService } from "./schedule-api.service";
 export class ScheduleApiController {
   constructor(private scheduleApiService: ScheduleApiService) {}
 
-  // @Get("/daily")
-  // async getDailySchedule(@Query("userUuid") userUuid: string, @Query("date") date: Date) {
-  //   const result = await this.scheduleApiService.getDailySchedule(userUuid, date);
-  //   return JSON.parse(result);
-  // }
+  @Get("/daily")
+  async getDailySchedule(@Query("userUuid") userUuid: string, @Query("date") date: Date): Promise<JSON> {
+    const result = await this.scheduleApiService.getDailySchedule(userUuid, date);
+    return JSON.parse(result);
+  }
 
   @Get("/weekly")
   getWeeklySchedule() {}

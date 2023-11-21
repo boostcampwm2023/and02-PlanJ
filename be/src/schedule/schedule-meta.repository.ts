@@ -27,4 +27,15 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
       throw new InternalServerErrorException();
     }
   }
+
+  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetaEntity[]> {
+    const founds = await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .andWhere(":date < schedule.endAt", { date: date })
+      .getMany();
+
+    console.log("get All Schedule");
+    founds.forEach((e) => console.log(e));
+    return founds;
+  }
 }
