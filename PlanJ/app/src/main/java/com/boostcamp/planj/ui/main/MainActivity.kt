@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categories.collectLatest {
-                    categoryList = it.filter { c -> c.categoryName != "전체 일정"}
+                    categoryList = it.filter { c -> c.categoryName != "전체 일정" }
                 }
             }
         }
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(categoryList.map { it.categoryName }){
+            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") {
                 viewModel.insertSchedule(it)
             }
             dialog.show(

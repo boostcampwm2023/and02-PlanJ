@@ -20,4 +20,6 @@ interface MainRepository {
 
     suspend fun deleteCategory(category: Category)
     suspend fun updateCategory(category: Category)
+
+    suspend fun getCategoryTitleSchedule(title: String): List<Schedule>
 }

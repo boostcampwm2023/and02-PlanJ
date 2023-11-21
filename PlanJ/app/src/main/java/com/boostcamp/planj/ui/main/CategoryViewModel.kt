@@ -21,20 +21,20 @@ class CategoryViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 
-    fun insertCategory(category: Category){
+    fun insertCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             mainRepository.insertCategory(category)
         }
     }
 
-    fun deleteCategory(category: Category){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteCategory(category: Category) {
+        viewModelScope.launch(Dispatchers.IO) {
             mainRepository.deleteCategory(category)
         }
     }
 
-    fun updateCategory(category: Category){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateCategory(category: Category) {
+        viewModelScope.launch(Dispatchers.IO) {
             mainRepository.updateCategory(category)
         }
     }

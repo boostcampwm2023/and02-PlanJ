@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data></data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_background"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp">
+
+
+        <TextView
+            android:id="@+id/tv_dialog_schedule_main_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일정 추가"
+            android:textColor="@color/main3"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_dialog_schedule_category_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="카테고리"
+            android:textColor="@color/main3"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/til_dialog_schedule_input"
+            app:layout_constraintEnd_toStartOf="@id/til_dialog_schedule_input"
+            app:layout_constraintStart_toStartOf="@id/til_dialog_schedule_input_schedule"
+            app:layout_constraintTop_toTopOf="@id/til_dialog_schedule_input" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_dialog_schedule_input"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:layout_constraintBottom_toTopOf="@id/til_dialog_schedule_input_schedule"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_dialog_schedule_category_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_dialog_schedule_main_title"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <AutoCompleteTextView
+                android:id="@+id/actv_dialog_schedule_category_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_category_backgroud"
+                android:inputType="none"
+                android:padding="10dp"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_dialog_schedule_input_schedule"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="25"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_dialog_schedule_input">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_dialog_schedule_input_title_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="제목"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/tv_dialog_schedule_success"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="추가"
+            android:textColor="@color/main3"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_dialog_schedule_input_schedule" />
+
+        <TextView
+            android:id="@+id/tv_dialog_category_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="취소"
+            android:textColor="#FF5E5E"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tv_dialog_schedule_success"
+            app:layout_constraintTop_toBottomOf="@id/til_dialog_schedule_input_schedule" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

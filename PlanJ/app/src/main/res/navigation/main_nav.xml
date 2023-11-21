@@ -34,12 +34,12 @@
         tools:layout="@layout/activity_search" />
     <activity
         android:id="@+id/categoryActivity"
-        android:name="com.boostcamp.planj.ui.category.CategoryActivity"
+        android:name="com.boostcamp.planj.ui.category.CategoryDetailActivity"
         android:label="CategoryActivity"
         tools:layout="@layout/activity_category"
         >
         <argument
-            android:name="categoryName"
+            android:name="categoryId"
             app:argType="string" />
     </activity>
     <fragment

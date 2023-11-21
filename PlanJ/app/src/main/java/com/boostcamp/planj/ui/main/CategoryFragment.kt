@@ -28,8 +28,8 @@ import kotlinx.coroutines.launch
 class CategoryFragment : Fragment() {
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
-    private lateinit var categoryAdapter : CategoryListAdapter
-    private val viewModel : CategoryViewModel by viewModels()
+    private lateinit var categoryAdapter: CategoryListAdapter
+    private val viewModel: CategoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,8 +77,8 @@ class CategoryFragment : Fragment() {
         categoryAdapter.submitList(emptyList())
     }
 
-    fun addCategoryDialog(title : String = ""){
-        val dialog = if(title == ""){
+    fun addCategoryDialog(title: String = "") {
+        val dialog = if (title == "") {
             CategoryDialog {
                 viewModel.insertCategory(it)
             }

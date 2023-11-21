@@ -41,4 +41,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun updateCategory(category: Category) {
         db.categoryDao().updateCategory(category)
     }
+
+    override suspend fun getCategoryTitleSchedule(title: String): List<Schedule> {
+        return db.categoryDao().getCategoryTitleSchedule(title)
+    }
 }

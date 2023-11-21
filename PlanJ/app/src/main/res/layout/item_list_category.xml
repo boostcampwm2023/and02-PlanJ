@@ -39,6 +39,7 @@
             android:textAlignment="center"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
+            app:isPopUpMenuVisible="@{category}"
             />
 
 

@@ -51,9 +51,11 @@ class CategoryDialog(private val title: String = "", private val listener: (Cate
         }
 
         binding.tietDialogCategoryInputCategoryName.requestFocus()
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            binding.tietDialogCategoryInputCategoryName.windowInsetsController?.show(WindowInsetsCompat.Type.ime())
-        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            binding.tietDialogCategoryInputCategoryName.windowInsetsController?.show(
+                WindowInsetsCompat.Type.ime()
+            )
+        } else {
             activity?.let {
                 WindowInsetsControllerCompat(it.window, binding.tietDialogCategoryInputCategoryName)
                     .show(WindowInsetsCompat.Type.ime())
