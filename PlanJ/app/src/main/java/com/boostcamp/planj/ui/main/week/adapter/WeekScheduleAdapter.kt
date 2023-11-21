@@ -1,12 +1,10 @@
-package com.boostcamp.planj.ui.main
+package com.boostcamp.planj.ui.main.week.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.databinding.ItemWeekEndBinding
 import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
-import com.boostcamp.planj.databinding.ItemWeekStartBinding
+import com.boostcamp.planj.databinding.ItemWeekStartAndEndBinding
 
 class WeekScheduleAdapter(
     private val scheduleTypeList: MutableList<ScheduleType>
@@ -16,23 +14,23 @@ class WeekScheduleAdapter(
 
         when (viewType) {
             0 -> {
-                return StartScheduleViewHolder(
-                    ItemWeekStartBinding.inflate(
+                return StartAndEndScheduleViewHolder(
+                    ItemWeekStartAndEndBinding.inflate(
                         LayoutInflater.from(
                             parent.context
                         ), parent, false
-                    )
+                    ), 0
                 )
             }
 
 
             2 -> {
-                return EndScheduleViewHolder(
-                    ItemWeekEndBinding.inflate(
+                return StartAndEndScheduleViewHolder(
+                    ItemWeekStartAndEndBinding.inflate(
                         LayoutInflater.from(
                             parent.context
                         ), parent, false
-                    )
+                    ), 2
                 )
 
             }
@@ -62,47 +60,13 @@ class WeekScheduleAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (scheduleTypeList[position].viewType) {
-            0 -> {
-                (holder as StartScheduleViewHolder).bind(scheduleTypeList[position].schedule)
+            0, 2 -> {
+                (holder as StartAndEndScheduleViewHolder).bind(scheduleTypeList[position].schedule)
             }
 
             1 -> {
                 (holder as TodayScheduleViewHolder).bind(scheduleTypeList[position].schedule)
             }
-
-            2 -> {
-                (holder as EndScheduleViewHolder).bind(scheduleTypeList[position].schedule)
-            }
-        }
-    }
-
-    class StartScheduleViewHolder(binding: ItemWeekStartBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        private val title = binding.tvWeekStartTitle
-
-        fun bind(item: Schedule) {
-            title.text = item.title
-        }
-    }
-
-    class EndScheduleViewHolder(binding: ItemWeekEndBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        private val title = binding.tvWeekEndTitle
-
-        fun bind(item: Schedule) {
-            title.text = item.title
-        }
-    }
-
-    class TodayScheduleViewHolder(binding: ItemWeekScheduleBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        private val title = binding.vwScheduleTitle
-
-        fun bind(item: Schedule) {
-            title.text = item.title
         }
     }
 
