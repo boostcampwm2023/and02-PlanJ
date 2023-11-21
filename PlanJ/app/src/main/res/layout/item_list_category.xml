@@ -14,7 +14,6 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tb_main"
         android:padding="8dp"
         android:layout_margin="8dp"
         app:setCategoryBackground="@{category}"

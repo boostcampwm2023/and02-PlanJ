@@ -1,5 +1,5 @@
 package com.boostcamp.planj.ui.main
 
 fun interface CategoryClickListener {
-    fun onClick()
+    fun onClick(categoryName : String)
 }

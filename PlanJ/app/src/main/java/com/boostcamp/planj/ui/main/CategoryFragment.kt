@@ -60,7 +60,7 @@ class CategoryFragment : Fragment() {
 
     private fun initAdapter() {
         val clickListener = CategoryClickListener {
-            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity()
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(it)
             findNavController().navigate(action)
         }
         val popUpMenuListener = object : CategoryPopUpMenuListener {

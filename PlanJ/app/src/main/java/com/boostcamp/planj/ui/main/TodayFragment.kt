@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentTodayBinding
@@ -120,7 +121,11 @@ class TodayFragment : Fragment() {
                 setAnchorView(R.id.bottom_navigation)
             }.show()
         }
-        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener)
+        val clickListener = ScheduleClickListener {
+            val action = HomeFragmentDirections.actionFragmentHomeToScheduleActivity2(it)
+            findNavController().navigate(action)
+        }
+        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, clickListener)
         binding.rvTodayListSchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }

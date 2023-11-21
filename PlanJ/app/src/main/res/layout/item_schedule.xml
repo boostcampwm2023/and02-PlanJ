@@ -64,7 +64,7 @@
             android:layout_height="16dp"
             android:layout_margin="8dp"
             android:src="@drawable/ic_repeat"
-            android:visibility="@{schedule.repeat == null ? View.GONE : View.VISIBLE }"
+            android:visibility="@{schedule.repetition == null ? View.GONE : View.VISIBLE }"
             app:layout_constraintBottom_toBottomOf="@id/tv_main_date"
             app:layout_constraintStart_toEndOf="@id/tv_main_date"
             app:layout_constraintTop_toTopOf="@id/tv_main_date" />

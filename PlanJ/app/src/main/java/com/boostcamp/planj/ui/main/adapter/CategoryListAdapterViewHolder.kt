@@ -24,7 +24,7 @@ class CategoryListAdapterViewHolder(private val binding: ItemListCategoryBinding
         binding.executePendingBindings()
 
         itemView.setOnClickListener {
-            clickListener.onClick()
+            clickListener.onClick(item.categoryName)
         }
 
         binding.tvCategoryPopUpMenu.setOnClickListener {
