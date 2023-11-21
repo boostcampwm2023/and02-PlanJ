@@ -7,5 +7,31 @@
     <fragment
         android:id="@+id/scheduleFragment"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleFragment"
-        android:label="ScheduleFragment" />
+        android:label="ScheduleFragment">
+        <action
+            android:id="@+id/action_scheduleFragment_to_repetitionSettingDialog"
+            app:destination="@id/repetitionSettingDialog" />
+        <action
+            android:id="@+id/action_scheduleFragment_to_alarmSettingDialog"
+            app:destination="@id/alarmSettingDialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/alarmSettingDialog"
+        android:name="com.boostcamp.planj.ui.schedule.AlarmSettingDialog"
+        android:label="AlarmSettingDialog">
+        <argument
+            android:name="alarm"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/repetitionSettingDialog"
+        android:name="com.boostcamp.planj.ui.schedule.RepetitionSettingDialog"
+        android:label="RepetitionSettingDialog">
+        <argument
+            android:name="repetition"
+            android:defaultValue="@null"
+            app:argType="com.boostcamp.planj.data.model.Repetition"
+            app:nullable="true" />
+    </dialog>
 </navigation>

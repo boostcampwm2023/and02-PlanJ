@@ -11,6 +11,7 @@ material = "1.10.0"
 jetbrainsGradlePlugin = "1.8.0"
 hiltGradlePlugin = "2.44"
 navigationFragmentKtx = "2.5.3"
+navigationSafeArgsGradlePlugin = "2.5.0"
 okhttp = "4.11.0"
 retrofit = "2.9.0"
 roomRuntime = "2.6.0"
@@ -25,6 +26,7 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationFragmentKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
