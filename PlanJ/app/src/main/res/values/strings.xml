@@ -41,6 +41,9 @@
     <string name="end_time">종료 시간</string>
     <string name="departure_time">출발 시간</string>
     <string name="delete_start_date_time">시작 날짜 삭제</string>
+    <string name="participants">참가자</string>
+    <string name="see_all">전체 보기</string>
+    <string name="user_profile_image">프로필 이미지</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

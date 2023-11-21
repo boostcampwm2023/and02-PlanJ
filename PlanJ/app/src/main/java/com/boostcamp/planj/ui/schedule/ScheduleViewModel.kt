@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,12 @@ class ScheduleViewModel @Inject constructor(
     val scheduleEndDate: StateFlow<String?> = _scheduleEndDate
     private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
     val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
+
+    private val _members = MutableStateFlow(listOf(User("1111"), User("2222"), User("3333"), User("4444")))
+    val members: StateFlow<List<User>> = _members
+
+    private val _doneMembers = MutableStateFlow<List<User>?>(null)
+    val doneMembers: StateFlow<List<User>?> = _doneMembers
 
     private val _scheduleAlarm = MutableStateFlow<String?>(null)
     val scheduleAlarm: StateFlow<String?> = _scheduleAlarm

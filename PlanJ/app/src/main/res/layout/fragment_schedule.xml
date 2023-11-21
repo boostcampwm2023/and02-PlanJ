@@ -263,6 +263,68 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_schedule_participants"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="150dp"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end">
+
+                    <TextView
+                        android:id="@+id/tv_category_participants"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/participants"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_category_done_total_participants"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:text='@{viewModel.doneMembers.size + "/" + viewModel.members.size}'
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_category_participants"
+                        app:layout_constraintStart_toEndOf="@id/tv_category_participants"
+                        app:layout_constraintTop_toTopOf="@id/tv_category_participants"
+                        tools:text="2/4" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/see_all"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_category_participants"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_category_participants" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_category_participants"
+                        tools:listitem="@layout/item_participant" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_participants" />
+
                 <TextView
                     android:id="@+id/tv_schedule_alarm"
                     android:layout_width="160dp"
@@ -274,7 +336,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_participants" />
 
                 <TextView
                     android:id="@+id/tv_schedule_alarm_setting"
@@ -288,7 +350,7 @@
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_alarm"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_participants" />
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"
