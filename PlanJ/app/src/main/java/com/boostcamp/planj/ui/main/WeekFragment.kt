@@ -38,20 +38,15 @@ class WeekFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initAdapter(scheduleList: List<Schedule>) {
+
         lateinit var calendarAdapter: CalendarAdapter
         var calendarList = ArrayList<CalendarVO>()
-
-
         var week_day: Array<String> = resources.getStringArray(R.array.calendar_day)
-
-        var month: Int
 
 
         calendarList.run {
             val dateFormat = DateTimeFormatter.ofPattern("dd")
             val monthFormat = DateTimeFormatter.ofPattern("yyyy-MM-")
-
-            month = LocalDateTime.now().format(monthFormat).split("-")[1].toInt()
 
             var preSunday: LocalDateTime =
                 (LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)))
@@ -67,7 +62,7 @@ class WeekFragment : Fragment() {
             }
         }
 
-        calendarAdapter = CalendarAdapter(calendarList, scheduleList, month)
+        calendarAdapter = CalendarAdapter(calendarList, scheduleList)
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)
     }
@@ -78,10 +73,9 @@ class WeekFragment : Fragment() {
             schedule.failed.not() && schedule.finished
         }
         val countFinish = SpannableString(
-            binding.btnWeekFinish.text.toString().plus(
-                "${finishList.size}"
-            )
+            binding.btnWeekFinish.text.toString().plus("${finishList.size}")
         )
+
         countFinish.setSpan(
             ForegroundColorSpan(Color.GREEN),
             binding.btnWeekFinish.text.length,
@@ -94,6 +88,7 @@ class WeekFragment : Fragment() {
         val failList = scheduleList.filter { schedule: Schedule -> schedule.failed }
         val countFail =
             SpannableString(binding.btnWeekFail.text.toString().plus("${failList.size}"))
+
         countFail.setSpan(
             ForegroundColorSpan(Color.RED),
             binding.btnWeekFail.text.length,
@@ -106,6 +101,7 @@ class WeekFragment : Fragment() {
         val haveList = scheduleList.filter { schedule: Schedule -> schedule.finished.not() }
         val countHave =
             SpannableString(binding.btnWeekHave.text.toString().plus("${haveList.size}"))
+
         countHave.setSpan(
             ForegroundColorSpan(Color.BLUE),
             binding.btnWeekHave.text.length,

@@ -24,8 +24,7 @@ data class ScheduleType(
 
 class CalendarAdapter(
     private val calendarVOList: List<CalendarVO>,
-    private val scheduleList: List<Schedule>,
-    private val month: Int
+    private val scheduleList: List<Schedule>
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
@@ -41,7 +40,7 @@ class CalendarAdapter(
 
             val now = LocalDate.now()
                 .format(DateTimeFormatter.ofPattern("dd").withLocale(Locale.forLanguageTag("ko")))
-            /*val now="14"*/
+
             val haveStart = temp.filter {
                 it.startTime != null && it.startTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
                     .toInt()
@@ -87,6 +86,7 @@ class CalendarAdapter(
                 addAdapter(WeekScheduleAdapter(totalList))
 
             }
+
         }
 
         private fun addAdapter(weekScheduleAdapter: WeekScheduleAdapter) {
@@ -104,12 +104,7 @@ class CalendarAdapter(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        val temp = scheduleList.filter {
-            it.startTime == null || it.startTime.split("[-:T]".toRegex())[1].toInt() == month || it.endTime.split(
-                "[-:T]".toRegex()
-            )[1].toInt() == month
-        }
-        holder.bind(calendarVOList[position], temp)
+        holder.bind(calendarVOList[position], scheduleList)
     }
 
     override fun getItemCount(): Int {

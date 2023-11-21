@@ -79,7 +79,7 @@ class WeekScheduleAdapter(
     class StartScheduleViewHolder(binding: ItemWeekStartBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private val title = binding.tvWeekstartTitle
+        private val title = binding.tvWeekStartTitle
 
         fun bind(item: Schedule) {
             title.text = item.title
@@ -89,7 +89,7 @@ class WeekScheduleAdapter(
     class EndScheduleViewHolder(binding: ItemWeekEndBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private val title = binding.tvWeekendTitle
+        private val title = binding.tvWeekEndTitle
 
         fun bind(item: Schedule) {
             title.text = item.title
