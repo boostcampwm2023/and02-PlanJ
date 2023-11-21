@@ -1,27 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
-import { GetUserEntityService } from "src/schedule/get-user-entity.service";
-import { GetCategoryEntityService } from "src/schedule/get-category-entity.service";
-import { AddScheduleMetadataService } from "src/schedule/add-schedule-metadata.service";
-import { AddScheduleService } from "src/schedule/add-schedule.service";
+import { ScheduleMetaService } from "src/schedule/schedule-meta.service";
+import { ScheduleService } from "src/schedule/schedule.service";
+import { UserService } from "src/user/user.service";
+import { CategoryService } from "src/category/category.service";
 
 @Injectable()
 export class ScheduleApiService {
   constructor(
-    private getUserEntityService: GetUserEntityService,
-    private getCategoryEntityService: GetCategoryEntityService,
-    private addScheduleMetadataService: AddScheduleMetadataService,
-    private addScheduleService: AddScheduleService,
+    private userService: UserService,
+    private categoryService: CategoryService,
+    private scheduleMetaService: ScheduleMetaService,
+    private scheduleService: ScheduleService,
   ) {}
 
   async addSchedule(dto: AddScheduleDto): Promise<string> {
-    const user = await this.getUserEntityService.getUserEntity(dto);
-    const category = await this.getCategoryEntityService.getCategoryEntity(dto);
-    const schdeuleMetadata = await this.addScheduleMetadataService.addScheduleMetadata(dto, user, category);
-    return await this.addScheduleService.addSchedule(dto, schdeuleMetadata);
+    const user = await this.userService.getUserEntity(dto.userUuid);
+    const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
+    const schdeuleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
+    return await this.scheduleService.addSchedule(dto, schdeuleMetadata);
   }
 
-  getDaily() {}
+  async getDailySchedule(userUuid: string, date: Date): Promise<string> {
+    const user = await this.userService.getUserEntity(userUuid);
+    return await this.scheduleMetaService.getAllScheduleByDate(user, date);
+  }
 
   getWeekly() {}
 }

@@ -1,6 +1,6 @@
 import { DataSource, Repository } from "typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
-import { ScheduleMetaEntity } from "./entity/schedule.meta.entity";
+import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ulid } from "ulid";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -26,5 +26,16 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetaEntity[]> {
+    const founds = await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .andWhere(":date < schedule.endAt", { date: date })
+      .getMany();
+
+    console.log("get All Schedule");
+    founds.forEach((e) => console.log(e));
+    return founds;
   }
 }

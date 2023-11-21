@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
-import { ScheduleMetaEntity } from "./entity/schedule.meta.entity";
+import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
 import { ScheduleRepository } from "./schedule.repository";
 
 @Injectable()
-export class AddScheduleService {
+export class ScheduleService {
   constructor(
     @InjectRepository(ScheduleRepository)
     private scheduleRepository: ScheduleRepository,

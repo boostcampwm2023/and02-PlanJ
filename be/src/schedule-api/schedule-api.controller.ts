@@ -7,9 +7,9 @@ export class ScheduleApiController {
   constructor(private scheduleApiService: ScheduleApiService) {}
 
   @Get("/daily")
-  getDailySchedule(@Query("userId") userId: string, @Query("date") date: Date) {
-    console.log(userId);
-    console.log(date.toString());
+  async getDailySchedule(@Query("userUuid") userUuid: string, @Query("date") date: Date): Promise<JSON> {
+    const result = await this.scheduleApiService.getDailySchedule(userUuid, date);
+    return JSON.parse(result);
   }
 
   @Get("/weekly")

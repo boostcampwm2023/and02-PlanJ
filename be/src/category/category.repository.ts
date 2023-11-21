@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { CategoryEntity } from "./entity/category.entity";
 import { DataSource, Repository } from "typeorm";
 import { AddCategoryDto } from "./dto/add-category.dto";
@@ -40,5 +40,20 @@ export class CategoryRepository extends Repository<CategoryEntity> {
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async checkByCategoryUuid(categoryUuid: string): Promise<CategoryEntity> {
+    return await this.getCategoryEntity(categoryUuid);
+  }
+
+  private async getCategoryEntity(categoryUuid: string) {
+    const category = await this.findOne({
+      where: { categoryUuid: categoryUuid },
+    });
+
+    if (category === null) {
+      throw new NotFoundException("존재하지 않는 category uuid");
+    }
+    return category;
   }
 }

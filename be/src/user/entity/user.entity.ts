@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { CategoryEntity } from "src/category/entity/category.entity";
-import { ScheduleMetaEntity } from "src/schedule/entity/schedule.meta.entity";
+import { ScheduleMetaEntity } from "src/schedule/entity/schedule-meta.entity";
 
 @Entity("User")
 // @Unique(["email"])

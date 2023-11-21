@@ -116,4 +116,19 @@ export class UserRepository extends Repository<UserEntity> {
 
     return JSON.stringify(body);
   }
+
+  async checkByUserUuid(userUuid: string): Promise<UserEntity> {
+    return await this.getUserEntity(userUuid);
+  }
+
+  private async getUserEntity(userUuid: string) {
+    const user = await this.findOne({
+      where: { userUuid: userUuid },
+    });
+
+    if (user === null) {
+      throw new UnauthorizedException("존재하지 않는 user uuid");
+    }
+    return user;
+  }
 }
