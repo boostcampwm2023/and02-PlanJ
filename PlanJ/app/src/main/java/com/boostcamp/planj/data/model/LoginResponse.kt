@@ -1,7 +1,8 @@
 package com.boostcamp.planj.data.model
 
-data class LoginResponse(
-    val message: String,
-    val statusCode: String
-)
+import com.google.gson.annotations.SerializedName
 
+data class LoginResponse(
+    @SerializedName("message") val message: String,
+    @SerializedName("statusCode") val statusCode: String
+)

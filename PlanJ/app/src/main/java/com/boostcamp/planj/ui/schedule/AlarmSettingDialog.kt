@@ -10,14 +10,15 @@ import com.boostcamp.planj.databinding.DialogAlarmSettingBinding
 
 class AlarmSettingDialog : DialogFragment() {
 
-    private lateinit var binding: DialogAlarmSettingBinding
+    private var _binding: DialogAlarmSettingBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogAlarmSettingBinding.inflate(layoutInflater, container, false)
+        _binding = DialogAlarmSettingBinding.inflate(layoutInflater, container, false)
 
         return binding.root
     }
@@ -31,22 +32,22 @@ class AlarmSettingDialog : DialogFragment() {
 
     private fun setVisibility() {
         with(binding) {
-            rgAlarm.setOnCheckedChangeListener { _, i ->
-                layoutAlarmDeparture.visibility =
-                    if (i == R.id.rb_alarm_departure) View.VISIBLE else View.GONE
+            rgDialogAlarmMode.setOnCheckedChangeListener { _, i ->
+                layoutDialogAlarmDeparture.visibility =
+                    if (i == R.id.rb_dialog_alarm_departure) View.VISIBLE else View.GONE
                 layoutAlarmEnd.visibility =
-                    if (i == R.id.rb_alarm_end) View.VISIBLE else View.GONE
+                    if (i == R.id.rb_dialog_alarm_end) View.VISIBLE else View.GONE
             }
         }
     }
 
     private fun setListener() {
         with(binding) {
-            tvRepeatCancel.setOnClickListener {
+            tvDialogAlarmCancel.setOnClickListener {
                 dismiss()
             }
 
-            tvRepeatComplete.setOnClickListener {
+            tvDialogAlarmComplete.setOnClickListener {
                 // TODO: 알람 정보 schedule 액티비티로 전달
             }
         }

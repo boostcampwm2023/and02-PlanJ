@@ -10,14 +10,15 @@ import com.boostcamp.planj.databinding.DialogRepetitionSettingBinding
 
 class RepetitionSettingDialog : DialogFragment() {
 
-    private lateinit var binding: DialogRepetitionSettingBinding
+    private var _binding: DialogRepetitionSettingBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogRepetitionSettingBinding.inflate(layoutInflater, container, false)
+        _binding = DialogRepetitionSettingBinding.inflate(layoutInflater, container, false)
 
         return binding.root
     }
@@ -31,22 +32,22 @@ class RepetitionSettingDialog : DialogFragment() {
 
     private fun setVisibility() {
         with(binding) {
-            rgRepeat.setOnCheckedChangeListener { _, i ->
-                layoutRepeatDay.visibility =
-                    if (i == R.id.rb_repeat_day) View.VISIBLE else View.GONE
-                layoutRepeatWeek.visibility =
-                    if (i == R.id.rb_repeat_week) View.VISIBLE else View.GONE
+            rgDialogRepetitionMode.setOnCheckedChangeListener { _, i ->
+                layoutDialogRepetitionDay.visibility =
+                    if (i == R.id.rb_dialog_repetition_day) View.VISIBLE else View.GONE
+                layoutDialogRepetitionWeek.visibility =
+                    if (i == R.id.rb_dialog_repetition_week) View.VISIBLE else View.GONE
             }
         }
     }
 
     private fun setListener() {
         with(binding) {
-            tvRepeatCancel.setOnClickListener {
+            tvDialogRepetitionCancel.setOnClickListener {
                 dismiss()
             }
 
-            tvRepeatComplete.setOnClickListener {
+            tvDialogRepetitionComplete.setOnClickListener {
                 // TODO: 반복 정보 schedule 액티비티로 전달
             }
         }

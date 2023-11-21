@@ -19,7 +19,7 @@
         tools:context=".ui.schedule.ScheduleActivity">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tb_schedule"
+            android:id="@+id/toolbar_schedule"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_schedule" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar_schedule" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_schedule">
+            app:layout_constraintTop_toBottomOf="@id/toolbar_schedule">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layout_schedule_category"
+                    android:id="@+id/til_schedule_category"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
@@ -84,7 +84,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <AutoCompleteTextView
-                        android:id="@+id/tv_schedule_selected_category"
+                        android:id="@+id/actv_schedule_selected_category"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="12dp"
@@ -345,7 +345,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
 
                 <EditText
-                    android:id="@+id/tv_schedule_selected_location"
+                    android:id="@+id/et_schedule_location_setting"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:background="@null"
@@ -370,7 +370,7 @@
                     android:src="@drawable/ic_location"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_schedule_selected_location"
+                    app:layout_constraintStart_toEndOf="@id/et_schedule_location_setting"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
 
                 <com.google.android.material.divider.MaterialDivider

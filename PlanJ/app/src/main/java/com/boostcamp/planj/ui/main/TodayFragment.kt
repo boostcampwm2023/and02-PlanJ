@@ -31,9 +31,6 @@ class TodayFragment : Fragment() {
 
     private val viewModel: TodayViewModel by viewModels()
 
-    //더미 일정
-    private val dummyList = DummySchedule.getDummyList()
-
     private lateinit var swipeListener : SwipeListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

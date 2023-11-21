@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ScheduleActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityScheduleBinding
+    private var _binding: ActivityScheduleBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: ScheduleViewModel by viewModels()
 
     private val repetitionSettingDialog by lazy {
@@ -29,7 +30,7 @@ class ScheduleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityScheduleBinding.inflate(layoutInflater)
+        _binding = ActivityScheduleBinding.inflate(layoutInflater)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
@@ -58,10 +59,10 @@ class ScheduleActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categoryList.collect { categoryList ->
-                    (binding.layoutScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
+                    (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
                         categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
                     )
-                    (binding.layoutScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
+                    (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
                         categoryList.toTypedArray()
                     )
                 }
@@ -70,7 +71,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun setListener() {
-        binding.tbSchedule.setOnMenuItemClickListener { item ->
+        binding.toolbarSchedule.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.item_schedule_edit -> {
                     viewModel.startEditingSchedule()
@@ -94,7 +95,7 @@ class ScheduleActivity : AppCompatActivity() {
             }
         }
 
-        binding.tbSchedule.setNavigationOnClickListener {
+        binding.toolbarSchedule.setNavigationOnClickListener {
             finish()
         }
 
@@ -112,7 +113,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun updateToolbar(isEditMode: Boolean) {
-        with(binding.tbSchedule.menu) {
+        with(binding.toolbarSchedule.menu) {
             findItem(R.id.item_schedule_edit).isVisible = !isEditMode
             findItem(R.id.item_schedule_delete).isVisible = !isEditMode
             findItem(R.id.item_schedule_complete).isVisible = isEditMode

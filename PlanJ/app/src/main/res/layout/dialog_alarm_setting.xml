@@ -7,7 +7,7 @@
     android:paddingVertical="20dp">
 
     <TextView
-        android:id="@+id/tv_alarm_title"
+        android:id="@+id/tv_dialog_alarm_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
@@ -18,22 +18,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/rg_alarm"
+        android:id="@+id/rg_dialog_alarm_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_alarm_title">
+        app:layout_constraintTop_toBottomOf="@id/tv_dialog_alarm_title">
 
         <RadioButton
-            android:id="@+id/rb_alarm_no"
+            android:id="@+id/rb_dialog_alarm_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/not_set"
             android:textSize="16sp" />
 
         <RadioButton
-            android:id="@+id/rb_alarm_end"
+            android:id="@+id/rb_dialog_alarm_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/end_time"
@@ -50,11 +50,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="종료 시간"
+                android:text="@string/end_time"
                 android:textSize="16sp" />
 
             <EditText
-                android:id="@+id/et_alarm_before_end"
+                android:id="@+id/et_dialog_alarm_before_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -75,14 +75,14 @@
         </LinearLayout>
 
         <RadioButton
-            android:id="@+id/rb_alarm_departure"
+            android:id="@+id/rb_dialog_alarm_departure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/departure_time"
             android:textSize="16sp" />
 
         <LinearLayout
-            android:id="@+id/layout_alarm_departure"
+            android:id="@+id/layout_dialog_alarm_departure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -92,11 +92,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="출발 시간"
+                android:text="@string/departure_time"
                 android:textSize="16sp" />
 
             <EditText
-                android:id="@+id/et_alarm_before_departure"
+                android:id="@+id/et_dialog_alarm_before_departure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -119,7 +119,7 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/tv_repeat_complete"
+        android:id="@+id/tv_dialog_alarm_complete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -127,17 +127,17 @@
         android:textColor="@color/main3"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rg_alarm" />
+        app:layout_constraintTop_toBottomOf="@id/rg_dialog_alarm_mode" />
 
     <TextView
-        android:id="@+id/tv_repeat_cancel"
+        android:id="@+id/tv_dialog_alarm_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/cancel"
-        android:textColor="#FF5E5E"
+        android:textColor="@color/red"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/tv_repeat_complete"
-        app:layout_constraintTop_toTopOf="@id/tv_repeat_complete" />
+        app:layout_constraintEnd_toStartOf="@id/tv_dialog_alarm_complete"
+        app:layout_constraintTop_toTopOf="@id/tv_dialog_alarm_complete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

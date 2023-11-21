@@ -7,7 +7,7 @@
     android:paddingVertical="20dp">
 
     <TextView
-        android:id="@+id/tv_repeat_title"
+        android:id="@+id/tv_dialog_repetition_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
@@ -18,29 +18,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/rg_repeat"
+        android:id="@+id/rg_dialog_repetition_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_repeat_title">
+        app:layout_constraintTop_toBottomOf="@id/tv_dialog_repetition_title">
 
         <RadioButton
-            android:id="@+id/rb_repeat_no"
+            android:id="@+id/rb_dialog_repetition_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/not_set"
             android:textSize="16sp" />
 
         <RadioButton
-            android:id="@+id/rb_repeat_day"
+            android:id="@+id/rb_dialog_repetition_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/daily"
             android:textSize="16sp" />
 
         <LinearLayout
-            android:id="@+id/layout_repeat_day"
+            android:id="@+id/layout_dialog_repetition_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -48,7 +48,7 @@
             android:visibility="gone">
 
             <EditText
-                android:id="@+id/et_repeat_day"
+                android:id="@+id/et_dialog_repetition_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -65,14 +65,14 @@
         </LinearLayout>
 
         <RadioButton
-            android:id="@+id/rb_repeat_week"
+            android:id="@+id/rb_dialog_repetition_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/weekly"
             android:textSize="16sp" />
 
         <LinearLayout
-            android:id="@+id/layout_repeat_week"
+            android:id="@+id/layout_dialog_repetition_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -80,7 +80,7 @@
             android:visibility="gone">
 
             <EditText
-                android:id="@+id/et_repeat_week"
+                android:id="@+id/et_dialog_repetition_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -99,7 +99,7 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/tv_repeat_complete"
+        android:id="@+id/tv_dialog_repetition_complete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -107,17 +107,17 @@
         android:textColor="@color/main3"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rg_repeat" />
+        app:layout_constraintTop_toBottomOf="@id/rg_dialog_repetition_mode" />
 
     <TextView
-        android:id="@+id/tv_repeat_cancel"
+        android:id="@+id/tv_dialog_repetition_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/cancel"
-        android:textColor="#FF5E5E"
+        android:textColor="@color/red"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/tv_repeat_complete"
-        app:layout_constraintTop_toTopOf="@id/tv_repeat_complete" />
+        app:layout_constraintEnd_toStartOf="@id/tv_dialog_repetition_complete"
+        app:layout_constraintTop_toTopOf="@id/tv_dialog_repetition_complete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

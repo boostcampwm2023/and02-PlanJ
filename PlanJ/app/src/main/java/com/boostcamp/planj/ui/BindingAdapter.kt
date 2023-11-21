@@ -41,9 +41,9 @@ fun TextView.setRepetitionInfo(repetition: Repetition?) {
     text = if (repetition == null) {
         "설정 안함"
     } else if (repetition.cycleType == "daily") {
-        "${repetition.cycleCountDaily}일마다 반복"
+        "${repetition.cycleCount}일마다 반복"
     } else {
-        "${repetition.cycleCountWeekly}주마다 반복"
+        "${repetition.cycleCount}주마다 반복"
     }
 }
 
