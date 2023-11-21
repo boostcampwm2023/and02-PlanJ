@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="schedule"
             type="com.boostcamp.planj.data.model.Schedule" />
@@ -12,10 +14,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@drawable/round_white_stroke"
-        android:elevation="2dp"
         android:layout_margin="4dp"
-        >
+        android:background="@drawable/round_white_stroke"
+        android:elevation="2dp">
 
 
         <CheckBox
@@ -24,87 +25,84 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@drawable/checkbox"
-            android:checked="@{schedule.finished}"
             android:button="@null"
+            android:checked="@{schedule.finished}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/tv_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:hint="이건 제목입니다."
             android:maxLines="1"
-            app:setTitle="@{schedule}"
             android:textSize="16sp"
-            android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@id/rb_done"
-            app:layout_constraintTop_toTopOf="@id/rb_done" />
+            app:layout_constraintTop_toTopOf="@id/rb_done"
+            app:setTitle="@{schedule}" />
 
         <TextView
             android:id="@+id/tv_main_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            app:layout_constraintStart_toEndOf="@id/rb_done"
-            app:layout_constraintTop_toBottomOf="@id/tv_main_title"
-            android:text="@{schedule.endTime}"
             android:hint="11/14"
             android:maxLines="1"
-            android:textSize="12sp" />
+            android:text="@{schedule.endTime}"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/rb_done"
+            app:layout_constraintTop_toBottomOf="@id/tv_main_title" />
 
 
         <ImageView
             android:id="@+id/iv_main_repeat"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            android:layout_margin="8dp"
             android:src="@drawable/ic_repeat"
             android:visibility="@{schedule.repeat == null ? View.GONE : View.VISIBLE }"
-            app:layout_constraintStart_toEndOf="@id/tv_main_date"
             app:layout_constraintBottom_toBottomOf="@id/tv_main_date"
-            app:layout_constraintTop_toTopOf="@id/tv_main_date"
-            android:layout_margin="8dp" />
+            app:layout_constraintStart_toEndOf="@id/tv_main_date"
+            app:layout_constraintTop_toTopOf="@id/tv_main_date" />
 
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:src="@drawable/ic_fail"
             android:visibility="invisible"
-            app:layout_constraintTop_toTopOf="parent"
+            app:checkFail="@{schedule}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_main_group"
-            android:layout_marginEnd="4dp"
-            app:checkFail ="@{schedule}"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_main_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:src="@drawable/id_group"
             android:visibility="@{schedule.members.size() > 1 ? View.VISIBLE : View.GONE }"
+            app:layout_constraintBottom_toTopOf="@id/tv_main_group_participation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintBottom_toTopOf="@id/tv_main_group_participation"
-            />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/tv_main_group_participation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/iv_main_group"
             app:layout_constraintStart_toStartOf="@id/iv_main_group"
             app:layout_constraintTop_toBottomOf="@id/iv_main_group"
-            android:textSize="8sp"
-            app:participation ="@{schedule}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />>
+            app:participation="@{schedule}" />>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

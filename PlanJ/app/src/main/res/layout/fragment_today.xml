@@ -11,16 +11,17 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            >
 
 
             <TextView
-                android:id="@+id/tv_main_today"
+                android:id="@+id/tv_today_today"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -33,130 +34,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main_schedule"
+                android:id="@+id/rv_list_schedule"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_main_today"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                />
-
-
-<!--            <ImageView-->
-<!--                android:id="@+id/iv_main_todaytogglebtn"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:src="@drawable/ic_drop_arrow"-->
-<!--                app:layout_constraintStart_toStartOf="@id/tv_main_today"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tv_main_today" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_main_todayschedule"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:text="@string/schedule"-->
-<!--                android:textSize="16sp"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/iv_main_todaytogglebtn"-->
-<!--                app:layout_constraintStart_toEndOf="@id/iv_main_todaytogglebtn"-->
-<!--                app:layout_constraintTop_toTopOf="@id/iv_main_todaytogglebtn" />-->
-
-<!--            <FrameLayout-->
-<!--                android:id="@+id/framelayout_main_today"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="@id/iv_main_todaytogglebtn"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/tv_main_todayschedule">-->
-
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/rv_main_todayschedule"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
-<!--            </FrameLayout>-->
-
-
-<!--            <ImageView-->
-<!--                android:id="@+id/iv_main_completetogglebtn"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="40dp"-->
-<!--                android:src="@drawable/ic_drop_arrow"-->
-<!--                app:layout_constraintStart_toStartOf="@+id/iv_main_todaytogglebtn"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/framelayout_main_today" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_main_completeschedule"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:text="@string/complete"-->
-<!--                android:textSize="16sp"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/iv_main_completetogglebtn"-->
-<!--                app:layout_constraintStart_toEndOf="@id/iv_main_completetogglebtn"-->
-<!--                app:layout_constraintTop_toTopOf="@id/iv_main_completetogglebtn" />-->
-
-<!--            <FrameLayout-->
-<!--                android:id="@+id/framelayout_main_complete"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="@id/iv_main_completetogglebtn"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/tv_main_completeschedule">-->
-
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/rv_main_completeschedule"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
-<!--            </FrameLayout>-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/iv_main_failtogglebtn"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="40dp"-->
-<!--                android:src="@drawable/ic_drop_arrow"-->
-<!--                app:layout_constraintStart_toStartOf="@+id/iv_main_todaytogglebtn"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/framelayout_main_complete" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_main_failschedule"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:text="@string/fail"-->
-<!--                android:textSize="16sp"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/iv_main_failtogglebtn"-->
-<!--                app:layout_constraintStart_toEndOf="@id/iv_main_failtogglebtn"-->
-<!--                app:layout_constraintTop_toTopOf="@id/iv_main_failtogglebtn" />-->
-
-<!--            <FrameLayout-->
-<!--                android:id="@+id/framelayout_main_fail"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:layout_marginEnd="16dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="@id/iv_main_failtogglebtn"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/tv_main_failschedule">-->
-
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/rv_main_failschedule"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
-<!--            </FrameLayout>-->
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_today_today" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -17,7 +17,7 @@ import java.util.Locale
 import kotlin.math.log
 
 data class CalendarVO(
-    var dayNumber: String = "", 
+    var dayNumber: String = "",
     var dayOfWeek: String = ""
 )
 
@@ -45,7 +45,7 @@ class CalendarAdapter(
                 binding.tvDayWeek.setBackgroundColor(R.color.main1)
                 binding.tvDayNumber.setBackgroundColor(R.color.main1)
 
-                val weekScheduleAdapter = WeekScheduleAdapter(DummySchedule.getDummyList())
+                val weekScheduleAdapter = WeekScheduleAdapter(emptyList())
                 binding.rvDaySchedule.adapter = weekScheduleAdapter
                 binding.rvDaySchedule.layoutManager = LinearLayoutManager(binding.rvDaySchedule.context)
 

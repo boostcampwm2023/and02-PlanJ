@@ -29,4 +29,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun insertCategory(category: Category) {
         db.categoryDao().insertCategory(category)
     }
+
+    override fun getAllCategories(): Flow<List<Category>> {
+        return db.categoryDao().getAllCategory()
+    }
 }

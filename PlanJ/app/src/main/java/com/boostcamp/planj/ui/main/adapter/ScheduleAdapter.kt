@@ -7,6 +7,10 @@ import com.boostcamp.planj.data.model.Schedule
 
 class ScheduleAdapter : ListAdapter<Schedule, ScheduleViewHolder>(diffUtil) {
 
+    init {
+        setHasStableIds(true)
+    }
+
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
@@ -16,14 +20,14 @@ class ScheduleAdapter : ListAdapter<Schedule, ScheduleViewHolder>(diffUtil) {
     }
 
 
-    companion object{
+    companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Schedule>() {
             override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
-                return oldItem.scheduleId == newItem.scheduleId
+                return oldItem == newItem
             }
 
             override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
-                return oldItem === newItem
+                return oldItem.scheduleId == newItem.scheduleId
             }
         }
     }

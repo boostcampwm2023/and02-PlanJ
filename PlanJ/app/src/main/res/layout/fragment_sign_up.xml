@@ -39,8 +39,8 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:hint="@string/email"
-            app:helperText="@string/email_condition"
             app:errorEnabled="true"
+            app:helperText="@string/email_condition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/img_sign_up_logo">
@@ -62,8 +62,8 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:hint="@string/password"
-            app:helperText="@string/password_condition"
             app:errorEnabled="true"
+            app:helperText="@string/password_condition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_sign_up_email">
@@ -106,9 +106,9 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:hint="@string/nickname"
-            app:helperText="@string/nickname_condition"
             app:error="@{viewModel.nicknameState==NicknameState.ERROR_LENGTH ? @string/nickname_length_error : null}"
             app:errorEnabled="true"
+            app:helperText="@string/nickname_condition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_sign_up_pwd_check">

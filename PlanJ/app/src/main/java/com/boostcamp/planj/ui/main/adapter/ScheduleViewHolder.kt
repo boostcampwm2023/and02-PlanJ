@@ -14,6 +14,7 @@ class ScheduleViewHolder(private val binding: ItemScheduleBinding) :
 
     fun bind(item: Schedule) {
         binding.schedule = item
+        binding.executePendingBindings()
     }
 
     companion object {

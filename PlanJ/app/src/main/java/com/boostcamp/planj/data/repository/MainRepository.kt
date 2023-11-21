@@ -14,5 +14,7 @@ interface MainRepository {
 
     fun getCategories(): Flow<List<String>>
 
+    fun getAllCategories() : Flow<List<Category>>
+
     suspend fun insertCategory(category: Category)
 }

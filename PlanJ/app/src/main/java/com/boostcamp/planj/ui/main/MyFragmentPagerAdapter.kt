@@ -4,11 +4,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class MyFragmentPagerAdapter(fragment : Fragment) : FragmentStateAdapter(fragment) {
+class MyFragmentPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    private val fragment : List<Fragment> = listOf(TodayFragment(), WeekFragment())
+    private val fragment: List<Fragment> = listOf(TodayFragment(), WeekFragment())
 
-    override fun createFragment(position: Int) : Fragment {
+    override fun createFragment(position: Int): Fragment {
         return fragment[position]
     }
 
