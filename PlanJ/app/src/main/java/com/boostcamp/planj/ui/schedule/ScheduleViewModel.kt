@@ -1,6 +1,5 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Repetition
@@ -14,9 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,10 +23,17 @@ class ScheduleViewModel @Inject constructor(
     val scheduleCategory = MutableStateFlow("")
     val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
-    val scheduleStartDate = MutableStateFlow<String?>("2023/11/20")
-    val scheduleStartTime = MutableStateFlow<String?>("23:59")
-    val scheduleEndDate = MutableStateFlow("")
-    val scheduleEndTime = MutableStateFlow("23:59")
+
+    private val _scheduleStartDate = MutableStateFlow<String?>("2023/11/20")
+    val scheduleStartDate: StateFlow<String?> = _scheduleStartDate
+    private val _scheduleStartTime = MutableStateFlow<String?>("23:59")
+    val scheduleStartTime: StateFlow<String?> = _scheduleStartTime
+
+    private val _scheduleEndDate = MutableStateFlow<String?>("2023/11/20")
+    val scheduleEndDate: StateFlow<String?> = _scheduleEndDate
+    private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
+    val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
+
     val alarmInfo = MutableStateFlow("")
     val repetitionInfo = MutableStateFlow<Repetition?>(null)
     val locationInfo = MutableStateFlow<String?>(null)
@@ -48,17 +51,28 @@ class ScheduleViewModel @Inject constructor(
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
 
-    init {
-        setEndDate()
+    fun getStartDate(): Long? {
+        return scheduleStartDate.value?.let { dateFormat.parse(it)?.time }
     }
 
-    private fun setEndDate() {
-        scheduleEndDate.value = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LocalDate.now()
-                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-        } else {
-            dateFormat.format(Date())
-        }
+    fun setStartDate(millis: Long) {
+        _scheduleStartDate.value = dateFormat.format(millis)
+    }
+
+    fun setStartTime(hour: Int, minute: Int) {
+        _scheduleStartTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
+    }
+
+    fun getEndDate(): Long? {
+        return scheduleEndDate.value?.let { dateFormat.parse(it)?.time }
+    }
+
+    fun setEndDate(millis: Long) {
+        _scheduleEndDate.value = dateFormat.format(millis)
+    }
+
+    fun setEndTime(hour: Int, minute: Int) {
+        _scheduleEndTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
     }
 
     fun startEditingSchedule() {
@@ -92,7 +106,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun resetStartTime() {
-        scheduleStartDate.value = null
-        scheduleStartTime.value = null
+        _scheduleStartDate.value = null
+        _scheduleStartTime.value = null
     }
 }

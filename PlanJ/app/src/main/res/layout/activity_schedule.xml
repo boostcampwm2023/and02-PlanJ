@@ -236,7 +236,7 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
-                    android:text="@={viewModel.scheduleEndDate}"
+                    android:text="@{viewModel.scheduleEndDate}"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_end"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_end"
@@ -250,7 +250,7 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
-                    android:text="@={viewModel.scheduleEndTime}"
+                    android:text="@{viewModel.scheduleEndTime}"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_end"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_end_date"
@@ -426,6 +426,5 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </layout>
