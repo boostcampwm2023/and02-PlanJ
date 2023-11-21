@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -18,11 +18,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ScheduleFragment : Fragment() {
+class ScheduleFragment : Fragment(), RepetitionDialogListener, AlarmSettingDialogListener {
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ScheduleViewModel by viewModels()
+
+    private val repetitionSettingDialog by lazy {
+        RepetitionSettingDialog()
+    }
+
+    private val alarmSettingDialog by lazy {
+        AlarmSettingDialog()
+    }
 
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -52,6 +60,9 @@ class ScheduleFragment : Fragment() {
 
         setObserver()
         setListener()
+
+        repetitionSettingDialog.setRepetitionDialogListener(this)
+        alarmSettingDialog.setAlarmSettingDialogListener(this)
     }
 
     override fun onDestroyView() {
@@ -159,15 +170,17 @@ class ScheduleFragment : Fragment() {
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
-            val action =
-                ScheduleFragmentDirections.actionScheduleFragmentToRepetitionSettingDialog(viewModel.repetitionInfo.value)
-            findNavController().navigate(action)
+            val bundle = Bundle()
+            bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
+            repetitionSettingDialog.arguments = bundle
+            repetitionSettingDialog.show(childFragmentManager, "반복 설정")
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
-            val action =
-                ScheduleFragmentDirections.actionScheduleFragmentToAlarmSettingDialog(viewModel.alarmInfo.value)
-            findNavController().navigate(action)
+            val bundle = Bundle()
+            bundle.putString("alarmInfo", viewModel.scheduleAlarm.value)
+            alarmSettingDialog.arguments = bundle
+            alarmSettingDialog.show(childFragmentManager, "알림 설정")
         }
 
         binding.ivScheduleMap.setOnClickListener {
@@ -200,5 +213,13 @@ class ScheduleFragment : Fragment() {
             timePickerBuilder.setMinute(selectedTime.split(":")[1].toInt())
         }
         return timePickerBuilder.build()
+    }
+
+    override fun onClickComplete(repetition: Repetition?) {
+        viewModel.setRepetition(repetition)
+    }
+
+    override fun onClickComplete(alarm: String?) {
+        viewModel.setAlarm(alarm)
     }
 }

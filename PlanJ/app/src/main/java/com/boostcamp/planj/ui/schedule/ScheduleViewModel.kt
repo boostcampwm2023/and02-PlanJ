@@ -34,8 +34,11 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
     val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
 
-    val alarmInfo = MutableStateFlow("종료 시간 20분 전")
-    val repetitionInfo = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
+    private val _scheduleAlarm = MutableStateFlow<String?>(null)
+    val scheduleAlarm: StateFlow<String?> = _scheduleAlarm
+
+    private val _scheduleRepetition = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
+    val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
     val locationInfo = MutableStateFlow<String?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 
@@ -75,6 +78,14 @@ class ScheduleViewModel @Inject constructor(
         _scheduleEndTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
     }
 
+    fun setRepetition(repetition: Repetition?) {
+        _scheduleRepetition.value = repetition
+    }
+
+    fun setAlarm(alarm: String?) {
+        _scheduleAlarm.value = alarm
+    }
+
     fun startEditingSchedule() {
         _isEditMode.value = true
     }
@@ -93,7 +104,7 @@ class ScheduleViewModel @Inject constructor(
                 startTime = "${scheduleStartDate.value}T${scheduleStartTime.value}",
                 endTime = "${scheduleEndDate.value}T${scheduleEndTime.value}",
                 categoryTitle = scheduleCategory.value,
-                repeat = repetitionInfo.value,
+                repeat = scheduleRepetition.value,
                 members = listOf(),
                 doneMembers = null,
                 location = locationInfo.value,

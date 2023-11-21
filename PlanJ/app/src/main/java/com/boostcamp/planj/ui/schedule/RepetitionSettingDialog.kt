@@ -1,11 +1,12 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.DialogRepetitionSettingBinding
@@ -15,7 +16,7 @@ class RepetitionSettingDialog : DialogFragment() {
     private var _binding: DialogRepetitionSettingBinding? = null
     private val binding get() = _binding!!
 
-    private val args: RepetitionSettingDialogArgs by navArgs()
+    private var repetitionDialogListener: RepetitionDialogListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,9 +31,15 @@ class RepetitionSettingDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val repetition = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("repetitionInfo", Repetition::class.java)
+        } else {
+            arguments?.getParcelable("repetitionInfo")
+        }
+
         setVisibility()
         setListener()
-        setBtnClicked(args.repetition)
+        setBtnClicked(repetition)
     }
 
     override fun onResume() {
@@ -73,8 +80,17 @@ class RepetitionSettingDialog : DialogFragment() {
             }
 
             tvDialogRepetitionComplete.setOnClickListener {
-                dismiss()
-                // TODO: 반복 정보 schedule 액티비티로 전달
+                with(binding) {
+                    val repetition = if (rbDialogRepetitionNo.isChecked) {
+                        null
+                    } else if (rbDialogRepetitionDay.isChecked) {
+                        Repetition("id", "daily", etDialogRepetitionDay.text.toString().toInt())
+                    } else {
+                        Repetition("id", "weekly", etDialogRepetitionWeek.text.toString().toInt())
+                    }
+                    repetitionDialogListener?.onClickComplete(repetition)
+                    dismiss()
+                }
             }
         }
     }
@@ -91,5 +107,9 @@ class RepetitionSettingDialog : DialogFragment() {
                 etDialogRepetitionWeek.setText(repetition.cycleCount.toString())
             }
         }
+    }
+
+    fun setRepetitionDialogListener(listener: RepetitionDialogListener) {
+        repetitionDialogListener = listener
     }
 }

@@ -278,7 +278,7 @@
 
                 <TextView
                     android:id="@+id/tv_schedule_alarm_setting"
-                    alarmInfo="@{viewModel.alarmInfo}"
+                    alarmInfo="@{viewModel.scheduleAlarm}"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:enabled="@{viewModel.isEditMode}"
@@ -312,7 +312,7 @@
 
                 <TextView
                     android:id="@+id/tv_schedule_repetition_setting"
-                    repetitionInfo="@{viewModel.repetitionInfo}"
+                    repetitionInfo="@{viewModel.scheduleRepetition}"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:enabled="@{viewModel.isEditMode}"

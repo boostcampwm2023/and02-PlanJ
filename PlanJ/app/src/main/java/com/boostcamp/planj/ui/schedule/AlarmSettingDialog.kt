@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.DialogAlarmSettingBinding
 
@@ -14,7 +13,8 @@ class AlarmSettingDialog : DialogFragment() {
 
     private var _binding: DialogAlarmSettingBinding? = null
     private val binding get() = _binding!!
-    private val args: AlarmSettingDialogArgs by navArgs()
+
+    private var alarmSettingDialogListener: AlarmSettingDialogListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,9 +29,11 @@ class AlarmSettingDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val alarm = arguments?.getString("alarmInfo")
+
         setVisibility()
         setListener()
-        setBtnClicked(args.alarm)
+        setBtnClicked(alarm)
     }
 
     override fun onResume() {
@@ -59,15 +61,14 @@ class AlarmSettingDialog : DialogFragment() {
 
             tvDialogAlarmComplete.setOnClickListener {
                 val alarm = if (binding.rbDialogAlarmNo.isChecked) {
-                    "설정 안함"
+                    null
                 } else if (binding.rbDialogAlarmEnd.isChecked) {
                     "종료 시간 ${binding.etDialogAlarmBeforeEnd.text}분 전"
                 } else {
                     "출발 시간 ${binding.etDialogAlarmBeforeDeparture.text}분 전"
                 }
-                Log.d("alarmInfo", alarm)
+                alarmSettingDialogListener?.onClickComplete(alarm)
                 dismiss()
-                // TODO: 알람 정보 schedule 액티비티로 전달
             }
         }
     }
@@ -84,5 +85,9 @@ class AlarmSettingDialog : DialogFragment() {
                 etDialogAlarmBeforeEnd.setText(alarm.split(" ")[2].dropLast(1))
             }
         }
+    }
+
+    fun setAlarmSettingDialogListener(listener: AlarmSettingDialogListener) {
+        alarmSettingDialogListener = listener
     }
 }
