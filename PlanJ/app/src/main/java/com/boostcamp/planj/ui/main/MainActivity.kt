@@ -35,16 +35,16 @@ class MainActivity : AppCompatActivity() {
             val dialog = ScheduleDialog(this)
             dialog.show()
             dialog.setAddSchedule {
-                Toast.makeText(this, "성공", Toast.LENGTH_SHORT).show()
                 viewModel.insertSchedule(it)
             }
+
         }
     }
 
     private fun floatingButtonVisibleListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.fragment_home, R.id.fragment_list -> {
+                R.id.fragment_home, R.id.fragment_category -> {
                     binding.fbAddSchedule.visibility = View.VISIBLE
                 }
 

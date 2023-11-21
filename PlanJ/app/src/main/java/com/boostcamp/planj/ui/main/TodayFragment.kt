@@ -101,10 +101,11 @@ class TodayFragment : Fragment() {
 
             viewModel.deleteSchedule(schedule)
 
-            Snackbar.make(view, "Book has deleted", Snackbar.LENGTH_SHORT).apply {
-                setAction("Undo") {
+            Snackbar.make(view, "일정 삭제", Snackbar.LENGTH_SHORT).apply {
+                setAction("되돌기기") {
                     viewModel.insertSchedule(schedule)
                 }
+                setAnchorView(R.id.bottom_navigation)
             }.show()
         }
         initAdapter()

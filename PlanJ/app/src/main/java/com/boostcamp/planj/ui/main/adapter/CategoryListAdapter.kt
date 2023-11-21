@@ -4,12 +4,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.ui.main.CategoryClickListener
 
-class CategoryListAdapter : ListAdapter<Category, CategoryListAdapterViewHolder>(diffUtil) {
+class CategoryListAdapter(private val clickListener: CategoryClickListener) : ListAdapter<Category, CategoryListAdapterViewHolder>(diffUtil) {
 
 
     override fun onBindViewHolder(holder: CategoryListAdapterViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+        holder.onBind(currentList[position], clickListener)
     }
 
     override fun onCreateViewHolder(

@@ -8,22 +8,47 @@
     <fragment
         android:id="@+id/fragment_home"
         android:name="com.boostcamp.planj.ui.main.HomeFragment"
-        android:label="HomeFragment" />
-    <fragment
-        android:id="@+id/fragment_list"
-        android:name="com.boostcamp.planj.ui.main.CategoryFragment"
-        android:label="ListFragment" />
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home"
+        />
     <fragment
         android:id="@+id/fragment_user"
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
-        android:label="SettingFragment" />
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting"
+        />
     <fragment
         android:id="@+id/fragment_friend_list"
         android:name="com.boostcamp.planj.ui.friendlist.FriendListFragment"
-        android:label="FriendListFragment" />
+        android:label="FriendListFragment"
+        tools:layout="@layout/fragment_friend_list"
+        />
     <activity
         android:id="@+id/activity_search"
         android:name="com.boostcamp.planj.ui.search.SearchActivity"
         android:label="activity_search"
         tools:layout="@layout/activity_search" />
+    <activity
+        android:id="@+id/categoryActivity"
+        android:name="com.boostcamp.planj.ui.category.CategoryActivity"
+        android:label="CategoryActivity"
+        tools:layout="@layout/activity_category"
+        />
+    <fragment
+        android:id="@+id/fragment_category"
+        android:name="com.boostcamp.planj.ui.main.CategoryFragment"
+        android:label="CategoryFragment"
+        tools:layout="@layout/fragment_category">
+        <action
+            android:id="@+id/action_categoryFragment_to_categoryActivity"
+            app:destination="@id/categoryActivity"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+    </fragment>
 </navigation>

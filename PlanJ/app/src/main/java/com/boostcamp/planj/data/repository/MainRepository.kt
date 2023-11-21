@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
 
-    fun getSchedules() : Flow<List<Schedule>>
+    fun getSchedules(): Flow<List<Schedule>>
 
     suspend fun insertSchedule(schedule: Schedule)
 
@@ -14,7 +14,7 @@ interface MainRepository {
 
     fun getCategories(): Flow<List<String>>
 
-    fun getAllCategories() : Flow<List<Category>>
+    fun getAllCategories(): Flow<List<Category>>
 
     suspend fun insertCategory(category: Category)
 }
