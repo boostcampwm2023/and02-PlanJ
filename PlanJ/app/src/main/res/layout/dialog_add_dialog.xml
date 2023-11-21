@@ -40,20 +40,24 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_dialog_schedule_category_title"
         app:layout_constraintTop_toBottomOf="@id/tv_dialog_schedule_main_title"
+        app:layout_constraintBottom_toTopOf="@id/til_dialog_schedule_input_schedule"
         app:layout_constraintVertical_chainStyle="packed">
 
         <AutoCompleteTextView
             android:id="@+id/actv_dialog_schedule_category_select"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_category_backgroud"
             android:inputType="none"
-            android:outlineProvider="none" />
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,6 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="제목"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLength="25"
