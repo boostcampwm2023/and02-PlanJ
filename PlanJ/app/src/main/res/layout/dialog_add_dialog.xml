@@ -51,10 +51,11 @@
 
         <AutoCompleteTextView
             android:id="@+id/actv_dialog_schedule_category_select"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_category_backgroud"
             android:inputType="none"
+            android:text="미분류"
+            android:background="@drawable/dialog_category_backgroud"
             android:textAlignment="center"
             android:padding="10dp"
             android:textColor="@color/black" />

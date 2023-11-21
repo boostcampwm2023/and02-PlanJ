@@ -14,17 +14,20 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.DialogAddDialogBinding
+import okhttp3.internal.notifyAll
 
 class ScheduleDialog(
     private val categoryNames : List<String>,
     private val listener: (Schedule) -> Unit
 ) : DialogFragment() {
-    private lateinit var binding: DialogAddDialogBinding
+    private var _binding: DialogAddDialogBinding? = null
+    private val binding :DialogAddDialogBinding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.dialog)
         isCancelable = true
+        Log.d("ScheduleDialog", "onCreate")
 
     }
 
@@ -33,36 +36,50 @@ class ScheduleDialog(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogAddDialogBinding.inflate(inflater, container, false)
+        Log.d("ScheduleDialog", "onCreateView")
+        _binding = DialogAddDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("ScheduleDialog", "onViewCreated $categoryNames")
+        initAdapter()
+        requestFocus()
+        setListener()
+    }
 
-        Log.d("MainActivityCategory", "$categoryNames")
+    override fun onStop() {
+        Log.d("ScheduleDialog", "onStop")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("ScheduleDialog", "onDestroy")
+    }
+
+
+    override fun onDestroyView() {
+        _binding = null
+        Log.d("ScheduleDialog", "onDestroyView")
+        super.onDestroyView()
+    }
+
+    private fun initAdapter() {
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryNames)
-        binding.actvDialogScheduleCategorySelect.setText("미분류")
         binding.actvDialogScheduleCategorySelect.setAdapter(arrayAdapter)
-        binding.tietDialogScheduleInputTitleSchedule.requestFocus()
+    }
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            binding.tietDialogScheduleInputTitleSchedule.windowInsetsController?.show(
-                WindowInsetsCompat.Type.ime())
-        }else{
-            activity?.let {
-                WindowInsetsControllerCompat(it.window, binding.tietDialogScheduleInputTitleSchedule)
-                    .show(WindowInsetsCompat.Type.ime())
-            }
-        }
+    private fun setListener() {
         binding.tvDialogCategoryCancel.setOnClickListener {
             dismiss()
         }
 
         binding.tvDialogScheduleSuccess.setOnClickListener {
-            val category = binding.tietDialogScheduleInputTitleSchedule.text.toString()
-            val title = binding.actvDialogScheduleCategorySelect.text.toString()
+            val category = binding.actvDialogScheduleCategorySelect.text.toString()
+            val title = binding.tietDialogScheduleInputTitleSchedule.text.toString()
             listener(
                 Schedule(
                     (0..Int.MAX_VALUE).random().toString(),
@@ -80,6 +97,23 @@ class ScheduleDialog(
                 )
             )
             dismiss()
+        }
+    }
+
+    private fun requestFocus() {
+        binding.tietDialogScheduleInputTitleSchedule.requestFocus()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            binding.tietDialogScheduleInputTitleSchedule.windowInsetsController?.show(
+                WindowInsetsCompat.Type.ime()
+            )
+        } else {
+            activity?.let {
+                WindowInsetsControllerCompat(
+                    it.window,
+                    binding.tietDialogScheduleInputTitleSchedule
+                )
+                    .show(WindowInsetsCompat.Type.ime())
+            }
         }
     }
 
