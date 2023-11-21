@@ -2,7 +2,6 @@ package com.boostcamp.planj.ui.schedule
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ class RepetitionSettingDialog : DialogFragment() {
     private var _binding: DialogRepetitionSettingBinding? = null
     private val binding get() = _binding!!
 
-    private var repetitionDialogListener: RepetitionDialogListener? = null
+    private var repetitionSettingDialogListener: RepetitionSettingDialogListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +87,7 @@ class RepetitionSettingDialog : DialogFragment() {
                     } else {
                         Repetition("id", "weekly", etDialogRepetitionWeek.text.toString().toInt())
                     }
-                    repetitionDialogListener?.onClickComplete(repetition)
+                    repetitionSettingDialogListener?.onClickComplete(repetition)
                     dismiss()
                 }
             }
@@ -109,7 +108,7 @@ class RepetitionSettingDialog : DialogFragment() {
         }
     }
 
-    fun setRepetitionDialogListener(listener: RepetitionDialogListener) {
-        repetitionDialogListener = listener
+    fun setRepetitionDialogListener(listener: RepetitionSettingDialogListener) {
+        repetitionSettingDialogListener = listener
     }
 }

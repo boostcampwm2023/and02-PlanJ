@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ScheduleFragment : Fragment(), RepetitionDialogListener, AlarmSettingDialogListener {
+class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSettingDialogListener {
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!

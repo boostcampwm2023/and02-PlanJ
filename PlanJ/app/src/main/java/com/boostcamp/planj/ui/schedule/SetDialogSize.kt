@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 
-fun Context.setDialogSize(dialogFragment: DialogFragment){
+fun Context.setDialogSize(dialogFragment: DialogFragment) {
     val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
     val params: ViewGroup.LayoutParams? = dialogFragment.dialog?.window?.attributes
 
