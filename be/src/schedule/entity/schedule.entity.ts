@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ScheduleMetaEntity } from "./schedule.meta.entity";
+import { ScheduleMetaEntity } from "./schedule-meta.entity";
 
 @Entity("Schedule")
 export class ScheduleEntity extends BaseEntity {

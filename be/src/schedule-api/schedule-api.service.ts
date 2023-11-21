@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
-import { ScheduleMetadataService } from "src/schedule/schedule-metadata.service";
+import { ScheduleMetadataService } from "src/schedule/schedule-meta.service";
 import { ScheduleService } from "src/schedule/schedule.service";
 import { UserService } from "src/user/user.service";
 import { CategoryService } from "src/category/category.service";
@@ -22,8 +22,8 @@ export class ScheduleApiService {
   }
 
   async getDailySchedule(userUuid: string, date: Date) {
-    const user = await this.userService.getUserEntity(userUuid);
-    return await this.
+    // const user = await this.userService.getUserEntity(userUuid);
+    // return await this.
   }
 
   getWeekly() {}

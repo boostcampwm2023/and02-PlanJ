@@ -1,4 +1,4 @@
-import { ScheduleMetaEntity } from "src/schedule/entity/schedule.meta.entity";
+import { ScheduleMetaEntity } from "src/schedule/entity/schedule-meta.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

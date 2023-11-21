@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ScheduleMetaEntity } from "./entity/schedule.meta.entity";
-import { ScheduleMetaRepository } from "./schedule.meta.repository";
+import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { ScheduleMetaRepository } from "./schedule-meta.repository";
 import { ScheduleRepository } from "./schedule.repository";
 import { ScheduleApiController } from "src/schedule-api/schedule-api.controller";
-import { ScheduleMetadataService } from "./schedule-metadata.service";
+import { ScheduleMetadataService } from "./schedule-meta.service";
 import { ScheduleService } from "./schedule.service";
 import { ScheduleApiService } from "src/schedule-api/schedule-api.service";
 import { UserRepository } from "src/user/user.repository";
