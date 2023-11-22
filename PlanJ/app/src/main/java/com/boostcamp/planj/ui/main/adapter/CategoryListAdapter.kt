@@ -4,13 +4,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.ui.main.CategoryClickListener
+import com.boostcamp.planj.ui.main.CategoryPopUpMenuListener
 
-class CategoryListAdapter : ListAdapter<Category, CategoryListAdapterViewHolder>(diffUtil) {
+class CategoryListAdapter(
+    private val clickListener: CategoryClickListener,
+    private val popUpClickListener: CategoryPopUpMenuListener
+) : ListAdapter<Category, CategoryListAdapterViewHolder>(diffUtil) {
 
-
-    override fun onBindViewHolder(holder: CategoryListAdapterViewHolder, position: Int) {
-        holder.onBind(currentList[position])
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -19,9 +20,13 @@ class CategoryListAdapter : ListAdapter<Category, CategoryListAdapterViewHolder>
         return CategoryListAdapterViewHolder.from(parent)
     }
 
+    override fun onBindViewHolder(holder: CategoryListAdapterViewHolder, position: Int) {
+        holder.onBind(currentList[position], clickListener, popUpClickListener)
+    }
 
-    companion object{
-        val diffUtil = object : DiffUtil.ItemCallback<Category>(){
+
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<Category>() {
             override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
                 return oldItem == newItem
             }

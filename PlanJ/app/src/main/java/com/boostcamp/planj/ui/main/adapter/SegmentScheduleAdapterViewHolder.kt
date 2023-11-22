@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.ItemListScheduleBinding
+import com.boostcamp.planj.ui.main.ScheduleClickListener
 import com.boostcamp.planj.ui.main.SwipeListener
 
 class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBinding) :
@@ -37,11 +38,11 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
         }
     }
 
-    fun bind(item: ScheduleSegment, swipeListener: SwipeListener) {
+    fun bind(item: ScheduleSegment, swipeListener: SwipeListener, clickListener: ScheduleClickListener) {
         this.item = item
         this.listener = swipeListener
         binding.tvMainScheduleTitle.text = item.segmentTitle
-        val scheduleAdapter = ScheduleAdapter()
+        val scheduleAdapter = ScheduleAdapter(clickListener)
         binding.rvListSchedule.adapter = scheduleAdapter
         scheduleAdapter.submitList(this.item.scheduleList)
     }

@@ -20,7 +20,7 @@
 
 
         <CheckBox
-            android:id="@+id/rb_done"
+            android:id="@+id/cb_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -41,8 +41,8 @@
             android:hint="이건 제목입니다."
             android:maxLines="1"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@id/rb_done"
-            app:layout_constraintTop_toTopOf="@id/rb_done"
+            app:layout_constraintStart_toEndOf="@id/cb_done"
+            app:layout_constraintTop_toTopOf="@id/cb_done"
             app:setTitle="@{schedule}" />
 
         <TextView
@@ -54,7 +54,7 @@
             android:maxLines="1"
             android:text="@{schedule.endTime}"
             android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@id/rb_done"
+            app:layout_constraintStart_toEndOf="@id/cb_done"
             app:layout_constraintTop_toBottomOf="@id/tv_main_title" />
 
 
@@ -64,7 +64,7 @@
             android:layout_height="16dp"
             android:layout_margin="8dp"
             android:src="@drawable/ic_repeat"
-            android:visibility="@{schedule.repeat == null ? View.GONE : View.VISIBLE }"
+            android:visibility="@{schedule.repetition == null ? View.GONE : View.VISIBLE }"
             app:layout_constraintBottom_toBottomOf="@id/tv_main_date"
             app:layout_constraintStart_toEndOf="@id/tv_main_date"
             app:layout_constraintTop_toTopOf="@id/tv_main_date" />
@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_main_group"
             app:layout_constraintStart_toStartOf="@id/iv_main_group"
             app:layout_constraintTop_toBottomOf="@id/iv_main_group"
-            app:participation="@{schedule}" />>
+            app:participation="@{schedule}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

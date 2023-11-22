@@ -46,7 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
                         getInstance(context).categoryDao().insertCategories(
                             listOf(
                                 Category("0", "전체 일정"),
-                                Category("1", "미분류 카테고리")
+                                Category("1", "미분류")
                             )
                         )
                     }

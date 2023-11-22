@@ -7,4 +7,8 @@
 
     <style name="Theme.PlanJ" parent="Base.Theme.PlanJ" />
 
+
+    <style name="dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

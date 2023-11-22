@@ -9,9 +9,9 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/fragment_list"
+        android:id="@+id/fragment_category"
         android:icon="@drawable/ic_list"
-        android:title="목록"
+        android:title="카테고리"
         app:showAsAction="always" />
 
     <item

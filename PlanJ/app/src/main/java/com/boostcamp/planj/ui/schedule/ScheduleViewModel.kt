@@ -77,7 +77,7 @@ class ScheduleViewModel @Inject constructor(
                 startTime = "2023-11-14T17:00:11",
                 endTime = "${scheduleEndDate.value}T1${scheduleEndTime.value}",
                 categoryTitle = scheduleCategory.value,
-                repeat = null,
+                repetition = null,
                 members = listOf(),
                 doneMembers = null,
                 location = locationInfo.value,

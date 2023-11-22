@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="categoryname"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_background"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp">
+
+
+        <TextView
+            android:id="@+id/tv_dialog_category_main_title"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@{categoryname == `` ? `카테고리 추가` : `카테고리 수정`}"
+            android:textColor="@color/main3"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_dialog_category_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="25"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_dialog_category_main_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_dialog_category_input_category_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="카테고리 입력"
+                android:textColorHint="@color/black"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/tv_dialog_category_success"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@{categoryname == `` ? `추가` : `수정`}"
+            android:textColor="@color/main3"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_dialog_category_layout" />
+
+        <TextView
+            android:id="@+id/tv_dialog_category_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="취소"
+            android:textColor="#FF5E5E"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tv_dialog_category_success"
+            app:layout_constraintTop_toBottomOf="@id/til_dialog_category_layout" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
