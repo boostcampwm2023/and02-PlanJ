@@ -5,7 +5,6 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
-import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
