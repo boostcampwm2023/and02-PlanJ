@@ -5,6 +5,7 @@ import { AddCategoryDto } from "./dto/add-category.dto";
 import { ulid } from "ulid";
 import { HttpResponse } from "src/utils/http.response";
 import { UserEntity } from "src/user/entity/user.entity";
+import { DeleteCategoryDto } from "./dto/delete-category.dto";
 
 @Injectable()
 export class CategoryRepository extends Repository<CategoryEntity> {
@@ -55,5 +56,25 @@ export class CategoryRepository extends Repository<CategoryEntity> {
       throw new NotFoundException("존재하지 않는 category uuid");
     }
     return category;
+  }
+
+  async deleteCategory(dto: DeleteCategoryDto) {
+    const { categoryUuid } = dto;
+
+    const records = await this.findOne({ where: { categoryUuid }, relations: ["scheduleMeta"] });
+
+    records.scheduleMeta.forEach((entity) => {
+      console.log(entity);
+      entity.softRemove();
+    });
+
+    await this.softDelete({ categoryUuid });
+
+    const body: HttpResponse = {
+      message: "카테고리 삭제 완료",
+      statusCode: 200,
+    };
+
+    return JSON.stringify(body);
   }
 }

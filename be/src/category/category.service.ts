@@ -4,6 +4,7 @@ import { CategoryRepository } from "./category.repository";
 import { UserEntity } from "src/user/entity/user.entity";
 import { AddCategoryDto } from "./dto/add-category.dto";
 import { CategoryEntity } from "./entity/category.entity";
+import { DeleteCategoryDto } from "./dto/delete-category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -18,5 +19,9 @@ export class CategoryService {
 
   async getCategoryEntity(categoryUuid: string): Promise<CategoryEntity> {
     return await this.categoryRepository.checkByCategoryUuid(categoryUuid);
+  }
+
+  async deleteCategory(dto: DeleteCategoryDto) {
+    return await this.categoryRepository.deleteCategory(dto);
   }
 }
