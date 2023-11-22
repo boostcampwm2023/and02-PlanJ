@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.R
@@ -86,9 +87,18 @@ fun TextView.setTitle(schedule: Schedule) {
 
 
 @BindingAdapter("setCategoryBackground")
-fun LinearLayout.setBackground(item : Category){
-    if(item.categoryId == "0")
+fun LinearLayout.setBackground(item: Category) {
+    if (item.categoryId == "0")
         setBackgroundResource(R.drawable.round_r8_main1)
     else
         setBackgroundResource(R.drawable.round_r8_main2)
+}
+
+@BindingAdapter("isPopUpMenuVisible")
+fun TextView.isPopUpMenuVisible(category: Category) {
+    visibility = if (category.categoryName == "전체 일정" || category.categoryName == "미분류") {
+        View.INVISIBLE
+    } else {
+        View.VISIBLE
+    }
 }

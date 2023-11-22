@@ -8,22 +8,62 @@
     <fragment
         android:id="@+id/fragment_home"
         android:name="com.boostcamp.planj.ui.main.HomeFragment"
-        android:label="HomeFragment" />
-    <fragment
-        android:id="@+id/fragment_list"
-        android:name="com.boostcamp.planj.ui.main.CategoryFragment"
-        android:label="ListFragment" />
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home"
+        >
+        <action
+            android:id="@+id/action_fragment_home_to_scheduleActivity2"
+            app:destination="@id/scheduleActivity" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_user"
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
-        android:label="SettingFragment" />
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting"
+        />
     <fragment
         android:id="@+id/fragment_friend_list"
         android:name="com.boostcamp.planj.ui.friendlist.FriendListFragment"
-        android:label="FriendListFragment" />
+        android:label="FriendListFragment"
+        tools:layout="@layout/fragment_friend_list"
+        />
     <activity
         android:id="@+id/activity_search"
         android:name="com.boostcamp.planj.ui.search.SearchActivity"
         android:label="activity_search"
         tools:layout="@layout/activity_search" />
+    <activity
+        android:id="@+id/categoryActivity"
+        android:name="com.boostcamp.planj.ui.category.CategoryDetailActivity"
+        android:label="CategoryActivity"
+        tools:layout="@layout/activity_category"
+        >
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+    </activity>
+    <fragment
+        android:id="@+id/fragment_category"
+        android:name="com.boostcamp.planj.ui.main.CategoryFragment"
+        android:label="CategoryFragment"
+        tools:layout="@layout/fragment_category">
+        <action
+            android:id="@+id/action_categoryFragment_to_categoryActivity"
+            app:destination="@id/categoryActivity"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <activity
+        android:id="@+id/scheduleActivity"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleActivity"
+        android:label="ScheduleActivity" >
+        <argument
+            android:name="schedule"
+            app:argType="com.boostcamp.planj.data.model.Schedule"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </activity>
 </navigation>

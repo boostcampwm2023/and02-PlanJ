@@ -33,4 +33,16 @@ class MainRepositoryImpl @Inject constructor(
     override fun getAllCategories(): Flow<List<Category>> {
         return db.categoryDao().getAllCategory()
     }
+
+    override suspend fun deleteCategory(category: Category) {
+        db.categoryDao().deleteCategory(category)
+    }
+
+    override suspend fun updateCategory(category: Category) {
+        db.categoryDao().updateCategory(category)
+    }
+
+    override suspend fun getCategoryTitleSchedule(title: String): List<Schedule> {
+        return db.categoryDao().getCategoryTitleSchedule(title)
+    }
 }
