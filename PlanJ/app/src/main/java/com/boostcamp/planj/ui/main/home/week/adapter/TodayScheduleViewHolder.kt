@@ -8,7 +8,7 @@ import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
 class TodayScheduleViewHolder(binding: ItemWeekScheduleBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    private val title = binding.vwScheduleTitle
+    private val title = binding.vwWeekScheduleTitle
 
     fun bind(item: Schedule) {
         title.text = item.title

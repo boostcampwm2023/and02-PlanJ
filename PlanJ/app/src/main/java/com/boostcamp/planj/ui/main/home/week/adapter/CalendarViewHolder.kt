@@ -16,10 +16,10 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: CalendarVO, temp: List<Schedule>) {
-        binding.tvDayNumber.text = item.dayNumber
-        binding.tvDayWeek.text = item.dayOfWeek
+        binding.tvWeekDayNumber.text = item.dayNumber
+        binding.tvWeekDayWeek.text = item.dayOfWeek
 
-        var today = binding.tvDayNumber.text
+        var today = binding.tvWeekDayNumber.text
 
         val now = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate.now()
@@ -35,38 +35,31 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
 
         val haveStart = temp.filter {
             it.startTime != null && it.startTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
-                .toInt()
+                .toInt() || it.startTime != it.endTime
         }
 
         val emptyStart =
-            temp.filter { it.startTime == null && it.endTime.split("[-:T]".toRegex())[2].toInt() > now.toInt() }
-
+            temp.filter { it.startTime == null && it.endTime.split("[-:T]".toRegex())[2].toInt() > now.toInt() || it.startTime == it.endTime }
         val endList = temp.filter {
-            it.endTime.split("[-:T]".toRegex())[2].toInt() == today.toString().toInt()
+            it.endTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
+                .toInt() || it.startTime != it.endTime
         }
-
-
         val totalList: MutableList<ScheduleType> = mutableListOf()
 
         haveStart.forEach { schedule: Schedule ->
             totalList.add(ScheduleType(schedule, 0))
         }
-
         endList.forEach { schedule: Schedule ->
             totalList.add(ScheduleType(schedule, 2))
         }
 
-
-
         if (today == now) {
-            binding.tvDayWeek.setBackgroundColor(R.color.main1)
-            binding.tvDayNumber.setBackgroundColor(R.color.main1)
+            binding.tvWeekDayWeek.setBackgroundColor(R.color.main1)
+            binding.tvWeekDayNumber.setBackgroundColor(R.color.main1)
 
             emptyStart.forEach { schedule: Schedule ->
                 totalList.add(ScheduleType(schedule, 1))
             }
-
-
 
             addAdapter(WeekScheduleAdapter(totalList))
 
@@ -81,8 +74,8 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
     }
 
     private fun addAdapter(weekScheduleAdapter: WeekScheduleAdapter) {
-        binding.rvDaySchedule.adapter = weekScheduleAdapter
-        binding.rvDaySchedule.layoutManager =
-            LinearLayoutManager(binding.rvDaySchedule.context)
+        binding.rvWeekDaySchedule.adapter = weekScheduleAdapter
+        binding.rvWeekDaySchedule.layoutManager =
+            LinearLayoutManager(binding.rvWeekDaySchedule.context)
     }
 }

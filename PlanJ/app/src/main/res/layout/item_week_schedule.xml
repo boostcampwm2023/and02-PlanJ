@@ -6,7 +6,7 @@
     android:layout_margin="1.5dp">
 
     <View
-        android:id="@+id/vw_schedule_color_bar"
+        android:id="@+id/vw_week_schedule_color_bar"
         android:layout_width="2dp"
         android:layout_height="14dp"
         android:layout_marginStart="1dp"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/vw_schedule_title"
+        android:id="@+id/vw_week_schedule_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -24,8 +24,8 @@
         android:maxLines="1"
         android:text="가가가각가가가"
         android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@id/vw_schedule_color_bar"
-        app:layout_constraintTop_toTopOf="@id/vw_schedule_color_bar" />
+        app:layout_constraintStart_toEndOf="@id/vw_week_schedule_color_bar"
+        app:layout_constraintTop_toTopOf="@id/vw_week_schedule_color_bar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
