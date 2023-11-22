@@ -15,10 +15,10 @@ export class ScheduleMetaEntity extends BaseEntity {
   description: string;
 
   @Column({ nullable: true, name: "start_time", type: "time", default: null })
-  startTime: Date;
+  startTime: string;
 
   @Column({ name: "end_time", type: "time" })
-  endTime: Date;
+  endTime: string;
 
   /*
    * relation

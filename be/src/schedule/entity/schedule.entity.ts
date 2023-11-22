@@ -10,10 +10,10 @@ export class ScheduleEntity extends BaseEntity {
   scheduleUuid: string;
 
   @Column({ nullable: true, default: null })
-  startAt: Date;
+  startAt: string;
 
   @Column()
-  endAt: Date;
+  endAt: string;
 
   @Column({ default: false })
   finished: boolean;
