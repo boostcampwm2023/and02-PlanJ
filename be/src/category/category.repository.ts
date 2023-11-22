@@ -61,10 +61,9 @@ export class CategoryRepository extends Repository<CategoryEntity> {
   async deleteCategory(dto: DeleteCategoryDto) {
     const { categoryUuid } = dto;
 
-    const records = await this.findOne({ where: { categoryUuid }, relations: ["scheduleMeta"] });
+    const record = await this.findOne({ where: { categoryUuid }, relations: ["scheduleMeta"] });
 
-    records.scheduleMeta.forEach((entity) => {
-      console.log(entity);
+    record.scheduleMeta.forEach((entity) => {
       entity.softRemove();
     });
 
