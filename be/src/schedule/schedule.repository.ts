@@ -5,6 +5,7 @@ import { ulid } from "ulid";
 import { ScheduleEntity } from "./entity/schedule.entity";
 import { HttpResponse } from "src/utils/http.response";
 import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 
 @Injectable()
 export class ScheduleRepository extends Repository<ScheduleEntity> {
@@ -13,13 +14,13 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
   }
 
   async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetaEntity) {
-    const { startAt, endAt } = dto;
+    const { endAt } = dto;
 
     const scheduleUuid = ulid();
 
     const schedule = this.create({
       scheduleUuid,
-      startAt,
+      startAt: null,
       endAt,
       finished: false,
       failed: false,
@@ -40,6 +41,35 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
 
       return JSON.stringify(body);
     } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getMetadataIdByScheduleUuid(scheduleUuid: string): Promise<number> {
+    const record = await this.findOne({ where: { scheduleUuid }, relations: ["parent"] });
+    return record.parent.metadataId;
+  }
+
+  async updateSchedule(dto: UpdateScheduleDto): Promise<string> {
+    const { scheduleUuid, startAt, endAt } = dto;
+    const record = await this.findOne({ where: { scheduleUuid } });
+    record.startAt = startAt;
+    record.endAt = endAt;
+
+    try {
+      await this.save(record);
+      const body: HttpResponse = {
+        message: "일정 수정 성공",
+        statusCode: 200,
+        data: {
+          scheduleUuid: scheduleUuid,
+        },
+      };
+
+      return JSON.stringify(body);
+    } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

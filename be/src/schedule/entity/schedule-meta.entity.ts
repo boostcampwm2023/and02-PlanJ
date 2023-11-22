@@ -11,14 +11,14 @@ export class ScheduleMetaEntity extends BaseEntity {
   @Column({ length: 20 })
   title: string;
 
-  @Column({ length: 256 })
+  @Column({ length: 256, nullable: true, default: null })
   description: string;
 
   @Column({ nullable: true, name: "start_time", type: "time", default: null })
-  startTime: Date;
+  startTime: string;
 
   @Column({ name: "end_time", type: "time" })
-  endTime: Date;
+  endTime: string;
 
   /*
    * relation
