@@ -1,6 +1,8 @@
 package com.boostcamp.planj.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class SignUpResult(
-    val statusCode : String,
-    val message : String
+    @SerializedName("statusCode") val statusCode : String,
+    @SerializedName("message") val message : String
 )

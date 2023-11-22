@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.main
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentTodayBinding
 import com.boostcamp.planj.ui.main.adapter.SegmentScheduleAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -31,10 +33,16 @@ class TodayFragment : Fragment() {
 
     private val viewModel: TodayViewModel by viewModels()
 
-    //더미 일정
-    private val dummyList = DummySchedule.getDummyList()
-
     private lateinit var swipeListener : SwipeListener
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentTodayBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,19 +57,46 @@ class TodayFragment : Fragment() {
             "${str_date[0]}월 ${str_date[1]}일"
         }
         initBinding(today)
-        swipeListener = SwipeListener {position ->
-            val deleteSchedule = viewModel.deleteSchedule(position)
-            Snackbar.make(view, "Book has deleted", Snackbar.LENGTH_SHORT).apply {
-                setAction("Undo") {
-                    viewModel.insertSchedule(deleteSchedule)
+        setObserver()
+        initAdapter(view)
+        binding.executePendingBindings()
+    }
+
+    private fun setObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest {
+                    Log.d("UISTATE", "$it")
+                    when (it) {
+                        UiState.Success -> {
+                            binding.rvTodayListSchedule.visibility = View.VISIBLE
+                        }
+
+                        UiState.Loading -> {
+                            binding.rvTodayListSchedule.visibility = View.GONE
+                        }
+
+                        UiState.Error -> {}
+                    }
                 }
-            }.show()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.schedules.collectLatest {
-                    initAdapter(it)
+                    val list = resources.getStringArray(R.array.today_list)
+                    it.sortedBy { schedule -> schedule.scheduleId }
+                    val segment = listOf(
+                        it.filter { s -> !s.finished },
+                        it.filter { s -> s.finished && !s.failed },
+                        it.filter { s -> s.finished && s.failed }
+                    )
+                    val sm = mutableListOf<ScheduleSegment>()
+                    list.forEachIndexed { index, s ->
+                        sm.add(ScheduleSegment(s, segment[index]))
+                    }
+                    segmentScheduleAdapter.submitList(sm)
                 }
             }
         }
@@ -74,21 +109,27 @@ class TodayFragment : Fragment() {
     }
 
 
-    private fun initAdapter(scheduleList: List<Schedule>) {
-        segmentScheduleAdapter = SegmentScheduleAdapter(scheduleList, swipeListener)
-        binding.rvMainSchedule.adapter = segmentScheduleAdapter
-        val list = resources.getStringArray(R.array.today_list).toList()
-        segmentScheduleAdapter.submitList(list)
+    private fun initAdapter(view: View) {
+        swipeListener = SwipeListener { schedule ->
+
+            viewModel.deleteSchedule(schedule)
+
+            Snackbar.make(view, "일정 삭제", Snackbar.LENGTH_SHORT).apply {
+                setAction("되돌기기") {
+                    viewModel.insertSchedule(schedule)
+                }
+                setAnchorView(R.id.bottom_navigation)
+            }.show()
+        }
+        val clickListener = ScheduleClickListener {
+            val action = HomeFragmentDirections.actionFragmentHomeToScheduleActivity2(it)
+            findNavController().navigate(action)
+        }
+        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, clickListener)
+        binding.rvTodayListSchedule.adapter = segmentScheduleAdapter
+        segmentScheduleAdapter.submitList(emptyList())
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTodayBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onDestroyView() {
         _binding = null

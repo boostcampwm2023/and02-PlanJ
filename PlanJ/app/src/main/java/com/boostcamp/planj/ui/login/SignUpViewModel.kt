@@ -61,7 +61,10 @@ class SignUpViewModel @Inject constructor(
         userPwd.value.let { userPwd ->
             _pwdState.value = if (userPwd.length < 8 || userPwd.length > 16) {
                 PwdState.ERROR_LENGTH
-            } else if (!userPwd.contains(regexEnglish) || !userPwd.contains(regexNum) || !userPwd.contains(regexSpecial)) {
+            } else if (!userPwd.contains(regexEnglish) || !userPwd.contains(regexNum) || !userPwd.contains(
+                    regexSpecial
+                )
+            ) {
                 PwdState.ERROR_CONTENTS
             } else {
                 PwdState.AVAILABLE

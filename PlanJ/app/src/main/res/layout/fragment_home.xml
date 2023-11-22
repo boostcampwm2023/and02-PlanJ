@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tb_main"
+        android:id="@+id/tb_home_main"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,36 +23,34 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Home"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/main1"
             android:gravity="center"
-            />
+            android:text="Home"
+            android:textColor="@color/main1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+        android:id="@+id/tab_layout_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tb_main"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tb_home_main">
 
 
     </com.google.android.material.tabs.TabLayout>
 
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_main"
+        android:id="@+id/view_pager_home"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout_home" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

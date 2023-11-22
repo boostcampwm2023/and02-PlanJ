@@ -15,9 +15,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.vpMain.adapter = MyFragmentPagerAdapter(this)
+        binding.viewPagerHome.adapter = MyFragmentPagerAdapter(this)
         val title = listOf("Today", "Week")
-        TabLayoutMediator(binding.tabLayout, binding.vpMain) { tab, position ->
+        TabLayoutMediator(binding.tabLayoutHome, binding.viewPagerHome) { tab, position ->
             tab.text = title[position]
         }.attach()
     }

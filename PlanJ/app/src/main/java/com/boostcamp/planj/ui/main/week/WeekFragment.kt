@@ -6,13 +6,10 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -22,10 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.FragmentWeekBinding
-import com.boostcamp.planj.ui.main.DummySchedule
 import com.boostcamp.planj.ui.main.week.adapter.CalendarAdapter
 import com.boostcamp.planj.ui.main.week.adapter.CalendarVO
-import com.boostcamp.planj.ui.main.week.adapter.ScheduleSimpleVIewAdapter
+import com.boostcamp.planj.ui.main.week.adapter.ScheduleSimpleViewAdapter
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -39,7 +35,7 @@ class WeekFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val scheduleList = DummySchedule.getDummyList()
+        val scheduleList = listOf<Schedule>()
 
         initAdapter(scheduleList)
         resultSchedule(scheduleList)
@@ -161,7 +157,7 @@ class WeekFragment : Fragment() {
         }
 
         val scheduleView = view.findViewById<RecyclerView>(R.id.rv_dialog_week_schedule)
-        scheduleView.adapter = ScheduleSimpleVIewAdapter(list)
+        scheduleView.adapter = ScheduleSimpleViewAdapter(list)
         scheduleView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
 

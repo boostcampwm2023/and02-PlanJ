@@ -20,15 +20,14 @@
     <string name="email_condition">*******@****.***</string>
     <string name="password_condition">영문, 숫자, 특수문자 1자이상 포함, 8자 이상 16자 이하</string>
     <string name="nickname_condition">2자 이상 12자 이하</string>
-    <string name="Complete">완료</string>
     <string name="add_schedule">일정 추가</string>
     <string name="uncategorized">미분류</string>
-    <string name="enter_title">제목을 입력해주세요</string>
+    <string name="schedule_title">제목</string>
     <string name="start">시작</string>
     <string name="not_set">설정 안함</string>
     <string name="end">종료</string>
     <string name="alarm">알림</string>
-    <string name="repeat_setting">반복 설정</string>
+    <string name="repetition">반복</string>
     <string name="location">위치</string>
     <string name="memo">추가 메모</string>
     <string name="category">카테고리</string>
@@ -37,9 +36,30 @@
     <string name="completeSchedule">성공한 일정\n</string>
     <string name="failSchedule">실패한 일정\n</string>
     <string name="haveSchedule">남은 일정\n</string>
+    <string name="edit_schedule">수정</string>
+    <string name="delete_schedule">삭제</string>
+    <string name="schedule_title_condition">25자 이내</string>
+    <string name="cancel">취소</string>
+    <string name="daily">매일</string>
+    <string name="weekly">매주</string>
+    <string name="end_time">종료 시간</string>
+    <string name="departure_time">출발 시간</string>
+    <string name="delete_start_date_time">시작 날짜 삭제</string>
+    <string name="participants">참가자</string>
+    <string name="see_all">전체 보기</string>
+    <string name="user_profile_image">프로필 이미지</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>
         <item>실패</item>
+    </string-array>
+    <string-array name="calendar_day">
+        <item>일</item>
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
     </string-array>
 </resources>
