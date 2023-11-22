@@ -9,7 +9,7 @@ export class ScheduleEntity extends BaseEntity {
   @Column({ length: 26, name: "schedule_uuid" })
   scheduleUuid: string;
 
-  @Column()
+  @Column({ nullable: true, default: null })
   startAt: Date;
 
   @Column()

@@ -13,13 +13,13 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
   }
 
   async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetaEntity) {
-    const { startAt, endAt } = dto;
+    const { endAt } = dto;
 
     const scheduleUuid = ulid();
 
     const schedule = this.create({
       scheduleUuid,
-      startAt,
+      startAt: null,
       endAt,
       finished: false,
       failed: false,
@@ -40,6 +40,7 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
 
       return JSON.stringify(body);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

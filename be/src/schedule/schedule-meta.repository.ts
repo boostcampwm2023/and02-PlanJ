@@ -13,10 +13,11 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
   }
 
   async addScheduleMeta(dto: AddScheduleDto, user: UserEntity, category: CategoryEntity): Promise<ScheduleMetaEntity> {
-    const { categoryUuid, title, description, startAt, endAt } = dto;
+    const { title, endAt } = dto;
 
-    const startTime = startAt.split("T")[1];
-    const endTime = endAt.split("T")[1];
+    const description = null;
+    const startTime = null;
+    const [, endTime] = endAt.split("T");
 
     const scheduleMetadata = this.create({ title, description, startTime, endTime, user, category });
 
@@ -24,6 +25,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
       await this.save(scheduleMetadata);
       return scheduleMetadata;
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

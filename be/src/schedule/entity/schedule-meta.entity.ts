@@ -11,7 +11,7 @@ export class ScheduleMetaEntity extends BaseEntity {
   @Column({ length: 20 })
   title: string;
 
-  @Column({ length: 256 })
+  @Column({ length: 256, nullable: true, default: null })
   description: string;
 
   @Column({ nullable: true, name: "start_time", type: "time", default: null })
