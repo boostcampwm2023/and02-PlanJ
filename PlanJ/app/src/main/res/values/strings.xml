@@ -49,6 +49,7 @@
     <string name="see_all">전체 보기</string>
     <string name="user_profile_image">프로필 이미지</string>
     <string name="friends">Friends</string>
+    <string name="close">닫기</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

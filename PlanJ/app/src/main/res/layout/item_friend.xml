@@ -8,6 +8,10 @@
         <variable
             name="user"
             type="com.boostcamp.planj.data.model.User" />
+
+        <variable
+            name="listener"
+            type="com.boostcamp.planj.ui.main.friendlist.FriendClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,6 +19,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:paddingHorizontal="8dp"
+        android:onClick="@{() -> listener.onClick(user)}"
         android:paddingVertical="12dp">
 
         <ImageView

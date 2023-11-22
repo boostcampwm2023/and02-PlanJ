@@ -9,8 +9,9 @@ import com.boostcamp.planj.databinding.ItemFriendBinding
 class FriendAdapterViewHolder(private val binding: ItemFriendBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(user: User) {
+    fun bind(user: User, listener: FriendClickListener) {
         binding.user = user
+        binding.listener = listener
     }
 
     companion object {

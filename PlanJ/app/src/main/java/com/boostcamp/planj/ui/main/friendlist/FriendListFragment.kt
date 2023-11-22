@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.main.friendlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.databinding.FragmentFriendListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +23,15 @@ class FriendListFragment : Fragment() {
     private val binding get() = _binding!!
     val viewModel: FriendListViewModel by viewModels()
 
-    private val friendAdapter = FriendAdapter()
+    private lateinit var friendAdapter: FriendAdapter
+
+    val bundle by lazy {
+        Bundle()
+    }
+
+    val friendInfoDialog by lazy {
+        FriendInfoDialog()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,13 +46,26 @@ class FriendListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rvFriendListFriends.adapter = friendAdapter
+        initAdapter()
         setObserver()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun initAdapter() {
+        val listener = object : FriendClickListener {
+            override fun onClick(user: User) {
+                Log.d("user클릭", user.toString())
+                bundle.putParcelable("user", user)
+                friendInfoDialog.arguments = bundle
+                friendInfoDialog.show(childFragmentManager, "친구 정보")
+            }
+        }
+        friendAdapter = FriendAdapter(listener)
+        binding.rvFriendListFriends.adapter = friendAdapter
     }
 
     private fun setObserver() {

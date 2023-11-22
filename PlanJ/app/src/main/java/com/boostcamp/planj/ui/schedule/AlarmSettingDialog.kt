@@ -41,6 +41,11 @@ class AlarmSettingDialog : DialogFragment() {
         context?.setDialogSize(this)
     }
 
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     private fun setVisibility() {
         with(binding) {
             rgDialogAlarmMode.setOnCheckedChangeListener { _, i ->

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.User
 
-class FriendAdapter :
+class FriendAdapter(private val listener: FriendClickListener) :
     ListAdapter<User, FriendAdapterViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendAdapterViewHolder {
@@ -13,7 +13,7 @@ class FriendAdapter :
     }
 
     override fun onBindViewHolder(holder: FriendAdapterViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), listener)
     }
 
     companion object {
