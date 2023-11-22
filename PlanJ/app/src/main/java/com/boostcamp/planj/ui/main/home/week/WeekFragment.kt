@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
@@ -89,57 +89,40 @@ class WeekFragment : Fragment() {
         val finishList = scheduleList.filter { schedule: Schedule ->
             schedule.failed.not() && schedule.finished
         }
-        val countFinish = SpannableString(
-            binding.btnWeekFinish.text.toString().plus("${finishList.size}")
-        )
-
-        countFinish.setSpan(
-            ForegroundColorSpan(Color.BLUE),
-            binding.btnWeekFinish.text.length,
-            countFinish.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.btnWeekFinish.text = countFinish
-        binding.btnWeekFinish.setOnClickListener {
-            makeDialog(finishList, true)
-        }
+        setResultBtn(binding.btnWeekFinish, finishList, Color.BLUE)
 
 
         val failList = scheduleList.filter { schedule: Schedule -> schedule.failed }
-        val countFail =
-            SpannableString(binding.btnWeekFail.text.toString().plus("${failList.size}"))
-
-        countFail.setSpan(
-            ForegroundColorSpan(Color.RED),
-            binding.btnWeekFail.text.length,
-            countFail.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.btnWeekFail.text = countFail
-
-        binding.btnWeekFail.setOnClickListener {
-            makeDialog(failList, true)
-        }
-
+        setResultBtn(binding.btnWeekFail, failList, Color.RED)
 
         val haveList = scheduleList.filter { schedule: Schedule -> schedule.finished.not() }
-        val countHave =
-            SpannableString(binding.btnWeekHave.text.toString().plus("${haveList.size}"))
+        setResultBtn(binding.btnWeekHave, haveList, Color.BLACK)
 
-        countHave.setSpan(
-            ForegroundColorSpan(Color.BLACK),
-            binding.btnWeekHave.text.length,
-            countHave.length,
+
+    }
+
+    private fun setResultBtn(
+        resultBtn: AppCompatButton,
+        scheduleList: List<Schedule>,
+        color: Int
+    ) {
+        val countText = SpannableString(
+            resultBtn.text.toString().plus("${scheduleList.size}")
+        )
+
+        countText.setSpan(
+            ForegroundColorSpan(color),
+            resultBtn.text.length,
+            countText.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        binding.btnWeekHave.text = countHave
-
-        binding.btnWeekHave.setOnClickListener {
-            makeDialog(haveList, true)
+        resultBtn.text = countText
+        resultBtn.setOnClickListener {
+            makeDialog(scheduleList)
         }
     }
 
-    fun makeDialog(list: List<Schedule>, complete: Boolean) {
+    private fun makeDialog(list: List<Schedule>) {
 
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.dialog_schedule_result, null)
@@ -148,14 +131,14 @@ class WeekFragment : Fragment() {
             .setView(view)
             .create()
 
-        val close = view.findViewById<ImageView>(R.id.iv_dialog_close)
+        val close = view.findViewById<ImageView>(R.id.iv_dialog_schedule_result_close)
         close.setOnClickListener {
             dialog.dismiss()
         }
 
-        val scheduleView = view.findViewById<RecyclerView>(R.id.rv_dialog_week_schedule)
+        val scheduleView =
+            view.findViewById<RecyclerView>(R.id.rv_dialog_schedule_result_week_schedule)
         scheduleView.adapter = ScheduleSimpleViewAdapter(list)
-        scheduleView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
 
         dialog.show()
