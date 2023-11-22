@@ -6,7 +6,7 @@
 
         <variable
             name="view"
-            type="com.boostcamp.planj.ui.main.CategoryFragment" />
+            type="com.boostcamp.planj.ui.main.category.CategoryFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

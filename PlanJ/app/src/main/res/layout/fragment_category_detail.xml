@@ -6,7 +6,7 @@
 
         <variable
             name="viewmodel"
-            type="com.boostcamp.planj.ui.category.CategoryDetailViewModel" />
+            type="com.boostcamp.planj.ui.categorydetail.CategoryDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

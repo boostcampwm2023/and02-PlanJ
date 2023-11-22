@@ -19,7 +19,7 @@
     </activity>
     <fragment
         android:id="@+id/categoryDetailFragment"
-        android:name="com.boostcamp.planj.ui.category.CategoryDetailFragment"
+        android:name="com.boostcamp.planj.ui.categorydetail.CategoryDetailFragment"
         android:label="CategoryDetailFragment"
         tools:layout="@layout/fragment_category_detail"
         >

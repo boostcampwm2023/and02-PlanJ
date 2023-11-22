@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_home_main"
@@ -28,20 +27,16 @@
             android:textColor="@color/main1"
             android:textSize="24sp"
             android:textStyle="bold" />
-
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tb_home_main">
-
-
-    </com.google.android.material.tabs.TabLayout>
-
+        app:layout_constraintTop_toBottomOf="@id/tb_home_main" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager_home"
@@ -51,6 +46,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout_home" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,7 @@ class ScheduleDialog(
     private val initText: String,
     private val listener: (Schedule) -> Unit
 ) : DialogFragment() {
+
     private var _binding: DialogAddScheduleBinding? = null
     private val binding: DialogAddScheduleBinding get() = _binding!!
 
@@ -26,7 +27,6 @@ class ScheduleDialog(
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.dialog)
         isCancelable = true
-
     }
 
     override fun onCreateView(
