@@ -7,6 +7,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { HttpResponse } from "src/utils/http.response";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleMetaService {
@@ -90,5 +91,16 @@ export class ScheduleMetaService {
     lastDay.toISOString();
 
     return { firstDay, lastDay };
+  }
+
+  async deleteScheduleMeta(metadataId: number): Promise<string> {
+    await this.scheduleMetaRepository.deleteScheduleMeta(metadataId);
+
+    const body: HttpResponse = {
+      message: "일정 삭제 성공",
+      statusCode: 200,
+    };
+
+    return JSON.stringify(body);
   }
 }
