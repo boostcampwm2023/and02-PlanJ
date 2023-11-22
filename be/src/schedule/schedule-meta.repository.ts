@@ -7,6 +7,7 @@ import { ulid } from "ulid";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
@@ -79,5 +80,14 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
       .getMany();
 
     return founds;
+  }
+
+  async deleteScheduleMeta(metadataId: number): Promise<void> {
+    try {
+      await this.softDelete({ metadataId });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 }
