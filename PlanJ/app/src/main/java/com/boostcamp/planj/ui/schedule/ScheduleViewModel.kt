@@ -35,10 +35,26 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
     val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
 
-    private val _members = MutableStateFlow(listOf(User("1111"), User("2222"), User("3333"), User("4444")))
+    private val _members = MutableStateFlow(
+        listOf(
+            User("1111", "1111", "1111"),
+            User("2222", "2222", "2222"),
+            User("3333", "3333", "3333"),
+            User("4444", "4444", "4444"),
+            User("5555", "5555", "5555"),
+            User("6666", "6666", "6666")
+        )
+    )
     val members: StateFlow<List<User>> = _members
 
-    private val _doneMembers = MutableStateFlow<List<User>?>(null)
+    private val _doneMembers = MutableStateFlow<List<User>?>(
+        listOf(
+            User("2222", "2222", "2222"),
+            User("3333", "3333", "3333"),
+            User("5555", "5555", "5555"),
+            User("6666", "6666", "6666")
+        )
+    )
     val doneMembers: StateFlow<List<User>?> = _doneMembers
 
     private val _scheduleAlarm = MutableStateFlow<String?>(null)
