@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="카테고리 입력"
+                android:textColorHint="@color/black"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"

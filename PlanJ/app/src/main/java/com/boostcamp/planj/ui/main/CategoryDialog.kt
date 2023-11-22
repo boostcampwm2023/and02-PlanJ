@@ -1,13 +1,11 @@
-package com.boostcamp.planj.ui.category
+package com.boostcamp.planj.ui.main
 
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
@@ -27,7 +25,6 @@ class CategoryDialog(private val title: String = "", private val listener: (Cate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DialogAddCategoryBinding.inflate(layoutInflater)
         isCancelable = true
         setStyle(STYLE_NO_TITLE, R.style.dialog)
     }
