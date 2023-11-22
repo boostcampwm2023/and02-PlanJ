@@ -10,6 +10,7 @@ hiltAndroid = "2.44"
 junit = "4.13.2"
 kotlinxSerializationJson = "1.6.1"
 lifecycleViewmodelKtx = "2.6.2"
+mapSdk = "3.17.0"
 material = "1.10.0"
 jetbrainsGradlePlugin = "1.8.0"
 hiltGradlePlugin = "2.44"
@@ -40,6 +41,7 @@ hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hil
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "mapSdk" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }

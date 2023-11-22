@@ -7,5 +7,25 @@
     <fragment
         android:id="@+id/scheduleFragment"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleFragment"
-        android:label="ScheduleFragment" />
+        android:label="ScheduleFragment" >
+        <action
+            android:id="@+id/action_scheduleFragment_to_scheduleMapFragment"
+            app:destination="@id/scheduleMapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scheduleMapFragment"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleMapFragment"
+        android:label="ScheduleMapFragment" >
+        <argument
+            android:name="location"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_scheduleMapFragment_to_scheduleMapSearchFragment"
+            app:destination="@id/scheduleMapSearchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scheduleMapSearchFragment"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleMapSearchFragment"
+        android:label="ScheduleMapSearchFragment" />
 </navigation>

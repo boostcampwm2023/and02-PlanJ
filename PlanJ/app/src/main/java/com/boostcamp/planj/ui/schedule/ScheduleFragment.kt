@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
@@ -191,6 +192,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.ivScheduleMap.setOnClickListener {
             // TODO: 지도 이동
+            val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.locationInfo.value)
+            findNavController().navigate(action)
         }
     }
 
