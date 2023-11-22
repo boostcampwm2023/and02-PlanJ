@@ -4,6 +4,7 @@ import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
 import { ScheduleRepository } from "./schedule.repository";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleService {
@@ -22,5 +23,9 @@ export class ScheduleService {
 
   async updateSchedule(dto: UpdateScheduleDto): Promise<string> {
     return await this.scheduleRepository.updateSchedule(dto);
+  }
+
+  async deleteSchedule(dto: DeleteScheduleDto) {
+    return await this.scheduleRepository.deleteSchedule(dto);
   }
 }

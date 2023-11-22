@@ -5,6 +5,7 @@ import { ScheduleService } from "src/schedule/schedule.service";
 import { UserService } from "src/user/user.service";
 import { CategoryService } from "src/category/category.service";
 import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
+import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleApiService {
@@ -38,5 +39,11 @@ export class ScheduleApiService {
   async getWeeklySchedule(userUuid: string, date: Date): Promise<string> {
     const user = await this.userService.getUserEntity(userUuid);
     return await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+  }
+
+  async deleteSchedule(dto: DeleteScheduleDto): Promise<string> {
+    const user = await this.userService.getUserEntity(dto.userUuid);
+    const metadataId = await this.scheduleService.deleteSchedule(dto);
+    return await this.scheduleMetaService.deleteScheduleMeta(metadataId);
   }
 }
