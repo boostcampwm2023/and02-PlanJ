@@ -1,9 +1,7 @@
-import { ScheduleRepository } from "./schedule.repository";
 import { DataSource, Repository } from "typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { ulid } from "ulid";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
@@ -79,5 +77,14 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
       .getMany();
 
     return founds;
+  }
+
+  async deleteScheduleMeta(metadataId: number): Promise<void> {
+    try {
+      await this.softDelete({ metadataId });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 }

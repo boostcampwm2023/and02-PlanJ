@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ScheduleMetaEntity } from "./schedule-meta.entity";
 
 @Entity("Schedule")
@@ -26,6 +26,9 @@ export class ScheduleEntity extends BaseEntity {
 
   @Column({ default: true })
   last: boolean;
+
+  @DeleteDateColumn({ default: null, name: "deleted_at" })
+  deletedAt: Date | null;
 
   /*
    * relation

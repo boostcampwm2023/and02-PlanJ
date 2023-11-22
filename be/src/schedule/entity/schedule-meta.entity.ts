@@ -1,4 +1,13 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ScheduleEntity } from "./schedule.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
@@ -19,6 +28,9 @@ export class ScheduleMetaEntity extends BaseEntity {
 
   @Column({ name: "end_time", type: "time" })
   endTime: string;
+
+  @DeleteDateColumn({ default: null, name: "deleted_at" })
+  deletedAt: Date | null;
 
   /*
    * relation
