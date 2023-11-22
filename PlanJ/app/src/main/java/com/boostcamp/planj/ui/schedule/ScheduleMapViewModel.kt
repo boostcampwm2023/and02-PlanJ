@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Address
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.repository.SearchRepository
-import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +19,8 @@ class ScheduleMapViewModel @Inject constructor(
     private val searchRepository: SearchRepository
 ) : ViewModel() {
 
-    private val _location = MutableStateFlow<Location>(Location("", "", ""))
-    val location: StateFlow<Location> = _location.asStateFlow()
+    private val _location = MutableStateFlow<Location?>(null)
+    val location: StateFlow<Location?> = _location.asStateFlow()
 
     private val _clicked = MutableStateFlow(false)
     val clicked: StateFlow<Boolean> = _clicked.asStateFlow()
@@ -39,8 +38,8 @@ class ScheduleMapViewModel @Inject constructor(
         }
     }
 
-    fun getLocation(latLng: LatLng, addressName : String){
-        _location.value = Location(addressName, latLng.latitude.toString(), latLng.longitude.toString())
+    fun setLocation(location : Location?){
+        _location.value = location
     }
 
 

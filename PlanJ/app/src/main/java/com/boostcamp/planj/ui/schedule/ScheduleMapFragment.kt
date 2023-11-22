@@ -14,7 +14,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.databinding.FragmentScheduleMapBinding
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -35,10 +39,11 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
 
     private val viewModel: ScheduleMapViewModel by viewModels()
-    private lateinit var adapter: ScheduleSearchAdapter
-    private lateinit var mapView : MapView
-    private lateinit var naverMap : NaverMap
+    private val args : ScheduleMapFragmentArgs by navArgs()
 
+    private lateinit var adapter: ScheduleSearchAdapter
+    private lateinit var mapView: MapView
+    private lateinit var naverMap: NaverMap
     private val marker = Marker()
 
     override fun onCreateView(
@@ -56,11 +61,24 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         mapView = binding.fragmentContainMap
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-
+        setListener()
         getFocus()
         mapSearch()
         initAdapter()
         setObserver()
+    }
+
+    private fun setListener() {
+        binding.tilScheduleMapSearch.setEndIconOnClickListener {
+            marker.map = null
+            adapter.submitList(emptyList())
+            binding.tietScheduleMapSearchInput.setText("")
+            viewModel.setLocation(null)
+        }
+        binding.btScheduleMapSelectPlace.setOnClickListener {
+            val action = ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(viewModel.location.value)
+            findNavController().navigate(action)
+        }
     }
 
     override fun onStart() {
@@ -104,10 +122,11 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         naverMap.setOnMapClickListener { _, latLng ->
             getMarker(latLng)
         }
+        viewModel.setLocation(args.location)
     }
 
 
-    private fun getMarker(latLng: LatLng){
+    private fun getMarker(latLng: LatLng) {
         marker.map = null
         marker.position = latLng
         marker.map = naverMap
@@ -116,7 +135,6 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getAddress(latLng: LatLng) {
-        // Geocoder 선언
         val geocoder = Geocoder(requireContext(), Locale.KOREAN)
 
         // 안드로이드 API 레벨이 33 이상인 경우
@@ -125,27 +143,37 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
                 latLng.latitude, latLng.longitude, 1
             ) { address ->
                 if (address.size != 0) {
-                    viewModel.getLocation(latLng, address[0].getAddressLine(0))
+                    viewModel.setLocation(
+                        Location(
+                            address[0].getAddressLine(0),
+                            address[0].getAddressLine(0),
+                            latLng.latitude.toString(),
+                            latLng.longitude.toString()
+                        )
+                    )
                 }
             }
         } else { // API 레벨이 33 미만인 경우
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (addresses != null) {
-                viewModel.getLocation(latLng, addresses[0].getAddressLine(0))
+                viewModel.setLocation(
+                    Location(
+                        addresses[0].getAddressLine(0),
+                        addresses[0].getAddressLine(0),
+                        latLng.latitude.toString(),
+                        latLng.longitude.toString()
+                    )
+                )
             }
         }
     }
+
     private fun initAdapter() {
-        val clickListener = SearchMapClickListener{
-            binding.tietScheduleMapSearchInput.setText(it.placeName)
-            binding.tietScheduleMapSearchInput.setSelection(it.placeName.length)
+        val clickListener = SearchMapClickListener {
+            viewModel.setLocation(
+                Location(it.placeName, it.addressName, it.y, it.x)
+            )
             viewModel.changeClick()
-            val camera = CameraUpdate.scrollTo(LatLng(it.y.toDouble(),it.x.toDouble()))
-                .animate(CameraAnimation.Linear)
-            naverMap.moveCamera(camera)
-            marker.map = null
-            marker.position = LatLng( it.y.toDouble(),it.x.toDouble())
-            marker.map = naverMap
         }
 
         adapter = ScheduleSearchAdapter(clickListener)
@@ -158,6 +186,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         )
         adapter.submitList(emptyList())
     }
+
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -174,7 +203,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.clicked.collectLatest {
-                    if(it) {
+                    if (it) {
                         adapter.submitList(emptyList())
                     }
                 }
@@ -184,7 +213,24 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.location.collectLatest {
-                    binding.tietScheduleMapSearchInput.setText(it.address)
+                    it?.let { location ->
+                        if (location.address.isNotEmpty()) {
+                            binding.tietScheduleMapSearchInput.setText(location.placeName)
+                            binding.tietScheduleMapSearchInput.setSelection(location.placeName.length)
+                            val camera = CameraUpdate.scrollTo(
+                                LatLng(
+                                    location.latitude.toDouble(),
+                                    location.longitude.toDouble()
+                                )
+                            )
+                                .animate(CameraAnimation.Linear)
+                            naverMap.moveCamera(camera)
+                            marker.map = null
+                            marker.position =
+                                LatLng(it.latitude.toDouble(), it.longitude.toDouble())
+                            marker.map = naverMap
+                        }
+                    }
                 }
             }
         }
@@ -192,17 +238,17 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
 
     private fun mapSearch() {
         binding.tietScheduleMapSearchInput.addTextChangedListener { text ->
-                text?.let {
-                    val query = it.toString().trim()
-                    if(viewModel.clicked.value){
-                        viewModel.changeClick()
-                    }
-                    if (query.isNotEmpty()) {
-                        viewModel.searchMap(query)
-                    } else {
-                        adapter.submitList(emptyList())
-                    }
+            text?.let {
+                val query = it.toString().trim()
+                if (viewModel.clicked.value) {
+                    viewModel.changeClick()
                 }
+                if (query.isNotEmpty()) {
+                    viewModel.searchMap(query)
+                } else {
+                    adapter.submitList(emptyList())
+                }
+            }
         }
     }
 

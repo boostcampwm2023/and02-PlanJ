@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
@@ -46,7 +47,7 @@ class ScheduleViewModel @Inject constructor(
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
-    val locationInfo = MutableStateFlow<String?>(null)
+    val locationInfo = MutableStateFlow<Location?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd")
@@ -93,6 +94,10 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
+    fun setLocation(location: Location?){
+        locationInfo.value = location
+    }
+
     fun startEditingSchedule() {
         _isEditMode.value = true
     }
@@ -114,7 +119,7 @@ class ScheduleViewModel @Inject constructor(
                 repetition = null,
                 members = listOf(),
                 doneMembers = null,
-                location = locationInfo.value,
+                location = locationInfo.value?.placeName,
                 finished = false,
                 failed = false
             )
