@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  nest:
+    container_name: nest
+    image: "planj:test"
+    ports:
+      - "3000:3000"
+    networks:
+      - backend
+  nginx:
+    container_name: nginx
+    image: "nginx:test"
+    ports:
+      - "80:80"
+    networks:
+      - backend
+
+networks: # 가장 기본적인 bridge 네트워크
+  backend:
+    driver: bridge
