@@ -17,7 +17,7 @@ import java.util.Locale
 import kotlin.math.log
 
 data class CalendarVO(
-    var dayNumber: String = "", 
+    var dayNumber: String = "",
     var dayOfWeek: String = ""
 )
 

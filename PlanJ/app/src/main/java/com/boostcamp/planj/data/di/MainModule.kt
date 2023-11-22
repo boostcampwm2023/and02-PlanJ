@@ -2,6 +2,8 @@ package com.boostcamp.planj.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.network.PlanJAPI
 import dagger.Module
@@ -51,11 +53,7 @@ object MainModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "planj"
-        ).build()
+        return AppDatabase.getInstance(context)
     }
 
 

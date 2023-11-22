@@ -11,17 +11,16 @@
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/fragment_list"
-        android:name="com.boostcamp.planj.ui.main.ListFragment"
+        android:name="com.boostcamp.planj.ui.main.CategoryFragment"
         android:label="ListFragment" />
     <fragment
         android:id="@+id/fragment_user"
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
         android:label="SettingFragment" />
-    <activity
-        android:id="@+id/activity_schedule"
-        android:name="com.boostcamp.planj.ui.schedule.ScheduleActivity"
-        android:label="activity_schedule"
-        tools:layout="@layout/activity_schedule" />
+    <fragment
+        android:id="@+id/fragment_friend_list"
+        android:name="com.boostcamp.planj.ui.friendlist.FriendListFragment"
+        android:label="FriendListFragment" />
     <activity
         android:id="@+id/activity_search"
         android:name="com.boostcamp.planj.ui.search.SearchActivity"

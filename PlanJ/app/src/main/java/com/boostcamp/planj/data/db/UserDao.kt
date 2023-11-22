@@ -8,6 +8,6 @@ import com.boostcamp.planj.data.model.User
 @Dao
 interface UserDao {
     @Insert()
-    fun insertDB(user : User)
+    fun insertDB(user: User)
 
 }
