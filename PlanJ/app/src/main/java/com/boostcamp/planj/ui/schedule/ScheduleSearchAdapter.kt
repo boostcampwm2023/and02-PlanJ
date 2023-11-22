@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Address
 
-class ScheduleSearchAdapter : ListAdapter<Address, ScheduleSearchAdapterViewHolder>(diffUtil){
+class ScheduleSearchAdapter(private val onClickListener: SearchMapClickListener) : ListAdapter<Address, ScheduleSearchAdapterViewHolder>(diffUtil){
 
 
     override fun onCreateViewHolder(
@@ -16,7 +16,7 @@ class ScheduleSearchAdapter : ListAdapter<Address, ScheduleSearchAdapterViewHold
     }
 
     override fun onBindViewHolder(holder: ScheduleSearchAdapterViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+        holder.onBind(currentList[position], onClickListener)
     }
 
 

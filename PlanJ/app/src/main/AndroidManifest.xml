@@ -25,7 +25,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.schedule.ScheduleActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
