@@ -4,6 +4,7 @@ import { ScheduleMetaService } from "src/schedule/schedule-meta.service";
 import { ScheduleService } from "src/schedule/schedule.service";
 import { UserService } from "src/user/user.service";
 import { CategoryService } from "src/category/category.service";
+import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 
 @Injectable()
 export class ScheduleApiService {
@@ -19,6 +20,13 @@ export class ScheduleApiService {
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const schdeuleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
     return await this.scheduleService.addSchedule(dto, schdeuleMetadata);
+  }
+
+  async updateSchedule(dto: UpdateScheduleDto) {
+    const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
+    const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
+    await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
+    return await this.scheduleService.updateSchedule(dto);
   }
 
   async getDailySchedule(userUuid: string, date: Date): Promise<string> {

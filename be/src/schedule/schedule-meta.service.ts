@@ -6,6 +6,7 @@ import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { HttpResponse } from "src/utils/http.response";
+import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 
 @Injectable()
 export class ScheduleMetaService {
@@ -22,6 +23,10 @@ export class ScheduleMetaService {
     return await this.scheduleMetaRepository.addScheduleMeta(dto, user, category);
   }
 
+  async updateScheduleMetadata(dto: UpdateScheduleDto, category: CategoryEntity, metadataId: number): Promise<void> {
+    return await this.scheduleMetaRepository.updateScheduleMeta(dto, category, metadataId);
+  }
+
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<string> {
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByDate(user, date);
 
@@ -30,8 +35,8 @@ export class ScheduleMetaService {
         scheduleUuid: schedule.scheduleUuid,
         title: scheduleMeta.title,
         description: scheduleMeta.description,
-        startAt: schedule.startAt === null ? null : schedule.startAt.toISOString().toString().slice(0, -5),
-        endAt: schedule.endAt.toISOString().toString().slice(0, -5),
+        startAt: schedule.startAt === null ? null : schedule.startAt.slice(0, -5),
+        endAt: schedule.endAt.slice(0, -5),
         finished: schedule.finished,
         failed: schedule.failed,
         remindMemo: schedule.remindMemo,
@@ -57,8 +62,8 @@ export class ScheduleMetaService {
         scheduleUuid: schedule.scheduleUuid,
         title: scheduleMeta.title,
         description: scheduleMeta.description,
-        startAt: schedule.startAt === null ? null : schedule.startAt.toISOString().toString().slice(0, -5),
-        endAt: schedule.endAt.toISOString().toString().slice(0, -5),
+        startAt: schedule.startAt === null ? null : schedule.startAt.slice(0, -5),
+        endAt: schedule.endAt.slice(0, -5),
         finished: schedule.finished,
         failed: schedule.failed,
         remindMemo: schedule.remindMemo,

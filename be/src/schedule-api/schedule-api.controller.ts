@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Patch, Delete, Query, Body } from "@nestjs/common";
 import { AddScheduleDto } from "../schedule/dto/add-schedule.dto";
 import { ScheduleApiService } from "./schedule-api.service";
+import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 
 @Controller("/api/schedule")
 export class ScheduleApiController {
@@ -25,7 +26,10 @@ export class ScheduleApiController {
   }
 
   @Patch("/update")
-  updateSchedule() {}
+  async updateSchedule(@Body() dto: UpdateScheduleDto) {
+    const result = await this.scheduleApiService.updateSchedule(dto);
+    return JSON.parse(result);
+  }
 
   @Delete("/delete")
   deleteSchedule() {}

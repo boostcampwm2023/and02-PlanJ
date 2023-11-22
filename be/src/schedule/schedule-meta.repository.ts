@@ -1,3 +1,4 @@
+import { ScheduleRepository } from "./schedule.repository";
 import { DataSource, Repository } from "typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
@@ -5,6 +6,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ulid } from "ulid";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
+import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
@@ -24,6 +26,27 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
     try {
       await this.save(scheduleMetadata);
       return scheduleMetadata;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateScheduleMeta(dto: UpdateScheduleDto, category: CategoryEntity, metadataId: number): Promise<void> {
+    const { title, description, startAt, endAt } = dto;
+
+    const [, startTime] = startAt.split("T");
+    const [, endTime] = endAt.split("T");
+
+    const record = await this.findOne({ where: { metadataId } });
+    record.category = category;
+    record.title = title;
+    record.description = description;
+    record.startTime = startTime;
+    record.endTime = endTime;
+
+    try {
+      await this.save(record);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
