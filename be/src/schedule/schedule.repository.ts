@@ -6,6 +6,7 @@ import { ScheduleEntity } from "./entity/schedule.entity";
 import { HttpResponse } from "src/utils/http.response";
 import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleRepository extends Repository<ScheduleEntity> {
@@ -72,5 +73,14 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
       console.log(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async deleteSchedule(dto: DeleteScheduleDto) {
+    const { scheduleUuid } = dto;
+
+    const record = await this.findOne({ where: { scheduleUuid }, relations: ["parent"] });
+    this.softDelete({ scheduleUuid });
+
+    return record.parent.metadataId;
   }
 }

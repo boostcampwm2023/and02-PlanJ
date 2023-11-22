@@ -2,6 +2,7 @@ import { Controller, Post, Get, Patch, Delete, Query, Body } from "@nestjs/commo
 import { AddScheduleDto } from "../schedule/dto/add-schedule.dto";
 import { ScheduleApiService } from "./schedule-api.service";
 import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
+import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
 
 @Controller("/api/schedule")
 export class ScheduleApiController {
@@ -32,7 +33,10 @@ export class ScheduleApiController {
   }
 
   @Delete("/delete")
-  deleteSchedule() {}
+  async deleteSchedule(@Body() dto: DeleteScheduleDto) {
+    const result = await this.scheduleApiService.deleteSchedule(dto);
+    return JSON.parse(result);
+  }
 
   @Post("/participate")
   participateSchedule() {}
