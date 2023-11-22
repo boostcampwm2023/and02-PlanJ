@@ -1,7 +1,6 @@
 package com.boostcamp.planj.ui.main.friendlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,8 +28,12 @@ class FriendListFragment : Fragment() {
         Bundle()
     }
 
-    val friendInfoDialog by lazy {
+    private val friendInfoDialog by lazy {
         FriendInfoDialog()
+    }
+
+    private val addFriendDialog by lazy {
+        AddFriendDialog()
     }
 
     override fun onCreateView(
@@ -48,6 +51,8 @@ class FriendListFragment : Fragment() {
 
         initAdapter()
         setObserver()
+        setListener()
+        setAddDialogListener()
     }
 
     override fun onDestroyView() {
@@ -58,7 +63,6 @@ class FriendListFragment : Fragment() {
     private fun initAdapter() {
         val listener = object : FriendClickListener {
             override fun onClick(user: User) {
-                Log.d("user클릭", user.toString())
                 bundle.putParcelable("user", user)
                 friendInfoDialog.arguments = bundle
                 friendInfoDialog.show(childFragmentManager, "친구 정보")
@@ -76,5 +80,20 @@ class FriendListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setListener() {
+        binding.layoutFriendListAdd.setOnClickListener {
+            addFriendDialog.show(childFragmentManager, "친구 추가")
+        }
+    }
+
+    private fun setAddDialogListener() {
+        val listener = object : AddFriendDialogListener {
+            override fun onClickComplete(email: String) {
+                viewModel.addUser(email)
+            }
+        }
+        addFriendDialog.setAddFriendDialogListener(listener)
     }
 }

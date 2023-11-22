@@ -1,11 +1,13 @@
 package com.boostcamp.planj.ui.main.friendlist
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.databinding.DialogFriendInfoBinding
 
@@ -13,6 +15,12 @@ class FriendInfoDialog : DialogFragment() {
 
     private var _binding: DialogFriendInfoBinding? = null
     private val binding get() = _binding!!
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = Dialog(requireContext())
+        dialog.window?.setBackgroundDrawableResource(R.drawable.round_white_stroke)
+        return dialog
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
