@@ -23,6 +23,7 @@ export class ScheduleApiService {
   }
 
   async updateSchedule(dto: UpdateScheduleDto) {
+    const user = await this.userService.getUserEntity(dto.userUuid);
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
     await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
