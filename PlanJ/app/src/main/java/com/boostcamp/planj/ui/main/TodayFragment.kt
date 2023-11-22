@@ -32,8 +32,8 @@ class TodayFragment : Fragment() {
     private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
     private val viewModel: TodayViewModel by viewModels()
-    private lateinit var swipeListener: SwipeListener
 
+    private lateinit var swipeListener : SwipeListener
 
     override fun onCreateView(
         inflater: LayoutInflater,

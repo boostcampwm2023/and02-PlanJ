@@ -1,9 +1,10 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -13,9 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,11 +24,28 @@ class ScheduleViewModel @Inject constructor(
     val scheduleCategory = MutableStateFlow("")
     val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
-    val startTime = MutableStateFlow("설정 안함")
-    val scheduleEndDate = MutableStateFlow("")
-    val scheduleEndTime = MutableStateFlow("23:59")
-    val alarmInfo = MutableStateFlow("")
-    val repeatInfo = MutableStateFlow("설정 안함")
+
+    private val _scheduleStartDate = MutableStateFlow<String?>("2023/11/20")
+    val scheduleStartDate: StateFlow<String?> = _scheduleStartDate
+    private val _scheduleStartTime = MutableStateFlow<String?>("23:59")
+    val scheduleStartTime: StateFlow<String?> = _scheduleStartTime
+
+    private val _scheduleEndDate = MutableStateFlow<String?>("2023/11/20")
+    val scheduleEndDate: StateFlow<String?> = _scheduleEndDate
+    private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
+    val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
+
+    private val _members = MutableStateFlow(listOf(User("1111"), User("2222"), User("3333"), User("4444")))
+    val members: StateFlow<List<User>> = _members
+
+    private val _doneMembers = MutableStateFlow<List<User>?>(null)
+    val doneMembers: StateFlow<List<User>?> = _doneMembers
+
+    private val _scheduleAlarm = MutableStateFlow<String?>(null)
+    val scheduleAlarm: StateFlow<String?> = _scheduleAlarm
+
+    private val _scheduleRepetition = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
+    val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
     val locationInfo = MutableStateFlow<String?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 
@@ -46,17 +61,36 @@ class ScheduleViewModel @Inject constructor(
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
 
-    init {
-        setEndDate()
+    fun getStartDate(): Long? {
+        return scheduleStartDate.value?.let { dateFormat.parse(it)?.time }
     }
 
-    private fun setEndDate() {
-        scheduleEndDate.value = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LocalDate.now()
-                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-        } else {
-            dateFormat.format(Date())
-        }
+    fun setStartDate(millis: Long) {
+        _scheduleStartDate.value = dateFormat.format(millis)
+    }
+
+    fun setStartTime(hour: Int, minute: Int) {
+        _scheduleStartTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
+    }
+
+    fun getEndDate(): Long? {
+        return scheduleEndDate.value?.let { dateFormat.parse(it)?.time }
+    }
+
+    fun setEndDate(millis: Long) {
+        _scheduleEndDate.value = dateFormat.format(millis)
+    }
+
+    fun setEndTime(hour: Int, minute: Int) {
+        _scheduleEndTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
+    }
+
+    fun setRepetition(repetition: Repetition?) {
+        _scheduleRepetition.value = repetition
+    }
+
+    fun setAlarm(alarm: String?) {
+        _scheduleAlarm.value = alarm
     }
 
     fun startEditingSchedule() {
@@ -74,8 +108,8 @@ class ScheduleViewModel @Inject constructor(
                 scheduleId = scheduleTitle.value,
                 title = scheduleTitle.value,
                 memo = userMemo.value,
-                startTime = "2023-11-14T17:00:11",
-                endTime = "${scheduleEndDate.value}T1${scheduleEndTime.value}",
+                startTime = "${scheduleStartDate.value}T${scheduleStartTime.value}",
+                endTime = "${scheduleEndDate.value}T${scheduleEndTime.value}",
                 categoryTitle = scheduleCategory.value,
                 repetition = null,
                 members = listOf(),
@@ -87,5 +121,10 @@ class ScheduleViewModel @Inject constructor(
             mainRepository.insertSchedule(newSchedule)
             _isEditMode.value = false
         }
+    }
+
+    fun resetStartTime() {
+        _scheduleStartDate.value = null
+        _scheduleStartTime.value = null
     }
 }

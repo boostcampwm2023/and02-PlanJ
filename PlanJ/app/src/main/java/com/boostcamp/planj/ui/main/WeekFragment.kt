@@ -31,8 +31,6 @@ class WeekFragment : Fragment() {
     private fun initAdapter() {
         lateinit var calendarAdapter: CalendarAdapter
         var calendarList = ArrayList<CalendarVO>()
-        //val scheduleList = DummySchedule.getDummyList()
-
 
         var week_day: Array<String> = resources.getStringArray(R.array.calendar_day)
 

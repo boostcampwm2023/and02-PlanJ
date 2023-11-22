@@ -32,7 +32,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_sign_up_email"
+            android:id="@+id/til_sign_up_email"
             emailError="@{viewModel.emailState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_sign_up_pwd"
+            android:id="@+id/til_sign_up_pwd"
             pwdError="@{viewModel.pwdState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             app:helperText="@string/password_condition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_sign_up_email">
+            app:layout_constraintTop_toBottomOf="@id/til_sign_up_email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_sign_up_pwd_check"
+            android:id="@+id/til_sign_up_pwd_check"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -88,7 +88,7 @@
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_sign_up_pwd">
+            app:layout_constraintTop_toBottomOf="@id/til_sign_up_pwd">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -100,7 +100,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_sign_up_nickname"
+            android:id="@+id/til_sign_up_nickname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -111,7 +111,7 @@
             app:helperText="@string/nickname_condition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_sign_up_pwd_check">
+            app:layout_constraintTop_toBottomOf="@id/til_sign_up_pwd_check">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -134,6 +134,6 @@
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_sign_up_nickname" />
+            app:layout_constraintTop_toBottomOf="@id/til_sign_up_nickname" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
