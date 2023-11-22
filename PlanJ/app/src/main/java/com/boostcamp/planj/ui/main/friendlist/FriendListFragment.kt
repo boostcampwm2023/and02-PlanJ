@@ -67,6 +67,10 @@ class FriendListFragment : Fragment() {
                 friendInfoDialog.arguments = bundle
                 friendInfoDialog.show(childFragmentManager, "친구 정보")
             }
+
+            override fun onDelete(email: String) {
+                viewModel.deleteUser(email)
+            }
         }
         friendAdapter = FriendAdapter(listener)
         binding.rvFriendListFriends.adapter = friendAdapter

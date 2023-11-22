@@ -52,6 +52,8 @@
     <string name="close">닫기</string>
     <string name="enter_email">이메일 입력</string>
     <string name="add_friend">친구 추가</string>
+    <string name="delete">삭제</string>
+    <string name="vertical_ellipsis">⋮</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>
