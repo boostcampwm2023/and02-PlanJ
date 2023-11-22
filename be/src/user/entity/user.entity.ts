@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { ScheduleMetaEntity } from "src/schedule/entity/schedule-meta.entity";
 
@@ -26,8 +26,8 @@ export class UserEntity extends BaseEntity {
   @Column({ default: null, type: "timestamp", name: "updated_at" })
   updatedAt?: Date | null;
 
-  @Column({ default: false })
-  deleted: boolean;
+  @DeleteDateColumn({ default: null, name: "deleted_at" })
+  deletedAt: Date | null;
 
   @Column({ default: 0 })
   point: number;
