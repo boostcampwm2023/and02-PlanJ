@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.ui.main.ScheduleClickListener
 
-class ScheduleAdapter(private val clickListener: ScheduleClickListener) : ListAdapter<Schedule, ScheduleAdapterViewHolder>(diffUtil) {
+class ScheduleAdapter(private val clickListener: ScheduleClickListener) : ListAdapter<Schedule, ScheduleSimpleViewHolder>(diffUtil) {
 
     init {
         setHasStableIds(true)
     }
 
-    override fun onBindViewHolder(holder: ScheduleAdapterViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ScheduleSimpleViewHolder, position: Int) {
         holder.bind(currentList[position], clickListener)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleAdapterViewHolder {
-        return ScheduleAdapterViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleSimpleViewHolder {
+        return ScheduleSimpleViewHolder.from(parent)
     }
 
 
