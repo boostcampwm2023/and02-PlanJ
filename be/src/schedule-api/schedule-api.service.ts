@@ -1,3 +1,4 @@
+import { ScheduleLocationEntity } from "./../schedule/entity/schedule-location.entity";
 import { Injectable } from "@nestjs/common";
 import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
 import { ScheduleMetaService } from "src/schedule/schedule-meta.service";
@@ -6,6 +7,7 @@ import { UserService } from "src/user/user.service";
 import { CategoryService } from "src/category/category.service";
 import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
+import { ScheduleLocationService } from "src/schedule/schedule-location.service";
 
 @Injectable()
 export class ScheduleApiService {
@@ -14,6 +16,7 @@ export class ScheduleApiService {
     private categoryService: CategoryService,
     private scheduleMetaService: ScheduleMetaService,
     private scheduleService: ScheduleService,
+    private scheduleLocationService: ScheduleLocationService,
   ) {}
 
   async addSchedule(dto: AddScheduleDto): Promise<string> {
@@ -24,10 +27,14 @@ export class ScheduleApiService {
   }
 
   async updateSchedule(dto: UpdateScheduleDto) {
-    const user = await this.userService.getUserEntity(dto.userUuid);
-    const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
+    const user = await this.userService.getUserEntity(dto.userUuid); // checkUser로 이름 변경
+    // 시간(schedule) 위치(location), 반복(repitition) 이름, 설명
+    // 일단 meta_data -> 비교 각각 -> 변경사항 없으면 시간, 위치, 반복 -> 변경로직 불필요
+    // 이름, 설명은 그냥 삽입
+    const category = await this.categoryService.getCategoryEntity(dto.categoryUuid); // 음
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
-    await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
+    const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
+    await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
     return await this.scheduleService.updateSchedule(dto);
   }
 
