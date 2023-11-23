@@ -45,4 +45,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getCategoryTitleSchedule(title: String): List<Schedule> {
         return db.categoryDao().getCategoryTitleSchedule(title)
     }
+
+    override fun getWeekSchedule(): Flow<List<Schedule>> {
+        return db.scheduleDao().getWeekSchedule()
+    }
 }

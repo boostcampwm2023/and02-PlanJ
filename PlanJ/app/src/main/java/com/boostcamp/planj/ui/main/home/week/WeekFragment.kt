@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
@@ -22,24 +27,39 @@ import com.boostcamp.planj.databinding.FragmentWeekBinding
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarAdapter
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarVO
 import com.boostcamp.planj.ui.main.home.week.adapter.ScheduleSimpleViewAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 
+@AndroidEntryPoint
 class WeekFragment : Fragment() {
 
     private var _binding: FragmentWeekBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: WeekFragmentViewModel by viewModels()
+    private lateinit var calendarAdapter: CalendarAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val scheduleList = listOf<Schedule>()
 
-        initAdapter(scheduleList)
-        resultSchedule(scheduleList)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleList.collectLatest {
+                    calendarAdapter.submitList(it)
+                }
+            }
+        }
+
+
+        initAdapter()
+        //resultSchedule(scheduleList)
     }
 
     override fun onCreateView(
@@ -54,16 +74,16 @@ class WeekFragment : Fragment() {
         super.onDestroyView()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun initAdapter(scheduleList: List<Schedule>) {
 
-        lateinit var calendarAdapter: CalendarAdapter
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initAdapter() {
+
         var calendarList = ArrayList<CalendarVO>()
         var week_day: Array<String> = resources.getStringArray(R.array.calendar_day)
 
         calendarList.run {
             val dateFormat = DateTimeFormatter.ofPattern("dd")
-            val monthFormat = DateTimeFormatter.ofPattern("yyyy-MM-")
 
             var preSunday: LocalDateTime =
                 (LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)))
@@ -79,7 +99,9 @@ class WeekFragment : Fragment() {
             }
         }
 
-        calendarAdapter = CalendarAdapter(calendarList, scheduleList)
+        calendarAdapter = CalendarAdapter(calendarList)
+        calendarAdapter.submitList(emptyList())
+
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)
     }

@@ -15,11 +15,11 @@ import java.util.Locale
 class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: CalendarVO, temp: List<Schedule>) {
+    fun bind(item: CalendarVO, scheduleList: List<Schedule>) {
         binding.tvWeekDayNumber.text = item.dayNumber
         binding.tvWeekDayWeek.text = item.dayOfWeek
 
-        var today = binding.tvWeekDayNumber.text
+        val today = binding.tvWeekDayNumber.text
 
         val now = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate.now()
@@ -33,14 +33,13 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
             ).format(Calendar.getInstance().time)
         }
 
-        val haveStart = temp.filter {
+        val haveStart = scheduleList.filter {
             it.startTime != null && it.startTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
                 .toInt() || it.startTime != it.endTime
         }
-
         val emptyStart =
-            temp.filter { it.startTime == null && it.endTime.split("[-:T]".toRegex())[2].toInt() > now.toInt() || it.startTime == it.endTime }
-        val endList = temp.filter {
+            scheduleList.filter { it.startTime == null && it.endTime.split("[-:T]".toRegex())[2].toInt() > now.toInt() || it.startTime == it.endTime }
+        val endList = scheduleList.filter {
             it.endTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
                 .toInt() || it.startTime != it.endTime
         }

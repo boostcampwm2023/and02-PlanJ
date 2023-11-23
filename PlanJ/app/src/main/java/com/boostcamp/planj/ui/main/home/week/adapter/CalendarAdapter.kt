@@ -4,7 +4,8 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.ItemWeekDayBinding
 
@@ -17,9 +18,8 @@ data class ScheduleType(
 )
 
 class CalendarAdapter(
-    private val calendarVOList: List<CalendarVO>,
-    private val scheduleList: List<Schedule>
-) : RecyclerView.Adapter<CalendarViewHolder>() {
+    private val calendarVOList: List<CalendarVO>
+) : ListAdapter<Schedule, CalendarViewHolder>(diffUtil) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -30,11 +30,24 @@ class CalendarAdapter(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(calendarVOList[position], scheduleList)
+        holder.bind(calendarVOList[position], currentList)
     }
 
     override fun getItemCount(): Int {
         return calendarVOList.size
+    }
+
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<Schedule>() {
+            override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
+                return oldItem === newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
+                return oldItem == newItem
+            }
+
+        }
     }
 
 }

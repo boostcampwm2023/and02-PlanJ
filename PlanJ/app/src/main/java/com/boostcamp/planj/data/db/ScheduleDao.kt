@@ -24,5 +24,13 @@ interface ScheduleDao {
     @Query("SELECT categoryTitle FROM schedules")
     fun getCategories(): Flow<List<String>>
 
+    @Query(
+        "SELECT * FROM schedules " +/*
+                "WHERE ((endTime BETWEEN :start And :end ) " +
+                "OR (startTime BETWEEN :start AND :end) " +
+                "OR (startTime is null AND endTime BETWEEN :start And :end ))" +*/
+                "ORDER BY startTime ASC"
+    )
+    fun getWeekSchedule(): Flow<List<Schedule>>
 
 }
