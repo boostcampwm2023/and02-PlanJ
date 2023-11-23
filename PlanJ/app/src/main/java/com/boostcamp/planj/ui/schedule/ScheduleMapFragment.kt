@@ -39,7 +39,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
 
     private val viewModel: ScheduleMapViewModel by viewModels()
-    private val args : ScheduleMapFragmentArgs by navArgs()
+    private val args: ScheduleMapFragmentArgs by navArgs()
 
     private lateinit var adapter: ScheduleSearchAdapter
     private lateinit var mapView: MapView
@@ -55,7 +55,6 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView = binding.fragmentContainMap
@@ -63,22 +62,9 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         mapView.getMapAsync(this)
         setListener()
         getFocus()
-        mapSearch()
         initAdapter()
         setObserver()
-    }
-
-    private fun setListener() {
-        binding.tilScheduleMapSearch.setEndIconOnClickListener {
-            marker.map = null
-            adapter.submitList(emptyList())
-            binding.tietScheduleMapSearchInput.setText("")
-            viewModel.setLocation(null)
-        }
-        binding.btScheduleMapSelectPlace.setOnClickListener {
-            val action = ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(viewModel.location.value)
-            findNavController().navigate(action)
-        }
+        mapSearch()
     }
 
     override fun onStart() {
@@ -125,6 +111,33 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         viewModel.setLocation(args.location)
     }
 
+    private fun setListener() {
+        binding.tilScheduleMapSearch.setEndIconOnClickListener {
+            marker.map = null
+            adapter.submitList(emptyList())
+            binding.tietScheduleMapSearchInput.setText("")
+            viewModel.setLocation(null)
+        }
+        binding.btnScheduleMapSelectPlace.setOnClickListener {
+            val action =
+                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(viewModel.location.value)
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun getFocus() {
+        binding.tietScheduleMapSearchInput.requestFocus()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            binding.tietScheduleMapSearchInput.windowInsetsController?.show(
+                WindowInsetsCompat.Type.ime()
+            )
+        } else {
+            activity?.let {
+                WindowInsetsControllerCompat(it.window, binding.tietScheduleMapSearchInput)
+                    .show(WindowInsetsCompat.Type.ime())
+            }
+        }
+    }
 
     private fun getMarker(latLng: LatLng) {
         marker.map = null
@@ -248,20 +261,6 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
                 } else {
                     adapter.submitList(emptyList())
                 }
-            }
-        }
-    }
-
-    private fun getFocus() {
-        binding.tietScheduleMapSearchInput.requestFocus()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            binding.tietScheduleMapSearchInput.windowInsetsController?.show(
-                WindowInsetsCompat.Type.ime()
-            )
-        } else {
-            activity?.let {
-                WindowInsetsControllerCompat(it.window, binding.tietScheduleMapSearchInput)
-                    .show(WindowInsetsCompat.Type.ime())
             }
         }
     }

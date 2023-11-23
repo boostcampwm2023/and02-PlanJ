@@ -16,7 +16,6 @@ class ScheduleSearchAdapterViewHolder(private val binding: ItemSearchMapBinding)
         }
     }
 
-
     companion object {
         fun from(parent: ViewGroup): ScheduleSearchAdapterViewHolder {
             return ScheduleSearchAdapterViewHolder(

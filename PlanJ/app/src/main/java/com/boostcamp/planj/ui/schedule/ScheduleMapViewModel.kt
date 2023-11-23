@@ -38,7 +38,7 @@ class ScheduleMapViewModel @Inject constructor(
         }
     }
 
-    fun setLocation(location : Location?){
+    fun setLocation(location: Location?) {
         _location.value = location
     }
 
