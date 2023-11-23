@@ -4,6 +4,8 @@ import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.LoginRepositoryImpl
 import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.MainRepositoryImpl
+import com.boostcamp.planj.data.repository.SearchRepository
+import com.boostcamp.planj.data.repository.SearchRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -22,4 +24,9 @@ abstract class RepositoryModule {
     abstract fun provideMainRepository(
         mainRepositoryImpl: MainRepositoryImpl
     ): MainRepository
+
+    @Binds
+    abstract fun provideSearchRepository(
+        searchRepositoryImpl: SearchRepositoryImpl
+    ) : SearchRepository
 }
