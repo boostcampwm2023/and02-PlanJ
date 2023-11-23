@@ -83,7 +83,7 @@ class CategoryDetailFragment : Fragment() {
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.schedule.collectLatest {
+                viewModel.schedules.collectLatest {
                     it.sortedBy { schedule -> schedule.scheduleId }
                     val segment = listOf(
                         it.filter { s -> !s.isFinished },
@@ -96,20 +96,6 @@ class CategoryDetailFragment : Fragment() {
                         segmentList.add(ScheduleSegment(list[index], segment[index]))
                     }
                     segmentScheduleAdapter.submitList(segmentList)
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.title.collectLatest {
-                    if (it == "전체 일정") {
-                        lifecycleScope.launch {
-                            viewModel.getAllSchedule()
-                        }
-                    } else {
-                        viewModel.getCategoryTitleSchedule(it)
-                    }
                 }
             }
         }

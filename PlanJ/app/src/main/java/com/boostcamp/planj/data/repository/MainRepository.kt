@@ -1,6 +1,8 @@
 package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.PostCategoryBody
+import com.boostcamp.planj.data.model.PostCategoryResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import kotlinx.coroutines.flow.Flow
@@ -25,11 +27,15 @@ interface MainRepository {
 
     suspend fun updateCategory(category: Category)
 
-    suspend fun getCategoryTitleSchedule(title: String): List<Schedule>
+    fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>>
 
     suspend fun insertUser(email: String)
 
     suspend fun deleteUser(email: String)
 
     fun getAllUser(): Flow<List<User>>
+
+    fun postCategory(postCategoryBody: PostCategoryBody) : Flow<PostCategoryResponse>
+
+    fun getUser() : Flow<String>
 }

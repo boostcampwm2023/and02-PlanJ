@@ -20,7 +20,7 @@ enum class CategoryState {
 
 class CategoryDialog(
     private val title: String = "",
-    private val listener: (Category) -> CategoryState
+    private val listener: (String) -> CategoryState
 ) :
     DialogFragment() {
     private lateinit var binding: DialogAddCategoryBinding
@@ -52,8 +52,7 @@ class CategoryDialog(
         }
         binding.tvDialogCategorySuccess.setOnClickListener {
             val title = binding.tietDialogCategoryInputCategoryName.text.toString()
-            Log.d("listener", "${listener(Category(title, title))}")
-            when (listener(Category(title, title))) {
+            when (listener(title)) {
                 CategoryState.EXIST -> {
                     binding.tietDialogCategoryInputCategoryName.error = "같은 카테고리가 존재합니다."
                     getFocus()

@@ -25,4 +25,7 @@ interface ScheduleDao {
 
     @Query("SELECT categoryTitle FROM schedules")
     fun getCategories(): Flow<List<String>>
+
+    @Query("SELECT * FROM schedules WHERE categoryTitle = :title")
+    fun getCategoryTitleSchedule(title : String) : Flow<List<Schedule>>
 }

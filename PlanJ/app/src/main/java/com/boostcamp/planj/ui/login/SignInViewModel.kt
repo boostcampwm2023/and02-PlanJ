@@ -41,7 +41,7 @@ class SignInViewModel @Inject constructor(
             when (apiResult) {
                 is ApiResult.Success -> {
                     _isSuccess.value = true
-                    saveId(apiResult.data.uid.userUuid)
+                    saveId(apiResult.data.uid.token)
                     _showToast.emit("로그인이 완료되었습니다.")
                 }
 
@@ -55,7 +55,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun saveId(id : String){
+    private fun saveId(id : String){
         viewModelScope.launch(Dispatchers.IO){
             loginRepository.saveUser(id)
         }
