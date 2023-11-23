@@ -12,9 +12,13 @@ import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.getDate
+import com.boostcamp.planj.getTime
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @BindingAdapter("emailError")
 fun TextInputLayout.setEmailError(emailState: EmailState) {
@@ -100,5 +104,33 @@ fun TextView.isPopUpMenuVisible(category: Category) {
         View.INVISIBLE
     } else {
         View.VISIBLE
+    }
+}
+
+@BindingAdapter("setDateTime")
+fun TextView.setDateTime(schedule: Schedule) {
+    val currentDate =
+        SimpleDateFormat("yyyy-MM-dd", Locale("kr", "ko")).format(System.currentTimeMillis())
+    val endDate = schedule.endTime.getDate()
+    val endTime = schedule.endTime.getTime().split(":").subList(0, 2).joinToString(":")
+    if (schedule.startTime == null) {
+
+        text = if(currentDate == endDate){
+            "오늘 $endTime 까지"
+        }else {
+            "${endDate.replace("-", "/")} $endTime"
+        }
+    } else {
+        val startDate = schedule.startTime.getDate()
+        val startTime = schedule.startTime.getTime().split(":").subList(0, 2).joinToString(":")
+        text = if(startDate == endDate){
+            if(currentDate == startDate){
+                "오늘 $startTime ~ $endTime"
+            }else {
+                "${startDate.replace("-", "/")} $startTime ~ $endTime"
+            }
+        }else {
+            "${startDate.replace("-", "/")} - ${endDate.replace("-", "/")}"
+        }
     }
 }
