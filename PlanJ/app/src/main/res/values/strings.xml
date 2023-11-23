@@ -62,6 +62,8 @@
     <string name="repeat_per_week">%d주마다 반복</string>
     <string name="before_end_time">종료 시간 %d분 전</string>
     <string name="before_departure_time">출발 시간 %d분 전</string>
+    <string name="search_result">검색 결과</string>
+    <string name="all">전체</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>
