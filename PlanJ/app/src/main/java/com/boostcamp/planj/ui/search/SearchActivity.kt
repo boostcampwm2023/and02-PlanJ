@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.search
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -32,6 +33,8 @@ class SearchActivity : AppCompatActivity() {
         setObserver()
         setListener()
         initAdapter()
+
+        binding.etSearchInputText.requestFocus()
     }
 
     private fun setObserver() {
@@ -47,6 +50,15 @@ class SearchActivity : AppCompatActivity() {
     private fun setListener() {
         binding.toolbarSearch.setNavigationOnClickListener {
             finish()
+        }
+
+        binding.etSearchInputText.setOnKeyListener { _, i, keyEvent ->
+            if (keyEvent.action == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
+                viewModel.onClickSearch()
+                true
+            } else {
+                false
+            }
         }
 
         binding.toolbarSearch.setOnMenuItemClickListener {

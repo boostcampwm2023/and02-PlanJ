@@ -33,11 +33,15 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginVertical="4dp"
                 android:background="@drawable/round_white_stroke"
+                android:maxLines="1"
                 android:paddingHorizontal="8dp"
                 android:text="@={viewModel.userInput}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                tools:text="입력" />
+                tools:text="입력">
+
+                <requestFocus />
+            </EditText>
         </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.divider.MaterialDivider

@@ -32,4 +32,6 @@ interface MainRepository {
     suspend fun deleteUser(email: String)
 
     fun getAllUser(): Flow<List<User>>
+
+    fun searchSchedule(input: String): Flow<List<Schedule>>
 }

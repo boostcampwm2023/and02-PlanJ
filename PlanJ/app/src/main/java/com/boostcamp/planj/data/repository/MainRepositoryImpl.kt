@@ -62,4 +62,8 @@ class MainRepositoryImpl @Inject constructor(
     override fun getAllUser(): Flow<List<User>> {
         return db.userDao().getAllUser()
     }
+
+    override fun searchSchedule(input: String): Flow<List<Schedule>> {
+        return db.scheduleDao().searchSchedule(input)
+    }
 }

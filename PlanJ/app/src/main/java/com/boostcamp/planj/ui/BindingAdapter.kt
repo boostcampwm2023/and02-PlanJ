@@ -84,9 +84,10 @@ fun ImageView.checkFail(schedule: Schedule) {
 
 @BindingAdapter("setTitle")
 fun TextView.setTitle(schedule: Schedule) {
-    if (schedule.isFinished) {
-        paintFlags =
-            paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    paintFlags = if (schedule.isFinished) {
+        paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    } else {
+        paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
     }
     if (schedule.isFailed) {
         setTextColor(Color.RED)
@@ -120,21 +121,21 @@ fun TextView.setDateTime(schedule: Schedule) {
     val endTime = schedule.endTime.getTime().split(":").subList(0, 2).joinToString(":")
     if (schedule.startTime == null) {
 
-        text = if(currentDate == endDate){
+        text = if (currentDate == endDate) {
             "오늘 $endTime 까지"
-        }else {
+        } else {
             "${endDate.replace("-", "/")} $endTime"
         }
     } else {
         val startDate = schedule.startTime.getDate()
         val startTime = schedule.startTime.getTime().split(":").subList(0, 2).joinToString(":")
-        text = if(startDate == endDate){
-            if(currentDate == startDate){
+        text = if (startDate == endDate) {
+            if (currentDate == startDate) {
                 "오늘 $startTime ~ $endTime"
-            }else {
+            } else {
                 "${startDate.replace("-", "/")} $startTime ~ $endTime"
             }
-        }else {
+        } else {
             "${startDate.replace("-", "/")} - ${endDate.replace("-", "/")}"
         }
     }

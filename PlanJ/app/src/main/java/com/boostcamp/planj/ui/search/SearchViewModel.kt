@@ -26,8 +26,8 @@ class SearchViewModel @Inject constructor(
     fun onClickSearch() {
         // TODO: userInput.value 이용해서 데이터 요청
         viewModelScope.launch {
-            mainRepository.getSchedules().collectLatest {
-                scheduleList.value = it
+            mainRepository.searchSchedule(userInput.value).collectLatest { resultList ->
+                scheduleList.value = resultList
                 filterSchedules()
             }
         }
