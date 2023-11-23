@@ -16,9 +16,9 @@ export class AuthService {
     return jwt.sign(payload, this.config.jwtSecret, options);
   }
 
-  verify(jwtToken: string) {
+  verify(token: string) {
     try {
-      const payload = jwt.verify(jwtToken, this.config.jwtSecret) as jwt.JwtPayload;
+      const payload = jwt.verify(token, this.config.jwtSecret) as jwt.JwtPayload;
       const { userUuid } = payload;
       return userUuid;
     } catch (e) {
