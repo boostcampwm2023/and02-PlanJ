@@ -1,13 +1,16 @@
 package com.boostcamp.planj.ui.main.home.week.adapter
 
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.WeekSchedule
 import com.boostcamp.planj.databinding.ItemWeekDayBinding
+import kotlin.math.log
 
 data class CalendarVO(
     var dayNumber: String = "", var dayOfWeek: String = ""
@@ -17,37 +20,28 @@ data class ScheduleType(
     val schedule: Schedule, val viewType: Int
 )
 
-class CalendarAdapter(
-    private val calendarVOList: List<CalendarVO>
-) : ListAdapter<Schedule, CalendarViewHolder>(diffUtil) {
+class CalendarAdapter() : ListAdapter<WeekSchedule, CalendarViewHolder>(diffUtil) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val binding = ItemWeekDayBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
-        return CalendarViewHolder(binding)
+        return CalendarViewHolder.from(parent)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(calendarVOList[position], currentList)
+        holder.bind(currentList[position])
     }
 
-    override fun getItemCount(): Int {
-        return calendarVOList.size
-    }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<Schedule>() {
-            override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<WeekSchedule>() {
+            override fun areItemsTheSame(oldItem: WeekSchedule, newItem: WeekSchedule): Boolean {
                 return oldItem === newItem
             }
 
-            override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
+            override fun areContentsTheSame(oldItem: WeekSchedule, newItem: WeekSchedule): Boolean {
                 return oldItem == newItem
             }
-
         }
     }
-
 }

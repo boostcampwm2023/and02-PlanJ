@@ -7,7 +7,7 @@ import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
 import com.boostcamp.planj.databinding.ItemWeekStartAndEndBinding
 
 class WeekScheduleAdapter(
-    private val scheduleTypeList: MutableList<ScheduleType>
+    private val scheduleTypeList: List<ScheduleType>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

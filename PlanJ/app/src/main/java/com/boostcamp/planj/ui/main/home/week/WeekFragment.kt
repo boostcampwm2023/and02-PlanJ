@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ import com.boostcamp.planj.ui.main.home.week.adapter.CalendarAdapter
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarVO
 import com.boostcamp.planj.ui.main.home.week.adapter.ScheduleSimpleViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -52,14 +50,15 @@ class WeekFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.scheduleList.collectLatest {
-                    calendarAdapter.submitList(it)
+                    calendarAdapter.submitList(viewModel.makeWeekSchedule(viewModel.calendarList))
+                    resultSchedule(viewModel.scheduleList.value)
                 }
             }
         }
 
 
         initAdapter()
-        //resultSchedule(scheduleList)
+        resultSchedule(viewModel.scheduleList.value)
     }
 
     override fun onCreateView(
@@ -73,7 +72,6 @@ class WeekFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -99,11 +97,12 @@ class WeekFragment : Fragment() {
             }
         }
 
-        calendarAdapter = CalendarAdapter(calendarList)
-        calendarAdapter.submitList(emptyList())
+        viewModel.calendarList = calendarList
+        calendarAdapter = CalendarAdapter()
 
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)
+        calendarAdapter.submitList(viewModel.makeWeek(calendarList))
     }
 
     private fun resultSchedule(scheduleList: List<Schedule>) {
@@ -128,13 +127,14 @@ class WeekFragment : Fragment() {
         scheduleList: List<Schedule>,
         color: Int
     ) {
+        val title = resultBtn.text.toString().split("\n")
         val countText = SpannableString(
-            resultBtn.text.toString().plus("${scheduleList.size}")
+            title[0].plus("\n${scheduleList.size}")
         )
 
         countText.setSpan(
             ForegroundColorSpan(color),
-            resultBtn.text.length,
+            title[0].length,
             countText.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )

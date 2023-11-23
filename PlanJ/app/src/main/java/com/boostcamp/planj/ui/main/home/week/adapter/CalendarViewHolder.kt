@@ -1,10 +1,13 @@
 package com.boostcamp.planj.ui.main.home.week.adapter
 
 import android.os.Build
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.WeekSchedule
 import com.boostcamp.planj.databinding.ItemWeekDayBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -15,11 +18,10 @@ import java.util.Locale
 class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: CalendarVO, scheduleList: List<Schedule>) {
-        binding.tvWeekDayNumber.text = item.dayNumber
-        binding.tvWeekDayWeek.text = item.dayOfWeek
-
-        val today = binding.tvWeekDayNumber.text
+    fun bind(scheduleList: WeekSchedule) {
+        binding.tvWeekDayNumber.text = scheduleList.calendar.dayNumber
+        binding.tvWeekDayWeek.text = scheduleList.calendar.dayOfWeek
+        val today = scheduleList.calendar.dayNumber
 
         val now = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate.now()
@@ -33,42 +35,13 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
             ).format(Calendar.getInstance().time)
         }
 
-        val haveStart = scheduleList.filter {
-            it.startTime != null && it.startTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
-                .toInt() || it.startTime != it.endTime
-        }
-        val emptyStart =
-            scheduleList.filter { it.startTime == null && it.endTime.split("[-:T]".toRegex())[2].toInt() > now.toInt() || it.startTime == it.endTime }
-        val endList = scheduleList.filter {
-            it.endTime.split("[-:T]".toRegex())[2].toInt() == today.toString()
-                .toInt() || it.startTime != it.endTime
-        }
-        val totalList: MutableList<ScheduleType> = mutableListOf()
-
-        haveStart.forEach { schedule: Schedule ->
-            totalList.add(ScheduleType(schedule, 0))
-        }
-        endList.forEach { schedule: Schedule ->
-            totalList.add(ScheduleType(schedule, 2))
-        }
 
         if (today == now) {
             binding.tvWeekDayWeek.setBackgroundColor(R.color.main1)
             binding.tvWeekDayNumber.setBackgroundColor(R.color.main1)
-
-            emptyStart.forEach { schedule: Schedule ->
-                totalList.add(ScheduleType(schedule, 1))
-            }
-
-            addAdapter(WeekScheduleAdapter(totalList))
-
-        } else if (today.toString().toInt() < now.toInt()) {
-            addAdapter(WeekScheduleAdapter(totalList))
-
-        } else if (today.toString().toInt() > now.toInt()) {
-            addAdapter(WeekScheduleAdapter(totalList))
-
         }
+
+        addAdapter(WeekScheduleAdapter(scheduleList.scheduleList))
 
     }
 
@@ -76,5 +49,17 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
         binding.rvWeekDaySchedule.adapter = weekScheduleAdapter
         binding.rvWeekDaySchedule.layoutManager =
             LinearLayoutManager(binding.rvWeekDaySchedule.context)
+    }
+
+    companion object {
+        fun from(parent: ViewGroup): CalendarViewHolder {
+            return CalendarViewHolder(
+                ItemWeekDayBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+        }
     }
 }
