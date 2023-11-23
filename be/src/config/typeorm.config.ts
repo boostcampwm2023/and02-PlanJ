@@ -1,6 +1,6 @@
 import { ConfigService, ConfigType } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import dbConfig from "./dbConfig";
+import dbConfig from "./db.config";
 
 export class TypeOrmConfigService {
   static createTypeOrmOptions(configService: ConfigService): TypeOrmModuleOptions {
