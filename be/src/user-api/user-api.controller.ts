@@ -1,16 +1,16 @@
-import {Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, UseGuards, Headers} from "@nestjs/common";
+import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, UseGuards, Headers } from "@nestjs/common";
 import { UserService } from "../user/user.service";
 import { UserLoginDto } from "../user/dto/user-login.dto";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { UserModifyDto } from "../user/dto/user-modify.dto";
-import { AuthApiService } from "./auth-api.service";
-import {AuthGuard} from "../guard/auth.guard";
+import { UserApiService } from "./user-api.service";
+import { AuthGuard } from "../guard/auth.guard";
 
 @Controller("/api/auth")
-export class AuthApiController {
+export class UserApiController {
   constructor(
-      private userService: UserService,
-      private authApiService: AuthApiService
+    private userService: UserService,
+    private authApiService: UserApiService,
   ) {}
 
   @Post("/register")
@@ -20,7 +20,7 @@ export class AuthApiController {
   }
 
   @Post("/login")
-  @HttpCode(HttpStatus.OK)  // api 명세서에 따라 응답 상태 코드 변경
+  @HttpCode(HttpStatus.OK) // api 명세서에 따라 응답 상태 코드 변경
   async login(@Body() dto: UserLoginDto): Promise<JSON> {
     const result = await this.authApiService.login(dto);
     return JSON.parse(result);

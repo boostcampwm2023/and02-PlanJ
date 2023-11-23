@@ -1,13 +1,13 @@
-import {Injectable} from "@nestjs/common";
-import {UserLoginDto} from "../user/dto/user-login.dto";
-import {UserService} from "../user/user.service";
-import {AuthService} from "../auth/auth.service";
-import {HttpResponse} from "../utils/http.response";
-import {CreateUserDto} from "../user/dto/create-user.dto";
-import {UserModifyDto} from "../user/dto/user-modify.dto";
+import { Injectable } from "@nestjs/common";
+import { UserLoginDto } from "../user/dto/user-login.dto";
+import { UserService } from "../user/user.service";
+import { AuthService } from "../auth/auth.service";
+import { HttpResponse } from "../utils/http.response";
+import { CreateUserDto } from "../user/dto/create-user.dto";
+import { UserModifyDto } from "../user/dto/user-modify.dto";
 
 @Injectable()
-export class AuthApiService {
+export class UserApiService {
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -40,8 +40,8 @@ export class AuthApiService {
   delete() {}
 
   async update(dto: UserModifyDto, jwtToken: string) {
-      const userUuid = this.authService.verify(jwtToken);
-      const result = await this.userService.update(userUuid, dto);
-      return JSON.stringify(result);
+    const userUuid = this.authService.verify(jwtToken);
+    const result = await this.userService.update(userUuid, dto);
+    return JSON.stringify(result);
   }
 }
