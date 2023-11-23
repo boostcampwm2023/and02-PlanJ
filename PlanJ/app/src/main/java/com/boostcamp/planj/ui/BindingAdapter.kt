@@ -73,7 +73,7 @@ fun TextView.setParticipation(schedule: Schedule) {
 
 @BindingAdapter("checkFail")
 fun ImageView.checkFail(schedule: Schedule) {
-    visibility = if (!schedule.finished && schedule.failed) {
+    visibility = if (!schedule.isFinished && schedule.isFailed) {
         View.VISIBLE
     } else
         View.GONE
@@ -81,11 +81,11 @@ fun ImageView.checkFail(schedule: Schedule) {
 
 @BindingAdapter("setTitle")
 fun TextView.setTitle(schedule: Schedule) {
-    if (schedule.finished) {
+    if (schedule.isFinished) {
         paintFlags =
             paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
-    if (schedule.failed) {
+    if (schedule.isFailed) {
         setTextColor(Color.RED)
     }
     text = schedule.title

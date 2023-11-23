@@ -72,9 +72,9 @@ class TodayFragment : Fragment() {
                     val list = resources.getStringArray(R.array.today_list)
                     it.sortedBy { schedule -> schedule.scheduleId }
                     val segment = listOf(
-                        it.filter { s -> !s.finished },
-                        it.filter { s -> s.finished && !s.failed },
-                        it.filter { s -> s.finished && s.failed }
+                        it.filter { s -> !s.isFinished },
+                        it.filter { s -> s.isFinished && !s.isFailed },
+                        it.filter { s -> s.isFinished && s.isFailed }
                     )
                     val sm = mutableListOf<ScheduleSegment>()
                     list.forEachIndexed { index, s ->

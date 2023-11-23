@@ -19,7 +19,6 @@ data class Schedule(
     val members: List<User>,
     val doneMembers: List<User>? = null,
     val location: String? = null,
-    val finished: Boolean,
-    val failed: Boolean,
-
-    ) : Parcelable
+    val isFinished: Boolean,
+    val isFailed: Boolean
+) : Parcelable

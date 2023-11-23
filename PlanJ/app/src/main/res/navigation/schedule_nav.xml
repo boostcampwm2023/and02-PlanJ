@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shedule_nav"
     app:startDestination="@id/scheduleFragment">
+
+    <activity
+        android:id="@+id/scheduleActivity"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleActivity"
+        android:label="ScheduleActivity"
+        tools:layout="@layout/activity_schedule">
+        <argument
+            android:name="schedule"
+            android:defaultValue="@null"
+            app:argType="com.boostcamp.planj.data.model.Schedule"
+            app:nullable="true" />
+    </activity>
 
     <fragment
         android:id="@+id/scheduleFragment"
