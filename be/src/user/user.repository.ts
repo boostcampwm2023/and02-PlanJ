@@ -24,15 +24,15 @@ export class UserRepository extends Repository<UserEntity> {
   async deleteUser(userLoginDto: UserLoginDto): Promise<string> {
     // const loginResult = await this.loginUser(userLoginDto);
     // if (loginResult.statusCode === 200) {
-      const { email } = userLoginDto;
-      await this.softDelete({ email: email });
+    const { email } = userLoginDto;
+    await this.softDelete({ email: email });
 
-      const body: HttpResponse = {
-        message: "회원탈퇴 완료",
-        statusCode: 200,
-      };
+    const body: HttpResponse = {
+      message: "회원탈퇴 완료",
+      statusCode: 200,
+    };
 
-      return JSON.stringify(body);
+    return JSON.stringify(body);
     // }
   }
 

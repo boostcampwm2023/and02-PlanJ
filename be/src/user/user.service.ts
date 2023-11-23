@@ -1,19 +1,17 @@
-import {ConflictException, Injectable, InternalServerErrorException, UnauthorizedException} from "@nestjs/common";
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "./user.repository";
 import { UserModifyDto } from "./dto/user-modify.dto";
 import { UserEntity } from "./entity/user.entity";
-import {ulid} from "ulid";
+import { ulid } from "ulid";
 import * as bcrypt from "bcryptjs";
-import {HttpResponse} from "../utils/http.response";
+import { HttpResponse } from "../utils/http.response";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(UserRepository) private userRepository: UserRepository,
-  ) {}
+  constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
 
   async register(dto: CreateUserDto): Promise<void> {
     const { email, password, nickname } = dto;
@@ -54,19 +52,19 @@ export class UserService {
   }
 
   async validateUser(userUuid: string) {
-    const user = await this.userRepository.findOne({ where: {userUuid: userUuid}})
+    const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
     if (user) {
       return true;
     }
-    
-    throw new UnauthorizedException("유효하지 않은 사용자")
+
+    throw new UnauthorizedException("유효하지 않은 사용자");
   }
 
   async deleteAccount(dto: UserLoginDto): Promise<string> {
     return await this.userRepository.deleteUser(dto);
   }
 
-  async update(userUuid:string, dto: UserModifyDto): Promise<HttpResponse> {
+  async update(userUuid: string, dto: UserModifyDto): Promise<HttpResponse> {
     const { nickname } = dto;
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
 
