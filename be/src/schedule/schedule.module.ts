@@ -12,7 +12,7 @@ import { CategoryRepository } from "src/category/category.repository";
 import { UserService } from "src/user/user.service";
 import { CategoryService } from "src/category/category.service";
 import { ScheduleLocationService } from "./schedule-location.service";
-import { ScheduleLocationRepository } from "./schedule-location.respository";
+import { ScheduleLocationRepository } from "./schedule-location.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([ScheduleMetadataEntity])],

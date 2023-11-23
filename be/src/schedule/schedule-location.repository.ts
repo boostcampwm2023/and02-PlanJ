@@ -18,20 +18,17 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
       .where("location.metadata_id = :id", { id: scheduleMeta.metadataId })
       .getOne();
 
-    console.log(record);
-
     if (record) {
       record.placeName = placeName;
       record.placeAddress = placeAddress;
       record.latitude = parseFloat(latitude);
-      record.longtitude = parseFloat(longtitude);
-      scheduleMeta = scheduleMeta;
+      record.longitude = parseFloat(longtitude);
     } else {
       record = this.create({
         placeName,
         placeAddress,
         latitude: parseFloat(latitude),
-        longtitude: parseFloat(longtitude),
+        longitude: parseFloat(longtitude),
         scheduleMeta,
       });
     }
@@ -39,7 +36,7 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
     try {
       await this.save(record);
     } catch (error) {
-      console.log(error); //logger
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

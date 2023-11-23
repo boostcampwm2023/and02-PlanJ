@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ScheduleLocationRepository } from "./schedule-location.respository";
+import { ScheduleLocationRepository } from "./schedule-location.repository";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 
