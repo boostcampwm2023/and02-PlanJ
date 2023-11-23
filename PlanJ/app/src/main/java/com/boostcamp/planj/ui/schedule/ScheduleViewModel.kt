@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
@@ -35,14 +36,30 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
     val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
 
-    private val _members = MutableStateFlow(listOf(User("1111"), User("2222"), User("3333"), User("4444")))
+    private val _members = MutableStateFlow(
+        listOf(
+            User("1111", "1111", "1111"),
+            User("2222", "2222", "2222"),
+            User("3333", "3333", "3333"),
+            User("4444", "4444", "4444"),
+            User("5555", "5555", "5555"),
+            User("6666", "6666", "6666")
+        )
+    )
     val members: StateFlow<List<User>> = _members
 
-    private val _doneMembers = MutableStateFlow<List<User>?>(null)
+    private val _doneMembers = MutableStateFlow<List<User>?>(
+        listOf(
+            User("2222", "2222", "2222"),
+            User("3333", "3333", "3333"),
+            User("5555", "5555", "5555"),
+            User("6666", "6666", "6666")
+        )
+    )
     val doneMembers: StateFlow<List<User>?> = _doneMembers
 
-    private val _scheduleAlarm = MutableStateFlow<String?>(null)
-    val scheduleAlarm: StateFlow<String?> = _scheduleAlarm
+    private val _scheduleAlarm = MutableStateFlow<Alarm?>(null)
+    val scheduleAlarm: StateFlow<Alarm?> = _scheduleAlarm
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
@@ -89,7 +106,7 @@ class ScheduleViewModel @Inject constructor(
         _scheduleRepetition.value = repetition
     }
 
-    fun setAlarm(alarm: String?) {
+    fun setAlarm(alarm: Alarm?) {
         _scheduleAlarm.value = alarm
     }
 
@@ -111,7 +128,8 @@ class ScheduleViewModel @Inject constructor(
                 startTime = "${scheduleStartDate.value}T${scheduleStartTime.value}",
                 endTime = "${scheduleEndDate.value}T${scheduleEndTime.value}",
                 categoryTitle = scheduleCategory.value,
-                repetition = null,
+                repetition = scheduleRepetition.value,
+                alarm = scheduleAlarm.value,
                 members = listOf(),
                 doneMembers = null,
                 location = locationInfo.value,
