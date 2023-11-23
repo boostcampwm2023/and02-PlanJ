@@ -8,6 +8,8 @@ import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.PostCategoryBody
 import com.boostcamp.planj.data.model.PostCategoryResponse
+import com.boostcamp.planj.data.model.PostScheduleBody
+import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.network.PlanJAPI
@@ -19,12 +21,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
-    private val api : PlanJAPI,
+    private val api: PlanJAPI,
     private val db: AppDatabase,
-    private val dataStore : DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>
 ) : MainRepository {
 
-    companion object{
+    companion object {
         val USER = stringPreferencesKey("User")
     }
 
@@ -84,22 +86,37 @@ class MainRepositoryImpl @Inject constructor(
         return db.userDao().getAllUser()
     }
 
-    override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>  = flow {
-        emit(api.postCategory(postCategoryBody))
+    override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
+        flow {
+            emit(api.postCategory(postCategoryBody))
+        }
+
+    override fun postSchedule(
+        userId: String,
+        categoryId: String,
+        title: String,
+        endTime: String
+    ): Flow<PostScheduleResponse> = flow {
+        val postSchedule = PostScheduleBody(userId, categoryId, title, endTime)
+        emit(api.postSchedule(postSchedule))
     }
 
     override fun getUser(): Flow<String> {
         return dataStore.data
-            .catch {e ->
-                if(e is IOException){
+            .catch { e ->
+                if (e is IOException) {
                     e.printStackTrace()
                     emit(emptyPreferences())
-                }else {
+                } else {
                     throw e
                 }
             }
-            .map {pref ->
+            .map { pref ->
                 pref[USER] ?: ""
             }
+    }
+
+    override fun getCategory(categoryName: String): Category {
+        return db.categoryDao().getCategory(categoryName)
     }
 }

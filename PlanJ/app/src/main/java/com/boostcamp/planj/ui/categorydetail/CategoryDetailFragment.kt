@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.categorydetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,8 +49,11 @@ class CategoryDetailFragment : Fragment() {
 
     private fun setListener() {
         binding.fbCategoryDetailAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(emptyList(), initText = viewModel.title.value) {
-                viewModel.insertSchedule(it)
+            val dialog = ScheduleDialog(
+                emptyList(),
+                initText = viewModel.title.value
+            ) { category, title, endTime ->
+                viewModel.insertSchedule(category, title, endTime)
             }
             activity?.supportFragmentManager?.let {
                 dialog.show(it, null)

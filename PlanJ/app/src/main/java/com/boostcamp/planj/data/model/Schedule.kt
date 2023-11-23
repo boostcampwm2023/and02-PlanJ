@@ -16,9 +16,9 @@ data class Schedule(
     val categoryTitle: String,
     val repetition: Repetition? = null,
     val alarm: Alarm? = null,
-    val members: List<User>,
+    val members: List<User> = listOf(),
     val doneMembers: List<User>? = null,
     val location: Location? = null,
-    val isFinished: Boolean,
-    val isFailed: Boolean
+    val isFinished: Boolean = false,
+    val isFailed: Boolean = false
 ) : Parcelable

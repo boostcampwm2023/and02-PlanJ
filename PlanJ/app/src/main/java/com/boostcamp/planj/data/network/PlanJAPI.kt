@@ -3,6 +3,8 @@ package com.boostcamp.planj.data.network
 import com.boostcamp.planj.data.model.LoginResponse
 import com.boostcamp.planj.data.model.PostCategoryBody
 import com.boostcamp.planj.data.model.PostCategoryResponse
+import com.boostcamp.planj.data.model.PostScheduleBody
+import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.SignInRequest
 import com.boostcamp.planj.data.model.SignUpRequest
 import com.boostcamp.planj.data.model.SignUpResult
@@ -21,5 +23,8 @@ interface PlanJAPI {
 
     @POST("/api/category/add")
     suspend fun postCategory(@Body createCategoryBody : PostCategoryBody) : PostCategoryResponse
+
+    @POST("/api/schedule/add")
+    suspend fun postSchedule(@Body postScheduleBody: PostScheduleBody) : PostScheduleResponse
 
 }

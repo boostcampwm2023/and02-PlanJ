@@ -25,7 +25,8 @@ interface CategoryDao {
     @Query("SELECT * FROM categories")
     fun getAllCategory(): Flow<List<Category>>
 
-
+    @Query("SELECT * FROM categories WHERE categoryName = :categoryName")
+    fun getCategory(categoryName : String) : Category
 
     @Delete
     fun deleteCategory(category: Category)

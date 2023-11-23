@@ -3,6 +3,8 @@ package com.boostcamp.planj.data.repository
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.PostCategoryBody
 import com.boostcamp.planj.data.model.PostCategoryResponse
+import com.boostcamp.planj.data.model.PostScheduleBody
+import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import kotlinx.coroutines.flow.Flow
@@ -37,5 +39,9 @@ interface MainRepository {
 
     fun postCategory(postCategoryBody: PostCategoryBody) : Flow<PostCategoryResponse>
 
+    fun postSchedule(userId : String, categoryId : String, title: String ,endTime : String) : Flow<PostScheduleResponse>
     fun getUser() : Flow<String>
+
+    fun getCategory(categoryName : String) : Category
+
 }
