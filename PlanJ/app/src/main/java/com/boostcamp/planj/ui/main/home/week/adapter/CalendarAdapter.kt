@@ -27,7 +27,7 @@ class CalendarAdapter() : ListAdapter<WeekSchedule, CalendarViewHolder>(diffUtil
         return CalendarViewHolder.from(parent)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
