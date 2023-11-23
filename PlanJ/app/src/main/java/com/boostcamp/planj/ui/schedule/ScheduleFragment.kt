@@ -188,19 +188,22 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
             repetitionSettingDialog.arguments = bundle
-            repetitionSettingDialog.show(childFragmentManager, "반복 설정")
+            if(!repetitionSettingDialog.isAdded){
+                repetitionSettingDialog.show(childFragmentManager, "반복 설정")
+            }
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
             val bundle = Bundle()
             bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
             alarmSettingDialog.arguments = bundle
-            alarmSettingDialog.show(childFragmentManager, "알림 설정")
+            if(!alarmSettingDialog.isAdded){
+                alarmSettingDialog.show(childFragmentManager, "알림 설정")
+            }
         }
 
         binding.ivScheduleMap.setOnClickListener {
-            // TODO: 지도 이동
-            val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.locationInfo.value)
+            val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
             findNavController().navigate(action)
         }
     }

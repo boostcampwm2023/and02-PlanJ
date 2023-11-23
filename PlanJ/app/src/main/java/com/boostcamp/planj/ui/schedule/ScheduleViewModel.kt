@@ -53,8 +53,8 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
   
-    val locationInfo = MutableStateFlow<Location?>(null)
-    val userMemo = MutableStateFlow<String?>(null)
+    val scheduleLocation = MutableStateFlow<Location?>(null)
+    val scheduleMemo = MutableStateFlow<String?>(null)
 
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd")
 
@@ -130,7 +130,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun setLocation(location: Location?){
-        locationInfo.value = location
+        scheduleLocation.value = location
     }
 
     fun startEditingSchedule() {
