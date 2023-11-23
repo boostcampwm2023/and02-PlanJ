@@ -1,7 +1,7 @@
 import { UserEntity } from "src/user/entity/user.entity";
-import { BaseEntity, Column, DeleteDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity("Friends")
+@Entity("friends")
 export class FriendsEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "friend_id" })
   friendId: number;
@@ -16,8 +16,10 @@ export class FriendsEntity extends BaseEntity {
    * relation
    */
   @OneToOne(() => UserEntity, (user) => user.userId)
+  @JoinColumn()
   from: UserEntity;
 
   @OneToOne(() => UserEntity, (user) => user.userId)
+  @JoinColumn()
   to: UserEntity;
 }

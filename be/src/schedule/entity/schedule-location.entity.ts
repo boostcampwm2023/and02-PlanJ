@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Decimal128, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ScheduleMetaEntity } from "./schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
-@Entity("ScheduleLocation")
+@Entity("schedule_location")
 export class ScheduleLocationEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "location_id" })
   locationId: number;
@@ -15,13 +15,13 @@ export class ScheduleLocationEntity extends BaseEntity {
   @Column({ name: "latitude", type: "decimal", precision: 9, scale: 6 })
   latitude: number;
 
-  @Column({ name: "longtitude", type: "decimal", precision: 9, scale: 6 })
-  longtitude: number;
+  @Column({ name: "longitude", type: "decimal", precision: 9, scale: 6 })
+  longitude: number;
 
   /*
    * relation
    */
-  @OneToOne(() => ScheduleMetaEntity, (scheduleMetadata) => scheduleMetadata.metadataId)
+  @OneToOne(() => ScheduleMetadataEntity, (scheduleMetadata) => scheduleMetadata.metadataId)
   @JoinColumn({ name: "metadata_id" })
-  scheduleMeta: ScheduleMetaEntity;
+  scheduleMeta: ScheduleMetadataEntity;
 }

@@ -1,7 +1,7 @@
 import { BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ScheduleMetaEntity } from "./schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
-@Entity("Schedule")
+@Entity("schedule")
 export class ScheduleEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "schedule_id" })
   scheduleId: number;
@@ -9,10 +9,10 @@ export class ScheduleEntity extends BaseEntity {
   @Column({ length: 26, name: "schedule_uuid" })
   scheduleUuid: string;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, name: "start_at" })
   startAt: string;
 
-  @Column()
+  @Column({ name: "end_at" })
   endAt: string;
 
   @Column({ default: false })
@@ -33,9 +33,9 @@ export class ScheduleEntity extends BaseEntity {
   /*
    * relation
    */
-  @ManyToOne(() => ScheduleMetaEntity, (parent) => parent.metadataId, {
+  @ManyToOne(() => ScheduleMetadataEntity, (parent) => parent.metadataId, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "metadata_id" })
-  parent?: ScheduleMetaEntity;
+  parent?: ScheduleMetadataEntity;
 }

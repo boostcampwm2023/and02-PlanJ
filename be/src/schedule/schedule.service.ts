@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
-import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ScheduleRepository } from "./schedule.repository";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
@@ -13,7 +13,7 @@ export class ScheduleService {
     private scheduleRepository: ScheduleRepository,
   ) {}
 
-  async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetaEntity): Promise<string> {
+  async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetadataEntity): Promise<string> {
     return await this.scheduleRepository.addSchedule(dto, scheduleMetadata);
   }
 

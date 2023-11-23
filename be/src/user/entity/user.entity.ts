@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { CategoryEntity } from "src/category/entity/category.entity";
-import { ScheduleMetaEntity } from "src/schedule/entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.entity";
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
@@ -48,8 +48,8 @@ export class UserEntity extends BaseEntity {
   category: CategoryEntity[];
 
   // participant 추가 시 삭제될 관계
-  @OneToMany(() => ScheduleMetaEntity, (scheduleMeta) => scheduleMeta.user, {
+  @OneToMany(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.user, {
     cascade: true,
   })
-  scheduleMeta: ScheduleMetaEntity[];
+  scheduleMeta: ScheduleMetadataEntity[];
 }
