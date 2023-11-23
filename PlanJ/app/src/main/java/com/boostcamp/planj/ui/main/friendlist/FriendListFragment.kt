@@ -88,7 +88,9 @@ class FriendListFragment : Fragment() {
 
     private fun setListener() {
         binding.layoutFriendListAdd.setOnClickListener {
-            addFriendDialog.show(childFragmentManager, "친구 추가")
+            if(!addFriendDialog.isAdded){
+                addFriendDialog.show(childFragmentManager, "친구 추가")
+            }
         }
     }
 

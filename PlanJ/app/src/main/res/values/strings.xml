@@ -31,7 +31,7 @@
     <string name="location">위치</string>
     <string name="memo">추가 메모</string>
     <string name="category">카테고리</string>
-    <string name="memo_length">%s/255</string>
+    <string name="memo_length">%d/255</string>
     <string name="weekSchedule">주간 통계</string>
     <string name="completeSchedule">성공한 일정\n</string>
     <string name="failSchedule">실패한 일정\n</string>
@@ -54,6 +54,14 @@
     <string name="add_friend">친구 추가</string>
     <string name="delete">삭제</string>
     <string name="vertical_ellipsis">⋮</string>
+    <string name="email_format_error">이메일 형식이 옳지 않습니다.</string>
+    <string name="email_exist_error">이미 존재하는 이메일입니다.</string>
+    <string name="pwd_length_error">비밀번호 길이는 8자 이상 16자 이하입니다.</string>
+    <string name="pwd_contents_error">비밀번호는 영문, 숫자, 특수문자를 1자이상 포함해야 합니다.</string>
+    <string name="repeat_per_day">%d일마다 반복</string>
+    <string name="repeat_per_week">%d주마다 반복</string>
+    <string name="before_end_time">종료 시간 %d분 전</string>
+    <string name="before_departure_time">출발 시간 %d분 전</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

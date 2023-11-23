@@ -19,8 +19,8 @@ import com.google.android.material.textfield.TextInputLayout
 @BindingAdapter("emailError")
 fun TextInputLayout.setEmailError(emailState: EmailState) {
     error = when (emailState) {
-        EmailState.ERROR_FORMAT -> "이메일 형식이 옳지 않습니다."
-        EmailState.ERROR_EXIST -> "이미 존재하는 이메일입니다."
+        EmailState.ERROR_FORMAT -> resources.getString(R.string.email_format_error)
+        EmailState.ERROR_EXIST -> resources.getString(R.string.email_exist_error)
         else -> null
     }
 }
@@ -28,37 +28,36 @@ fun TextInputLayout.setEmailError(emailState: EmailState) {
 @BindingAdapter("pwdError")
 fun TextInputLayout.setPwdError(pwdState: PwdState) {
     error = when (pwdState) {
-        PwdState.ERROR_LENGTH -> "비밀번호 길이는 8자 이상 16자 이하입니다."
-        PwdState.ERROR_CONTENTS -> "비밀번호는 영문, 숫자, 특수문자를 1자이상 포함해야 합니다."
+        PwdState.ERROR_LENGTH -> resources.getString(R.string.pwd_length_error)
+        PwdState.ERROR_CONTENTS -> resources.getString(R.string.pwd_contents_error)
         else -> null
     }
 }
 
 @BindingAdapter("memoLength")
 fun TextView.setMemoLength(memo: String?) {
-    val memoLength = "${memo?.length ?: 0}/255"
-    text = memoLength
+    text = resources.getString(R.string.memo_length, memo?.length ?: 0)
 }
 
 @BindingAdapter("repetitionInfo")
 fun TextView.setRepetitionInfo(repetition: Repetition?) {
     text = if (repetition == null) {
-        "설정 안함"
+        resources.getString(R.string.not_set)
     } else if (repetition.cycleType == "daily") {
-        "${repetition.cycleCount}일마다 반복"
+        resources.getString(R.string.repeat_per_day, repetition.cycleCount)
     } else {
-        "${repetition.cycleCount}주마다 반복"
+        resources.getString(R.string.repeat_per_week, repetition.cycleCount)
     }
 }
 
 @BindingAdapter("alarmInfo")
 fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
     text = if (alarmInfo != null && alarmInfo.alarmType == "departure") {
-        "출발 시간 ${alarmInfo.alarmTime}분 전"
+        resources.getString(R.string.before_departure_time, alarmInfo.alarmTime)
     } else if (alarmInfo != null && alarmInfo.alarmType == "end") {
-        "종료 시간 ${alarmInfo.alarmTime}분 전"
+        resources.getString(R.string.before_end_time, alarmInfo.alarmTime)
     } else {
-        "설정 안함"
+        resources.getString(R.string.not_set)
     }
 }
 
