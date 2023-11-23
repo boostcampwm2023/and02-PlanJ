@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.boostcamp.planj.data.model.Schedule
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,9 @@ interface ScheduleDao {
 
     @Delete
     suspend fun deleteSchedule(schedule: Schedule)
+
+    @Update
+    suspend fun updateSchedule(schedule: Schedule)
 
     @Query("DELETE From schedules WHERE scheduleId == :id")
     suspend fun deleteScheduleUsingId(id: String)

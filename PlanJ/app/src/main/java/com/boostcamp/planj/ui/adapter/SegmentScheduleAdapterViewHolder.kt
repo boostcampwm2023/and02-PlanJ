@@ -39,12 +39,13 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
     fun bind(
         item: ScheduleSegment,
         swipeListener: SwipeListener,
-        clickListener: ScheduleClickListener
+        clickListener: ScheduleClickListener,
+        checkBoxListener: ScheduleDoneListener
     ) {
         this.item = item
         this.listener = swipeListener
         binding.tvMainScheduleTitle.text = item.segmentTitle
-        val scheduleAdapter = ScheduleAdapter(clickListener)
+        val scheduleAdapter = ScheduleAdapter(clickListener, checkBoxListener)
         binding.rvListSchedule.adapter = scheduleAdapter
         scheduleAdapter.submitList(this.item.scheduleList)
     }

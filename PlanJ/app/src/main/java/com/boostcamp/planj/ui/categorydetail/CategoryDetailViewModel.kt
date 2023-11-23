@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.repository.MainRepository
+import com.boostcamp.planj.getDate
+import com.boostcamp.planj.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import javax.inject.Inject
 
 
@@ -73,6 +76,25 @@ class CategoryDetailViewModel @Inject constructor(
 
     suspend fun getUser() = withContext(Dispatchers.IO) {
         mainRepository.getUser().first()
+    }
+
+    fun checkBoxChange(schedule: Schedule, isCheck: Boolean){
+        val calendar = Calendar.getInstance()
+        val date = schedule.endTime.getDate().split("-")
+        val time = schedule.endTime.getTime().split(":")
+
+        calendar.set(
+            date[0].toInt(),
+            date[1].toInt() - 1,
+            date[2].toInt(),
+            time[0].toInt(),
+            time[1].toInt(),
+            time[2].toInt()
+        )
+        val fail = calendar.timeInMillis < System.currentTimeMillis()
+        viewModelScope.launch(Dispatchers.IO){
+            mainRepository.updateSchedule(schedule.copy(isFailed = fail, isFinished = isCheck))
+        }
     }
 
 }

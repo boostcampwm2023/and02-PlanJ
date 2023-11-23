@@ -44,4 +44,7 @@ interface MainRepository {
 
     fun getCategory(categoryName : String) : Category
 
+    suspend fun deleteScheduleApi(userUuid : String, scheduleUuid : String)
+
+    suspend fun updateSchedule(schedule: Schedule)
 }

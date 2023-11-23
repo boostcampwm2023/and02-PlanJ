@@ -15,6 +15,7 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentCategoryDetailBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
+import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.schedule.ScheduleDialog
@@ -79,7 +80,10 @@ class CategoryDetailFragment : Fragment() {
                 CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(it)
             findNavController().navigate(action)
         }
-        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, scheduleClickListener)
+        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
+            viewModel.checkBoxChange(schedule, isCheck)
+        }
+        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }
