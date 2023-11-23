@@ -13,6 +13,8 @@ import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.DialogAddScheduleBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ScheduleDialog(
     private val categoryNames: List<String>,
@@ -71,13 +73,17 @@ class ScheduleDialog(
                 binding.tietDialogScheduleInputTitleSchedule.error = "비어있습니다."
                 return@setOnClickListener
             }
+            val current = System.currentTimeMillis()
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ko","kr"))
+            val date = simpleDateFormat.format(current)
+
             listener(
                 Schedule(
                     (0..Int.MAX_VALUE).random().toString(),
                     title,
                     null,
                     null,
-                    "2023-11-20T18:50:00",
+                    "${date}T23:59:59",
                     category,
                     null,
                     null,

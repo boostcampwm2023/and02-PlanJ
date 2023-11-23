@@ -1,21 +1,30 @@
 package com.boostcamp.planj.ui.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.network.ApiResult
 import com.boostcamp.planj.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
+
+    val user =
+        loginRepository.getUser().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val userEmail = MutableStateFlow("")
     val userPwd = MutableStateFlow("")
@@ -32,6 +41,7 @@ class SignInViewModel @Inject constructor(
             when (apiResult) {
                 is ApiResult.Success -> {
                     _isSuccess.value = true
+                    saveId(apiResult.data.uid.userUuid)
                     _showToast.emit("로그인이 완료되었습니다.")
                 }
 
@@ -42,6 +52,12 @@ class SignInViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun saveId(id : String){
+        viewModelScope.launch(Dispatchers.IO){
+            loginRepository.saveUser(id)
         }
     }
 }

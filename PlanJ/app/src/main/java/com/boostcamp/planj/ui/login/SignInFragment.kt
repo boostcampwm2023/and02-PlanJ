@@ -60,6 +60,15 @@ class SignInFragment : Fragment() {
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.user.collect { id ->
+                if(id.isNotEmpty()){
+                    findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
+                    requireActivity().finish()
+                }
+            }
+        }
     }
 
     private fun setListener() {

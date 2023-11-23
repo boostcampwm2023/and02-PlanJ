@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.schedule
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -228,6 +229,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
                 viewModel.location.collectLatest {
                     it?.let { location ->
                         if (location.address.isNotEmpty()) {
+                            Log.d("PLANJDEBUG", "${it.latitude} ${it.longitude}")
                             binding.tietScheduleMapSearchInput.setText(location.placeName)
                             binding.tietScheduleMapSearchInput.setSelection(location.placeName.length)
                             val camera = CameraUpdate.scrollTo(

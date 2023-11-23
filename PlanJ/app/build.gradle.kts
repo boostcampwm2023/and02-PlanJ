@@ -34,11 +34,13 @@ android {
         buildConfigField("String", "NAVER_API_KEY", properties["naverKey"] as String)
         buildConfigField("String", "KAKAO_BASE_URL", properties["kakaoBaseUrl"] as String)
         buildConfigField("String", "KAKAO_REST_API", properties["kakaoRestApi"] as String)
+        buildConfigField("String", "DATA_STORE_NAME", properties["dateStoreName"] as String)
 
 
         manifestPlaceholders["NAVER_API_KEY"] = properties["naverKey"] as String
         manifestPlaceholders["KAKAO_BASE_URL"] = properties["kakaoBaseUrl"] as String
         manifestPlaceholders["KAKAO_REST_API"] = properties["kakaoRestApi"] as String
+        manifestPlaceholders["DATA_STORE_NAME"] = properties["dateStoreName"] as String
     }
 
     buildTypes {
@@ -107,4 +109,7 @@ dependencies {
 
     //네이버 지도
     implementation(libs.map.sdk)
+
+    //dateStore
+    implementation(libs.androidx.datastore.preferences)
 }

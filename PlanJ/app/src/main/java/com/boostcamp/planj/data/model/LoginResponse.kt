@@ -2,7 +2,9 @@ package com.boostcamp.planj.data.model
 
 import com.google.gson.annotations.SerializedName
 
+data class Uid(val userUuid : String)
 data class LoginResponse(
     @SerializedName("message") val message: String,
-    @SerializedName("statusCode") val statusCode: String
+    @SerializedName("statusCode") val statusCode: String,
+    @SerializedName("data") val uid : Uid
 )
