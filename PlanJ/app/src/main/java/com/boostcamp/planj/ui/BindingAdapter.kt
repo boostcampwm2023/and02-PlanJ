@@ -6,11 +6,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
@@ -52,8 +52,14 @@ fun TextView.setRepetitionInfo(repetition: Repetition?) {
 }
 
 @BindingAdapter("alarmInfo")
-fun TextView.setAlarmInfo(alarmInfo: String?) {
-    text = if (alarmInfo.isNullOrEmpty()) "설정 안함" else alarmInfo
+fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
+    text = if (alarmInfo != null && alarmInfo.alarmType == "departure") {
+        "출발 시간 ${alarmInfo.alarmTime}분 전"
+    } else if (alarmInfo != null && alarmInfo.alarmType == "end") {
+        "종료 시간 ${alarmInfo.alarmTime}분 전"
+    } else {
+        "설정 안함"
+    }
 }
 
 @BindingAdapter("participation")

@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -191,7 +192,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("alarmInfo", viewModel.scheduleAlarm.value)
+            bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
             alarmSettingDialog.arguments = bundle
             alarmSettingDialog.show(childFragmentManager, "알림 설정")
         }
@@ -234,7 +235,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewModel.setRepetition(repetition)
     }
 
-    override fun onClickComplete(alarm: String?) {
+    override fun onClickComplete(alarm: Alarm?) {
         viewModel.setAlarm(alarm)
     }
 }

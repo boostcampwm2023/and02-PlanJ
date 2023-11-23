@@ -3,6 +3,7 @@ package com.boostcamp.planj.data.repository
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.User
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -44,5 +45,17 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getCategoryTitleSchedule(title: String): List<Schedule> {
         return db.categoryDao().getCategoryTitleSchedule(title)
+    }
+
+    override suspend fun insertUser(email: String) {
+        db.userDao().insertUser(User("aaa", email, email))
+    }
+
+    override suspend fun deleteUser(email: String) {
+        db.userDao().deleteUser(email)
+    }
+
+    override fun getAllUser(): Flow<List<User>> {
+        return db.userDao().getAllUser()
     }
 }

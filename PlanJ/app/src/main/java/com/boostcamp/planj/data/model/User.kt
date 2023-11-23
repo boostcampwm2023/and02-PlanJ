@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity
+@Entity(tableName = "users")
 data class User(
-    @PrimaryKey val id: String
+    val imgUrl: String,
+    val nickname: String,
+    @PrimaryKey val email: String
 ) : Parcelable
