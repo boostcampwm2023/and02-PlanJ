@@ -6,7 +6,10 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.DeleteCategoryBody
 import com.boostcamp.planj.data.model.DeleteScheduleBody
+import com.boostcamp.planj.data.model.PatchScheduleBody
+import com.boostcamp.planj.data.model.PatchScheduleResponse
 import com.boostcamp.planj.data.model.PostCategoryBody
 import com.boostcamp.planj.data.model.PostCategoryResponse
 import com.boostcamp.planj.data.model.PostScheduleBody
@@ -128,4 +131,18 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun updateSchedule(schedule: Schedule) {
         db.scheduleDao().updateSchedule(schedule)
     }
+
+    override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> = flow {
+        emit(api.patchSchedule(patchScheduleBody))
+    }
+
+    override suspend fun deleteCategoryApi(userUuid: String, scheduleUuid: String) {
+        api.deleteCategory(DeleteCategoryBody(userUuid, scheduleUuid))
+    }
+
+    override suspend fun deleteScheduleUsingCategoryName(categoryName: String) {
+        db.scheduleDao().deleteScheduleUsingCategory(categoryName)
+    }
+
+
 }

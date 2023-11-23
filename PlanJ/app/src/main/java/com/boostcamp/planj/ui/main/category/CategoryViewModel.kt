@@ -56,7 +56,13 @@ class CategoryViewModel @Inject constructor(
 
     fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.deleteCategory(category)
+            try {
+                mainRepository.deleteCategoryApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", category.categoryId)
+                mainRepository.deleteCategory(category)
+                mainRepository.deleteScheduleUsingCategoryName(category.categoryName)
+            }catch (e : Exception){
+                Log.d("PLANJDEBUG", "category delete error  ${e.message}")
+            }
         }
     }
 

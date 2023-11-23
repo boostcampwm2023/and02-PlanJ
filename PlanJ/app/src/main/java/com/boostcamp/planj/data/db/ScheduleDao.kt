@@ -24,6 +24,9 @@ interface ScheduleDao {
     @Query("DELETE From schedules WHERE scheduleId == :id")
     suspend fun deleteScheduleUsingId(id: String)
 
+    @Query("DELETE FROM schedules WHERE categoryTitle = :categoryName")
+    suspend fun deleteScheduleUsingCategory(categoryName : String)
+
     @Query("SELECT * FROM schedules")
     fun getSchedules(): Flow<List<Schedule>>
 

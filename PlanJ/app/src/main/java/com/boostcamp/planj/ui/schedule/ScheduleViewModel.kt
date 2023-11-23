@@ -1,9 +1,11 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Alarm
+import com.boostcamp.planj.data.model.PatchScheduleBody
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
@@ -13,8 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
@@ -52,7 +57,7 @@ class ScheduleViewModel @Inject constructor(
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
-  
+
     val scheduleLocation = MutableStateFlow<Location?>(null)
     val scheduleMemo = MutableStateFlow<String?>(null)
 
@@ -129,7 +134,7 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(location: Location?){
+    fun setLocation(location: Location?) {
         scheduleLocation.value = location
     }
 
@@ -139,33 +144,71 @@ class ScheduleViewModel @Inject constructor(
 
     fun deleteSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.deleteScheduleUsingId(scheduleId)
+            try {
+                mainRepository.deleteScheduleApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", scheduleId)
+                mainRepository.deleteScheduleUsingId(scheduleId)
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
+            }
         }
     }
 
     fun completeEditingSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
-            val newSchedule = Schedule(
-                scheduleId = scheduleId,
-                title = scheduleTitle.value,
-                memo = scheduleMemo.value,
-                startTime = if (scheduleStartDate.value == null) {
-                    null
-                } else {
-                    "${scheduleStartDate.value?.replace('/', '-')}T${scheduleStartTime.value}:00"
-                },
-                endTime = "${scheduleEndDate.value?.replace('/', '-')}T${scheduleEndTime.value}:00",
-                categoryTitle = scheduleCategory.value,
-                repetition = scheduleRepetition.value,
-                alarm = scheduleAlarm.value,
-                members = members.value,
-                doneMembers = doneMembers.value,
-                location = scheduleLocation.value,
-                isFinished = isFinished.value,
-                isFailed = isFailed.value
+            Log.d("PLANJDEBUG", "DateTime ${scheduleStartDate.value?.let {
+                "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
+            }?: ""} ${scheduleEndDate.value?.let {
+                "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
+            }?: ""}")
+            val getCategory = mainRepository.getCategory(scheduleCategory.value)
+
+            val patchScheduleBody = PatchScheduleBody(
+                "01HFYAR1FX09FKQ2SW1HTG8BJ8",
+                getCategory.categoryId,
+                scheduleId,
+                scheduleTitle.value,
+                scheduleMemo.value ?: "",
+                scheduleStartDate.value?.let {
+                    "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
+                }?: "",
+                scheduleEndDate.value?.let {
+                    "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
+                }?: "",
+                scheduleLocation.value?.placeName ?: "" ,
+                scheduleLocation.value?.address ?: "",
+                scheduleLocation.value?.latitude ?: "",
+                scheduleLocation.value?.longitude ?: ""
             )
-            mainRepository.insertSchedule(newSchedule)
-            _isEditMode.value = false
+
+            mainRepository.patchSchedule(patchScheduleBody)
+                .catch {
+                    Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
+                }
+                .collect {
+                    val newSchedule = Schedule(
+                        scheduleId = scheduleId,
+                        title = scheduleTitle.value,
+                        memo = scheduleMemo.value,
+                        startTime = if (scheduleStartDate.value == null) {
+                            null
+                        } else {
+                            "${scheduleStartDate.value?.replace('/', '-')}T${scheduleStartTime.value}:00"
+                        },
+                        endTime = "${scheduleEndDate.value?.replace('/', '-')}T${scheduleEndTime.value}:00",
+                        categoryTitle = scheduleCategory.value,
+                        repetition = scheduleRepetition.value,
+                        alarm = scheduleAlarm.value,
+                        members = members.value,
+                        doneMembers = doneMembers.value,
+                        location = scheduleLocation.value,
+                        isFinished = isFinished.value,
+                        isFailed = isFailed.value
+                    )
+                    mainRepository.insertSchedule(newSchedule)
+                    _isEditMode.value = false
+                    Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
+                }
+
         }
     }
 
