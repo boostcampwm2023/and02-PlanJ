@@ -1,11 +1,12 @@
 package com.boostcamp.planj.ui.schedule
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,7 +26,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ScheduleViewModel by viewModels()
+    private val viewModel: ScheduleViewModel by activityViewModels()
 
     private val args : ScheduleFragmentArgs by navArgs()
 

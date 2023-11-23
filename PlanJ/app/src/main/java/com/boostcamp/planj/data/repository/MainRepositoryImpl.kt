@@ -19,6 +19,10 @@ class MainRepositoryImpl @Inject constructor(
         db.scheduleDao().deleteSchedule(schedule)
     }
 
+    override suspend fun deleteScheduleUsingId(id: String) {
+        db.scheduleDao().deleteScheduleUsingId(id)
+    }
+
     override fun getSchedules(): Flow<List<Schedule>> {
         return db.scheduleDao().getSchedules()
     }

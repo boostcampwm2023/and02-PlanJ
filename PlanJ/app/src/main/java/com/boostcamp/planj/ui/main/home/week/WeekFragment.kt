@@ -87,7 +87,7 @@ class WeekFragment : Fragment() {
     private fun resultSchedule(scheduleList: List<Schedule>) {
 
         val finishList = scheduleList.filter { schedule: Schedule ->
-            schedule.failed.not() && schedule.finished
+            schedule.isFailed.not() && schedule.isFinished
         }
         val countFinish = SpannableString(
             binding.btnWeekFinish.text.toString().plus("${finishList.size}")
@@ -105,7 +105,7 @@ class WeekFragment : Fragment() {
         }
 
 
-        val failList = scheduleList.filter { schedule: Schedule -> schedule.failed }
+        val failList = scheduleList.filter { schedule: Schedule -> schedule.isFailed }
         val countFail =
             SpannableString(binding.btnWeekFail.text.toString().plus("${failList.size}"))
 
@@ -122,7 +122,7 @@ class WeekFragment : Fragment() {
         }
 
 
-        val haveList = scheduleList.filter { schedule: Schedule -> schedule.finished.not() }
+        val haveList = scheduleList.filter { schedule: Schedule -> schedule.isFinished.not() }
         val countHave =
             SpannableString(binding.btnWeekHave.text.toString().plus("${haveList.size}"))
 

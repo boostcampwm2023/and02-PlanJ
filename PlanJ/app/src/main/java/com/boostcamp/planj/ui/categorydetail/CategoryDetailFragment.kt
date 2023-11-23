@@ -14,8 +14,8 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentCategoryDetailBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
-import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
+import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.schedule.ScheduleDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -86,9 +86,9 @@ class CategoryDetailFragment : Fragment() {
                 viewModel.schedule.collectLatest {
                     it.sortedBy { schedule -> schedule.scheduleId }
                     val segment = listOf(
-                        it.filter { s -> !s.finished },
-                        it.filter { s -> s.finished && !s.failed },
-                        it.filter { s -> s.finished && s.failed }
+                        it.filter { s -> !s.isFinished },
+                        it.filter { s -> s.isFinished && !s.isFailed },
+                        it.filter { s -> s.isFinished && s.isFailed }
                     )
                     val list = resources.getStringArray(R.array.today_list)
                     val segmentList = mutableListOf<ScheduleSegment>()

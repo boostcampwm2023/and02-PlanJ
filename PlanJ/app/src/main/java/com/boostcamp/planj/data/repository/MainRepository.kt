@@ -13,6 +13,8 @@ interface MainRepository {
 
     suspend fun deleteSchedule(schedule: Schedule)
 
+    suspend fun deleteScheduleUsingId(id: String)
+
     fun getCategories(): Flow<List<String>>
 
     fun getAllCategories(): Flow<List<Category>>

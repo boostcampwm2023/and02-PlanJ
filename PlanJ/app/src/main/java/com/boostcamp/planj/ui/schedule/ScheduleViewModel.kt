@@ -23,47 +23,36 @@ class ScheduleViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
+    private lateinit var scheduleId: String
+    private val isFinished = MutableStateFlow(false)
+    private val isFailed = MutableStateFlow(false)
+
     val scheduleCategory = MutableStateFlow("")
     val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
 
-    private val _scheduleStartDate = MutableStateFlow<String?>("2023/11/20")
+    private val _scheduleStartDate = MutableStateFlow<String?>(null)
     val scheduleStartDate: StateFlow<String?> = _scheduleStartDate
-    private val _scheduleStartTime = MutableStateFlow<String?>("23:59")
+    private val _scheduleStartTime = MutableStateFlow<String?>(null)
     val scheduleStartTime: StateFlow<String?> = _scheduleStartTime
 
-    private val _scheduleEndDate = MutableStateFlow<String?>("2023/11/20")
+    private val _scheduleEndDate = MutableStateFlow<String?>("")
     val scheduleEndDate: StateFlow<String?> = _scheduleEndDate
-    private val _scheduleEndTime = MutableStateFlow<String?>("23:59")
+    private val _scheduleEndTime = MutableStateFlow<String?>("")
     val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
 
-    private val _members = MutableStateFlow(
-        listOf(
-            User("1111", "1111", "1111"),
-            User("2222", "2222", "2222"),
-            User("3333", "3333", "3333"),
-            User("4444", "4444", "4444"),
-            User("5555", "5555", "5555"),
-            User("6666", "6666", "6666")
-        )
-    )
+    private val _members = MutableStateFlow<List<User>>(listOf())
     val members: StateFlow<List<User>> = _members
 
-    private val _doneMembers = MutableStateFlow<List<User>?>(
-        listOf(
-            User("2222", "2222", "2222"),
-            User("3333", "3333", "3333"),
-            User("5555", "5555", "5555"),
-            User("6666", "6666", "6666")
-        )
-    )
+    private val _doneMembers = MutableStateFlow<List<User>?>(null)
     val doneMembers: StateFlow<List<User>?> = _doneMembers
 
     private val _scheduleAlarm = MutableStateFlow<Alarm?>(null)
     val scheduleAlarm: StateFlow<Alarm?> = _scheduleAlarm
 
-    private val _scheduleRepetition = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
+    private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
+  
     val locationInfo = MutableStateFlow<Location?>(null)
     val userMemo = MutableStateFlow<String?>(null)
 
@@ -78,6 +67,35 @@ class ScheduleViewModel @Inject constructor(
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
+
+    fun setScheduleInfo(schedule: Schedule?) {
+        schedule?.let { schedule ->
+            scheduleId = schedule.scheduleId
+            scheduleCategory.value = schedule.categoryTitle
+            scheduleTitle.value = schedule.title
+
+            if (schedule.startTime == null) {
+                _scheduleStartDate.value = null
+                _scheduleStartTime.value = null
+            } else {
+                val dateTime = schedule.startTime.split("T")
+                _scheduleStartDate.value = dateTime[0].replace("-", "/")
+                _scheduleStartTime.value = dateTime[1].split(":").dropLast(1).joinToString(":")
+            }
+
+            val dateTime = schedule.endTime.split("T")
+            _scheduleEndDate.value = dateTime[0].replace("-", "/")
+            _scheduleEndTime.value = dateTime[1].split(":").dropLast(1).joinToString(":")
+
+            _scheduleRepetition.value = schedule.repetition
+            _scheduleAlarm.value = schedule.alarm
+            _doneMembers.value = schedule.doneMembers
+            _members.value = schedule.members
+            scheduleLocation.value = schedule.location
+            isFinished.value = schedule.isFinished
+            isFailed.value = schedule.isFailed
+        }
+    }
 
     fun getStartDate(): Long? {
         return scheduleStartDate.value?.let { dateFormat.parse(it)?.time }
@@ -120,26 +138,31 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun deleteSchedule() {
-        // TODO: 일정 삭제 요청
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.deleteScheduleUsingId(scheduleId)
+        }
     }
 
     fun completeEditingSchedule() {
-        // TODO: 일정 수정 요청으로 변경하기
         viewModelScope.launch(Dispatchers.IO) {
             val newSchedule = Schedule(
-                scheduleId = scheduleTitle.value,
+                scheduleId = scheduleId,
                 title = scheduleTitle.value,
-                memo = userMemo.value,
-                startTime = "${scheduleStartDate.value}T${scheduleStartTime.value}",
-                endTime = "${scheduleEndDate.value}T${scheduleEndTime.value}",
+                memo = scheduleMemo.value,
+                startTime = if (scheduleStartDate.value == null) {
+                    null
+                } else {
+                    "${scheduleStartDate.value?.replace('/', '-')}T${scheduleStartTime.value}:00"
+                },
+                endTime = "${scheduleEndDate.value?.replace('/', '-')}T${scheduleEndTime.value}:00",
                 categoryTitle = scheduleCategory.value,
                 repetition = scheduleRepetition.value,
                 alarm = scheduleAlarm.value,
-                members = listOf(),
-                doneMembers = null,
-                location = locationInfo.value?.placeName,
-                finished = false,
-                failed = false
+                members = members.value,
+                doneMembers = doneMembers.value,
+                location = scheduleLocation.value,
+                isFinished = isFinished.value,
+                isFailed = isFailed.value
             )
             mainRepository.insertSchedule(newSchedule)
             _isEditMode.value = false
