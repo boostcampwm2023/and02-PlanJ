@@ -30,7 +30,11 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
     }
   }
 
-  async updateScheduleMeta(dto: UpdateScheduleDto, category: CategoryEntity, metadataId: number): Promise<void> {
+  async updateScheduleMeta(
+    dto: UpdateScheduleDto,
+    category: CategoryEntity,
+    metadataId: number,
+  ): Promise<ScheduleMetaEntity> {
     const { title, description, startAt, endAt } = dto;
 
     const [, startTime] = startAt.split("T");
@@ -45,6 +49,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
 
     try {
       await this.save(record);
+      return record;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();

@@ -24,7 +24,11 @@ export class ScheduleMetaService {
     return await this.scheduleMetaRepository.addScheduleMeta(dto, user, category);
   }
 
-  async updateScheduleMetadata(dto: UpdateScheduleDto, category: CategoryEntity, metadataId: number): Promise<void> {
+  async updateScheduleMetadata(
+    dto: UpdateScheduleDto,
+    category: CategoryEntity,
+    metadataId: number,
+  ): Promise<ScheduleMetaEntity> {
     return await this.scheduleMetaRepository.updateScheduleMeta(dto, category, metadataId);
   }
 
