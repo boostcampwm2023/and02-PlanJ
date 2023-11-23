@@ -7,7 +7,6 @@ import { AuthApiController } from "src/auth-api/auth-api.controller";
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
-  controllers: [AuthApiController],
   providers: [UserService, UserRepository],
   exports: [UserService],
 })

@@ -8,14 +8,16 @@ import { ScheduleApiModule } from "./schedule-api/schedule-api.module";
 import { AuthApiModule } from "./auth-api/auth-api.module";
 import { CategoryApiModule } from "./category-api/category-api.module";
 import { FriendModule } from './friend/friend.module';
-import dbConfig from "./config/dbConfig";
+import { AuthModule } from './auth/auth.module';
+import dbConfig from "./config/db.config";
+import authConfig from "./config/auth.config";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${__dirname}/config/env/.${process.env.NODE_ENV}.env`,
-      load: [dbConfig],
+      load: [dbConfig, authConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

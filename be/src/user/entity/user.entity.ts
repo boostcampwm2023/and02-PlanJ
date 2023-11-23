@@ -1,9 +1,16 @@
-import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { ScheduleMetaEntity } from "src/schedule/entity/schedule-meta.entity";
 
-@Entity("User")
-// @Unique(["email"])
+@Entity("user")
 export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "user_id" })
   userId: number;
@@ -20,11 +27,8 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 12 })
   nickname: string;
 
-  @Column({ type: "timestamp", name: "created_at" })
+  @CreateDateColumn({ type: "timestamp", name: "created_at" })
   createdAt: Date;
-
-  @Column({ default: null, type: "timestamp", name: "updated_at" })
-  updatedAt?: Date | null;
 
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
