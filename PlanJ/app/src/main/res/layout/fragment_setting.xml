@@ -22,16 +22,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/ic_arrow_back">
+            app:menu="@menu/toolbar_menu">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/img_logo" />
 
             <TextView
-                android:id="@+id/tv_schedule_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/setting"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
+                android:gravity="center"
+                android:text="@string/settings"
+                android:textColor="@color/main1"
+                android:textSize="24sp"
+                android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.divider.MaterialDivider

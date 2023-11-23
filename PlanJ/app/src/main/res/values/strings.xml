@@ -70,6 +70,7 @@
     <string name="read_fail_memo">작성 글 보기</string>
     <string name="alarm_setting">푸시 알림</string>
     <string name="edit_profile">프로필 편집</string>
+    <string name="settings">Settings</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>
