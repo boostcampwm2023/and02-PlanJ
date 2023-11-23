@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -6,6 +8,11 @@ plugins {
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
 }
+
+
+// 선언 및 키값을 불러오기
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.boostcamp.planj"
@@ -19,6 +26,19 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        android.buildFeatures.buildConfig = true
+
+        // 프로젝트에서 사용
+        // 타입 - 키 - 값
+        buildConfigField("String", "NAVER_API_KEY", properties["naverKey"] as String)
+        buildConfigField("String", "KAKAO_BASE_URL", properties["kakaoBaseUrl"] as String)
+        buildConfigField("String", "KAKAO_REST_API", properties["kakaoRestApi"] as String)
+
+
+        manifestPlaceholders["NAVER_API_KEY"] = properties["naverKey"] as String
+        manifestPlaceholders["KAKAO_BASE_URL"] = properties["kakaoBaseUrl"] as String
+        manifestPlaceholders["KAKAO_REST_API"] = properties["kakaoRestApi"] as String
     }
 
     buildTypes {
@@ -84,4 +104,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.kotlinx.serialization.json)
+
+    //네이버 지도
+    implementation(libs.map.sdk)
 }
