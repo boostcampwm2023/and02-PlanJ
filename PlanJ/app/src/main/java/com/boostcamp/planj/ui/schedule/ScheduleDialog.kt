@@ -38,7 +38,6 @@ class ScheduleDialog(
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
@@ -80,6 +79,7 @@ class ScheduleDialog(
                     null,
                     "2023-11-20T18:50:00",
                     category,
+                    null,
                     null,
                     listOf(),
                     null,

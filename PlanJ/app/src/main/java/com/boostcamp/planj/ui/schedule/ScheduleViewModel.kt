@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
@@ -57,8 +58,8 @@ class ScheduleViewModel @Inject constructor(
     )
     val doneMembers: StateFlow<List<User>?> = _doneMembers
 
-    private val _scheduleAlarm = MutableStateFlow<String?>(null)
-    val scheduleAlarm: StateFlow<String?> = _scheduleAlarm
+    private val _scheduleAlarm = MutableStateFlow<Alarm?>(null)
+    val scheduleAlarm: StateFlow<Alarm?> = _scheduleAlarm
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(Repetition("aaa", "daily", 4))
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
@@ -105,7 +106,7 @@ class ScheduleViewModel @Inject constructor(
         _scheduleRepetition.value = repetition
     }
 
-    fun setAlarm(alarm: String?) {
+    fun setAlarm(alarm: Alarm?) {
         _scheduleAlarm.value = alarm
     }
 
@@ -127,7 +128,8 @@ class ScheduleViewModel @Inject constructor(
                 startTime = "${scheduleStartDate.value}T${scheduleStartTime.value}",
                 endTime = "${scheduleEndDate.value}T${scheduleEndTime.value}",
                 categoryTitle = scheduleCategory.value,
-                repetition = null,
+                repetition = scheduleRepetition.value,
+                alarm = scheduleAlarm.value,
                 members = listOf(),
                 doneMembers = null,
                 location = locationInfo.value,
