@@ -8,8 +8,8 @@ import com.boostcamp.planj.databinding.ItemWeekStartAndEndBinding
 class StartAndEndScheduleViewHolder(binding: ItemWeekStartAndEndBinding, private val num: Int) :
     RecyclerView.ViewHolder(binding.root) {
 
-    private val title = binding.tvWeekEndTitle
-    private val bar = binding.vwWeekendBar
+    private val title = binding.tvWeekStartAndEndTitle
+    private val bar = binding.vwWeekStartAndEndBar
 
     fun bind(item: Schedule) {
         title.text = item.title

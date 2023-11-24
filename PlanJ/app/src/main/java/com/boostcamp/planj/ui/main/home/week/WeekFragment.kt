@@ -12,9 +12,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
@@ -22,24 +26,39 @@ import com.boostcamp.planj.databinding.FragmentWeekBinding
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarAdapter
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarVO
 import com.boostcamp.planj.ui.main.home.week.adapter.ScheduleSimpleViewAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 
+@AndroidEntryPoint
 class WeekFragment : Fragment() {
 
     private var _binding: FragmentWeekBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: WeekFragmentViewModel by viewModels()
+    private lateinit var calendarAdapter: CalendarAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val scheduleList = listOf<Schedule>()
 
-        initAdapter(scheduleList)
-        resultSchedule(scheduleList)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleList.collectLatest {
+                    calendarAdapter.submitList(viewModel.makeWeekSchedule(viewModel.calendarList))
+                    resultSchedule(viewModel.scheduleList.value)
+                }
+            }
+        }
+
+
+        initAdapter()
+        resultSchedule(viewModel.scheduleList.value)
     }
 
     override fun onCreateView(
@@ -54,16 +73,15 @@ class WeekFragment : Fragment() {
         super.onDestroyView()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun initAdapter(scheduleList: List<Schedule>) {
 
-        lateinit var calendarAdapter: CalendarAdapter
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initAdapter() {
+
         var calendarList = ArrayList<CalendarVO>()
         var week_day: Array<String> = resources.getStringArray(R.array.calendar_day)
 
         calendarList.run {
             val dateFormat = DateTimeFormatter.ofPattern("dd")
-            val monthFormat = DateTimeFormatter.ofPattern("yyyy-MM-")
 
             var preSunday: LocalDateTime =
                 (LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)))
@@ -79,9 +97,12 @@ class WeekFragment : Fragment() {
             }
         }
 
-        calendarAdapter = CalendarAdapter(calendarList, scheduleList)
+        viewModel.calendarList = calendarList
+        calendarAdapter = CalendarAdapter()
+
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)
+        calendarAdapter.submitList(viewModel.makeWeekSchedule(calendarList))
     }
 
     private fun resultSchedule(scheduleList: List<Schedule>) {
@@ -89,57 +110,44 @@ class WeekFragment : Fragment() {
         val finishList = scheduleList.filter { schedule: Schedule ->
             schedule.isFailed.not() && schedule.isFinished
         }
-        val countFinish = SpannableString(
-            binding.btnWeekFinish.text.toString().plus("${finishList.size}")
+        setResultBtn(binding.btnWeekFinish, finishList, Color.BLUE)
+
+
+        val failList = scheduleList.filter { schedule: Schedule -> schedule.failed }
+        setResultBtn(binding.btnWeekFail, failList, Color.RED)
+
+        val haveList = scheduleList.filter { schedule: Schedule -> schedule.finished.not() }
+        setResultBtn(binding.btnWeekHave, haveList, Color.BLACK)
+
+
+    }
+
+    private fun setResultBtn(
+        resultBtn: AppCompatButton,
+        scheduleList: List<Schedule>,
+        color: Int
+    ) {
+        val title = resultBtn.text.toString().split("\n")
+        val countText = SpannableString(
+            title[0].plus("\n${scheduleList.size}")
         )
-
-        countFinish.setSpan(
-            ForegroundColorSpan(Color.BLUE),
-            binding.btnWeekFinish.text.length,
-            countFinish.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.btnWeekFinish.text = countFinish
-        binding.btnWeekFinish.setOnClickListener {
-            makeDialog(finishList, true)
-        }
-
-
-        val failList = scheduleList.filter { schedule: Schedule -> schedule.isFailed }
-        val countFail =
-            SpannableString(binding.btnWeekFail.text.toString().plus("${failList.size}"))
-
-        countFail.setSpan(
-            ForegroundColorSpan(Color.RED),
-            binding.btnWeekFail.text.length,
-            countFail.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.btnWeekFail.text = countFail
-
-        binding.btnWeekFail.setOnClickListener {
-            makeDialog(failList, true)
-        }
-
-
         val haveList = scheduleList.filter { schedule: Schedule -> schedule.isFinished.not() }
         val countHave =
             SpannableString(binding.btnWeekHave.text.toString().plus("${haveList.size}"))
 
-        countHave.setSpan(
-            ForegroundColorSpan(Color.BLACK),
-            binding.btnWeekHave.text.length,
-            countHave.length,
+        countText.setSpan(
+            ForegroundColorSpan(color),
+            title[0].length,
+            countText.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        binding.btnWeekHave.text = countHave
-
-        binding.btnWeekHave.setOnClickListener {
-            makeDialog(haveList, true)
+        resultBtn.text = countText
+        resultBtn.setOnClickListener {
+            makeDialog(scheduleList)
         }
     }
 
-    fun makeDialog(list: List<Schedule>, complete: Boolean) {
+    private fun makeDialog(list: List<Schedule>) {
 
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.dialog_schedule_result, null)
@@ -148,14 +156,14 @@ class WeekFragment : Fragment() {
             .setView(view)
             .create()
 
-        val close = view.findViewById<ImageView>(R.id.iv_dialog_close)
+        val close = view.findViewById<ImageView>(R.id.iv_dialog_schedule_result_close)
         close.setOnClickListener {
             dialog.dismiss()
         }
 
-        val scheduleView = view.findViewById<RecyclerView>(R.id.rv_dialog_week_schedule)
+        val scheduleView =
+            view.findViewById<RecyclerView>(R.id.rv_dialog_schedule_result_week_schedule)
         scheduleView.adapter = ScheduleSimpleViewAdapter(list)
-        scheduleView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
 
         dialog.show()

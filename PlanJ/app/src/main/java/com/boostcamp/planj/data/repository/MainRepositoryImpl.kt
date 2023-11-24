@@ -151,4 +151,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryAfter : String) {
         db.scheduleDao().updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
     }
+
+    override fun getWeekSchedule(): Flow<List<Schedule>> {
+        return db.scheduleDao().getWeekSchedule()
+    }
 }
