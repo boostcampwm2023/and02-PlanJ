@@ -1,14 +1,23 @@
 package com.boostcamp.planj.ui.main.category
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.PostCategoryBody
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,15 +29,26 @@ class CategoryViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 
-    fun insertCategory(category: Category): CategoryState {
-        return if (category.categoryName.isEmpty()) {
+    fun insertCategory(categoryName: String): CategoryState {
+        return if (categoryName.isEmpty()) {
             CategoryState.EMPTY
         } else if (categories.value.map { c -> c.categoryName }
-                .contains(category.categoryName)) {
+                .contains(categoryName)) {
             CategoryState.EXIST
         } else {
+            val currentTime = SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale("kr", "ko")
+            ).format(System.currentTimeMillis()).replace(" ", "T").trim()
             viewModelScope.launch(Dispatchers.IO) {
-                mainRepository.insertCategory(category)
+                val categoryBody = PostCategoryBody("01HFYAR1FX09FKQ2SW1HTG8BJ8", categoryName, currentTime)
+                mainRepository.postCategory(categoryBody)
+                    .catch {
+                        Log.d("PLANJDEBUG", "postCategory Error ${it.message}")
+                    }
+                    .collect {
+                        mainRepository.insertCategory(Category(it.categoryData.categoryUuid, categoryName))
+                    }
             }
             CategoryState.SUCCESS
         }
@@ -36,21 +56,34 @@ class CategoryViewModel @Inject constructor(
 
     fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.deleteCategory(category)
+            try {
+                mainRepository.deleteCategoryApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", category.categoryId)
+                mainRepository.deleteCategory(category)
+                mainRepository.deleteScheduleUsingCategoryName(category.categoryName)
+            }catch (e : Exception){
+                Log.d("PLANJDEBUG", "category delete error  ${e.message}")
+            }
         }
     }
 
-    fun updateCategory(category: Category): CategoryState {
-        return if (category.categoryName.isEmpty()) {
+    fun updateCategory(categoryName: String, title : String): CategoryState {
+        return if (categoryName.isEmpty()) {
             CategoryState.EMPTY
         } else if (categories.value.map { c -> c.categoryName }
-                .contains(category.categoryName)) {
+                .contains(categoryName)) {
             CategoryState.EXIST
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                mainRepository.updateCategory(category)
+                categories.value.find { it.categoryName == title }?.let {category ->
+                    mainRepository.updateCategory(category.copy(categoryName = categoryName))
+                    mainRepository.updateScheduleUsingCategory(title, categoryName)
+                }
             }
             CategoryState.SUCCESS
         }
+    }
+
+    suspend fun getUser() = withContext(Dispatchers.IO) {
+        mainRepository.getUser().first()
     }
 }
