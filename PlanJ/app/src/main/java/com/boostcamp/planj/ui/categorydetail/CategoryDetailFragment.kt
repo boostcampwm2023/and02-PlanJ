@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.categorydetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentCategoryDetailBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
+import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.schedule.ScheduleDialog
@@ -48,8 +50,11 @@ class CategoryDetailFragment : Fragment() {
 
     private fun setListener() {
         binding.fbCategoryDetailAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(emptyList(), initText = viewModel.title.value) {
-                viewModel.insertSchedule(it)
+            val dialog = ScheduleDialog(
+                emptyList(),
+                initText = viewModel.title.value
+            ) { category, title, endTime ->
+                viewModel.insertSchedule(category, title, endTime)
             }
             activity?.supportFragmentManager?.let {
                 dialog.show(it, null)
@@ -75,7 +80,10 @@ class CategoryDetailFragment : Fragment() {
                 CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(it)
             findNavController().navigate(action)
         }
-        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, scheduleClickListener)
+        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
+            viewModel.checkBoxChange(schedule, isCheck)
+        }
+        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }
@@ -83,7 +91,7 @@ class CategoryDetailFragment : Fragment() {
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.schedule.collectLatest {
+                viewModel.schedules.collectLatest {
                     it.sortedBy { schedule -> schedule.scheduleId }
                     val segment = listOf(
                         it.filter { s -> !s.isFinished },
@@ -96,20 +104,6 @@ class CategoryDetailFragment : Fragment() {
                         segmentList.add(ScheduleSegment(list[index], segment[index]))
                     }
                     segmentScheduleAdapter.submitList(segmentList)
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.title.collectLatest {
-                    if (it == "전체 일정") {
-                        lifecycleScope.launch {
-                            viewModel.getAllSchedule()
-                        }
-                    } else {
-                        viewModel.getCategoryTitleSchedule(it)
-                    }
                 }
             }
         }

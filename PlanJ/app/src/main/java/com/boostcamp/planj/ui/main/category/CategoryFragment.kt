@@ -76,7 +76,7 @@ class CategoryFragment : Fragment() {
             }
         } else {
             CategoryDialog(title) {
-                viewModel.updateCategory(Category(title, it.categoryName))
+                viewModel.updateCategory(it, title)
             }
         }
 

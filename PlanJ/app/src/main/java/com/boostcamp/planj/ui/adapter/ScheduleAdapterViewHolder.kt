@@ -6,20 +6,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.ItemScheduleBinding
 
-class ScheduleSimpleViewHolder(private val binding: ItemScheduleBinding) :
+class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: Schedule, clickListener: ScheduleClickListener) {
+    fun bind(item: Schedule, clickListener: ScheduleClickListener, checkBoxListener: ScheduleDoneListener) {
         binding.schedule = item
         binding.executePendingBindings()
         itemView.setOnClickListener {
             clickListener.onClick(item)
         }
+        binding.cbDone.setOnCheckedChangeListener { _ , isChecked ->
+            checkBoxListener.onClick(item, isChecked)
+        }
     }
 
     companion object {
-        fun from(parent: ViewGroup): ScheduleSimpleViewHolder {
-            return ScheduleSimpleViewHolder(
+        fun from(parent: ViewGroup): ScheduleAdapterViewHolder {
+            return ScheduleAdapterViewHolder(
                 ItemScheduleBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

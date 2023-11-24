@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") {
-                viewModel.insertSchedule(it)
+            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") { category, title, endTime ->
+                viewModel.insertSchedule(category, title, endTime)
             }
             dialog.show(
                 supportFragmentManager, null
