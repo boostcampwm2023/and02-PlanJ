@@ -48,5 +48,5 @@ export class UpdateScheduleDto {
   @IsString()
   @IsOptional()
   @Allow()
-  longtitude: string | null;
+  longitude: string | null;
 }

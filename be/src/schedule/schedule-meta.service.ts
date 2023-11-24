@@ -2,12 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetaRepository } from "./schedule-meta.repository";
-import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { HttpResponse } from "src/utils/http.response";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
-import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
 @Injectable()
 export class ScheduleMetaService {
@@ -20,7 +19,7 @@ export class ScheduleMetaService {
     dto: AddScheduleDto,
     user: UserEntity,
     category: CategoryEntity,
-  ): Promise<ScheduleMetaEntity> {
+  ): Promise<ScheduleMetadataEntity> {
     return await this.scheduleMetaRepository.addScheduleMeta(dto, user, category);
   }
 
@@ -28,7 +27,7 @@ export class ScheduleMetaService {
     dto: UpdateScheduleDto,
     category: CategoryEntity,
     metadataId: number,
-  ): Promise<ScheduleMetaEntity> {
+  ): Promise<ScheduleMetadataEntity> {
     return await this.scheduleMetaRepository.updateScheduleMeta(dto, category, metadataId);
   }
 

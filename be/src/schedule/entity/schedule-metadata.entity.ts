@@ -12,8 +12,8 @@ import { ScheduleEntity } from "./schedule.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 
-@Entity("ScheduleMeta")
-export class ScheduleMetaEntity extends BaseEntity {
+@Entity("schedule_metadata")
+export class ScheduleMetadataEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "metadata_id" })
   metadataId: number;
 

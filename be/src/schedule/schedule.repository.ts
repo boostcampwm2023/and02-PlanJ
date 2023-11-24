@@ -4,7 +4,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ulid } from "ulid";
 import { ScheduleEntity } from "./entity/schedule.entity";
 import { HttpResponse } from "src/utils/http.response";
-import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
 
@@ -14,7 +14,7 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
     super(ScheduleEntity, dataSource.createEntityManager());
   }
 
-  async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetaEntity) {
+  async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetadataEntity) {
     const { endAt } = dto;
 
     const scheduleUuid = ulid();

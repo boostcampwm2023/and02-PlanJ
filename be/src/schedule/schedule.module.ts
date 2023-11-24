@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ScheduleMetaRepository } from "./schedule-meta.repository";
 import { ScheduleRepository } from "./schedule.repository";
 import { ScheduleApiController } from "src/schedule-api/schedule-api.controller";
@@ -12,10 +12,10 @@ import { CategoryRepository } from "src/category/category.repository";
 import { UserService } from "src/user/user.service";
 import { CategoryService } from "src/category/category.service";
 import { ScheduleLocationService } from "./schedule-location.service";
-import { ScheduleLocationRepository } from "./schedule-location.respository";
+import { ScheduleLocationRepository } from "./schedule-location.repository";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ScheduleMetaEntity])],
+  imports: [TypeOrmModule.forFeature([ScheduleMetadataEntity])],
   controllers: [ScheduleApiController],
   providers: [
     UserRepository,

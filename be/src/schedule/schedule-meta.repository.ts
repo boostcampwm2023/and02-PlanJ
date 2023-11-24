@@ -1,18 +1,22 @@
 import { DataSource, Repository } from "typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
-import { ScheduleMetaEntity } from "./entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 
 @Injectable()
-export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
+export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
   constructor(dataSource: DataSource) {
-    super(ScheduleMetaEntity, dataSource.createEntityManager());
+    super(ScheduleMetadataEntity, dataSource.createEntityManager());
   }
 
-  async addScheduleMeta(dto: AddScheduleDto, user: UserEntity, category: CategoryEntity): Promise<ScheduleMetaEntity> {
+  async addScheduleMeta(
+    dto: AddScheduleDto,
+    user: UserEntity,
+    category: CategoryEntity,
+  ): Promise<ScheduleMetadataEntity> {
     const { title, endAt } = dto;
 
     const description = null;
@@ -34,7 +38,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
     dto: UpdateScheduleDto,
     category: CategoryEntity,
     metadataId: number,
-  ): Promise<ScheduleMetaEntity> {
+  ): Promise<ScheduleMetadataEntity> {
     const { title, description, startAt, endAt } = dto;
 
     const [, startTime] = startAt.split("T");
@@ -56,7 +60,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
     }
   }
 
-  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetaEntity[]> {
+  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetadataEntity[]> {
     const todayStart = date.toString().split("T")[0] + "T00:00:00";
     const todayEnd = date.toString().split("T")[0] + "T23:59:59";
 
@@ -69,7 +73,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetaEntity> {
     return founds;
   }
 
-  async getAllScheduleByWeek(user: UserEntity, firstDay: Date, lastDay: Date): Promise<ScheduleMetaEntity[]> {
+  async getAllScheduleByWeek(user: UserEntity, firstDay: Date, lastDay: Date): Promise<ScheduleMetadataEntity[]> {
     console.log(firstDay, lastDay);
 
     const weekStart = firstDay.toISOString().split("T")[0] + "T00:00:00";

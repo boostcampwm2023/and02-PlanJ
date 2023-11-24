@@ -1,4 +1,4 @@
-import { ScheduleMetaEntity } from "src/schedule/entity/schedule-meta.entity";
+import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import {
   BaseEntity,
@@ -11,15 +11,15 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-@Entity("Category")
+@Entity("category")
 export class CategoryEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "category_id" })
   categoryId: string;
 
-  @Column({ length: 26 })
+  @Column({ length: 26, name: "category_uuid" })
   categoryUuid: string;
 
-  @Column({ length: 128 })
+  @Column({ length: 128, name: "category_name" })
   categoryName: string;
 
   @Column({ type: "timestamp", name: "created_at" })
@@ -37,8 +37,8 @@ export class CategoryEntity extends BaseEntity {
   @JoinColumn({ name: "user_id" })
   user: UserEntity;
 
-  @OneToMany(() => ScheduleMetaEntity, (scheduleMeta) => scheduleMeta.category, {
+  @OneToMany(() => ScheduleMetadataEntity, (metadata) => metadata.category, {
     cascade: true,
   })
-  scheduleMeta: ScheduleMetaEntity[];
+  scheduleMeta: ScheduleMetadataEntity[];
 }

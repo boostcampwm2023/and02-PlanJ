@@ -5,10 +5,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmConfigService } from "./config/typeorm.config";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ScheduleApiModule } from "./schedule-api/schedule-api.module";
-import { AuthApiModule } from "./auth-api/auth-api.module";
+import { UserApiModule } from "./user-api/user-api.module";
 import { CategoryApiModule } from "./category-api/category-api.module";
-import { FriendModule } from './friend/friend.module';
-import { AuthModule } from './auth/auth.module';
+import { FriendModule } from "./friend/friend.module";
 import dbConfig from "./config/db.config";
 import authConfig from "./config/auth.config";
 
@@ -25,7 +24,7 @@ import authConfig from "./config/auth.config";
       useFactory: (configService: ConfigService) => TypeOrmConfigService.createTypeOrmOptions(configService),
     }),
     ScheduleApiModule,
-    AuthApiModule,
+    UserApiModule,
     CategoryApiModule,
     FriendModule,
   ],
