@@ -102,7 +102,7 @@ class WeekFragment : Fragment() {
 
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)
-        calendarAdapter.submitList(viewModel.makeWeek(calendarList))
+        calendarAdapter.submitList(viewModel.makeWeekSchedule(calendarList))
     }
 
     private fun resultSchedule(scheduleList: List<Schedule>) {

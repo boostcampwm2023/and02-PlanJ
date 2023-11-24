@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.WeekSchedule
+import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.MainRepositoryImpl
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarVO
 import com.boostcamp.planj.ui.main.home.week.adapter.ScheduleType
@@ -23,13 +24,6 @@ class WeekFragmentViewModel @Inject constructor(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(50000), emptyList())
     lateinit var calendarList: ArrayList<CalendarVO>
 
-    fun makeWeek(calendarList: ArrayList<CalendarVO>): ArrayList<WeekSchedule> {
-        val array: ArrayList<WeekSchedule> = arrayListOf()
-        calendarList.forEach {
-            array.add(WeekSchedule(it, emptyList()))
-        }
-        return array
-    }
 
     fun makeWeekSchedule(calendarList: ArrayList<CalendarVO>): ArrayList<WeekSchedule> {
         val array: ArrayList<WeekSchedule> = arrayListOf()
