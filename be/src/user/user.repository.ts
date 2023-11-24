@@ -1,10 +1,6 @@
-import { CreateUserDto } from "./dto/create-user.dto";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "./entity/user.entity";
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
-import * as bcrypt from "bcryptjs";
-import { ulid } from "ulid";
-import { UserLoginDto } from "./dto/user-login.dto";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { HttpResponse } from "../utils/http.response";
 import { UserModifyDto } from "./dto/user-modify.dto";
 
@@ -21,19 +17,8 @@ export class UserRepository extends Repository<UserEntity> {
     return user !== null;
   }
 
-  async deleteUser(userLoginDto: UserLoginDto): Promise<string> {
-    // const loginResult = await this.loginUser(userLoginDto);
-    // if (loginResult.statusCode === 200) {
-    const { email } = userLoginDto;
-    await this.softDelete({ email: email });
-
-    const body: HttpResponse = {
-      message: "회원탈퇴 완료",
-      statusCode: 200,
-    };
-
-    return JSON.stringify(body);
-    // }
+  async deleteUser(userUuid: string): Promise<void> {
+    await this.softDelete({ userUuid: userUuid });
   }
 
   async updateUser(userUuid: string, modifyDto: UserModifyDto) {
