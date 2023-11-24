@@ -13,11 +13,13 @@ import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.DialogAddScheduleBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ScheduleDialog(
     private val categoryNames: List<String>,
     private val initText: String,
-    private val listener: (Schedule) -> Unit
+    private val listener: (String, String, String) -> Unit
 ) : DialogFragment() {
 
     private var _binding: DialogAddScheduleBinding? = null
@@ -37,7 +39,6 @@ class ScheduleDialog(
         _binding = DialogAddScheduleBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,25 +69,18 @@ class ScheduleDialog(
         binding.tvDialogScheduleSuccess.setOnClickListener {
             val category = binding.actvDialogScheduleCategorySelect.text.toString()
             val title = binding.tietDialogScheduleInputTitleSchedule.text.toString()
-            if(title.isEmpty()) {
+            if (title.isEmpty()) {
                 binding.tietDialogScheduleInputTitleSchedule.error = "비어있습니다."
                 return@setOnClickListener
             }
+            val current = System.currentTimeMillis()
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "kr"))
+            val date = simpleDateFormat.format(current)
+
             listener(
-                Schedule(
-                    (0..Int.MAX_VALUE).random().toString(),
-                    title,
-                    null,
-                    null,
-                    "2023-11-20T18:50:00",
-                    category,
-                    null,
-                    listOf(),
-                    null,
-                    null,
-                    false,
-                    false
-                )
+                category,
+                title,
+                "${date}T23:59:59",
             )
             dismiss()
         }

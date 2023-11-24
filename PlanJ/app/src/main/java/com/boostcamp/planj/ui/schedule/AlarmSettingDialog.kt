@@ -1,11 +1,13 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.databinding.DialogAlarmSettingBinding
 
 class AlarmSettingDialog : DialogFragment() {
@@ -28,7 +30,11 @@ class AlarmSettingDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val alarm = arguments?.getString("alarmInfo")
+        val alarm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("alarmInfo", Alarm::class.java)
+        } else {
+            arguments?.getParcelable("alarmInfo")
+        }
 
         setVisibility()
         setListener()
@@ -39,6 +45,11 @@ class AlarmSettingDialog : DialogFragment() {
         super.onResume()
 
         context?.setDialogSize(this)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
     private fun setVisibility() {
@@ -62,9 +73,9 @@ class AlarmSettingDialog : DialogFragment() {
                 val alarm = if (binding.rbDialogAlarmNo.isChecked) {
                     null
                 } else if (binding.rbDialogAlarmEnd.isChecked) {
-                    "종료 시간 ${binding.etDialogAlarmBeforeEnd.text}분 전"
+                    Alarm("end", binding.etDialogAlarmBeforeEnd.text.toString().toInt())
                 } else {
-                    "출발 시간 ${binding.etDialogAlarmBeforeDeparture.text}분 전"
+                    Alarm("departure", binding.etDialogAlarmBeforeDeparture.text.toString().toInt())
                 }
                 alarmSettingDialogListener?.onClickComplete(alarm)
                 dismiss()
@@ -72,16 +83,16 @@ class AlarmSettingDialog : DialogFragment() {
         }
     }
 
-    private fun setBtnClicked(alarm: String?) {
+    private fun setBtnClicked(alarm: Alarm?) {
         with(binding) {
-            if (alarm == null || alarm == "설정 안함") {
-                rbDialogAlarmNo.isChecked = true
-            } else if (alarm.startsWith("종료")) {
+            if (alarm !=null && alarm.alarmType=="end") {
                 rbDialogAlarmEnd.isChecked = true
-                etDialogAlarmBeforeEnd.setText(alarm.split(" ")[2].dropLast(1))
-            } else {
+                etDialogAlarmBeforeEnd.setText(alarm.alarmTime.toString())
+            } else if (alarm !=null && alarm.alarmType=="departure") {
                 rbDialogAlarmDeparture.isChecked = true
-                etDialogAlarmBeforeEnd.setText(alarm.split(" ")[2].dropLast(1))
+                etDialogAlarmBeforeDeparture.setText(alarm.alarmTime.toString())
+            } else {
+                rbDialogAlarmNo.isChecked = true
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.databinding.ActivityMainBinding
@@ -29,7 +31,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setJetpackNavigation()
@@ -47,8 +48,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") {
-                viewModel.insertSchedule(it)
+            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") { category, title, endTime ->
+                viewModel.insertSchedule(category, title, endTime)
             }
             dialog.show(
                 supportFragmentManager, null

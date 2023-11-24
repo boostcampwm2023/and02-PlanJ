@@ -19,15 +19,14 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(category: List<Category>)
 
-    @Query("SELECT categoryName FROM categories")
+    @Query("SELECT categoryName FROM categories WHERE categoryName != '전체 일정'")
     fun getCategories(): Flow<List<String>>
 
     @Query("SELECT * FROM categories")
     fun getAllCategory(): Flow<List<Category>>
 
-
-    @Query("SELECT * FROM schedules WHERE categoryTitle = :title")
-    suspend fun getCategoryTitleSchedule(title : String) : List<Schedule>
+    @Query("SELECT * FROM categories WHERE categoryName = :categoryName")
+    fun getCategory(categoryName : String) : Category
 
     @Delete
     fun deleteCategory(category: Category)

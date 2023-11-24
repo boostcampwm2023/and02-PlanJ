@@ -1,13 +1,17 @@
 package com.boostcamp.planj.ui.schedule
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -22,7 +26,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ScheduleViewModel by viewModels()
+    private val viewModel: ScheduleViewModel by activityViewModels()
+
+    private val args : ScheduleFragmentArgs by navArgs()
 
     private val repetitionSettingDialog by lazy {
         RepetitionSettingDialog()
@@ -57,6 +63,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        viewModel.setLocation(args.location)
 
         initAdapter()
         setObserver()
@@ -179,18 +187,23 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
             repetitionSettingDialog.arguments = bundle
-            repetitionSettingDialog.show(childFragmentManager, "반복 설정")
+            if(!repetitionSettingDialog.isAdded){
+                repetitionSettingDialog.show(childFragmentManager, "반복 설정")
+            }
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("alarmInfo", viewModel.scheduleAlarm.value)
+            bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
             alarmSettingDialog.arguments = bundle
-            alarmSettingDialog.show(childFragmentManager, "알림 설정")
+            if(!alarmSettingDialog.isAdded){
+                alarmSettingDialog.show(childFragmentManager, "알림 설정")
+            }
         }
 
         binding.ivScheduleMap.setOnClickListener {
-            // TODO: 지도 이동
+            val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
+            findNavController().navigate(action)
         }
     }
 
@@ -225,7 +238,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewModel.setRepetition(repetition)
     }
 
-    override fun onClickComplete(alarm: String?) {
+    override fun onClickComplete(alarm: Alarm?) {
         viewModel.setAlarm(alarm)
     }
 }

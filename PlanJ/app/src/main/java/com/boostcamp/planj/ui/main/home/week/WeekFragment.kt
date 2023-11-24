@@ -108,7 +108,7 @@ class WeekFragment : Fragment() {
     private fun resultSchedule(scheduleList: List<Schedule>) {
 
         val finishList = scheduleList.filter { schedule: Schedule ->
-            schedule.failed.not() && schedule.finished
+            schedule.isFailed.not() && schedule.isFinished
         }
         setResultBtn(binding.btnWeekFinish, finishList, Color.BLUE)
 
@@ -131,6 +131,9 @@ class WeekFragment : Fragment() {
         val countText = SpannableString(
             title[0].plus("\n${scheduleList.size}")
         )
+        val haveList = scheduleList.filter { schedule: Schedule -> schedule.isFinished.not() }
+        val countHave =
+            SpannableString(binding.btnWeekHave.text.toString().plus("${haveList.size}"))
 
         countText.setSpan(
             ForegroundColorSpan(color),

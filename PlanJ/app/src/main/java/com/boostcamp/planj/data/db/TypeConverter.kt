@@ -1,12 +1,11 @@
 package com.boostcamp.planj.data.db
 
 import androidx.room.TypeConverter
+import com.boostcamp.planj.data.model.Alarm
+import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.User
 import com.google.gson.Gson
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class TypeConverter {
 
@@ -16,6 +15,20 @@ class TypeConverter {
     @TypeConverter
     fun toRepetitionList(value: String?): Repetition? =
         Gson().fromJson(value, Repetition::class.java)
+
+    @TypeConverter
+    fun fromAlarmList(value: Alarm?): String? = Gson().toJson(value)
+
+    @TypeConverter
+    fun toAlarmList(value: String?): Alarm? =
+        Gson().fromJson(value, Alarm::class.java)
+
+    @TypeConverter
+    fun fromLocationList(value: Location?): String? = Gson().toJson(value)
+
+    @TypeConverter
+    fun toLocationList(value: String?): Location? =
+        Gson().fromJson(value, Location::class.java)
 
     @TypeConverter
     fun fromUserList(value: List<User>?): String? = Gson().toJson(value)

@@ -26,8 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/top_schedule_menu"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="@string/schedule">
+            app:navigationIcon="@drawable/ic_arrow_back">
 
             <TextView
                 android:id="@+id/tv_schedule_top"
@@ -178,7 +177,7 @@
                         android:enabled="@{viewModel.isEditMode}"
                         android:maxLines="1"
                         android:padding="4dp"
-                        android:text="@{viewModel.scheduleStartDate}"
+                        android:text='@{viewModel.scheduleStartDate ?? ""}'
                         android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -192,7 +191,7 @@
                         android:enabled="@{viewModel.isEditMode}"
                         android:maxLines="1"
                         android:padding="4dp"
-                        android:text="@{viewModel.scheduleStartTime}"
+                        android:text='@{viewModel.scheduleStartTime ?? ""}'
                         android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -427,7 +426,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
-                    android:text="@{viewModel.locationInfo}"
+                    android:text="@{viewModel.scheduleLocation.placeName}"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
@@ -469,7 +468,7 @@
 
                 <TextView
                     android:id="@+id/tv_schedule_memo_length"
-                    memoLength="@{viewModel.userMemo}"
+                    memoLength="@{viewModel.scheduleMemo}"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_marginStart="4dp"
@@ -490,7 +489,7 @@
                     android:inputType="textMultiLine"
                     android:minHeight="150dp"
                     android:padding="12dp"
-                    android:text="@={viewModel.userMemo}"
+                    android:text="@={viewModel.scheduleMemo}"
                     android:textColor="@color/selector_text_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

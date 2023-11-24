@@ -15,6 +15,7 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentTodayBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
+import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.main.home.HomeFragmentDirections
@@ -72,9 +73,9 @@ class TodayFragment : Fragment() {
                     val list = resources.getStringArray(R.array.today_list)
                     it.sortedBy { schedule -> schedule.scheduleId }
                     val segment = listOf(
-                        it.filter { s -> !s.finished },
-                        it.filter { s -> s.finished && !s.failed },
-                        it.filter { s -> s.finished && s.failed }
+                        it.filter { s -> !s.isFinished },
+                        it.filter { s -> s.isFinished && !s.isFailed },
+                        it.filter { s -> s.isFinished && s.isFailed }
                     )
                     val sm = mutableListOf<ScheduleSegment>()
                     list.forEachIndexed { index, s ->
@@ -105,11 +106,16 @@ class TodayFragment : Fragment() {
                 setAnchorView(R.id.bottom_navigation)
             }.show()
         }
+
+        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
+            viewModel.checkBoxChange(schedule, isCheck)
+        }
+
         val clickListener = ScheduleClickListener {
             val action = HomeFragmentDirections.actionFragmentHomeToScheduleActivity2(it)
             findNavController().navigate(action)
         }
-        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, clickListener)
+        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, clickListener, checkBoxListener)
         binding.rvTodayListSchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }

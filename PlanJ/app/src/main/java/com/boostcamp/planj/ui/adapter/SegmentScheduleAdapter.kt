@@ -7,7 +7,8 @@ import com.boostcamp.planj.data.model.ScheduleSegment
 
 class SegmentScheduleAdapter(
     private val swipeListener: SwipeListener,
-    private val clickListener: ScheduleClickListener
+    private val clickListener: ScheduleClickListener,
+    private val checkBoxListener: ScheduleDoneListener
 ) : ListAdapter<ScheduleSegment, SegmentScheduleAdapterViewHolder>(diffUtil) {
 
 
@@ -23,7 +24,7 @@ class SegmentScheduleAdapter(
     }
 
     override fun onBindViewHolder(holder: SegmentScheduleAdapterViewHolder, position: Int) {
-        holder.bind(currentList[position], swipeListener, clickListener)
+        holder.bind(currentList[position], swipeListener, clickListener, checkBoxListener)
     }
 
 
