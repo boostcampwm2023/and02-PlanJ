@@ -62,6 +62,15 @@
     <string name="repeat_per_week">%d주마다 반복</string>
     <string name="before_end_time">종료 시간 %d분 전</string>
     <string name="before_departure_time">출발 시간 %d분 전</string>
+    <string name="search_result">검색 결과</string>
+    <string name="all">전체</string>
+    <string name="setting">설정</string>
+    <string name="logout">로그아웃</string>
+    <string name="withdrawal">회원탈퇴</string>
+    <string name="read_fail_memo">작성 글 보기</string>
+    <string name="alarm_setting">푸시 알림</string>
+    <string name="edit_profile">프로필 편집</string>
+    <string name="settings">Settings</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

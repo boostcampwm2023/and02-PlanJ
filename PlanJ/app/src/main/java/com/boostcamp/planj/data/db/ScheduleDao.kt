@@ -33,6 +33,9 @@ interface ScheduleDao {
     @Query("SELECT * FROM schedules")
     fun getSchedules(): Flow<List<Schedule>>
 
+    @Query("SELECT * FROM schedules WHERE title LIKE '%' || :input || '%'")
+    fun searchSchedule(input: String): Flow<List<Schedule>>
+  
     @Query("SELECT categoryTitle FROM schedules")
     fun getCategories(): Flow<List<String>>
 

@@ -5,7 +5,7 @@
     <item
         android:id="@+id/item_schedule_edit"
         android:title="@string/edit_schedule"
-        android:icon="@drawable/ic_edit_schedule"
+        android:icon="@drawable/ic_edit"
         app:showAsAction="always" />
 
     <item

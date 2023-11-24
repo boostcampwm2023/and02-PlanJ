@@ -90,6 +90,10 @@ class MainRepositoryImpl @Inject constructor(
         return db.userDao().getAllUser()
     }
 
+    override fun searchSchedule(input: String): Flow<List<Schedule>> {
+        return db.scheduleDao().searchSchedule(input)
+    }
+    
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
         flow {
             emit(api.postCategory(postCategoryBody))
@@ -147,6 +151,4 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryAfter : String) {
         db.scheduleDao().updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
     }
-
-
 }

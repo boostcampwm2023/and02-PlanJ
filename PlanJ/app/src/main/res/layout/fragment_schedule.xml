@@ -26,8 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/top_schedule_menu"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="@string/schedule">
+            app:navigationIcon="@drawable/ic_arrow_back">
 
             <TextView
                 android:id="@+id/tv_schedule_top"

@@ -38,7 +38,9 @@ interface MainRepository {
     suspend fun deleteUser(email: String)
 
     fun getAllUser(): Flow<List<User>>
-
+  
+    fun searchSchedule(input: String): Flow<List<Schedule>>
+  
     fun postCategory(postCategoryBody: PostCategoryBody) : Flow<PostCategoryResponse>
 
     fun postSchedule(userId : String, categoryId : String, title: String ,endTime : String) : Flow<PostScheduleResponse>

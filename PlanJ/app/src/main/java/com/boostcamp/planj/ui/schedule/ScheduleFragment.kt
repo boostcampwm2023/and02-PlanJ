@@ -64,7 +64,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-
         viewModel.setLocation(args.location)
 
         initAdapter()
