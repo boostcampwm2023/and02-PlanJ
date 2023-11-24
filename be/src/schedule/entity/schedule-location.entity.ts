@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Decimal128, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
 @Entity("schedule_location")

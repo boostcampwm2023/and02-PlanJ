@@ -8,7 +8,6 @@ import { ScheduleApiModule } from "./schedule-api/schedule-api.module";
 import { UserApiModule } from "./user-api/user-api.module";
 import { CategoryApiModule } from "./category-api/category-api.module";
 import { FriendModule } from "./friend/friend.module";
-import { AuthModule } from "./auth/auth.module";
 import dbConfig from "./config/db.config";
 import authConfig from "./config/auth.config";
 

@@ -1,4 +1,3 @@
-import { ScheduleLocationEntity } from "./../schedule/entity/schedule-location.entity";
 import { Injectable } from "@nestjs/common";
 import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
 import { ScheduleMetaService } from "src/schedule/schedule-meta.service";
