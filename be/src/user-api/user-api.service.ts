@@ -37,10 +37,19 @@ export class UserApiService {
     return JSON.stringify(body);
   }
 
-  delete() {}
+  async delete(token: string) {
+    const userUuid = this.authService.verify(token);
+    await this.userService.deleteAccount(userUuid);
 
-  async update(dto: UserModifyDto, jwtToken: string) {
-    const userUuid = this.authService.verify(jwtToken);
+    const body: HttpResponse = {
+      message: "회원탈퇴 완료",
+      statusCode: 200,
+    };
+    return JSON.stringify(body);
+  }
+
+  async update(dto: UserModifyDto, token: string) {
+    const userUuid = this.authService.verify(token);
     const result = await this.userService.update(userUuid, dto);
     return JSON.stringify(result);
   }
