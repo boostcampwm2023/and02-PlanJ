@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.repository.MainRepositoryImpl
+import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.getDate
 import com.boostcamp.planj.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ sealed class UiState {
 
 @HiltViewModel
 class TodayViewModel @Inject constructor(
-    private val mainRepository: MainRepositoryImpl,
+    private val mainRepository: MainRepository,
 ) : ViewModel() {
 
     val schedules: StateFlow<List<Schedule>> =
