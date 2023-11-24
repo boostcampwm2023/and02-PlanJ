@@ -113,10 +113,10 @@ class WeekFragment : Fragment() {
         setResultBtn(binding.btnWeekFinish, finishList, Color.BLUE)
 
 
-        val failList = scheduleList.filter { schedule: Schedule -> schedule.failed }
+        val failList = scheduleList.filter { schedule: Schedule -> schedule.isFailed }
         setResultBtn(binding.btnWeekFail, failList, Color.RED)
 
-        val haveList = scheduleList.filter { schedule: Schedule -> schedule.finished.not() }
+        val haveList = scheduleList.filter { schedule: Schedule -> schedule.isFailed.not() }
         setResultBtn(binding.btnWeekHave, haveList, Color.BLACK)
 
 

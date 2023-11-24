@@ -31,8 +31,6 @@ interface MainRepository {
 
     suspend fun updateCategory(category: Category)
 
-    suspend fun getCategoryTitleSchedule(title: String): List<Schedule>
-
     fun getWeekSchedule( ): Flow<List<Schedule>>
 
     fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>>

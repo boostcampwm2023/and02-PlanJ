@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.planj.databinding.ActivitySearchBinding
 import com.boostcamp.planj.ui.adapter.ScheduleAdapter
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
+import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.schedule.ScheduleActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
             intent.putExtra("schedule", schedule)
             startActivity(intent)
         }
-        scheduleAdapter = ScheduleAdapter(listener)
+        scheduleAdapter = ScheduleAdapter(listener, ScheduleDoneListener{ schdeule, isClic -> })
         binding.rvSearchScheduleList.adapter = scheduleAdapter
     }
 }
