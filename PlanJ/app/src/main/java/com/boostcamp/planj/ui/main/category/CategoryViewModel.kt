@@ -76,6 +76,7 @@ class CategoryViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 categories.value.find { it.categoryName == title }?.let {category ->
                     mainRepository.updateCategory(category.copy(categoryName = categoryName))
+                    mainRepository.updateScheduleUsingCategory(title, categoryName)
                 }
             }
             CategoryState.SUCCESS

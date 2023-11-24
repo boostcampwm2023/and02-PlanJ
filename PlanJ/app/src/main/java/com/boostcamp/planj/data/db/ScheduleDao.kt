@@ -27,6 +27,9 @@ interface ScheduleDao {
     @Query("DELETE FROM schedules WHERE categoryTitle = :categoryName")
     suspend fun deleteScheduleUsingCategory(categoryName : String)
 
+    @Query("UPDATE schedules SET categoryTitle = :categoryNameAfter WHERE categoryTitle = :categoryNameBefore")
+    suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryNameAfter : String)
+
     @Query("SELECT * FROM schedules")
     fun getSchedules(): Flow<List<Schedule>>
 

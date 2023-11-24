@@ -144,5 +144,9 @@ class MainRepositoryImpl @Inject constructor(
         db.scheduleDao().deleteScheduleUsingCategory(categoryName)
     }
 
+    override suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryAfter : String) {
+        db.scheduleDao().updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
+    }
+
 
 }

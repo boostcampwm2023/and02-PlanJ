@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -155,12 +156,7 @@ class ScheduleViewModel @Inject constructor(
 
     fun completeEditingSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("PLANJDEBUG", "DateTime ${scheduleStartDate.value?.let {
-                "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
-            }?: ""} ${scheduleEndDate.value?.let {
-                "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
-            }?: ""}")
-            val getCategory = mainRepository.getCategory(scheduleCategory.value)
+            val getCategory = withContext((Dispatchers.IO)){ mainRepository.getCategory(scheduleCategory.value) }
 
             val patchScheduleBody = PatchScheduleBody(
                 "01HFYAR1FX09FKQ2SW1HTG8BJ8",

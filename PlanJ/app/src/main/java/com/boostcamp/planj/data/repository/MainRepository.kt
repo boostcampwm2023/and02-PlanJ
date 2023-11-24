@@ -52,6 +52,8 @@ interface MainRepository {
 
     suspend fun updateSchedule(schedule: Schedule)
 
+    suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryAfter : String)
+
     fun patchSchedule(patchScheduleBody: PatchScheduleBody) : Flow<PatchScheduleResponse>
 
     suspend fun deleteScheduleUsingCategoryName(categoryName: String)
