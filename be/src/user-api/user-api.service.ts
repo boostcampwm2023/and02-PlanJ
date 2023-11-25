@@ -37,7 +37,7 @@ export class UserApiService {
     return JSON.stringify(body);
   }
 
-  async delete(token: string) {
+  async delete(token: string): Promise<string> {
     const userUuid = this.authService.verify(token);
     await this.userService.deleteAccount(userUuid);
 
@@ -48,9 +48,17 @@ export class UserApiService {
     return JSON.stringify(body);
   }
 
-  async update(dto: UserModifyDto, token: string) {
+  async update(dto: UserModifyDto, token: string): Promise<string> {
     const userUuid = this.authService.verify(token);
-    const result = await this.userService.update(userUuid, dto);
+    const updatedNickname = await this.userService.update(userUuid, dto);
+
+    const result: HttpResponse = {
+      message: "정보 수정 성공",
+      statusCode: 200,
+      data: {
+        updated_nickname: updatedNickname,
+      },
+    };
     return JSON.stringify(result);
   }
 }
