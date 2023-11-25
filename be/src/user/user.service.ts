@@ -51,7 +51,7 @@ export class UserService {
     throw new UnauthorizedException("로그인 실패");
   }
 
-  async validateUser(userUuid: string) {
+  async validateUser(userUuid: string): Promise<boolean> {
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
     if (user) {
       return true;
@@ -60,26 +60,18 @@ export class UserService {
     throw new UnauthorizedException("유효하지 않은 사용자");
   }
 
-  async deleteAccount(dto: UserLoginDto): Promise<string> {
-    return await this.userRepository.deleteUser(dto);
+  async deleteAccount(userUuid: string): Promise<void> {
+    await this.userRepository.deleteUser(userUuid);
   }
 
-  async update(userUuid: string, dto: UserModifyDto): Promise<HttpResponse> {
+  async update(userUuid: string, dto: UserModifyDto): Promise<string> {
     const { nickname } = dto;
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
 
     user.nickname = nickname;
     try {
       await this.userRepository.save(user);
-      const body: HttpResponse = {
-        message: "정보 수정 성공",
-        statusCode: 200,
-        data: {
-          updatedNickname: nickname,
-        },
-      };
-
-      return body;
+      return nickname;
     } catch (e) {
       throw new InternalServerErrorException();
     }

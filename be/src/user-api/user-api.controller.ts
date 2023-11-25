@@ -24,7 +24,7 @@ export class UserApiController {
 
   @UseGuards(AuthGuard)
   @Delete("/delete")
-  async deleteUser(@Headers() headers: any) {
+  async deleteUser(@Headers() headers: any): Promise<JSON> {
     const jwtToken = headers.authorization as string;
     const result = await this.userApiService.delete(jwtToken);
     return JSON.parse(result);
