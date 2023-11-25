@@ -8,6 +8,7 @@ import { UserEntity } from "./entity/user.entity";
 import { ulid } from "ulid";
 import * as bcrypt from "bcryptjs";
 
+// TODO: soft delete 된 사용자가 다시 가입을 하는 경우 처리 -> 현재는 새로 생성
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}

@@ -2,6 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "./entity/user.entity";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 
+// TODO: naming rule 적용
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
   constructor(dataSource: DataSource) {
