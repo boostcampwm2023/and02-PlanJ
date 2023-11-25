@@ -7,7 +7,6 @@ import { UserModifyDto } from "./dto/user-modify.dto";
 import { UserEntity } from "./entity/user.entity";
 import { ulid } from "ulid";
 import * as bcrypt from "bcryptjs";
-import { HttpResponse } from "../utils/http.response";
 
 @Injectable()
 export class UserService {
@@ -16,7 +15,7 @@ export class UserService {
   async register(dto: CreateUserDto): Promise<void> {
     const { email, password, nickname } = dto;
 
-    const userExist = await this.userRepository.checkUserExists(email);
+    const userExist = await this.userRepository.checkExistsByEmail(email);
     if (userExist) {
       throw new ConflictException("해당 이메일로는 가입할 수 없습니다.");
     }
@@ -48,7 +47,7 @@ export class UserService {
       return user.userUuid;
     }
 
-    throw new UnauthorizedException("로그인 실패");
+    throw new UnauthorizedException("로그인에 실패하였습니다.");
   }
 
   async validateUser(userUuid: string): Promise<boolean> {
@@ -57,11 +56,11 @@ export class UserService {
       return true;
     }
 
-    throw new UnauthorizedException("유효하지 않은 사용자");
+    throw new UnauthorizedException("유효하지 않은 사용자입니다.");
   }
 
   async deleteAccount(userUuid: string): Promise<void> {
-    await this.userRepository.deleteUser(userUuid);
+    await this.userRepository.deleteByUuid(userUuid);
   }
 
   async update(userUuid: string, dto: UserModifyDto): Promise<string> {
@@ -78,6 +77,6 @@ export class UserService {
   }
 
   async getUserEntity(userUuid: string): Promise<UserEntity> {
-    return await this.userRepository.getUserEntityByUuid(userUuid);
+    return await this.userRepository.findByUuid(userUuid);
   }
 }

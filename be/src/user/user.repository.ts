@@ -1,8 +1,6 @@
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "./entity/user.entity";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { HttpResponse } from "../utils/http.response";
-import { UserModifyDto } from "./dto/user-modify.dto";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -10,18 +8,18 @@ export class UserRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.createEntityManager());
   }
 
-  async checkUserExists(email: string) {
+  async checkExistsByEmail(email: string) {
     const user = await this.findOne({
       where: { email: email },
     });
     return user !== null;
   }
 
-  async deleteUser(userUuid: string): Promise<void> {
+  async deleteByUuid(userUuid: string): Promise<void> {
     await this.softDelete({ userUuid: userUuid });
   }
 
-  async getUserEntityByUuid(userUuid: string) {
+  async findByUuid(userUuid: string) {
     const user = await this.findOne({
       where: { userUuid: userUuid },
     });
