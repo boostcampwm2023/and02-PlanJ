@@ -21,8 +21,8 @@ export class AuthService {
       const payload = jwt.verify(token, this.config.jwtSecret) as jwt.JwtPayload;
       const { userUuid } = payload;
       return userUuid;
-    } catch (e) {
-      throw new UnauthorizedException("유효하지 않은 사용자");
+    } catch (error) {
+      throw new UnauthorizedException("유효하지 않은 사용자입니다.");
     }
   }
 }
