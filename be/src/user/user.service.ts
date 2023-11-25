@@ -78,6 +78,6 @@ export class UserService {
   }
 
   async getUserEntity(userUuid: string): Promise<UserEntity> {
-    return await this.userRepository.checkByUserUuid(userUuid);
+    return await this.userRepository.getUserEntityByUuid(userUuid);
   }
 }

@@ -21,7 +21,7 @@ export class UserRepository extends Repository<UserEntity> {
     await this.softDelete({ userUuid: userUuid });
   }
 
-  private async getUserEntityByUuid(userUuid: string) {
+  async getUserEntityByUuid(userUuid: string) {
     const user = await this.findOne({
       where: { userUuid: userUuid },
     });
