@@ -11,7 +11,7 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
   }
 
   async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
-    const { placeName, placeAddress, latitude, longtitude } = dto;
+    const { placeName, placeAddress, latitude, longitude } = dto;
 
     let record = await this.createQueryBuilder("location")
       .leftJoinAndSelect("location.scheduleMeta", "scheduleMeta")
@@ -22,13 +22,13 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
       record.placeName = placeName;
       record.placeAddress = placeAddress;
       record.latitude = parseFloat(latitude);
-      record.longitude = parseFloat(longtitude);
+      record.longitude = parseFloat(longitude);
     } else {
       record = this.create({
         placeName,
         placeAddress,
         latitude: parseFloat(latitude),
-        longitude: parseFloat(longtitude),
+        longitude: parseFloat(longitude),
         scheduleMeta,
       });
     }
