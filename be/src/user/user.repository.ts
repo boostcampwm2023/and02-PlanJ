@@ -21,30 +21,7 @@ export class UserRepository extends Repository<UserEntity> {
     await this.softDelete({ userUuid: userUuid });
   }
 
-  async updateUser(userUuid: string, modifyDto: UserModifyDto) {
-    const { nickname } = modifyDto;
-    const user = await this.findOne({ where: { userUuid: userUuid } });
-
-    user.nickname = nickname;
-
-    await this.save(user);
-
-    const body: HttpResponse = {
-      message: "정보 수정 성공",
-      statusCode: 200,
-      data: {
-        updatedNickname: nickname,
-      },
-    };
-
-    return JSON.stringify(body);
-  }
-
-  async checkByUserUuid(userUuid: string): Promise<UserEntity> {
-    return await this.getUserEntity(userUuid);
-  }
-
-  private async getUserEntity(userUuid: string) {
+  private async getUserEntityByUuid(userUuid: string) {
     const user = await this.findOne({
       where: { userUuid: userUuid },
     });
