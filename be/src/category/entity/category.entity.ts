@@ -3,6 +3,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
@@ -22,7 +23,7 @@ export class CategoryEntity extends BaseEntity {
   @Column({ length: 128, name: "category_name" })
   categoryName: string;
 
-  @Column({ type: "timestamp", name: "created_at" })
+  @CreateDateColumn({ type: "timestamp", name: "created_at" })
   createdAt: Date;
 
   @DeleteDateColumn({ default: null, name: "deleted_at" })
