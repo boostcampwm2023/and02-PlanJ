@@ -1,40 +1,43 @@
-import { Controller, Post, Get, Patch, Delete, Query, Body } from "@nestjs/common";
+import { Controller, Post, Get, Patch, Delete, Query, Body, UseGuards } from "@nestjs/common";
 import { AddScheduleDto } from "../schedule/dto/add-schedule.dto";
 import { ScheduleApiService } from "./schedule-api.service";
 import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
+import { Token } from "../utils/token.decorator";
+import { AuthGuard } from "../guard/auth.guard";
 
 @Controller("/api/schedule")
+@UseGuards(AuthGuard)
 export class ScheduleApiController {
   constructor(private scheduleApiService: ScheduleApiService) {}
 
   @Get("/daily")
-  async getDailySchedule(@Query("userUuid") userUuid: string, @Query("date") date: Date): Promise<JSON> {
-    const result = await this.scheduleApiService.getDailySchedule(userUuid, date);
+  async getDailySchedule(@Token() token: string, @Query("date") date: Date): Promise<JSON> {
+    const result = await this.scheduleApiService.getDailySchedule(token, date);
     return JSON.parse(result);
   }
 
   @Get("/weekly")
-  async getWeeklySchedule(@Query("userUuid") userUuid: string, @Query("date") date: Date) {
-    const result = await this.scheduleApiService.getWeeklySchedule(userUuid, date);
+  async getWeeklySchedule(@Token() token: string, @Query("date") date: Date) {
+    const result = await this.scheduleApiService.getWeeklySchedule(token, date);
     return JSON.parse(result);
   }
 
   @Post("/add")
-  async addSchedule(@Body() dto: AddScheduleDto): Promise<JSON> {
-    const result = await this.scheduleApiService.addSchedule(dto);
+  async addSchedule(@Token() token: string, @Body() dto: AddScheduleDto): Promise<JSON> {
+    const result = await this.scheduleApiService.addSchedule(token, dto);
     return JSON.parse(result);
   }
 
   @Patch("/update")
-  async updateSchedule(@Body() dto: UpdateScheduleDto) {
-    const result = await this.scheduleApiService.updateSchedule(dto);
+  async updateSchedule(@Token() token: string, @Body() dto: UpdateScheduleDto): Promise<JSON> {
+    const result = await this.scheduleApiService.updateSchedule(token, dto);
     return JSON.parse(result);
   }
 
   @Delete("/delete")
-  async deleteSchedule(@Body() dto: DeleteScheduleDto) {
-    const result = await this.scheduleApiService.deleteSchedule(dto);
+  async deleteSchedule(@Token() token: string, @Body() dto: DeleteScheduleDto) {
+    const result = await this.scheduleApiService.deleteSchedule(token, dto);
     return JSON.parse(result);
   }
 
