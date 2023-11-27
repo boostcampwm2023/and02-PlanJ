@@ -88,10 +88,12 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     return founds;
   }
 
-  async findByCategoryId(categoryId: number) {
+  async findByCategoryId(categoryId: number, userId: number) {
     return await this.createQueryBuilder("schedule_metadata")
       .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .andWhere("schedule_metadata.user_id = :userId", { userId: userId })
       .andWhere("schedule_metadata.category_id = :categoryId", { categoryId: categoryId })
+      .orderBy("schedule.endAt")
       .getMany();
   }
 
