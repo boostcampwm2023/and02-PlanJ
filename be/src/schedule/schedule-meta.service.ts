@@ -49,7 +49,6 @@ export class ScheduleMetaService {
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
-      statusCode: 200,
       data: schedules,
     };
 
@@ -76,7 +75,6 @@ export class ScheduleMetaService {
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",
-      statusCode: 200,
       data: schedules,
     };
 
@@ -101,7 +99,6 @@ export class ScheduleMetaService {
 
     const body: HttpResponse = {
       message: "일정 삭제 성공",
-      statusCode: 200,
     };
 
     return JSON.stringify(body);
