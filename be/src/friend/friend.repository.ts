@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { FriendEntity } from "./entity/friend.entity";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -10,12 +10,17 @@ export class FriendRepository extends Repository<FriendEntity> {
   }
 
   async add(from: UserEntity, to: UserEntity): Promise<void> {
-    const { userId: fromUserId } = from;
-    const { userId: toUserId } = to;
-    const record = this.create({ from: from, to: toUserId });
-    const reverseRecord = this.create({ from: to, to: fromUserId });
+    const { userId: fromId } = from;
+    const { userId: toId } = to;
+    const record = this.create({ fromId: fromId, toId: toId });
+    const reverseRecord = this.create({ fromId: toId, toId: fromId });
 
     await this.save(record);
     await this.save(reverseRecord);
+  }
+
+  async getAllFriends(userEntity: UserEntity): Promise<FriendEntity[]> {
+    const friendList = await this.find({ where: { fromId: userEntity.userId } });
+    return friendList;
   }
 }

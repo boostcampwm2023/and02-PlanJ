@@ -80,4 +80,8 @@ export class UserService {
   async getUserEntity(userUuid: string): Promise<UserEntity> {
     return await this.userRepository.findByUuid(userUuid);
   }
+
+  async getUserEntityById(userId: number): Promise<UserEntity> {
+    return await this.userRepository.findById(userId);
+  }
 }
