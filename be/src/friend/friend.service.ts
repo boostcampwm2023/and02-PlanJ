@@ -11,8 +11,8 @@ export class FriendService {
   ) {}
 
   async add(dto: AddFriendDto) {
-    const from = await this.userService.checkUser(dto.from);
-    const to = await this.userService.checkUser(dto.to);
+    const from = await this.userService.getUserEntity(dto.from);
+    const to = await this.userService.getUserEntity(dto.to);
 
     try {
       await this.friendRepository.add(from, to);

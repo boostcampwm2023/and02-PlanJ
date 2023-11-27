@@ -19,7 +19,7 @@ export class CategoryApiService {
 
   async add(dto: AddCategoryDto, token: string): Promise<string> {
     dto.userUuid = this.authService.verify(token);
-    const user = await this.userService.checkUser(dto.userUuid);
+    const user = await this.userService.getUserEntity(dto.userUuid);
     return await this.categoryService.addCategory(dto, user);
   }
 
