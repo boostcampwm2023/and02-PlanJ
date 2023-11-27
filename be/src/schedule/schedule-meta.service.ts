@@ -7,6 +7,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { HttpResponse } from "src/utils/http.response";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { ScheduleResponse } from "./dto/schedule.response";
 
 @Injectable()
 export class ScheduleMetaService {
@@ -33,19 +34,7 @@ export class ScheduleMetaService {
 
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<string> {
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByDate(user, date);
-
-    const schedules = rawSchedules.flatMap((scheduleMeta) => {
-      return scheduleMeta.children.map((schedule) => ({
-        scheduleUuid: schedule.scheduleUuid,
-        title: scheduleMeta.title,
-        description: scheduleMeta.description,
-        startAt: schedule.startAt,
-        endAt: schedule.endAt,
-        finished: schedule.finished,
-        failed: schedule.failed,
-        remindMemo: schedule.remindMemo,
-      }));
-    });
+    const schedules = this.convertRawDataToResponse(rawSchedules);
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
@@ -57,21 +46,8 @@ export class ScheduleMetaService {
 
   async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<string> {
     const { firstDay, lastDay } = this.getWeekRange(date);
-
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByWeek(user, firstDay, lastDay);
-
-    const schedules = rawSchedules.flatMap((scheduleMeta) => {
-      return scheduleMeta.children.map((schedule) => ({
-        scheduleUuid: schedule.scheduleUuid,
-        title: scheduleMeta.title,
-        description: scheduleMeta.description,
-        startAt: schedule.startAt,
-        endAt: schedule.endAt,
-        finished: schedule.finished,
-        failed: schedule.failed,
-        remindMemo: schedule.remindMemo,
-      }));
-    });
+    const schedules = this.convertRawDataToResponse(rawSchedules);
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",
@@ -79,6 +55,45 @@ export class ScheduleMetaService {
     };
 
     return JSON.stringify(body);
+  }
+
+  async deleteScheduleMeta(metadataId: number): Promise<string> {
+    await this.scheduleMetaRepository.deleteScheduleMeta(metadataId);
+
+    const body: HttpResponse = {
+      message: "일정 삭제 성공",
+    };
+
+    return JSON.stringify(body);
+  }
+
+  async getAllScheduleByCategoryId(categoryId: number, userId: number) {
+    const rawSchedules = await this.scheduleMetaRepository.findByCategoryId(categoryId, userId);
+    return this.convertRawDataToResponse(rawSchedules);
+  }
+
+  async getAllScheduleByNullCategory(userId: number) {
+    const rawSchedules = await this.scheduleMetaRepository.findWhereCategoryIsNull(userId);
+    return this.convertRawDataToResponse(rawSchedules);
+  }
+
+  private convertRawDataToResponse(rawSchedules: ScheduleMetadataEntity[]) {
+    return rawSchedules.flatMap((scheduleMeta) => {
+      return scheduleMeta.children.map((schedule) => {
+        const scheduleResponse: ScheduleResponse = {
+          scheduleUuid: schedule.scheduleUuid,
+          title: scheduleMeta.title,
+          description: scheduleMeta.description,
+          startAt: schedule.startAt === null ? null : schedule.startAt,
+          endAt: schedule.endAt,
+          finished: schedule.finished,
+          failed: schedule.failed,
+          remindMemo: schedule.remindMemo,
+        };
+
+        return scheduleResponse;
+      });
+    });
   }
 
   private getWeekRange(date: Date) {
@@ -92,31 +107,5 @@ export class ScheduleMetaService {
     lastDay.toISOString();
 
     return { firstDay, lastDay };
-  }
-
-  async deleteScheduleMeta(metadataId: number): Promise<string> {
-    await this.scheduleMetaRepository.deleteScheduleMeta(metadataId);
-
-    const body: HttpResponse = {
-      message: "일정 삭제 성공",
-    };
-
-    return JSON.stringify(body);
-  }
-
-  async getAllScheduleByCategoryId(categoryId: number) {
-    const rawSchedules = await this.scheduleMetaRepository.findByCategoryId(categoryId);
-    return rawSchedules.flatMap((scheduleMeta) => {
-      return scheduleMeta.children.map((schedule) => ({
-        scheduleUuid: schedule.scheduleUuid,
-        title: scheduleMeta.title,
-        description: scheduleMeta.description,
-        startAt: schedule.startAt === null ? null : schedule.startAt.slice(0, -5),
-        endAt: schedule.endAt.slice(0, -5),
-        finished: schedule.finished,
-        failed: schedule.failed,
-        remindMemo: schedule.remindMemo,
-      }));
-    });
   }
 }

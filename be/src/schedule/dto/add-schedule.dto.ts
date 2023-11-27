@@ -1,4 +1,4 @@
-import { Allow, IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsObject, IsString, Matches } from "class-validator";
 import { ScheduleLocation } from "src/utils/location.interface";
 
 export class AddScheduleDto {
