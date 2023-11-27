@@ -7,6 +7,8 @@ import { ScheduleMetaService } from "./schedule-meta.service";
 import { ScheduleService } from "./schedule.service";
 import { ScheduleLocationService } from "./schedule-location.service";
 import { ScheduleLocationRepository } from "./schedule-location.repository";
+import { RepetitionService } from "./repetition.service";
+import { RepetitionRepository } from "./repetition.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([ScheduleMetadataEntity])],
@@ -17,6 +19,8 @@ import { ScheduleLocationRepository } from "./schedule-location.repository";
     ScheduleMetaService,
     ScheduleService,
     ScheduleLocationService,
+    RepetitionService,
+    RepetitionRepository,
   ],
   exports: [ScheduleMetaService, ScheduleService, ScheduleLocationService],
 })
