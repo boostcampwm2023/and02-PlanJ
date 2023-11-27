@@ -8,6 +8,7 @@ import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
 import { ScheduleLocationService } from "src/schedule/schedule-location.service";
 import { AuthService } from "../auth/auth.service";
+import { ParticipateService } from "src/schedule/participate.service";
 
 @Injectable()
 export class ScheduleApiService {
@@ -18,6 +19,7 @@ export class ScheduleApiService {
     private scheduleService: ScheduleService,
     private scheduleLocationService: ScheduleLocationService,
     private authService: AuthService,
+    private participateService: ParticipateService,
   ) {}
 
   async addSchedule(token: string, dto: AddScheduleDto): Promise<string> {
@@ -25,6 +27,7 @@ export class ScheduleApiService {
     const user = await this.userService.getUserEntity(dto.userUuid);
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
+    await this.participateService.addDefaultParticipantGroup(user, scheduleMetadata);
     await this.scheduleLocationService.addLocation(dto.startLocation, dto.endLocation, scheduleMetadata);
     return await this.scheduleService.addSchedule(dto, scheduleMetadata);
   }

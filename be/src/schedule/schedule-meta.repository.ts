@@ -23,7 +23,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     const startTime = null;
     const [, endTime] = endAt.split("T");
 
-    const scheduleMetadata = this.create({ title, description, startTime, endTime, user, category });
+    const scheduleMetadata = this.create({ title, description, startTime, endTime, category });
 
     try {
       await this.save(scheduleMetadata);
