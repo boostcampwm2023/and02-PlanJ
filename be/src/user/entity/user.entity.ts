@@ -10,6 +10,7 @@ import {
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.entity";
 import { FriendEntity } from "src/friend/entity/friend.entity";
+import { ParticipantEntity } from "src/schedule/entity/participant.entity";
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
@@ -53,9 +54,8 @@ export class UserEntity extends BaseEntity {
   })
   friend: FriendEntity[];
 
-  // participant 추가 시 삭제될 관계
-  @OneToMany(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.user, {
+  @OneToMany(() => ParticipantEntity, (participant) => participant.user, {
     cascade: true,
   })
-  scheduleMeta: ScheduleMetadataEntity[];
+  participant: ParticipantEntity[];
 }
