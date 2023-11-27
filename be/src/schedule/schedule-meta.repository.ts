@@ -87,6 +87,13 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     return founds;
   }
 
+  async findByCategoryId(categoryId: number) {
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .andWhere("schedule_metadata.category_id = :categoryId", { categoryId: categoryId })
+      .getMany();
+  }
+
   async deleteScheduleMeta(metadataId: number): Promise<void> {
     try {
       await this.softDelete({ metadataId });
