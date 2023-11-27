@@ -18,7 +18,7 @@ export class CategoryService {
     return await this.categoryRepository.add(dto, user);
   }
 
-  async getCategoryEntity(categoryUuid: string): Promise<CategoryEntity> {
+  async getCategoryEntity(categoryUuid: string): Promise<CategoryEntity | null> {
     return await this.categoryRepository.checkByCategoryUuid(categoryUuid);
   }
 

@@ -39,18 +39,19 @@ export class CategoryRepository extends Repository<CategoryEntity> {
     }
   }
 
-  async checkByCategoryUuid(categoryUuid: string): Promise<CategoryEntity> {
+  async checkByCategoryUuid(categoryUuid: string): Promise<CategoryEntity | null> {
     return await this.getCategoryEntity(categoryUuid);
   }
 
   private async getCategoryEntity(categoryUuid: string) {
+    if (categoryUuid === "default") {
+      return null;
+    }
+
     const category = await this.findOne({
-      where: { categoryUuid: categoryUuid },
+      where: { categoryUuid },
     });
 
-    if (category === null) {
-      throw new NotFoundException("존재하지 않는 category uuid");
-    }
     return category;
   }
 
