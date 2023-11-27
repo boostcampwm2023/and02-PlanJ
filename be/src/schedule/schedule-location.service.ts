@@ -11,6 +11,10 @@ export class ScheduleLocationService {
     private scheduleLocationRepository: ScheduleLocationRepository,
   ) {}
 
+  async addNullLocation(scheduleMeta: ScheduleMetadataEntity) {
+    await this.scheduleLocationRepository.addNullLocation(scheduleMeta);
+  }
+
   async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
     await this.scheduleLocationRepository.updateLocation(dto, scheduleMeta);
   }

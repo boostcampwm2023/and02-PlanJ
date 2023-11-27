@@ -74,8 +74,6 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
   }
 
   async getAllScheduleByWeek(user: UserEntity, firstDay: Date, lastDay: Date): Promise<ScheduleMetadataEntity[]> {
-    console.log(firstDay, lastDay);
-
     const weekStart = firstDay.toISOString().split("T")[0] + "T00:00:00";
     const weekEnd = lastDay.toISOString().split("T")[0] + "T23:59:59";
 
@@ -83,6 +81,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
       .leftJoinAndSelect("schedule_metadata.children", "schedule")
       .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
       .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd ", { weekStart, weekEnd })
+      .orderBy("schedule.endAt")
       .getMany();
 
     return founds;

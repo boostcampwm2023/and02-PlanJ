@@ -34,7 +34,6 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
       await this.save(schedule);
       const body: HttpResponse = {
         message: "일정 추가 성공",
-        statusCode: 200,
         data: {
           scheduleUuid: scheduleUuid,
         },
@@ -62,7 +61,6 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
       await this.save(record);
       const body: HttpResponse = {
         message: "일정 수정 성공",
-        statusCode: 200,
         data: {
           scheduleUuid: scheduleUuid,
         },
@@ -78,9 +76,9 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
   async deleteSchedule(dto: DeleteScheduleDto) {
     const { scheduleUuid } = dto;
 
-    const record = await this.findOne({ where: { scheduleUuid }, relations: ["parent"] });
+    const record = await this.findOne({ where: { scheduleUuid } });
     this.softDelete({ scheduleUuid });
 
-    return record.parent.metadataId;
+    return record.metadataId;
   }
 }

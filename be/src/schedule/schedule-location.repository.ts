@@ -9,6 +9,21 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
   constructor(dataSource: DataSource) {
     super(ScheduleLocationEntity, dataSource.createEntityManager());
   }
+  async addNullLocation(scheduleMeta: ScheduleMetadataEntity) {
+    const placeName = null;
+    const placeAddress = null;
+    const latitude = null;
+    const longitude = null;
+
+    const record = this.create({ placeName, placeAddress, latitude, longitude, scheduleMeta });
+
+    try {
+      await this.save(record);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
 
   async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
     const { placeName, placeAddress, latitude, longitude } = dto;
@@ -18,20 +33,12 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
       .where("location.metadata_id = :id", { id: scheduleMeta.metadataId })
       .getOne();
 
-    if (record) {
-      record.placeName = placeName;
-      record.placeAddress = placeAddress;
-      record.latitude = parseFloat(latitude);
-      record.longitude = parseFloat(longitude);
-    } else {
-      record = this.create({
-        placeName,
-        placeAddress,
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-        scheduleMeta,
-      });
-    }
+    console.log(placeName, placeAddress, latitude, longitude);
+
+    record.placeName = placeName;
+    record.placeAddress = placeAddress;
+    record.latitude = latitude !== null ? parseFloat(latitude) : null;
+    record.longitude = longitude !== null ? parseFloat(longitude) : null;
 
     try {
       await this.save(record);

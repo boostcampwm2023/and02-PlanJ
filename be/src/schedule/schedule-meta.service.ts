@@ -39,8 +39,8 @@ export class ScheduleMetaService {
         scheduleUuid: schedule.scheduleUuid,
         title: scheduleMeta.title,
         description: scheduleMeta.description,
-        startAt: schedule.startAt === null ? null : schedule.startAt.slice(0, -5),
-        endAt: schedule.endAt.slice(0, -5),
+        startAt: schedule.startAt,
+        endAt: schedule.endAt,
         finished: schedule.finished,
         failed: schedule.failed,
         remindMemo: schedule.remindMemo,
@@ -49,7 +49,6 @@ export class ScheduleMetaService {
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
-      statusCode: 200,
       data: schedules,
     };
 
@@ -66,8 +65,8 @@ export class ScheduleMetaService {
         scheduleUuid: schedule.scheduleUuid,
         title: scheduleMeta.title,
         description: scheduleMeta.description,
-        startAt: schedule.startAt === null ? null : schedule.startAt.slice(0, -5),
-        endAt: schedule.endAt.slice(0, -5),
+        startAt: schedule.startAt,
+        endAt: schedule.endAt,
         finished: schedule.finished,
         failed: schedule.failed,
         remindMemo: schedule.remindMemo,
@@ -76,7 +75,6 @@ export class ScheduleMetaService {
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",
-      statusCode: 200,
       data: schedules,
     };
 
@@ -101,7 +99,6 @@ export class ScheduleMetaService {
 
     const body: HttpResponse = {
       message: "일정 삭제 성공",
-      statusCode: 200,
     };
 
     return JSON.stringify(body);

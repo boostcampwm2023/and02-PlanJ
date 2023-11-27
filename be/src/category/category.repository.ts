@@ -30,7 +30,6 @@ export class CategoryRepository extends Repository<CategoryEntity> {
       await this.save(category);
       const body: HttpResponse = {
         message: "카테고리 생성",
-        statusCode: 201,
         data: {
           categoryUuid: categoryUuid,
         },
@@ -70,7 +69,6 @@ export class CategoryRepository extends Repository<CategoryEntity> {
 
     const body: HttpResponse = {
       message: "카테고리 삭제 완료",
-      statusCode: 200,
     };
 
     return JSON.stringify(body);

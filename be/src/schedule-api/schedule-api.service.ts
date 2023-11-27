@@ -22,15 +22,16 @@ export class ScheduleApiService {
 
   async addSchedule(token: string, dto: AddScheduleDto): Promise<string> {
     dto.userUuid = this.authService.verify(token);
-    const user = await this.userService.getUserEntity(dto.userUuid);
+    const user = await this.userService.checkUser(dto.userUuid);
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
+    await this.scheduleLocationService.addNullLocation(scheduleMetadata);
     return await this.scheduleService.addSchedule(dto, scheduleMetadata);
   }
 
   async updateSchedule(token: string, dto: UpdateScheduleDto) {
     dto.userUuid = this.authService.verify(token);
-    const user = await this.userService.getUserEntity(dto.userUuid); // checkUser로 이름 변경
+    const user = await this.userService.checkUser(dto.userUuid); // checkUser로 이름 변경
     // 시간(schedule) 위치(location), 반복(repitition) 이름, 설명
     // 일단 meta_data -> 비교 각각 -> 변경사항 없으면 시간, 위치, 반복 -> 변경로직 불필요
     // 이름, 설명은 그냥 삽입
@@ -43,13 +44,13 @@ export class ScheduleApiService {
 
   async getDailySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
-    const user = await this.userService.getUserEntity(userUuid);
+    const user = await this.userService.checkUser(userUuid);
     return await this.scheduleMetaService.getAllScheduleByDate(user, date);
   }
 
   async getWeeklySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
-    const user = await this.userService.getUserEntity(userUuid);
+    const user = await this.userService.checkUser(userUuid);
     return await this.scheduleMetaService.getAllScheduleByWeek(user, date);
   }
 

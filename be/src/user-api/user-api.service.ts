@@ -17,7 +17,6 @@ export class UserApiService {
     await this.userService.register(dto);
     const body: HttpResponse = {
       message: "회원가입 성공",
-      statusCode: 201,
     };
 
     return JSON.stringify(body);
@@ -29,7 +28,6 @@ export class UserApiService {
 
     const body: HttpResponse = {
       message: "로그인 성공",
-      statusCode: 200,
       data: {
         token: token,
       },
@@ -43,7 +41,6 @@ export class UserApiService {
 
     const body: HttpResponse = {
       message: "회원탈퇴 완료",
-      statusCode: 200,
     };
     return JSON.stringify(body);
   }
@@ -54,7 +51,6 @@ export class UserApiService {
 
     const result: HttpResponse = {
       message: "정보 수정 성공",
-      statusCode: 200,
       data: {
         updated_nickname: updatedNickname,
       },
