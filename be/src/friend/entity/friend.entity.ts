@@ -1,25 +1,21 @@
-import { UserEntity } from "src/user/entity/user.entity";
 import { BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserEntity } from "src/user/entity/user.entity";
 
-@Entity("friends")
-export class FriendsEntity extends BaseEntity {
+@Entity("friend")
+export class FriendEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "friend_id" })
   friendId: number;
 
-  @Column({ type: "timestamp", name: "created_at" })
-  createdAt: Date;
-
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
+
+  @Column({ name: "to" })
+  to: number;
 
   /*
    * relation
    */
   @OneToOne(() => UserEntity, (user) => user.userId)
-  @JoinColumn()
+  @JoinColumn({ name: "from" })
   from: UserEntity;
-
-  @OneToOne(() => UserEntity, (user) => user.userId)
-  @JoinColumn()
-  to: UserEntity;
 }
