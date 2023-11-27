@@ -17,16 +17,15 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
 
-    private lateinit var binding: FragmentSignInBinding
+    private var _binding: FragmentSignInBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: SignInViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSignInBinding.inflate(layoutInflater, container, false)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
+        _binding = FragmentSignInBinding.inflate(layoutInflater, container, false)
 
         return binding.root
     }
@@ -34,8 +33,16 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         setObserver()
         setListener()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
     private fun setObserver() {
@@ -51,6 +58,15 @@ class SignInFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.showToast.collect { message ->
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.user.collect { id ->
+                if(id.isNotEmpty()){
+                    findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
+                    requireActivity().finish()
+                }
             }
         }
     }

@@ -1,21 +1,24 @@
 package com.boostcamp.planj.data.model
 
-import androidx.annotation.Nullable
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "schedules")
 data class Schedule(
-    @PrimaryKey val scheduleId : String,
-    val title : String,
-    val memo : String?,
-    val startTime : String?,
-    val endTime : String,
-    val categoryTitle : String,
-    val repeat : Repetition?,
-    val members : List<User>,
-    val doneMembers : List<User>?,
-    val location : String?,
-    val finished : Boolean,
-    val failed : Boolean
-)
+    @PrimaryKey val scheduleId: String,
+    val title: String,
+    val memo: String? = null,
+    val startTime: String? = null,
+    val endTime: String,
+    val categoryTitle: String,
+    val repetition: Repetition? = null,
+    val alarm: Alarm? = null,
+    val members: List<User> = listOf(),
+    val doneMembers: List<User>? = null,
+    val location: Location? = null,
+    val isFinished: Boolean = false,
+    val isFailed: Boolean = false
+) : Parcelable

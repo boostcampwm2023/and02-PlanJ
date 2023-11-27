@@ -1,7 +1,14 @@
 package com.boostcamp.planj.data.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.network.PlanJAPI
 import dagger.Module
@@ -33,7 +40,7 @@ object MainModule {
     @Provides
     fun provideRetrofitInstance(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://49.50.166.243/")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -51,12 +58,16 @@ object MainModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "planj"
-        ).build()
+        return AppDatabase.getInstance(context)
     }
 
+
+    //DataStore
+    @Singleton
+    @Provides
+    fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile(BuildConfig.DATA_STORE_NAME) }
+        )
 
 }

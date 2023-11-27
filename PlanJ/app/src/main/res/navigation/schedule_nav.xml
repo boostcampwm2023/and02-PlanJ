@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shedule_nav"
+    app:startDestination="@id/scheduleFragment">
+
+    <activity
+        android:id="@+id/scheduleActivity"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleActivity"
+        android:label="ScheduleActivity"
+        tools:layout="@layout/activity_schedule">
+        <argument
+            android:name="schedule"
+            android:defaultValue="@null"
+            app:argType="com.boostcamp.planj.data.model.Schedule"
+            app:nullable="true" />
+    </activity>
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleFragment"
+        android:label="ScheduleFragment" >
+        <action
+            android:id="@+id/action_scheduleFragment_to_scheduleMapFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/scheduleMapFragment" />
+        <argument
+            android:name="location"
+            app:argType="com.boostcamp.planj.data.model.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/scheduleMapFragment"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleMapFragment"
+        android:label="ScheduleMapFragment"
+        >
+        <action
+            android:id="@+id/action_scheduleMapFragment_to_scheduleFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/scheduleFragment"
+            app:destination="@id/scheduleFragment" />
+        <argument
+            android:name="location"
+            app:argType="com.boostcamp.planj.data.model.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+</navigation>

@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/alarm"
-        android:title="알림"
         android:icon="@drawable/ic_notifications"
-        app:showAsAction="always"
-        />
+        android:title="알림"
+        app:showAsAction="always" />
 </menu>
