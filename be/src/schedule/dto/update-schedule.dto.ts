@@ -1,8 +1,6 @@
 import { Allow, IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
 
 export class UpdateScheduleDto {
-  @IsString()
-  @IsNotEmpty()
   userUuid: string;
 
   @IsString()

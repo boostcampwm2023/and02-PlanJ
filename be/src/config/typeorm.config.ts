@@ -15,6 +15,7 @@ export class TypeOrmConfigService {
       database: config.database,
       entities: [__dirname + "/../**/*.entity{.ts,.js}"],
       synchronize: true,
+      charset: "utf8mb4",
     };
   }
 }

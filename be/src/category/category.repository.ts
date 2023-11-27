@@ -14,14 +14,13 @@ export class CategoryRepository extends Repository<CategoryEntity> {
   }
 
   async add(dto: AddCategoryDto, user: UserEntity): Promise<string> {
-    const { categoryName, createdAt } = dto;
+    const { categoryName } = dto;
 
     const categoryUuid = ulid();
 
     const category = this.create({
       categoryUuid: categoryUuid,
       categoryName: categoryName,
-      createdAt: createdAt,
       user: user,
     });
 

@@ -1,8 +1,6 @@
 import { IsNotEmpty, IsString, Matches } from "class-validator";
 
 export class AddScheduleDto {
-  @IsString()
-  @IsNotEmpty()
   userUuid: string;
 
   @IsString()
