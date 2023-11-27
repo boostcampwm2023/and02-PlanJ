@@ -9,9 +9,9 @@ export class CategoryRepository extends Repository<CategoryEntity> {
   }
 
   async findOneByCategoryUuid(categoryUuid: string) {
-      if (categoryUuid === "default") {
-          return null;
-      }
+    if (categoryUuid === "default") {
+      return null;
+    }
 
     const category = await this.findOne({
       where: { categoryUuid: categoryUuid },

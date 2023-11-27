@@ -1,8 +1,6 @@
-import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
-import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ScheduleLocation } from "src/utils/location.interface";
 
@@ -87,7 +85,6 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
     try {
       await this.save(record);
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException();
     }
   }
