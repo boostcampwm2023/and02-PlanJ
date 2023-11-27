@@ -25,6 +25,7 @@ export class ScheduleApiService {
     const user = await this.userService.checkUser(dto.userUuid);
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
+    await this.scheduleLocationService.addNullLocation(scheduleMetadata);
     return await this.scheduleService.addSchedule(dto, scheduleMetadata);
   }
 
