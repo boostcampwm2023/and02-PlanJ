@@ -5,9 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.network.PlanJAPI
@@ -61,7 +58,6 @@ object MainModule {
         return AppDatabase.getInstance(context)
     }
 
-
     //DataStore
     @Singleton
     @Provides
@@ -70,4 +66,9 @@ object MainModule {
             produceFile = { context.preferencesDataStoreFile(BuildConfig.DATA_STORE_NAME) }
         )
 
+    @Singleton
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }
