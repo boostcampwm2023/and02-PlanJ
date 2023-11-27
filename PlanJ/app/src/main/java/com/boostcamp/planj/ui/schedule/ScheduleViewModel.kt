@@ -62,6 +62,8 @@ class ScheduleViewModel @Inject constructor(
     val scheduleLocation = MutableStateFlow<Location?>(null)
     val scheduleMemo = MutableStateFlow<String?>(null)
 
+    val startScheduleLocation = MutableStateFlow<Location?>(null)
+
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd")
 
     val categoryList: StateFlow<List<String>> =

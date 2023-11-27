@@ -437,6 +437,7 @@
                     android:layout_marginVertical="4dp"
                     android:layout_marginHorizontal="8dp"
                     android:background="@drawable/round_r8_main2"
+                    app:btnVisible="@{viewModel}"
                     />
 
                 <TextView
@@ -452,6 +453,7 @@
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginVertical="4dp"
                     android:background="@drawable/round_r8_main2"
+                    app:btnVisible="@{viewModel}"
                     />
 
 
@@ -474,7 +476,6 @@
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:background="@null"
-                    android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:importantForAutofill="no"
                     android:inputType="text"
@@ -497,7 +498,9 @@
                     android:src="@drawable/ic_delete"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
-                    app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
+                    app:layout_constraintTop_toTopOf="@id/tv_schedule_location"
+                    app:endImageVisible="@{viewModel}"
+                    />
 
 
 
@@ -546,13 +549,12 @@
                             android:layout_height="60dp"
                             android:layout_weight="9"
                             android:background="@null"
-                            android:enabled="@{viewModel.isEditMode}"
                             android:gravity="center_vertical"
                             android:importantForAutofill="no"
                             android:inputType="text"
                             android:paddingHorizontal="24dp"
                             android:breakStrategy="simple"
-                            android:text="@{viewModel.scheduleLocation.placeName}"
+                            android:text="@{viewModel.startScheduleLocation.placeName}"
                             android:textColor="@color/selector_text_color"
                             android:textSize="12sp"
                             app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
@@ -567,6 +569,7 @@
                             android:contentDescription="@string/location"
                             android:padding="8dp"
                             android:src="@drawable/ic_delete"
+                            app:startImageVisible="@{viewModel}"
                             />
 
 

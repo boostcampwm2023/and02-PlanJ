@@ -29,7 +29,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
     private val binding get() = _binding!!
     private val viewModel: ScheduleViewModel by activityViewModels()
 
-    private val args : ScheduleFragmentArgs by navArgs()
+    private val args: ScheduleFragmentArgs by navArgs()
 
     private val repetitionSettingDialog by lazy {
         RepetitionSettingDialog()
@@ -107,7 +107,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 //                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
 //                    categoryList.toTypedArray()
 //                )
-                val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
+                val arrayAdapter =
+                    ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }
@@ -191,7 +192,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
             repetitionSettingDialog.arguments = bundle
-            if(!repetitionSettingDialog.isAdded){
+            if (!repetitionSettingDialog.isAdded) {
                 repetitionSettingDialog.show(childFragmentManager, "반복 설정")
             }
         }
@@ -200,13 +201,23 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
             alarmSettingDialog.arguments = bundle
-            if(!alarmSettingDialog.isAdded){
+            if (!alarmSettingDialog.isAdded) {
                 alarmSettingDialog.show(childFragmentManager, "알림 설정")
             }
         }
 
         binding.ivScheduleMap.setOnClickListener {
-            val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
+            findNavController().navigate(action)
+        }
+
+        binding.ivScheduleStartMap.setOnClickListener {
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleStartMapFragment(
+                    endLocation = viewModel.scheduleLocation.value,
+                    startLocation = viewModel.startScheduleLocation.value
+                )
             findNavController().navigate(action)
         }
     }

@@ -4,6 +4,8 @@ import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.LoginRepositoryImpl
 import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.MainRepositoryImpl
+import com.boostcamp.planj.data.repository.NaverRepository
+import com.boostcamp.planj.data.repository.NaverRepositoryImpl
 import com.boostcamp.planj.data.repository.SearchRepository
 import com.boostcamp.planj.data.repository.SearchRepositoryImpl
 import dagger.Binds
@@ -29,4 +31,10 @@ abstract class RepositoryModule {
     abstract fun provideSearchRepository(
         searchRepositoryImpl: SearchRepositoryImpl
     ) : SearchRepository
+
+
+    @Binds
+    abstract fun provideNaverRepository(
+        naverRepository: NaverRepositoryImpl
+    ) : NaverRepository
 }
