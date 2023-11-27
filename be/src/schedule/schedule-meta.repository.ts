@@ -55,7 +55,6 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
       await this.save(record);
       return record;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException();
     }
   }
@@ -64,27 +63,23 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     const todayStart = date.toString().split("T")[0] + "T00:00:00";
     const todayEnd = date.toString().split("T")[0] + "T23:59:59";
 
-    const founds = await this.createQueryBuilder("schedule_metadata")
+    return await this.createQueryBuilder("schedule_metadata")
       .leftJoinAndSelect("schedule_metadata.children", "schedule")
       .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
       .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
       .getMany();
-
-    return founds;
   }
 
   async getAllScheduleByWeek(user: UserEntity, firstDay: Date, lastDay: Date): Promise<ScheduleMetadataEntity[]> {
     const weekStart = firstDay.toISOString().split("T")[0] + "T00:00:00";
     const weekEnd = lastDay.toISOString().split("T")[0] + "T23:59:59";
 
-    const founds = await this.createQueryBuilder("schedule_metadata")
+    return await this.createQueryBuilder("schedule_metadata")
       .leftJoinAndSelect("schedule_metadata.children", "schedule")
       .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
       .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd ", { weekStart, weekEnd })
       .orderBy("schedule.endAt")
       .getMany();
-
-    return founds;
   }
 
   async findByCategoryId(categoryId: number, userId: number) {
@@ -100,7 +95,6 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     try {
       await this.softDelete({ metadataId });
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException();
     }
   }
