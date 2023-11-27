@@ -28,7 +28,7 @@
     <string name="end">종료</string>
     <string name="alarm">알림</string>
     <string name="repetition">반복</string>
-    <string name="location">위치</string>
+    <string name="location">도착</string>
     <string name="memo">추가 메모</string>
     <string name="category">카테고리</string>
     <string name="memo_length">%d/255</string>

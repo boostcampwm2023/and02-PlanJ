@@ -4,18 +4,20 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.db.AppDatabase
-import com.boostcamp.planj.data.network.PlanJAPI
+import com.boostcamp.planj.data.network.MainApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,13 +27,39 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object MainModule {
+
+
+    @Singleton
+    @Provides
+    fun provideInterceptor(datastore: DataStore<Preferences>): Interceptor {
+        val user = stringPreferencesKey(BuildConfig.USER)
+
+        val dataUserFlow = datastore.data.map { pref ->
+            pref[user] ?: ""
+        }
+
+        val userToken = runBlocking {
+            dataUserFlow.first()
+        }
+
+        return Interceptor { chain ->
+            var request = chain.request()
+            request = request.newBuilder()
+                .addHeader("Authorization", userToken)
+                .build()
+            chain.proceed(request)
+        }
+    }
+
+
     //retrofit
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
     }
@@ -48,8 +76,8 @@ object MainModule {
 
     @Singleton
     @Provides
-    fun provideService(retrofit: Retrofit): PlanJAPI {
-        return retrofit.create(PlanJAPI::class.java)
+    fun provideService(retrofit: Retrofit): MainApi {
+        return retrofit.create(MainApi::class.java)
     }
 
     //okhttp

@@ -16,7 +16,7 @@ import com.boostcamp.planj.data.model.PostScheduleBody
 import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.network.PlanJAPI
+import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -25,7 +25,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
-    private val api: PlanJAPI,
+    private val api: MainApi,
     private val db: AppDatabase,
     private val dataStore: DataStore<Preferences>
 ) : MainRepository {
@@ -100,12 +100,11 @@ class MainRepositoryImpl @Inject constructor(
         }
 
     override fun postSchedule(
-        userId: String,
         categoryId: String,
         title: String,
         endTime: String
     ): Flow<PostScheduleResponse> = flow {
-        val postSchedule = PostScheduleBody(userId, categoryId, title, endTime)
+        val postSchedule = PostScheduleBody(categoryId, title, endTime)
         emit(api.postSchedule(postSchedule))
     }
 

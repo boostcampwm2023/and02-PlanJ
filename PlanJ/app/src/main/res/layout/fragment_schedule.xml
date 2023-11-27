@@ -91,7 +91,7 @@
                         android:inputType="none"
                         android:maxLines="1"
                         android:paddingHorizontal="24dp"
-                        android:text="@={viewModel.scheduleCategory}"
+                        android:text="@{viewModel.scheduleCategory}"
                         android:textColor="@color/selector_text_color"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -272,7 +272,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_schedule_participants"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="350dp"
                     android:maxHeight="150dp"
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="8dp"
@@ -315,10 +315,11 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_schedule_participants"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_category_participants"
@@ -402,20 +403,73 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
+                    app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
+
+
+                <TextView
+                    android:id="@+id/tv_schedule_location_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:text="위치"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
+
+                <TextView
+                    android:id="@+id/tv_schedule_location_url_scheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:text="다른 경로 보기"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
+                    app:layout_constraintEnd_toStartOf="@id/tv_schedule_location_alarm"
+                    android:padding="8dp"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/round_r8_main2"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_schedule_location_alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:text="위치 알림 설정"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
+                    android:padding="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginVertical="4dp"
+                    android:background="@drawable/round_r8_main2"
+                    />
+
+
                 <TextView
                     android:id="@+id/tv_schedule_location"
-                    android:layout_width="160dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/location"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location_title" />
 
-                <EditText
+                <TextView
                     android:id="@+id/et_schedule_location_setting"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
@@ -424,33 +478,126 @@
                     android:gravity="center_vertical"
                     android:importantForAutofill="no"
                     android:inputType="text"
-                    android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@{viewModel.scheduleLocation.placeName}"
                     android:textColor="@color/selector_text_color"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
+                    android:textSize="12sp"
+                    android:breakStrategy="simple"
+                    app:layout_constraintEnd_toStartOf="@id/iv_schedule_end_map_delete"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_location"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location_title" />
+
+                <ImageView
+                    android:id="@+id/iv_schedule_end_map_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:clickable="@{viewModel.isEditMode()}"
+                    android:contentDescription="@string/location"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_delete"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
+                    app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
+                    app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
+
+
 
                 <ImageView
                     android:id="@+id/iv_schedule_map"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:clickable="@{viewModel.isEditMode()}"
                     android:contentDescription="@string/location"
-                    android:padding="24dp"
+                    android:padding="18dp"
                     android:src="@drawable/ic_location"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/et_schedule_location_setting"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
+
+
+                <LinearLayout
+                    android:id="@+id/layout_schedule_end_map"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location"
+                    android:visibility="@{viewModel.scheduleLocation == null ? View.GONE : View.VISIBLE}"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="24dp"
+                            android:text="출발"
+                            android:textSize="12dp"
+                            android:layout_marginStart="8dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/et_schedule_start_location_setting"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_weight="9"
+                            android:background="@null"
+                            android:enabled="@{viewModel.isEditMode}"
+                            android:gravity="center_vertical"
+                            android:importantForAutofill="no"
+                            android:inputType="text"
+                            android:paddingHorizontal="24dp"
+                            android:breakStrategy="simple"
+                            android:text="@{viewModel.scheduleLocation.placeName}"
+                            android:textColor="@color/selector_text_color"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
+                            app:layout_constraintStart_toEndOf="@id/tv_schedule_location"
+                            app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
+
+                        <ImageView
+                            android:id="@+id/iv_schedule_start_map_delete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:clickable="@{viewModel.isEditMode()}"
+                            android:contentDescription="@string/location"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_delete"
+                            />
+
+
+                        <ImageView
+                            android:id="@+id/iv_schedule_start_map"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:clickable="@{viewModel.isEditMode()}"
+                            android:contentDescription="@string/location"
+                            android:padding="18dp"
+                            android:src="@drawable/ic_location"
+                             />
+
+                    </LinearLayout>
+
+                    <com.naver.maps.map.MapView
+                        android:id="@+id/fragment_contain_map"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:touchscreenBlocksFocus="true" />
+
+                </LinearLayout>
+
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_end_map" />
+
 
                 <TextView
                     android:id="@+id/tv_schedule_memo"
@@ -464,7 +611,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_end_map" />
 
                 <TextView
                     android:id="@+id/tv_schedule_memo_length"
@@ -476,7 +623,7 @@
                     android:text="@string/memo_length"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_memo"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_end_map" />
 
                 <EditText
                     android:layout_width="0dp"

@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.di
 
+import android.util.Log
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.network.KaKaoSearchApi
 import dagger.Module
@@ -30,6 +31,7 @@ object SearchMapModule {
     @Provides
     @Map
     fun provideInterceptor() : Interceptor {
+        Log.d("PLANJDEBUG", "provideInterceptor for map ")
         return Interceptor { chain ->
             var request = chain.request()
             request = request.newBuilder()

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -65,6 +66,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.setLocation(args.location)
+        binding.executePendingBindings()
 
         initAdapter()
         setObserver()
@@ -99,12 +101,14 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.categoryList.collect { categoryList ->
-                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
-                    categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
-                )
-                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
-                    categoryList.toTypedArray()
-                )
+//                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
+//                    categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
+//                )
+//                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
+//                    categoryList.toTypedArray()
+//                )
+                val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
+                binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }
     }
