@@ -25,7 +25,7 @@ export class ScheduleApiService {
     const user = await this.userService.getUserEntity(dto.userUuid);
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
-    await this.scheduleLocationService.addNullLocation(scheduleMetadata);
+    await this.scheduleLocationService.addLocation(dto.startLocation, dto.endLocation, scheduleMetadata);
     return await this.scheduleService.addSchedule(dto, scheduleMetadata);
   }
 
@@ -34,7 +34,7 @@ export class ScheduleApiService {
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
-    await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
+    await this.scheduleLocationService.updateLocation(dto.startLocation, dto.endLocation, scheduleMeta);
     return await this.scheduleService.updateSchedule(dto);
   }
 

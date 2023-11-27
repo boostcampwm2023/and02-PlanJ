@@ -47,8 +47,8 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
   }
 
   async getMetadataIdByScheduleUuid(scheduleUuid: string): Promise<number> {
-    const record = await this.findOne({ where: { scheduleUuid }, relations: ["parent"] });
-    return record.parent.metadataId;
+    const record = await this.findOne({ where: { scheduleUuid } });
+    return record.metadataId;
   }
 
   async updateSchedule(dto: UpdateScheduleDto): Promise<string> {
