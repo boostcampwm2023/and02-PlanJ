@@ -80,7 +80,8 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     const founds = await this.createQueryBuilder("schedule_metadata")
       .leftJoinAndSelect("schedule_metadata.children", "schedule")
       .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
-      .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd ", { weekStart, weekEnd })
+      .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd", { weekStart, weekEnd })
+      .orWhere("schedule.startAt BETWEEN :weekStart AND :weekEnd", { weekStart, weekEnd })
       .orderBy("schedule.endAt")
       .getMany();
 
