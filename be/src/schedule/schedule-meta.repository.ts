@@ -96,6 +96,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     try {
       await this.softDelete({ metadataId });
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }
