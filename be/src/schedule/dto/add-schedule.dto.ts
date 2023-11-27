@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsObject, IsString, Matches } from "class-validator";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
+import { RepetitionDto } from "./repetition.dto";
 
 export class AddScheduleDto {
   userUuid: string;
@@ -20,4 +21,7 @@ export class AddScheduleDto {
 
   @IsObject()
   endLocation: ScheduleLocationDto;
+
+  @IsObject()
+  repetition: RepetitionDto;
 }
