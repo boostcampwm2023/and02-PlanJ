@@ -29,7 +29,7 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @Column({ name: "end_time", type: "time" })
   endTime: string;
 
-  @Column({ name: "category_id", type: "int" })
+  @Column({ name: "category_id", type: "int", nullable: true })
   categoryId: number;
 
   @DeleteDateColumn({ default: null, name: "deleted_at" })

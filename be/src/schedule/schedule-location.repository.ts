@@ -1,3 +1,4 @@
+import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
@@ -9,13 +10,16 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
   constructor(dataSource: DataSource) {
     super(ScheduleLocationEntity, dataSource.createEntityManager());
   }
-  async addNullLocation(scheduleMeta: ScheduleMetadataEntity) {
-    const placeName = null;
-    const placeAddress = null;
-    const latitude = null;
-    const longitude = null;
+  async addLocation(dto: AddScheduleDto, scheduleMeta: ScheduleMetadataEntity) {
+    const { placeName, placeAddress, latitude, longitude } = dto;
 
-    const record = this.create({ placeName, placeAddress, latitude, longitude, scheduleMeta });
+    const record = this.create({
+      placeName,
+      placeAddress,
+      latitude: latitude !== null ? parseFloat(latitude) : null,
+      longitude: longitude !== null ? parseFloat(longitude) : null,
+      scheduleMeta,
+    });
 
     try {
       await this.save(record);
