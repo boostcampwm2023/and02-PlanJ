@@ -20,12 +20,25 @@ export class CategoryApiService {
   async add(dto: AddCategoryDto, token: string): Promise<string> {
     dto.userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(dto.userUuid);
-    return await this.categoryService.addCategory(dto, user);
+    const categoryUuid = await this.categoryService.addCategory(dto, user);
+    const body: HttpResponse = {
+      message: "카테고리 생성",
+      data: {
+        categoryUuid: categoryUuid,
+      },
+    };
+
+    return JSON.stringify(body);
   }
 
   async delete(dto: DeleteCategoryDto, token: string) {
     dto.userUuid = this.authService.verify(token);
-    return await this.categoryService.deleteCategory(dto);
+    await this.categoryService.deleteCategory(dto);
+    const body: HttpResponse = {
+      message: "카테고리 삭제 완료",
+    };
+
+    return JSON.stringify(body);
   }
 
   async update(dto: UpdateCategoryDto, token: string): Promise<string> {
@@ -47,16 +60,22 @@ export class CategoryApiService {
   async getSchedules(categoryUuid: string, token: string) {
     const userUuid = this.authService.verify(token);
     const userEntity = await this.userService.getUserEntity(userUuid);
-    const categoryEntity = await this.categoryService.getCategoryEntity(categoryUuid);
+    let schedules;
 
-    if (categoryEntity.userId !== userEntity.userId) {
-      throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
+    if (categoryUuid !== "default") {
+      const categoryEntity = await this.categoryService.getCategoryEntity(categoryUuid);
+
+      if (categoryEntity.userId !== userEntity.userId) {
+        throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
+      }
+
+      schedules = await this.scheduleMetaService.getAllScheduleByCategoryId(
+        categoryEntity.categoryId,
+        userEntity.userId,
+      );
+    } else {
+      schedules = await this.scheduleMetaService.getAllScheduleByNullCategory(userEntity.userId);
     }
-
-    const schedules = await this.scheduleMetaService.getAllScheduleByCategoryId(
-      categoryEntity.categoryId,
-      userEntity.userId,
-    );
 
     const result: HttpResponse = {
       message: "카테고리내 일정 조회 성공",
