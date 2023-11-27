@@ -32,6 +32,12 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
 
+  @Column({ name: "category_id" })
+  categoryId: number;
+
+  @Column({ name: "user_id" })
+  userId: number;
+
   /*
    * relation
    */

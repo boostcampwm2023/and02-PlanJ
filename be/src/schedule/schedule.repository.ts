@@ -76,9 +76,9 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
   async deleteSchedule(dto: DeleteScheduleDto) {
     const { scheduleUuid } = dto;
 
-    const record = await this.findOne({ where: { scheduleUuid }, relations: ["parent"] });
+    const record = await this.findOne({ where: { scheduleUuid } });
     this.softDelete({ scheduleUuid });
 
-    return record.parent.metadataId;
+    return record.metadataId;
   }
 }
