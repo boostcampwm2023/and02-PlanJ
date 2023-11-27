@@ -77,7 +77,7 @@ export class UserService {
     }
   }
 
-  async checkUser(userUuid: string): Promise<UserEntity> {
+  async getUserEntity(userUuid: string): Promise<UserEntity> {
     return await this.userRepository.findByUuid(userUuid);
   }
 }

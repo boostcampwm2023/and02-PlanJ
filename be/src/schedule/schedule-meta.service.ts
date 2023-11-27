@@ -103,4 +103,20 @@ export class ScheduleMetaService {
 
     return JSON.stringify(body);
   }
+
+  async getAllScheduleByCategoryId(categoryId: number) {
+    const rawSchedules = await this.scheduleMetaRepository.findByCategoryId(categoryId);
+    return rawSchedules.flatMap((scheduleMeta) => {
+      return scheduleMeta.children.map((schedule) => ({
+        scheduleUuid: schedule.scheduleUuid,
+        title: scheduleMeta.title,
+        description: scheduleMeta.description,
+        startAt: schedule.startAt === null ? null : schedule.startAt.slice(0, -5),
+        endAt: schedule.endAt.slice(0, -5),
+        finished: schedule.finished,
+        failed: schedule.failed,
+        remindMemo: schedule.remindMemo,
+      }));
+    });
+  }
 }

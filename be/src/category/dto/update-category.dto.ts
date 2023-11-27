@@ -1,7 +1,11 @@
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
-export class AddCategoryDto {
-  userUuid: string;
+export class UpdateCategoryDto {
+  userId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  categoryUuid: string;
 
   @IsString()
   @IsNotEmpty()

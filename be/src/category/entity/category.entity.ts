@@ -14,14 +14,17 @@ import {
 
 @Entity("category")
 export class CategoryEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "category_id" })
-  categoryId: string;
+  @PrimaryGeneratedColumn({ name: "category_id", type: "int" })
+  categoryId: number;
 
   @Column({ length: 26, name: "category_uuid" })
   categoryUuid: string;
 
   @Column({ length: 128, name: "category_name" })
   categoryName: string;
+
+  @Column({ type: "int", name: "user_id" })
+  userId: number;
 
   @CreateDateColumn({ type: "timestamp", name: "created_at" })
   createdAt: Date;

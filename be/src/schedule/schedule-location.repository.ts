@@ -28,7 +28,7 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
   async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
     const { placeName, placeAddress, latitude, longitude } = dto;
 
-    let record = await this.createQueryBuilder("location")
+    const record = await this.createQueryBuilder("location")
       .leftJoinAndSelect("location.scheduleMeta", "scheduleMeta")
       .where("location.metadata_id = :id", { id: scheduleMeta.metadataId })
       .getOne();

@@ -24,8 +24,6 @@ export class CategoryRepository extends Repository<CategoryEntity> {
       user: user,
     });
 
-    console.log(category);
-
     try {
       await this.save(category);
       const body: HttpResponse = {
