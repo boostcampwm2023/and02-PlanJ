@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ScheduleLocationRepository } from "./schedule-location.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
-import { ScheduleLocation } from "src/utils/location.interface";
+import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 
 @Injectable()
 export class ScheduleLocationService {
@@ -12,16 +12,16 @@ export class ScheduleLocationService {
   ) {}
 
   async addLocation(
-    startLocation: ScheduleLocation,
-    endLocation: ScheduleLocation,
+    startLocation: ScheduleLocationDto,
+    endLocation: ScheduleLocationDto,
     scheduleMeta: ScheduleMetadataEntity,
   ) {
     await this.scheduleLocationRepository.addLocation(startLocation, endLocation, scheduleMeta);
   }
 
   async updateLocation(
-    startLocation: ScheduleLocation,
-    endLocation: ScheduleLocation,
+    startLocation: ScheduleLocationDto,
+    endLocation: ScheduleLocationDto,
     scheduleMeta: ScheduleMetadataEntity,
   ): Promise<void> {
     await this.scheduleLocationRepository.updateLocation(startLocation, endLocation, scheduleMeta);

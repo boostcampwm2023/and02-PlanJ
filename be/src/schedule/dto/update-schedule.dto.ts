@@ -1,5 +1,5 @@
 import { Allow, IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
-import { ScheduleLocation } from "src/utils/location.interface";
+import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 
 export class UpdateScheduleDto {
   userUuid: string;
@@ -30,8 +30,8 @@ export class UpdateScheduleDto {
   endAt: string;
 
   @IsObject()
-  startLocation: ScheduleLocation;
+  startLocation: ScheduleLocationDto;
 
   @IsObject()
-  endLocation: ScheduleLocation;
+  endLocation: ScheduleLocationDto;
 }
