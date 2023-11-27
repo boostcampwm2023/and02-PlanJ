@@ -38,6 +38,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         AlarmSettingDialog()
     }
 
+    private val participantDialog by lazy {
+        ScheduleParticipantDialog()
+    }
+
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
     }
@@ -187,7 +191,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
             repetitionSettingDialog.arguments = bundle
-            if(!repetitionSettingDialog.isAdded){
+            if (!repetitionSettingDialog.isAdded) {
                 repetitionSettingDialog.show(childFragmentManager, "반복 설정")
             }
         }
@@ -196,7 +200,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
             alarmSettingDialog.arguments = bundle
-            if(!alarmSettingDialog.isAdded){
+            if (!alarmSettingDialog.isAdded) {
                 alarmSettingDialog.show(childFragmentManager, "알림 설정")
             }
         }
@@ -204,6 +208,15 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.ivScheduleMap.setOnClickListener {
             val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
             findNavController().navigate(action)
+        }
+
+        binding.tvScheduleAllParticipants.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("participantsInfo", ArrayList(viewModel.members.value))
+            participantDialog.arguments = bundle
+            if (!participantDialog.isAdded) {
+                participantDialog.show(childFragmentManager, "전체 참가자")
+            }
         }
     }
 

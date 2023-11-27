@@ -71,6 +71,8 @@
     <string name="alarm_setting">푸시 알림</string>
     <string name="edit_profile">프로필 편집</string>
     <string name="settings">Settings</string>
+    <string name="schedule_not_done">일정 미완료</string>
+    <string name="schedule_done">일정 완료</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>
