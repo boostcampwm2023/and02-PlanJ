@@ -41,4 +41,8 @@ export class CategoryService {
 
     return categoryName;
   }
+
+  async getCategories(userId: number) {
+    return await this.categoryRepository.findByUserId(userId);
+  }
 }

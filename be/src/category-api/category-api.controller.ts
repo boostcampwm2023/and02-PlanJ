@@ -29,6 +29,12 @@ export class CategoryApiController {
     return JSON.parse(result);
   }
 
+  @Get("/list")
+  async getCategories(@Token() token: string): Promise<string> {
+    const result = await this.categoryApiService.getCategories(token);
+    return JSON.parse(result);
+  }
+
   @Get()
   async getSchedules(@Token() token: string, @Query("categoryUuid") categoryUuid: string): Promise<JSON> {
     const result = await this.categoryApiService.getSchedules(categoryUuid, token);

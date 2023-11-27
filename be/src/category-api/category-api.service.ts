@@ -53,11 +53,26 @@ export class CategoryApiService {
       throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
     }
 
-    const schedules = await this.scheduleMetaService.getAllScheduleByCategoryId(categoryEntity.categoryId);
+    const schedules = await this.scheduleMetaService.getAllScheduleByCategoryId(
+      categoryEntity.categoryId,
+      userEntity.userId,
+    );
 
     const result: HttpResponse = {
       message: "카테고리내 일정 조회 성공",
       data: schedules,
+    };
+    return JSON.stringify(result);
+  }
+
+  async getCategories(token: string) {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+    const categories = await this.categoryService.getCategories(userEntity.userId);
+
+    const result: HttpResponse = {
+      message: "사용자의 카테고리 조회 성공",
+      data: categories,
     };
     return JSON.stringify(result);
   }
