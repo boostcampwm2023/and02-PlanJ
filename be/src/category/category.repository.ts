@@ -72,4 +72,12 @@ export class CategoryRepository extends Repository<CategoryEntity> {
 
     return JSON.stringify(body);
   }
+
+  async findByUserId(userId: number) {
+    return await this.createQueryBuilder("category")
+      .select(["category.categoryUuid", "category.categoryName"])
+      .andWhere("category.user_id = :userId", { userId: userId })
+      .orderBy("category.created_at")
+      .getMany();
+  }
 }
