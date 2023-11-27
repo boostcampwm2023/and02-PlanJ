@@ -4,20 +4,41 @@ import { DataSource, Repository } from "typeorm";
 import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
+import { ScheduleLocation } from "src/utils/location.interface";
 
 @Injectable()
 export class ScheduleLocationRepository extends Repository<ScheduleLocationEntity> {
   constructor(dataSource: DataSource) {
     super(ScheduleLocationEntity, dataSource.createEntityManager());
   }
-  async addLocation(dto: AddScheduleDto, scheduleMeta: ScheduleMetadataEntity) {
-    const { placeName, placeAddress, latitude, longitude } = dto;
+  async addLocation(
+    startLocation: ScheduleLocation,
+    endLocation: ScheduleLocation,
+    scheduleMeta: ScheduleMetadataEntity,
+  ) {
+    const {
+      placeName: startPlaceName,
+      placeAddress: startPlaceAddress,
+      latitude: startLatitude,
+      longitude: startLongitude,
+    } = startLocation;
+
+    const {
+      placeName: endPlaceName,
+      placeAddress: endPlaceAddress,
+      latitude: endLatitude,
+      longitude: endLongitude,
+    } = endLocation;
 
     const record = this.create({
-      placeName,
-      placeAddress,
-      latitude: latitude !== null ? parseFloat(latitude) : null,
-      longitude: longitude !== null ? parseFloat(longitude) : null,
+      startPlaceName,
+      startPlaceAddress,
+      startLatitude: startLatitude !== null ? parseFloat(startLatitude) : null,
+      startLongitude: startLongitude !== null ? parseFloat(startLongitude) : null,
+      endPlaceName,
+      endPlaceAddress,
+      endLatitude: endLatitude !== null ? parseFloat(endLatitude) : null,
+      endLongitude: endLongitude !== null ? parseFloat(endLongitude) : null,
       scheduleMeta,
     });
 
@@ -29,20 +50,39 @@ export class ScheduleLocationRepository extends Repository<ScheduleLocationEntit
     }
   }
 
-  async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
-    const { placeName, placeAddress, latitude, longitude } = dto;
+  async updateLocation(
+    startLocation: ScheduleLocation,
+    endLocation: ScheduleLocation,
+    scheduleMeta: ScheduleMetadataEntity,
+  ): Promise<void> {
+    const {
+      placeName: startPlaceName,
+      placeAddress: startPlaceAddress,
+      latitude: startLatitude,
+      longitude: startLongitude,
+    } = startLocation;
+
+    const {
+      placeName: endPlaceName,
+      placeAddress: endPlaceAddress,
+      latitude: endLatitude,
+      longitude: endLongitude,
+    } = endLocation;
 
     const record = await this.createQueryBuilder("location")
       .leftJoinAndSelect("location.scheduleMeta", "scheduleMeta")
       .where("location.metadata_id = :id", { id: scheduleMeta.metadataId })
       .getOne();
 
-    console.log(placeName, placeAddress, latitude, longitude);
+    record.startPlaceName = startPlaceName;
+    record.startPlaceAddress = startPlaceAddress;
+    record.startLatitude = startLatitude !== null ? parseFloat(startLatitude) : null;
+    record.startLongitude = startLongitude !== null ? parseFloat(startLongitude) : null;
 
-    record.placeName = placeName;
-    record.placeAddress = placeAddress;
-    record.latitude = latitude !== null ? parseFloat(latitude) : null;
-    record.longitude = longitude !== null ? parseFloat(longitude) : null;
+    record.endPlaceName = endPlaceName;
+    record.endPlaceAddress = endPlaceAddress;
+    record.endLatitude = endLatitude !== null ? parseFloat(endLatitude) : null;
+    record.endLongitude = endLongitude !== null ? parseFloat(endLongitude) : null;
 
     try {
       await this.save(record);
