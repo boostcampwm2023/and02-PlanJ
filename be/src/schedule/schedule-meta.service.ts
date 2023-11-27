@@ -104,8 +104,8 @@ export class ScheduleMetaService {
     return JSON.stringify(body);
   }
 
-  async getAllScheduleByCategoryId(categoryId: number) {
-    const rawSchedules = await this.scheduleMetaRepository.findByCategoryId(categoryId);
+  async getAllScheduleByCategoryId(categoryId: number, userId: number) {
+    const rawSchedules = await this.scheduleMetaRepository.findByCategoryId(categoryId, userId);
     return rawSchedules.flatMap((scheduleMeta) => {
       return scheduleMeta.children.map((schedule) => ({
         scheduleUuid: schedule.scheduleUuid,
