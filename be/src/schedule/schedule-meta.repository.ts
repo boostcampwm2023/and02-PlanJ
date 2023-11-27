@@ -105,4 +105,13 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
       throw new InternalServerErrorException();
     }
   }
+
+  async findWhereCategoryIsNull(userId: number) {
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .where("schedule_metadata.user_id = :userId", { userId: userId })
+      .andWhere("schedule_metadata.category_id IS NULL")
+      .orderBy("schedule.endAt")
+      .getMany();
+  }
 }
