@@ -1,4 +1,13 @@
-import { BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { UserEntity } from "src/user/entity/user.entity";
 
 @Entity("friend")
@@ -9,13 +18,18 @@ export class FriendEntity extends BaseEntity {
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
 
+  @Column({ name: "from" })
+  fromId: number;
+
   @Column({ name: "to" })
-  to: number;
+  toId: number;
 
   /*
    * relation
    */
-  @OneToOne(() => UserEntity, (user) => user.userId)
+  @ManyToOne(() => UserEntity, (user) => user.friend, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "from" })
   from: UserEntity;
 }
