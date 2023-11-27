@@ -1,30 +1,28 @@
-import { Injectable } from "@nestjs/common";
-import { UserLoginDto } from "./dto/user-login.dto";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { UserRepository } from "./user.repository";
-import { UserModifyDto } from "./dto/user-modify.dto";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigType } from "@nestjs/config";
+import * as jwt from "jsonwebtoken";
+import authConfig from "../config/auth.config";
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @InjectRepository(UserRepository)
-    private userRepository: UserRepository,
-  ) {}
+  constructor(@Inject(authConfig.KEY) private config: ConfigType<typeof authConfig>) {}
 
-  async register(dto: CreateUserDto): Promise<string> {
-    return await this.userRepository.register(dto);
+  issue(userUuid: string) {
+    const payload = { userUuid: userUuid };
+    const options = {
+      expiresIn: this.config.options.expiresIn,
+      issuer: this.config.options.issuer,
+    };
+    return jwt.sign(payload, this.config.jwtSecret, options);
   }
 
-  async login(dto: UserLoginDto): Promise<string> {
-    return JSON.stringify(await this.userRepository.login(dto));
-  }
-
-  async deleteAccount(dto: UserLoginDto): Promise<string> {
-    return await this.userRepository.deleteAccount(dto);
-  }
-
-  update(dto: UserModifyDto): Promise<string> {
-    return this.userRepository.updateInfo(dto);
+  verify(token: string) {
+    try {
+      const payload = jwt.verify(token, this.config.jwtSecret) as jwt.JwtPayload;
+      const { userUuid } = payload;
+      return userUuid;
+    } catch (error) {
+      throw new UnauthorizedException("유효하지 않은 사용자입니다.");
+    }
   }
 }

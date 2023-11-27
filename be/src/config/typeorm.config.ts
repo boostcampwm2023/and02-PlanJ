@@ -1,6 +1,6 @@
 import { ConfigService, ConfigType } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import dbConfig from "./dbConfig";
+import dbConfig from "./db.config";
 
 export class TypeOrmConfigService {
   static createTypeOrmOptions(configService: ConfigService): TypeOrmModuleOptions {
@@ -15,6 +15,7 @@ export class TypeOrmConfigService {
       database: config.database,
       entities: [__dirname + "/../**/*.entity{.ts,.js}"],
       synchronize: true,
+      charset: "utf8mb4",
     };
   }
 }
