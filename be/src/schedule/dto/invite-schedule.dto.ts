@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsObject, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class InviteScheduleDto {
   @IsString()
