@@ -434,7 +434,7 @@
                     android:gravity="center_vertical"
                     android:padding="8dp"
                     android:text="다른 경로 보기"
-                    app:btnVisible="@{viewModel}"
+                    android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_schedule_location_alarm"
@@ -450,7 +450,7 @@
                     android:gravity="center_vertical"
                     android:padding="8dp"
                     android:text="위치 알림 설정"
-                    app:btnVisible="@{viewModel}"
+                    android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
@@ -516,15 +516,21 @@
 
 
 
+                <LinearLayout
+                    android:id="@+id/layout_schedule_start_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{viewModel.endScheduleLocation == null ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location"
+                    android:orientation="vertical"
+                    >
+
                     <LinearLayout
-                        android:id="@+id/layout_schedule_start_view"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:orientation="horizontal"
-                        android:visibility="@{viewModel.endScheduleLocation == null ? View.GONE : View.VISIBLE}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_schedule_location"
                         >
 
                         <TextView
@@ -578,21 +584,24 @@
 
                     </LinearLayout>
 
-                    <com.naver.maps.map.MapView
-                        android:id="@+id/fragment_contain_map"
+
+                    <androidx.fragment.app.FragmentContainerView
+                        android:id="@+id/schedule_map_nav_host_fragment"
+                        android:name="androidx.navigation.fragment.NavHostFragment"
+                        app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view"
-                        />
+                        app:defaultNavHost="true"
+                        app:navGraph="@navigation/map_show_nav" />
 
-
+                </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/fragment_contain_map" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view" />
 
 
                 <TextView
@@ -607,7 +616,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/fragment_contain_map" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view" />
 
                 <TextView
                     android:id="@+id/tv_schedule_memo_length"
@@ -619,7 +628,7 @@
                     android:text="@string/memo_length"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_memo"
-                    app:layout_constraintTop_toBottomOf="@id/fragment_contain_map" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view" />
 
                 <EditText
                     android:layout_width="0dp"

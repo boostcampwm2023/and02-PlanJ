@@ -58,9 +58,9 @@ fun TextView.setRepetitionInfo(repetition: Repetition?) {
 
 @BindingAdapter("alarmInfo")
 fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
-    text = if (alarmInfo != null && alarmInfo.alarmType == "departure") {
+    text = if (alarmInfo != null && alarmInfo.alarmType == "DEPARTURE") {
         resources.getString(R.string.before_departure_time, alarmInfo.alarmTime)
-    } else if (alarmInfo != null && alarmInfo.alarmType == "end") {
+    } else if (alarmInfo != null && alarmInfo.alarmType == "END") {
         resources.getString(R.string.before_end_time, alarmInfo.alarmTime)
     } else {
         resources.getString(R.string.not_set)
@@ -143,15 +143,6 @@ fun TextView.setDateTime(schedule: Schedule) {
     }
 }
 
-
-@BindingAdapter("btnVisible")
-fun TextView.setVisible(viewModel : ScheduleViewModel){
-    visibility =if(viewModel.startScheduleLocation.value == null || viewModel.endScheduleLocation.value == null) {
-        View.GONE
-    }else{
-        View.VISIBLE
-    }
-}
 
 @BindingAdapter("setTime")
 fun TextView.setTime(response: NaverResponse?){

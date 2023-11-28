@@ -10,7 +10,9 @@ import com.boostcamp.planj.data.model.PatchScheduleBody
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.data.repository.MainRepository
+import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val naverRepository: NaverRepository
 ) : ViewModel() {
 
     private lateinit var scheduleId: String
@@ -78,6 +81,9 @@ class ScheduleViewModel @Inject constructor(
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
+
+    private val _route = MutableStateFlow<NaverResponse?>(null)
+    val route: StateFlow<NaverResponse?> = _route.asStateFlow()
 
     fun setScheduleInfo(schedule: Schedule?) {
         schedule?.let { schedule ->
@@ -141,7 +147,6 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun setLocation(startLocation: Location?, endLocation: Location?) {
-        Log.d("PLANJDEBUG", "setLocation ${endLocation}")
         _endScheduleLocation.value = endLocation
         startScheduleLocation.value = startLocation
     }
@@ -226,6 +231,29 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun startMapDelete(){
+        startScheduleLocation.value = null
+    }
+
+
+    fun getNaverRoute(startLocation: Location?, endLocation: Location) {
+        if (startLocation == null) return
+
+        val start = "${startLocation.longitude},${startLocation.latitude}"
+        val end = "${endLocation.longitude},${endLocation.latitude}"
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _route.value = naverRepository.getNaverRoute(start, end)
+            }catch (e : Exception){
+                Log.d("PLANJDEBUG", "error ${e.message}")
+            }
+        }
+    }
+
+    fun emptyRoute(){
+        _route.value = null
+    }
+
+    fun emptyStartLocation(){
         startScheduleLocation.value = null
     }
 }
