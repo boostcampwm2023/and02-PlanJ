@@ -49,7 +49,7 @@ export class ScheduleApiService {
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
-    await this.repetitionService.updateRepetition(dto, metadataId);
+    await this.repetitionService.updateRepetition(dto, scheduleMeta);
     await this.scheduleService.updateSchedule(dto);
     dto.participants.forEach(async (email) => {
       await this.inviteSchedule(dto.scheduleUuid, email);
@@ -58,26 +58,42 @@ export class ScheduleApiService {
     const body: HttpResponse = {
       message: "일정 수정 성공",
     };
-
     return JSON.stringify(body);
   }
 
   async getDailySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    return await this.scheduleMetaService.getAllScheduleByDate(user, date);
+    const schedules = await this.scheduleMetaService.getAllScheduleByDate(user, date);
+
+    const body: HttpResponse = {
+      message: "하루 일정 조회 성공",
+      data: schedules,
+    };
+    return JSON.stringify(body);
   }
 
   async getWeeklySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    return await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+    const schedules = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+
+    const body: HttpResponse = {
+      message: "주간 일정 조회 성공",
+      data: schedules,
+    };
+    return JSON.stringify(body);
   }
 
   async deleteSchedule(token: string, dto: DeleteScheduleDto): Promise<string> {
     dto.userUuid = this.authService.verify(token);
     const metadataId = await this.scheduleService.deleteSchedule(dto);
-    return await this.scheduleMetaService.deleteScheduleMeta(metadataId);
+    await this.scheduleMetaService.deleteScheduleMeta(metadataId);
+
+    const body: HttpResponse = {
+      message: "일정 삭제 성공",
+    };
+    return JSON.stringify(body);
   }
 
   async inviteSchedule(authorScheduleUuid: string, invitedUserEmail: string) {
