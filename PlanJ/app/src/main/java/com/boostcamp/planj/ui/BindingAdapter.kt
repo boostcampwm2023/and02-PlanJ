@@ -2,12 +2,10 @@ package com.boostcamp.planj.ui
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.BindingAdapter
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
@@ -19,7 +17,6 @@ import com.boostcamp.planj.getDate
 import com.boostcamp.planj.getTime
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
-import com.boostcamp.planj.ui.schedule.ScheduleStartMapViewModel
 import com.boostcamp.planj.ui.schedule.ScheduleViewModel
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -149,7 +146,7 @@ fun TextView.setDateTime(schedule: Schedule) {
 
 @BindingAdapter("btnVisible")
 fun TextView.setVisible(viewModel : ScheduleViewModel){
-    visibility =if(viewModel.startScheduleLocation.value == null || viewModel.scheduleLocation.value == null) {
+    visibility =if(viewModel.startScheduleLocation.value == null || viewModel.endScheduleLocation.value == null) {
         View.GONE
     }else{
         View.VISIBLE

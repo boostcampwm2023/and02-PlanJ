@@ -23,14 +23,22 @@
             android:exported="false" />
         <activity
             android:name=".ui.schedule.ScheduleActivity"
-            android:exported="false"
+            android:exported="true"
             android:windowSoftInputMode="adjustResize"
-            />
+            >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.APP_BROWSER"/>
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"
             >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +49,6 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
-
 
         </activity>
 

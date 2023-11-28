@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_schedule_bottom_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="알림 설정"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_schedule_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_schedule_bottom_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="16dp"
+        android:background="@drawable/round_r8_main2"
+        android:text="설정하기"
+        app:layout_constraintStart_toEndOf="@id/tv_schedule_bottom_end_title"
+        />
+
+    <TextView
+        android:id="@+id/tv_schedule_bottom_departure_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="출발"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_schedule_bottom_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="8dp"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_schedule_bottom_expect_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:hint="소요 시간 : 20 분"
+        app:layout_constraintTop_toTopOf="@id/tv_schedule_bottom_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_schedule_bottom_title"
+        android:layout_margin="16dp"
+        />
+
+
+    <NumberPicker
+        android:id="@+id/np_schedule_bottom"
+        android:layout_width="100dp"
+        style="@style/numberPickerCustomSize"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/tv_schedule_bottom_departure_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_schedule_bottom_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="8dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_schedule_bottom_end_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="분 전 알림"
+        app:layout_constraintStart_toEndOf="@id/np_schedule_bottom"
+        app:layout_constraintTop_toBottomOf="@id/tv_schedule_bottom_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
