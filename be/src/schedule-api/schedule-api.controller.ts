@@ -41,8 +41,8 @@ export class ScheduleApiController {
     return JSON.parse(result);
   }
 
-  @Post("/participate")
-  participateSchedule() {}
+  @Post("/participate/invite")
+  inviteSchedule() {}
 
   // TODO: 지도표시
 }

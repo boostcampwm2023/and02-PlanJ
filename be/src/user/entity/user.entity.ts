@@ -9,6 +9,8 @@ import {
 } from "typeorm";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.entity";
+import { FriendEntity } from "src/friend/entity/friend.entity";
+import { ParticipantEntity } from "src/schedule/entity/participant.entity";
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
@@ -47,9 +49,13 @@ export class UserEntity extends BaseEntity {
   })
   category: CategoryEntity[];
 
-  // participant 추가 시 삭제될 관계
-  @OneToMany(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.user, {
+  @OneToMany(() => FriendEntity, (friend) => friend.from, {
     cascade: true,
   })
-  scheduleMeta: ScheduleMetadataEntity[];
+  friend: FriendEntity[];
+
+  @OneToMany(() => ParticipantEntity, (participant) => participant.user, {
+    cascade: true,
+  })
+  participant: ParticipantEntity[];
 }
