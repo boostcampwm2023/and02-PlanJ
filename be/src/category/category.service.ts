@@ -35,7 +35,7 @@ export class CategoryService {
   async getCategoryEntity(categoryUuid: string): Promise<CategoryEntity> {
     const categoryEntity = await this.categoryRepository.findOneByCategoryUuid(categoryUuid);
 
-    if (!!categoryEntity) {
+    if (!categoryEntity) {
       throw new NotFoundException("존재하지 않는 category uuid");
     }
 
