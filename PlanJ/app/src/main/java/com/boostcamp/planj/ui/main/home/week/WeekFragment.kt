@@ -85,6 +85,7 @@ class WeekFragment : Fragment() {
 
             var preSunday: LocalDateTime =
                 (LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)))
+            viewModel.today = LocalDateTime.now().format(dateFormat)
             if (LocalDateTime.now().dayOfWeek == DayOfWeek.SUNDAY) {
                 preSunday = LocalDateTime.now()
             }
@@ -98,7 +99,7 @@ class WeekFragment : Fragment() {
         }
 
         viewModel.calendarList = calendarList
-        calendarAdapter = CalendarAdapter()
+        calendarAdapter = CalendarAdapter(this.requireContext())
 
         binding.rvWeekWeek.adapter = calendarAdapter
         binding.rvWeekWeek.layoutManager = GridLayoutManager(context, 7)

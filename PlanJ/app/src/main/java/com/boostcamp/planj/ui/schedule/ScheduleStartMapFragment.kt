@@ -7,65 +7,91 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Location
-import com.boostcamp.planj.databinding.FragmentScheduleMapBinding
+import com.boostcamp.planj.databinding.FragmentScheduleStartMapBinding
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-@AndroidEntryPoint
-class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
 
-    private var _binding: FragmentScheduleMapBinding? = null
+@AndroidEntryPoint
+class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
+    private var _binding: FragmentScheduleStartMapBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ScheduleMapViewModel by viewModels()
-    private val args: ScheduleMapFragmentArgs by navArgs()
+    private val viewModel: ScheduleStartMapViewModel by viewModels()
+    private val args: ScheduleStartMapFragmentArgs by navArgs()
 
     private lateinit var adapter: ScheduleSearchAdapter
     private lateinit var mapView: MapView
     private lateinit var naverMap: NaverMap
-    private val marker = Marker()
+    private val startMarker = Marker()
+    private val endMarker = Marker()
+    private val path = PathOverlay()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentScheduleMapBinding.inflate(inflater, container, false)
+        _binding = FragmentScheduleStartMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewmodel = viewModel
         mapView = binding.fragmentContainMap
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        setListener()
-        getFocus()
         initAdapter()
         setObserver()
         mapSearch()
+        setListener()
+
+        binding.executePendingBindings()
+
+    }
+
+    private fun initCamera() {
+
+        val latLng = if (args.startLocation == null) {
+            LatLng(
+                args.endLocation!!.latitude.toDouble(),
+                args.endLocation!!.longitude.toDouble()
+            )
+        } else {
+            LatLng(
+                args.startLocation!!.latitude.toDouble(),
+                args.startLocation!!.longitude.toDouble()
+            )
+        }
+
+        val camera = CameraUpdate.scrollTo(
+            latLng
+        ).animate(CameraAnimation.Linear)
+        naverMap.moveCamera(camera)
     }
 
     override fun onStart() {
@@ -104,47 +130,30 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         mapView.onLowMemory()
     }
 
+
     override fun onMapReady(p0: NaverMap) {
         this.naverMap = p0
         naverMap.setOnMapClickListener { _, latLng ->
             getMarker(latLng)
         }
-        viewModel.initLocation(args.location)
+        getEndMarker(args.endLocation)
+        initCamera()
+        viewModel.initLocation(args.startLocation)
     }
 
-    private fun setListener() {
-        binding.tilScheduleMapSearch.setEndIconOnClickListener {
-            marker.map = null
-            adapter.submitList(emptyList())
-            binding.tietScheduleMapSearchInput.setText("")
-            viewModel.setLocation(null)
-
-        }
-        binding.btnScheduleMapSelectPlace.setOnClickListener {
-            val action =
-                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(location = viewModel.location.value)
-            findNavController().navigate(action)
-        }
+    private fun getEndMarker(endLocation: Location?) {
+        endLocation ?: return
+        startMarker.map = null
+        startMarker.position =
+            LatLng(endLocation.latitude.toDouble(), endLocation.longitude.toDouble())
+        startMarker.map = naverMap
     }
 
-    private fun getFocus() {
-        binding.tietScheduleMapSearchInput.requestFocus()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            binding.tietScheduleMapSearchInput.windowInsetsController?.show(
-                WindowInsetsCompat.Type.ime()
-            )
-        } else {
-            activity?.let {
-                WindowInsetsControllerCompat(it.window, binding.tietScheduleMapSearchInput)
-                    .show(WindowInsetsCompat.Type.ime())
-            }
-        }
-    }
 
     private fun getMarker(latLng: LatLng) {
-        marker.map = null
-        marker.position = latLng
-        marker.map = naverMap
+        getEndMarker(args.endLocation)
+        endMarker.position = latLng
+        endMarker.map = naverMap
 
         getAddress(latLng)
     }
@@ -227,27 +236,79 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.location.collectLatest {
+                viewModel.startLocation.collectLatest {
                     it?.let { location ->
                         if (location.address.isNotEmpty()) {
                             binding.tietScheduleMapSearchInput.setText(location.placeName)
                             binding.tietScheduleMapSearchInput.setSelection(location.placeName.length)
-                            val camera = CameraUpdate.scrollTo(
-                                LatLng(
-                                    location.latitude.toDouble(),
-                                    location.longitude.toDouble()
-                                )
-                            )
-                                .animate(CameraAnimation.Linear)
-                            naverMap.moveCamera(camera)
-                            marker.map = null
-                            marker.position =
+
+                            getEndMarker(args.endLocation)
+
+//                            val start = LatLng(args.endLocation!!.latitude.toDouble() , args.endLocation!!.longitude.toDouble())
+//                            val end = LatLng(viewModel.startLocation.value!!.latitude.toDouble(), viewModel.startLocation.value!!.longitude.toDouble())
+//                            val bounds = LatLngBounds(start, end)
+//                            val camera = CameraUpdate.fitBounds(bounds, 300).animate(CameraAnimation.Linear)
+//                            naverMap.moveCamera(camera)
+
+                            endMarker.position =
                                 LatLng(it.latitude.toDouble(), it.longitude.toDouble())
-                            marker.map = naverMap
+                            endMarker.map = naverMap
+                            viewModel.getNaverRoute(it, args.endLocation!!)
                         }
                     }
                 }
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.route.collectLatest {
+                    it?.let { response ->
+                        val latLngList = response.route.trafast[0].path.map { position ->
+                            LatLng(
+                                position[1],
+                                position[0]
+                            )
+                        }
+                        path.map = null
+                        path.coords = latLngList
+                        path.color = resources.getColor(R.color.red, null)
+                        path.map = naverMap
+
+                        val start = LatLng(
+                            args.endLocation!!.latitude.toDouble(),
+                            args.endLocation!!.longitude.toDouble()
+                        )
+                        val end = LatLng(
+                            viewModel.startLocation.value!!.latitude.toDouble(),
+                            viewModel.startLocation.value!!.longitude.toDouble()
+                        )
+                        val bounds = LatLngBounds(start, end)
+                        val camera =
+                            CameraUpdate.fitBounds(bounds, 300).animate(CameraAnimation.Linear)
+                        naverMap.moveCamera(camera)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setListener() {
+        binding.tilScheduleMapSearch.setEndIconOnClickListener {
+            adapter.submitList(emptyList())
+            binding.tietScheduleMapSearchInput.setText("")
+            viewModel.setLocation(null)
+            viewModel.emptyRoute()
+            path.map = null
+            endMarker.map = null
+        }
+        binding.btnScheduleMapSelectPlace.setOnClickListener {
+            val action =
+                ScheduleStartMapFragmentDirections.actionScheduleStartMapFragmentToScheduleFragment(
+                    location = args.endLocation,
+                    startLocation = viewModel.startLocation.value
+                )
+            findNavController().navigate(action)
         }
     }
 

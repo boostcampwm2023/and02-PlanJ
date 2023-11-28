@@ -36,6 +36,8 @@ android {
         buildConfigField("String", "KAKAO_REST_API", properties["kakaoRestApi"] as String)
         buildConfigField("String", "DATA_STORE_NAME", properties["dateStoreName"] as String)
         buildConfigField("String", "BASE_URL", properties["baseUrl"] as String)
+        buildConfigField("String", "USER", properties["user"] as String)
+        buildConfigField("String", "NAVER_CLIENT_SECRET", properties["naverClientSecret"] as String)
 
 
         manifestPlaceholders["NAVER_API_KEY"] = properties["naverKey"] as String
@@ -43,6 +45,8 @@ android {
         manifestPlaceholders["KAKAO_REST_API"] = properties["kakaoRestApi"] as String
         manifestPlaceholders["DATA_STORE_NAME"] = properties["dateStoreName"] as String
         manifestPlaceholders["BASE_URL"] = properties["baseUrl"] as String
+        manifestPlaceholders["USER"] = properties["user"] as String
+        manifestPlaceholders["NAVER_CLIENT_SECRET"] = properties["naverClientSecret"] as String
     }
 
     buildTypes {
