@@ -3,7 +3,7 @@ import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { RepetitionDto } from "./repetition.dto";
 
 export class UpdateScheduleDto {
-  userUuid: string;
+  userUuid?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -40,9 +40,9 @@ export class UpdateScheduleDto {
 
   @IsObject()
   @IsOptional()
-  repetition: RepetitionDto;
+  repetition?: RepetitionDto;
 
   @IsArray()
   @IsOptional()
-  participants: string[];
+  participants?: string[];
 }

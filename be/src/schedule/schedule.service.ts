@@ -5,6 +5,7 @@ import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ScheduleRepository } from "./schedule.repository";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
+import { ScheduleEntity } from "./entity/schedule.entity";
 
 @Injectable()
 export class ScheduleService {
@@ -30,8 +31,7 @@ export class ScheduleService {
     return await this.scheduleRepository.deleteSchedule(dto);
   }
 
-  async getEndAtByScheduleUuid(scheduleUuid: string): Promise<string> {
-    const record = await this.scheduleRepository.findOne({ where: { scheduleUuid } });
-    return record.endAt;
+  async getScheduleEntityByScheduleUuid(scheduleUuid: string): Promise<ScheduleEntity> {
+    return await this.scheduleRepository.findOne({ where: { scheduleUuid }, relations: ["parent"] });
   }
 }

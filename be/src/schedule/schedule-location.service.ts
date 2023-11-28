@@ -66,7 +66,12 @@ export class ScheduleLocationService {
     try {
       await this.scheduleLocationRepository.save(record);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async getLocationByScheduleMetadataId(scheduleMetaId: number): Promise<ScheduleLocationEntity> {
+    return await this.scheduleLocationRepository.findOne({ where: { metadataId: scheduleMetaId } });
   }
 }

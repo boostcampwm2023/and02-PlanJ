@@ -9,7 +9,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
   }
 
   async invite(authorMetadataId: number, invitedMetadataId: number): Promise<void> {
-    if (this.isNotMade(authorMetadataId)) {
+    if (await this.isNotMade(authorMetadataId)) {
       const authorRecord = this.create({ participantPeopleId: authorMetadataId, authorId: authorMetadataId });
       await this.save(authorRecord);
     }
@@ -26,6 +26,6 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
 
   // 만들어진 적 없으면 true
   private async isNotMade(authorMetadataId: number) {
-    return !(await this.findOne({ where: { authorId: authorMetadataId } }));
+    return (await this.findOne({ where: { authorId: authorMetadataId } })) === null;
   }
 }
