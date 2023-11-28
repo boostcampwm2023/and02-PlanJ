@@ -15,6 +15,7 @@ export class ParticipantEntity extends BaseEntity {
   /*
    * relation
    */
+
   @OneToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.metadataId)
   @JoinColumn({ name: "participant_people_id" })
   participantPeople: ScheduleMetadataEntity;
