@@ -6,26 +6,25 @@ import { ScheduleRepository } from "./schedule.repository";
 import { ScheduleMetaService } from "./schedule-meta.service";
 import { ScheduleService } from "./schedule.service";
 import { ScheduleLocationService } from "./schedule-location.service";
-import { ScheduleLocationRepository } from "./schedule-location.repository";
 import { RepetitionService } from "./repetition.service";
-import { RepetitionRepository } from "./repetition.repository";
 import { ParticipateService } from "./participate.service";
 import { ParticipateRepository } from "./participate.repository";
 import { ParticipantEntity } from "./entity/participant.entity";
 import { RepetitionEntity } from "./entity/repetition.entity";
+import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ScheduleMetadataEntity, ParticipantEntity, RepetitionEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ScheduleMetadataEntity, ParticipantEntity, RepetitionEntity, ScheduleLocationEntity]),
+  ],
   providers: [
     ScheduleMetaRepository,
     ScheduleRepository,
-    ScheduleLocationRepository,
     ParticipateRepository,
     ScheduleMetaService,
     ScheduleService,
     ScheduleLocationService,
     RepetitionService,
-    RepetitionRepository,
     ParticipateService,
   ],
   exports: [ScheduleMetaService, ScheduleService, ScheduleLocationService, ParticipateService, RepetitionService],

@@ -38,6 +38,7 @@ export class ScheduleApiService {
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
+    await this.repetitionService.updateRepetition(dto, metadataId);
     return await this.scheduleService.updateSchedule(dto);
   }
 
