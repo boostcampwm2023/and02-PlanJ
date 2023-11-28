@@ -10,6 +10,7 @@ import { ScheduleLocationService } from "src/schedule/schedule-location.service"
 import { AuthService } from "../auth/auth.service";
 import { RepetitionService } from "../schedule/repetition.service";
 import { ParticipateService } from "src/schedule/participate.service";
+import { InviteScheduleDto } from "src/schedule/dto/invite-schedule.dto";
 
 @Injectable()
 export class ScheduleApiService {
@@ -57,5 +58,18 @@ export class ScheduleApiService {
     dto.userUuid = this.authService.verify(token);
     const metadataId = await this.scheduleService.deleteSchedule(dto);
     return await this.scheduleMetaService.deleteScheduleMeta(metadataId);
+  }
+
+  async inviteSchedule(token: string, dto: InviteScheduleDto) {
+    const userUuid = this.authService.verify(token);
+    const author = await this.userService.getUserEntity(userUuid);
+    const invited = await this.userService.getUserEntityByEmail(dto.invitedUserEmail);
+
+    // 초대된 사람은 그 순간 미분류 카테고리에 속한 새로운 일정을 만들어야 하고
+    // 그 일정의 metadata를 inviteSchedule()에 넣어주면 됨
+
+    const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(author.userUuid);
+    const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invited.userUuid);
+    return await this.participateService.inviteSchedule(authorMetadataId, invitedMetadataId);
   }
 }
