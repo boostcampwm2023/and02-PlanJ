@@ -27,11 +27,11 @@ export class FriendEntity extends BaseEntity {
   /*
    * relation
    */
-  @OneToOne(() => UserEntity, (user) => user.userId)
-  @JoinColumn({ name: "from_id"})
+  @ManyToOne(() => UserEntity, (user) => user.userId)
+  @JoinColumn({ name: "from_id" })
   fromUser: UserEntity;
 
-  @OneToOne(() => UserEntity, (user) => user.userId)
-  @JoinColumn({ name: "to_id"})
+  @ManyToOne(() => UserEntity, (user) => user.userId)
+  @JoinColumn({ name: "to_id" })
   toUser: UserEntity;
 }
