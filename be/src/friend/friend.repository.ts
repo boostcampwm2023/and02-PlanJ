@@ -20,7 +20,6 @@ export class FriendRepository extends Repository<FriendEntity> {
   }
 
   async getAllFriends(userEntity: UserEntity): Promise<FriendEntity[]> {
-    const friendList = await this.find({ where: { fromId: userEntity.userId } });
-    return friendList;
+    return await this.find({ where: { fromId: userEntity.userId } });
   }
 }
