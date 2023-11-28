@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsObject, IsString, Matches } from "class-validator";
+import {IsNotEmpty, IsObject, IsOptional, IsString, Matches} from "class-validator";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { RepetitionDto } from "./repetition.dto";
 
@@ -13,6 +13,10 @@ export class AddScheduleDto {
   @IsNotEmpty()
   title: string;
 
+  @IsOptional()
+  @Matches(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$/, { message: "올바른 날짜 및 시간 형식이 아닙니다." })
+  startAt: string | null;
+
   @Matches(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$/, { message: "올바른 날짜 및 시간 형식이 아닙니다." })
   endAt: string;
 
@@ -23,5 +27,6 @@ export class AddScheduleDto {
   endLocation: ScheduleLocationDto;
 
   @IsObject()
+  @IsOptional()
   repetition: RepetitionDto;
 }
