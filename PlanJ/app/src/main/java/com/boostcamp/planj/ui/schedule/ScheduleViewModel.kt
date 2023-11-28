@@ -137,8 +137,9 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(location: Location?) {
+    fun setLocation(location: Location?, startLocation: Location?) {
         scheduleLocation.value = location
+        startScheduleLocation.value = startLocation
     }
 
     fun startEditingSchedule() {
@@ -213,5 +214,13 @@ class ScheduleViewModel @Inject constructor(
     fun resetStartTime() {
         _scheduleStartDate.value = null
         _scheduleStartTime.value = null
+    }
+
+    fun endMapDelete(){
+        scheduleLocation.value = null
+    }
+
+    fun startMapDelete(){
+        startScheduleLocation.value = null
     }
 }

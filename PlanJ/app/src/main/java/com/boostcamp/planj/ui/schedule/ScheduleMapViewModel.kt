@@ -49,6 +49,7 @@ class ScheduleMapViewModel @Inject constructor(
     }
 
 
+
     fun changeClick() {
         _clicked.value = !_clicked.value
     }

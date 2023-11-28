@@ -499,7 +499,8 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location"
-                    app:endImageVisible="@{viewModel}"
+                    android:visibility="@{viewModel.isEditMode() == false ? View.GONE : View.VISIBLE}"
+                    android:onClick="@{() -> viewModel.endMapDelete()}"
                     />
 
 
@@ -569,7 +570,8 @@
                             android:contentDescription="@string/location"
                             android:padding="8dp"
                             android:src="@drawable/ic_delete"
-                            app:startImageVisible="@{viewModel}"
+                            android:visibility="@{viewModel.isEditMode() == false ? View.GONE : View.VISIBLE}"
+                            android:onClick="@{() -> viewModel.startMapDelete()}"
                             />
 
 

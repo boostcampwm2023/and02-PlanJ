@@ -118,10 +118,11 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
             adapter.submitList(emptyList())
             binding.tietScheduleMapSearchInput.setText("")
             viewModel.setLocation(null)
+
         }
         binding.btnScheduleMapSelectPlace.setOnClickListener {
             val action =
-                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(viewModel.location.value)
+                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(location = viewModel.location.value)
             findNavController().navigate(action)
         }
     }

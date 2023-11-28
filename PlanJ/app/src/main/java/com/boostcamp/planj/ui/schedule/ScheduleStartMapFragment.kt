@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.boostcamp.planj.R
@@ -38,7 +39,7 @@ class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentScheduleStartMapBinding? = null
     private val binding get() = _binding!!
 
-   private val viewModel : ScheduleStartMapViewModel by viewModels()
+    private val viewModel: ScheduleStartMapViewModel by viewModels()
     private val args: ScheduleStartMapFragmentArgs by navArgs()
 
     private lateinit var adapter: ScheduleSearchAdapter
@@ -67,6 +68,7 @@ class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
         initAdapter()
         setObserver()
         mapSearch()
+        setListener()
 
         binding.executePendingBindings()
 
@@ -74,12 +76,12 @@ class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
 
     private fun initCamera() {
 
-        val latLng = if(args.startLocation == null){
+        val latLng = if (args.startLocation == null) {
             LatLng(
                 args.endLocation!!.latitude.toDouble(),
                 args.endLocation!!.longitude.toDouble()
             )
-        }else {
+        } else {
             LatLng(
                 args.startLocation!!.latitude.toDouble(),
                 args.startLocation!!.longitude.toDouble()
@@ -139,7 +141,7 @@ class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
         viewModel.initLocation(args.startLocation)
     }
 
-    private fun getEndMarker(endLocation: Location?){
+    private fun getEndMarker(endLocation: Location?) {
         endLocation ?: return
         startMarker.map = null
         startMarker.position =
@@ -261,21 +263,52 @@ class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.route.collectLatest {
-                    it?.let{ response ->
-                        val latLngList = response.route.trafast[0].path.map { position -> LatLng(position[1], position[0]) }
+                    it?.let { response ->
+                        val latLngList = response.route.trafast[0].path.map { position ->
+                            LatLng(
+                                position[1],
+                                position[0]
+                            )
+                        }
                         path.map = null
                         path.coords = latLngList
                         path.color = resources.getColor(R.color.red, null)
                         path.map = naverMap
 
-                        val start = LatLng(args.endLocation!!.latitude.toDouble() , args.endLocation!!.longitude.toDouble())
-                        val end = LatLng(viewModel.startLocation.value!!.latitude.toDouble(), viewModel.startLocation.value!!.longitude.toDouble())
+                        val start = LatLng(
+                            args.endLocation!!.latitude.toDouble(),
+                            args.endLocation!!.longitude.toDouble()
+                        )
+                        val end = LatLng(
+                            viewModel.startLocation.value!!.latitude.toDouble(),
+                            viewModel.startLocation.value!!.longitude.toDouble()
+                        )
                         val bounds = LatLngBounds(start, end)
-                        val camera = CameraUpdate.fitBounds(bounds, 300).animate(CameraAnimation.Linear)
+                        val camera =
+                            CameraUpdate.fitBounds(bounds, 300).animate(CameraAnimation.Linear)
                         naverMap.moveCamera(camera)
                     }
                 }
             }
+        }
+    }
+
+    private fun setListener() {
+        binding.tilScheduleMapSearch.setEndIconOnClickListener {
+            adapter.submitList(emptyList())
+            binding.tietScheduleMapSearchInput.setText("")
+            viewModel.setLocation(null)
+            viewModel.emptyRoute()
+            path.map = null
+            endMarker.map = null
+        }
+        binding.btnScheduleMapSelectPlace.setOnClickListener {
+            val action =
+                ScheduleStartMapFragmentDirections.actionScheduleStartMapFragmentToScheduleFragment(
+                    location = args.endLocation,
+                    startLocation = viewModel.startLocation.value
+                )
+            findNavController().navigate(action)
         }
     }
 

@@ -146,33 +146,6 @@ fun TextView.setDateTime(schedule: Schedule) {
     }
 }
 
-@BindingAdapter("endImageVisible")
-fun ImageView.setImageVisible(viewModel : ScheduleViewModel){
-    if(!viewModel.isEditMode.value) {
-        visibility = View.GONE
-        return
-    }
-
-    visibility =if(viewModel.scheduleLocation.value == null) {
-         View.GONE
-    }else{
-        View.VISIBLE
-    }
-}
-
-@BindingAdapter("startImageVisible")
-fun ImageView.setEndImageVisible(viewModel : ScheduleViewModel){
-    if(!viewModel.isEditMode.value) {
-        visibility = View.GONE
-        return
-    }
-
-    visibility =if(viewModel.startScheduleLocation.value == null) {
-        View.GONE
-    }else{
-        View.VISIBLE
-    }
-}
 
 @BindingAdapter("btnVisible")
 fun TextView.setVisible(viewModel : ScheduleViewModel){

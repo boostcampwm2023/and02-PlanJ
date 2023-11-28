@@ -55,6 +55,9 @@ class ScheduleStartMapViewModel @Inject constructor(
         _startLocation.value = location
     }
 
+    fun emptyRoute(){
+        _route.value = null
+    }
 
     fun changeClick() {
         _clicked.value = !_clicked.value
