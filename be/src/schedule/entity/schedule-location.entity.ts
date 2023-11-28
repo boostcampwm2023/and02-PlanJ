@@ -30,6 +30,9 @@ export class ScheduleLocationEntity extends BaseEntity {
   @Column({ name: "end_longitude", type: "decimal", precision: 9, scale: 6, nullable: true, default: null })
   endLongitude: number;
 
+  @Column({ name: "metadata_id", type: "int" })
+  metadataId: number;
+
   /*
    * relation
    */

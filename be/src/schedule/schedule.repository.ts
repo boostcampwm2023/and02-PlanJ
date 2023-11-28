@@ -27,7 +27,7 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
       failed: false,
       remindMemo: "",
       last: true,
-      parent: scheduleMetadata,
+      metadataId: scheduleMetadata.metadataId,
     });
 
     try {

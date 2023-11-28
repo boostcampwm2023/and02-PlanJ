@@ -12,53 +12,6 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     super(ScheduleMetadataEntity, dataSource.createEntityManager());
   }
 
-  async addScheduleMeta(
-    dto: AddScheduleDto,
-    user: UserEntity,
-    category: CategoryEntity,
-  ): Promise<ScheduleMetadataEntity> {
-    const { title, endAt } = dto;
-
-    const description = null;
-    const startTime = null;
-    const [, endTime] = endAt.split("T");
-
-    const scheduleMetadata = this.create({ title, description, startTime, endTime, category, user });
-
-    try {
-      await this.save(scheduleMetadata);
-      return scheduleMetadata;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async updateScheduleMeta(
-    dto: UpdateScheduleDto,
-    category: CategoryEntity,
-    metadataId: number,
-  ): Promise<ScheduleMetadataEntity> {
-    const { title, description, startAt, endAt } = dto;
-
-    const [, startTime] = startAt.split("T");
-    const [, endTime] = endAt.split("T");
-
-    const record = await this.findOne({ where: { metadataId } });
-    record.category = category;
-    record.title = title;
-    record.description = description;
-    record.startTime = startTime;
-    record.endTime = endTime;
-
-    try {
-      await this.save(record);
-      return record;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetadataEntity[]> {
     const todayStart = date.toString().split("T")[0] + "T00:00:00";
     const todayEnd = date.toString().split("T")[0] + "T23:59:59";

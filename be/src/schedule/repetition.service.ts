@@ -9,14 +9,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 export class RepetitionService {
   constructor(private repetitionRepository: RepetitionRepository) {}
 
-  async addRepetition(dto: AddScheduleDto, metadataId: number) {
-    const repetition: RepetitionDto = dto.repetition;
-    const repetitionEntity = this.repetitionRepository.create({
-      metadataId: metadataId,
-      cycleType: CycleType[repetition.cycleType],
-      cycleCount: repetition.cycleCount,
-    });
-
-    await this.repetitionRepository.save(repetitionEntity);
-  }
+  // async addRepetition(dto: AddScheduleDto, metadataId: number) {
+  //   const repetition: RepetitionDto = dto.repetition;
+  //   const repetitionEntity = this.repetitionRepository.create({
+  //     metadataId: metadataId,
+  //     cycleType: CycleType[repetition.cycleType],
+  //     cycleCount: repetition.cycleCount,
+  //   });
+  //
+  //   await this.repetitionRepository.save(repetitionEntity);
+  // }
 }
