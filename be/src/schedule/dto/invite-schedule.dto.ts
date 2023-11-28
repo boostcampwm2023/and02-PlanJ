@@ -1,7 +1,11 @@
-import { IsNotEmpty, IsObject, IsString, Matches } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class InviteScheduleDto {
   @IsString()
   @IsNotEmpty()
-  categoryUuid: string;
+  scheduleUuid: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  invitedUserEmail: string;
 }
