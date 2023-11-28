@@ -42,10 +42,6 @@ export class ScheduleMetadataEntity extends BaseEntity {
   /*
    * relation
    */
-  @OneToMany(() => ScheduleEntity, (schedule) => schedule.parent, {
-    cascade: true,
-  })
-  children: ScheduleEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
     onDelete: "CASCADE",
@@ -59,9 +55,13 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @JoinColumn({ name: "category_id" })
   category: CategoryEntity;
 
-  @OneToMany(() => ParticipantEntity, (participant) => participant.scheduleMeta, {
-    onDelete: "CASCADE",
+  @OneToMany(() => ScheduleEntity, (schedule) => schedule.parent, {
+    cascade: true,
   })
-  @JoinColumn({ name: "participant_id" })
-  participant: ParticipantEntity;
+  children: ScheduleEntity[];
+
+  @OneToMany(() => ParticipantEntity, (participant) => participant.author, {
+    cascade: true,
+  })
+  author: ParticipantEntity[];
 }
