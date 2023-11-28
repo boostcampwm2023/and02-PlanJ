@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { RepetitionRepository } from "./repetition.repository";
 import { RepetitionDto } from "./dto/repetition.dto";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
+import { CycleType } from "../utils/domain/cycle-type.enum";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class RepetitionService {
