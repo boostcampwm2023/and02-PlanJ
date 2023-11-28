@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsObject, IsOptional, IsString, Matches} from "class-validator";
+import { IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { RepetitionDto } from "./repetition.dto";
 

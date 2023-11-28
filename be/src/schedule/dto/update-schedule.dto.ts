@@ -1,6 +1,6 @@
-import { Allow, IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
+import { Allow, IsArray, IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
-import {RepetitionDto} from "./repetition.dto";
+import { RepetitionDto } from "./repetition.dto";
 
 export class UpdateScheduleDto {
   userUuid: string;
@@ -41,4 +41,8 @@ export class UpdateScheduleDto {
   @IsObject()
   @IsOptional()
   repetition: RepetitionDto;
+
+  @IsArray()
+  @IsOptional()
+  participants: string[];
 }
