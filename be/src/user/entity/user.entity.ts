@@ -54,8 +54,8 @@ export class UserEntity extends BaseEntity {
   })
   friend: FriendEntity[];
 
-  @OneToMany(() => ParticipantEntity, (participant) => participant.user, {
+  @OneToMany(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.user, {
     cascade: true,
   })
-  participant: ParticipantEntity[];
+  scheduleMeta: ScheduleMetadataEntity[];
 }

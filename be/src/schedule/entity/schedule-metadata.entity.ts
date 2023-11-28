@@ -9,9 +9,9 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { ScheduleEntity } from "./schedule.entity";
-import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { ParticipantEntity } from "./participant.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 @Entity("schedule_metadata")
 export class ScheduleMetadataEntity extends BaseEntity {
@@ -46,6 +46,12 @@ export class ScheduleMetadataEntity extends BaseEntity {
     cascade: true,
   })
   children: ScheduleEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "user_id" })
+  user: UserEntity;
 
   @ManyToOne(() => CategoryEntity, (category) => category.scheduleMeta, {
     onDelete: "CASCADE",

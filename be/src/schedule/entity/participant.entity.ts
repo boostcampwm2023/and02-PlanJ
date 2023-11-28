@@ -13,11 +13,6 @@ export class ParticipantEntity extends BaseEntity {
   /*
    * relation
    */
-  @ManyToOne(() => UserEntity, (user) => user.participant, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "user_id" })
-  user: UserEntity;
 
   // participant 추가 시 삭제될 관계
   @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.participant, {
