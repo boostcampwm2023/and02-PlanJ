@@ -194,4 +194,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getFriendsApi(): Flow<GetFriendResponse> = flow {
         emit(api.getFriends())
     }
+
+    override suspend fun deleteAccount() {
+        api.deleteAccount()
+    }
 }

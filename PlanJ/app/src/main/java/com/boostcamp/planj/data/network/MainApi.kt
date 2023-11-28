@@ -59,4 +59,7 @@ interface MainApi {
 
     @GET("/api/friend")
     suspend fun getFriends(): GetFriendResponse
+
+    @DELETE("/api/auth/delete")
+    suspend fun deleteAccount()
 }
