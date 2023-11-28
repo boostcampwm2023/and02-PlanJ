@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetaRepository } from "./schedule-meta.repository";
@@ -21,7 +21,28 @@ export class ScheduleMetaService {
     user: UserEntity,
     category: CategoryEntity,
   ): Promise<ScheduleMetadataEntity> {
-    return await this.scheduleMetaRepository.addScheduleMeta(dto, user, category);
+    const { title, endAt } = dto;
+
+    const description = null;
+    const startTime = null;
+    const [, endTime] = endAt.split("T");
+
+    const scheduleMetadata = this.scheduleMetaRepository.create({
+      title,
+      description,
+      startTime,
+      endTime,
+      category,
+      user,
+    });
+
+    try {
+      await this.scheduleMetaRepository.save(scheduleMetadata);
+      return scheduleMetadata;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   async updateScheduleMetadata(
@@ -29,7 +50,29 @@ export class ScheduleMetaService {
     category: CategoryEntity,
     metadataId: number,
   ): Promise<ScheduleMetadataEntity> {
-    return await this.scheduleMetaRepository.updateScheduleMeta(dto, category, metadataId);
+    const { title, description, startAt, endAt } = dto;
+
+    const [, startTime] = !!startAt ? startAt.split("T") : [null, null];
+    const [, endTime] = endAt.split("T");
+
+    const record = await this.scheduleMetaRepository.findOne({ where: { metadataId } });
+
+    // if (!!record) {
+    //   throw new BadRequestException("해당하는 일정이 없습니다.");
+    // }
+
+    record.category = category;
+    record.title = title;
+    record.description = description;
+    record.startTime = startTime;
+    record.endTime = endTime;
+
+    try {
+      await this.scheduleMetaRepository.save(record);
+      return record;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<string> {

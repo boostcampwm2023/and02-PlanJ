@@ -49,11 +49,6 @@ export class UserEntity extends BaseEntity {
   })
   category: CategoryEntity[];
 
-  @OneToMany(() => FriendEntity, (friend) => friend.from, {
-    cascade: true,
-  })
-  friend: FriendEntity[];
-
   @OneToMany(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.user, {
     cascade: true,
   })

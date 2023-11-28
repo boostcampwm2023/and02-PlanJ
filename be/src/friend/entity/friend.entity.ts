@@ -18,18 +18,20 @@ export class FriendEntity extends BaseEntity {
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
 
-  @Column({ name: "from" })
+  @Column({ name: "from_id" })
   fromId: number;
 
-  @Column({ name: "to" })
+  @Column({ name: "to_id" })
   toId: number;
 
   /*
    * relation
    */
-  @ManyToOne(() => UserEntity, (user) => user.friend, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "from" })
-  from: UserEntity;
+  @OneToOne(() => UserEntity, (user) => user.userId)
+  @JoinColumn({ name: "from_id"})
+  fromUser: UserEntity;
+
+  @OneToOne(() => UserEntity, (user) => user.userId)
+  @JoinColumn({ name: "to_id"})
+  toUser: UserEntity;
 }
