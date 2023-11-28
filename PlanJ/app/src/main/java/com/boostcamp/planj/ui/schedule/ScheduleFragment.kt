@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui.schedule
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -133,6 +134,22 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 val arrayAdapter =
                     ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.scheduleAlarm.collect { alarm ->
+                    if(alarm == null){
+                        binding.tvScheduleLocationAlarm.text = "위치 알람 설정"
+                        binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_main2)
+                    }else{
+                        if(alarm.alarmType == "DEPARTURE"){
+                            binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
+                            binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
+                        }
+                    }
+                }
             }
         }
 
@@ -286,11 +303,14 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.tvScheduleLocationAlarm.setOnClickListener {
             viewModel.route.value?.let {
-                val bottomSheet = ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration){min ->
-                    viewModel.setAlarm(Alarm("DEPARTURE", min))
+                if(binding.tvScheduleLocationAlarm.text == "위치 알람 해제"){
+                    viewModel.setAlarm(null)
+                }else{
+                    val bottomSheet = ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration){min ->
+                        viewModel.setAlarm(Alarm("DEPARTURE", min))
+                    }
+                    bottomSheet.show(childFragmentManager, tag)
                 }
-                bottomSheet.show(childFragmentManager, tag)
-
             }
         }
     }
