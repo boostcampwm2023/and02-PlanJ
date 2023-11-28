@@ -1,15 +1,15 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ScheduleLocationRepository } from "./schedule-location.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
-import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { Repository } from "typeorm";
+import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
 
 @Injectable()
 export class ScheduleLocationService {
   constructor(
-    @InjectRepository(ScheduleLocationRepository)
-    private scheduleLocationRepository: ScheduleLocationRepository,
+    @InjectRepository(ScheduleLocationEntity)
+    private scheduleLocationRepository: Repository<ScheduleLocationEntity>,
   ) {}
   async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
     let record = await this.scheduleLocationRepository.findOne({ where: { metadataId: scheduleMeta.metadataId } });
