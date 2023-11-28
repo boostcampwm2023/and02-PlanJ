@@ -63,6 +63,8 @@ class ScheduleViewModel @Inject constructor(
     val scheduleLocation = MutableStateFlow<Location?>(null)
     val scheduleMemo = MutableStateFlow<String?>(null)
 
+    val startScheduleLocation = MutableStateFlow<Location?>(null)
+
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd")
 
     val categoryList: StateFlow<List<String>> =
@@ -136,8 +138,9 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(location: Location?) {
+    fun setLocation(location: Location?, startLocation: Location?) {
         scheduleLocation.value = location
+        startScheduleLocation.value = startLocation
     }
 
     fun startEditingSchedule() {
@@ -213,5 +216,13 @@ class ScheduleViewModel @Inject constructor(
     fun resetStartTime() {
         _scheduleStartDate.value = null
         _scheduleStartTime.value = null
+    }
+
+    fun endMapDelete(){
+        scheduleLocation.value = null
+    }
+
+    fun startMapDelete(){
+        startScheduleLocation.value = null
     }
 }

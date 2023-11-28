@@ -31,7 +31,7 @@ interface MainRepository {
 
     suspend fun updateCategory(category: Category)
 
-    fun getWeekSchedule( ): Flow<List<Schedule>>
+    fun getWeekSchedule(): Flow<List<Schedule>>
 
     fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>>
 
@@ -40,25 +40,25 @@ interface MainRepository {
     suspend fun deleteUser(email: String)
 
     fun getAllUser(): Flow<List<User>>
-  
+
     fun searchSchedule(input: String): Flow<List<Schedule>>
-  
-    fun postCategory(postCategoryBody: PostCategoryBody) : Flow<PostCategoryResponse>
 
-    fun postSchedule(userId : String, categoryId : String, title: String ,endTime : String) : Flow<PostScheduleResponse>
-    fun getUser() : Flow<String>
+    fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
-    fun getCategory(categoryName : String) : Category
+    fun postSchedule(categoryId: String, title: String, endTime: String): Flow<PostScheduleResponse>
+    fun getUser(): Flow<String>
 
-    suspend fun deleteScheduleApi(userUuid : String, scheduleUuid : String)
+    fun getCategory(categoryName: String): Category
+
+    suspend fun deleteScheduleApi(userUuid: String, scheduleUuid: String)
 
     suspend fun deleteCategoryApi(userUuid: String, scheduleUuid: String)
 
     suspend fun updateSchedule(schedule: Schedule)
 
-    suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryAfter : String)
+    suspend fun updateScheduleUsingCategory(categoryNameBefore: String, categoryAfter: String)
 
-    fun patchSchedule(patchScheduleBody: PatchScheduleBody) : Flow<PatchScheduleResponse>
+    fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
 
     suspend fun deleteScheduleUsingCategoryName(categoryName: String)
 }

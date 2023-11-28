@@ -36,12 +36,9 @@ class CategoryViewModel @Inject constructor(
                 .contains(categoryName)) {
             CategoryState.EXIST
         } else {
-            val currentTime = SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
-                Locale("kr", "ko")
-            ).format(System.currentTimeMillis()).replace(" ", "T").trim()
+
             viewModelScope.launch(Dispatchers.IO) {
-                val categoryBody = PostCategoryBody("01HFYAR1FX09FKQ2SW1HTG8BJ8", categoryName, currentTime)
+                val categoryBody = PostCategoryBody(categoryName)
                 mainRepository.postCategory(categoryBody)
                     .catch {
                         Log.d("PLANJDEBUG", "postCategory Error ${it.message}")

@@ -51,6 +51,8 @@ class SignInViewModel @Inject constructor(
                         else -> _showToast.emit("Error")
                     }
                 }
+
+                else -> {}
             }
         }
     }

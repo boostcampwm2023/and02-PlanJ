@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
     fun insertSchedule(category : String, title : String, endTime : String) {
         viewModelScope.launch(Dispatchers.IO){
             categories.value.find { it.categoryName == category }?.let {c ->
-                mainRepository.postSchedule("01HFYAR1FX09FKQ2SW1HTG8BJ8",c.categoryId, title, endTime)
+                mainRepository.postSchedule(c.categoryId, title, endTime)
                     .catch {
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }

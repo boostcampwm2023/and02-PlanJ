@@ -10,7 +10,7 @@ import com.boostcamp.planj.data.model.LoginResponse
 import com.boostcamp.planj.data.model.SignInRequest
 import com.boostcamp.planj.data.model.SignUpRequest
 import com.boostcamp.planj.data.network.ApiResult
-import com.boostcamp.planj.data.network.PlanJAPI
+import com.boostcamp.planj.data.network.LoginApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -19,7 +19,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val apiService: PlanJAPI,
+    private val apiService: LoginApi,
     private val dataStore : DataStore<Preferences>
 ) : LoginRepository {
 
