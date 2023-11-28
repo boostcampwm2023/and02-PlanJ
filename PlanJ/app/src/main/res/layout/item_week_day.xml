@@ -7,6 +7,7 @@
     android:focusable="true">
 
     <LinearLayout
+        android:id="@+id/layout_week_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -29,10 +30,10 @@
             android:id="@+id/rv_week_day_schedule"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
