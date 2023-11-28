@@ -10,10 +10,13 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     super(ParticipantEntity, dataSource.createEntityManager());
   }
 
-  async addDefaultParticipantGroup(user: UserEntity, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
-    const record = this.create({ scheduleMeta, author: scheduleMeta });
+  async invite(authorMetadataId: number, invitedMetadataId: number): Promise<void> {
+    if (this.isNotMade(authorMetadataId)) {
+      const record = this.create({ participantId: authorMetadataId, authorId: authorMetadataId });
+      this.save(record);
+    }
 
-    console.log(record);
+    const record = this.create({ participantId: invitedMetadataId, authorId: authorMetadataId });
 
     try {
       await this.save(record);
@@ -21,5 +24,10 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
       console.log(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  // 만들어진 적 없으면 true
+  private isNotMade(authorMetadataId: number) {
+    return !this.findOne({ where: { authorId: authorMetadataId } });
   }
 }

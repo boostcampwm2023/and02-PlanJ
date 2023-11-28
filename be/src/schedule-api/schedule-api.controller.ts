@@ -5,6 +5,7 @@ import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
 import { Token } from "../utils/token.decorator";
 import { AuthGuard } from "../guard/auth.guard";
+import { InviteScheduleDto } from "src/schedule/dto/invite-schedule.dto";
 
 @Controller("/api/schedule")
 @UseGuards(AuthGuard)
@@ -41,8 +42,9 @@ export class ScheduleApiController {
     return JSON.parse(result);
   }
 
-  @Post("/participate/invite")
-  inviteSchedule() {}
-
-  // TODO: 지도표시
+  @Post("/invite")
+  async inviteSchedule(@Token() token: string, @Body() dto: InviteScheduleDto) {
+    const result = await this.scheduleApiService.inviteSchedule(token, dto);
+    // return JSON.parse(result);
+  }
 }
