@@ -19,7 +19,7 @@ export class ScheduleMetaService {
   async addScheduleMetadata(
     dto: AddScheduleDto,
     user: UserEntity,
-    category: CategoryEntity,
+    category: CategoryEntity = null,
   ): Promise<ScheduleMetadataEntity> {
     const { title, endAt } = dto;
 
