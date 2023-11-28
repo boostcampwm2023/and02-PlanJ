@@ -11,6 +11,7 @@ import {
 import { ScheduleEntity } from "./schedule.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
+import { ParticipantEntity } from "./participant.entity";
 
 @Entity("schedule_metadata")
 export class ScheduleMetadataEntity extends BaseEntity {
@@ -52,10 +53,9 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @JoinColumn({ name: "category_id" })
   category: CategoryEntity;
 
-  // participant 추가 시 삭제될 관계
-  @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
+  @OneToMany(() => ParticipantEntity, (participant) => participant.scheduleMeta, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "user_id" })
-  user: UserEntity;
+  @JoinColumn({ name: "participant_id" })
+  participant: ParticipantEntity;
 }
