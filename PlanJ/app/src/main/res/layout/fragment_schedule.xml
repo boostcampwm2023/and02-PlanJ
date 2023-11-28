@@ -305,6 +305,7 @@
                         tools:text="2/4" />
 
                     <TextView
+                        android:id="@+id/tv_schedule_all_participants"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/see_all"
@@ -322,7 +323,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_category_participants"
-                        tools:listitem="@layout/item_participant" />
+                        tools:listoitem="@layout/item_participant" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.divider.MaterialDivider
