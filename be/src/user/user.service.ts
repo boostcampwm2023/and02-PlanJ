@@ -84,4 +84,8 @@ export class UserService {
   async getUserEntityById(userId: number): Promise<UserEntity> {
     return await this.userRepository.findById(userId);
   }
+
+  async getUserEntityByEmail(userEmail: string): Promise<UserEntity> {
+    return await this.userRepository.findByEmail(userEmail);
+  }
 }
