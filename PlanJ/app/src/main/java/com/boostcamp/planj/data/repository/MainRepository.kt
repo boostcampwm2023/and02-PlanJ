@@ -1,11 +1,11 @@
 package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.PatchCategoryResponse
 import com.boostcamp.planj.data.model.PatchScheduleBody
 import com.boostcamp.planj.data.model.PatchScheduleResponse
 import com.boostcamp.planj.data.model.PostCategoryBody
 import com.boostcamp.planj.data.model.PostCategoryResponse
-import com.boostcamp.planj.data.model.PostScheduleBody
 import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
@@ -50,9 +50,9 @@ interface MainRepository {
 
     fun getCategory(categoryName: String): Category
 
-    suspend fun deleteScheduleApi(userUuid: String, scheduleUuid: String)
+    suspend fun deleteScheduleApi(scheduleUuid: String)
 
-    suspend fun deleteCategoryApi(userUuid: String, scheduleUuid: String)
+    suspend fun deleteCategoryApi(categoryUuid: String)
 
     suspend fun updateSchedule(schedule: Schedule)
 
@@ -61,4 +61,9 @@ interface MainRepository {
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
 
     suspend fun deleteScheduleUsingCategoryName(categoryName: String)
+
+    suspend fun updateCategoryApi(
+        categoryUuid: String,
+        categoryName: String
+    ): Flow<PatchCategoryResponse>
 }

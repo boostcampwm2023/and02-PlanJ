@@ -43,8 +43,8 @@ abstract class AppDatabase : RoomDatabase() {
                     CoroutineScope(Dispatchers.IO).launch {
                         getInstance(context).categoryDao().insertCategories(
                             listOf(
-                                Category("0", "전체 일정"),
-                                Category("1", "미분류")
+                                Category("all", "전체 일정"),
+                                Category("default", "미분류")
                             )
                         )
                     }

@@ -150,7 +150,7 @@ class ScheduleViewModel @Inject constructor(
     fun deleteSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                mainRepository.deleteScheduleApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", scheduleId)
+                mainRepository.deleteScheduleApi(scheduleId)
                 mainRepository.deleteScheduleUsingId(scheduleId)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
@@ -171,11 +171,11 @@ class ScheduleViewModel @Inject constructor(
                 scheduleMemo.value ?: "",
                 scheduleStartDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
-                }?: "",
+                } ?: "",
                 scheduleEndDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
-                }?: "",
-                scheduleLocation.value?.placeName ?: "" ,
+                } ?: "",
+                scheduleLocation.value?.placeName ?: "",
                 scheduleLocation.value?.address ?: "",
                 scheduleLocation.value?.latitude ?: "",
                 scheduleLocation.value?.longitude ?: ""
@@ -193,9 +193,19 @@ class ScheduleViewModel @Inject constructor(
                         startTime = if (scheduleStartDate.value == null) {
                             null
                         } else {
-                            "${scheduleStartDate.value?.replace('/', '-')}T${scheduleStartTime.value}:00"
+                            "${
+                                scheduleStartDate.value?.replace(
+                                    '/',
+                                    '-'
+                                )
+                            }T${scheduleStartTime.value}:00"
                         },
-                        endTime = "${scheduleEndDate.value?.replace('/', '-')}T${scheduleEndTime.value}:00",
+                        endTime = "${
+                            scheduleEndDate.value?.replace(
+                                '/',
+                                '-'
+                            )
+                        }T${scheduleEndTime.value}:00",
                         categoryTitle = scheduleCategory.value,
                         repetition = scheduleRepetition.value,
                         alarm = scheduleAlarm.value,
@@ -218,11 +228,11 @@ class ScheduleViewModel @Inject constructor(
         _scheduleStartTime.value = null
     }
 
-    fun endMapDelete(){
+    fun endMapDelete() {
         scheduleLocation.value = null
     }
 
-    fun startMapDelete(){
+    fun startMapDelete() {
         startScheduleLocation.value = null
     }
 }

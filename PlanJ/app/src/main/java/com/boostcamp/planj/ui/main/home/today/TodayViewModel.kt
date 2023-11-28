@@ -42,7 +42,7 @@ class TodayViewModel @Inject constructor(
     fun deleteSchedule(schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                mainRepository.deleteScheduleApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", schedule.scheduleId)
+                mainRepository.deleteScheduleApi(schedule.scheduleId)
                 mainRepository.deleteSchedule(schedule)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "Today delete error ${e.message}")
