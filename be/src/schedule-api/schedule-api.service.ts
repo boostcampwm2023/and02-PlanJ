@@ -32,7 +32,15 @@ export class ScheduleApiService {
     const user = await this.userService.getUserEntity(dto.userUuid);
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
-    return await this.scheduleService.addSchedule(dto, scheduleMetadata);
+    const scheduleUuid = await this.scheduleService.addSchedule(dto, scheduleMetadata);
+
+    const body: HttpResponse = {
+      message: "일정 추가 성공",
+      data: {
+        scheduleUuid: scheduleUuid,
+      },
+    };
+    return JSON.stringify(body);
   }
 
   async updateSchedule(token: string, dto: UpdateScheduleDto) {
