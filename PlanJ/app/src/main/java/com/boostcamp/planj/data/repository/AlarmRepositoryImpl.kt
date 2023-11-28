@@ -26,7 +26,7 @@ class AlarmRepositoryImpl @Inject constructor(
         schedule.alarm?.let { alarm ->
             val requestCode = schedule.scheduleId.hashCode()
             val title = schedule.title
-            val text = if (alarm.alarmType == "departure") {
+            val text = if (alarm.alarmType == "DEPARTURE") {
                 "출발 시간 ${alarm.alarmTime}분 전입니다."
             } else {
                 "종료 시간 ${alarm.alarmTime}분 전입니다."

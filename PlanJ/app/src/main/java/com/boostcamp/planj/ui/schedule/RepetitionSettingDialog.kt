@@ -98,7 +98,7 @@ class RepetitionSettingDialog : DialogFragment() {
         with(binding) {
             if (repetition == null) {
                 rbDialogRepetitionNo.isChecked = true
-            } else if (repetition.cycleType == "daily") {
+            } else if (repetition.cycleType == "DAILY") {
                 rbDialogRepetitionDay.isChecked = true
                 etDialogRepetitionDay.setText(repetition.cycleCount.toString())
             } else {
