@@ -1,8 +1,6 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Repository, DataSource } from "typeorm";
 import { ParticipantEntity } from "./entity/participant.entity";
-import { UserEntity } from "src/user/entity/user.entity";
-import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 
 @Injectable()
 export class ParticipateRepository extends Repository<ParticipantEntity> {
@@ -12,14 +10,14 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
 
   async invite(authorMetadataId: number, invitedMetadataId: number): Promise<void> {
     if (this.isNotMade(authorMetadataId)) {
-      const record = this.create({ participantId: authorMetadataId, authorId: authorMetadataId });
-      this.save(record);
+      const authorRecord = this.create({ participantPeopleId: authorMetadataId, authorId: authorMetadataId });
+      await this.save(authorRecord);
     }
 
-    const record = this.create({ participantId: invitedMetadataId, authorId: authorMetadataId });
+    const participantRecord = this.create({ participantPeopleId: invitedMetadataId, authorId: authorMetadataId });
 
     try {
-      await this.save(record);
+      await this.save(participantRecord);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -27,7 +25,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
   }
 
   // 만들어진 적 없으면 true
-  private isNotMade(authorMetadataId: number) {
-    return !this.findOne({ where: { authorId: authorMetadataId } });
+  private async isNotMade(authorMetadataId: number) {
+    return !(await this.findOne({ where: { authorId: authorMetadataId } }));
   }
 }

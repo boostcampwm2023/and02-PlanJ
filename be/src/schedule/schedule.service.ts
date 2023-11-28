@@ -29,4 +29,9 @@ export class ScheduleService {
   async deleteSchedule(dto: DeleteScheduleDto) {
     return await this.scheduleRepository.deleteSchedule(dto);
   }
+
+  async getEndAtByScheduleUuid(scheduleUuid: string): Promise<string> {
+    const record = await this.scheduleRepository.findOne({ where: { scheduleUuid } });
+    return record.endAt;
+  }
 }

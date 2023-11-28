@@ -6,10 +6,10 @@ export class ParticipantEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "participant_id" })
   participantId: number;
 
-  @Column({ name: "participant_people_id" })
+  @Column({ name: "participant_people_id", type: "int" })
   participantPeopleId: number;
 
-  @Column({ name: "author_id" })
+  @Column({ name: "author_id", type: "int" })
   authorId: number;
 
   /*
@@ -20,7 +20,7 @@ export class ParticipantEntity extends BaseEntity {
   participantPeople: ScheduleMetadataEntity;
 
   // participant 추가 시 삭제될 관계
-  @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.participant, {
+  @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.author, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "author_id" })

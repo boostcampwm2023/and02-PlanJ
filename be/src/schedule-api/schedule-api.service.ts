@@ -63,27 +63,23 @@ export class ScheduleApiService {
 
   async inviteSchedule(token: string, dto: InviteScheduleDto) {
     const userUuid = this.authService.verify(token);
-    const authorUser = await this.userService.getUserEntity(userUuid);
+    const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
+    const endAt = await this.scheduleService.getEndAtByScheduleUuid(dto.scheduleUuid);
+
     const invitedUser = await this.userService.getUserEntityByEmail(dto.invitedUserEmail);
-
-    // 초대된 사람은 그 순간 미분류 카테고리에 속한 새로운 일정을 만들어야 하고
-    // 그 일정의 metadata를 inviteSchedule()에 넣어주면 됨
-
-    const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(authorUser.userUuid);
 
     const addScheduleDto: AddScheduleDto = {
       userUuid: invitedUser.userUuid,
       categoryUuid: "default",
       title: "title",
-      endAt: "endAt",
+      endAt,
     };
 
     const invitedScheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(addScheduleDto, invitedUser);
     const invitedHttpResponse = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
+    const scheduleUuid = JSON.parse(invitedHttpResponse).data.scheduleUuid;
 
-    // invitedHttpResponse 파싱하여 scheduleuuid 넘겨주기
-
-    const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid("scheduleUuid");
+    const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(scheduleUuid);
     return await this.participateService.inviteSchedule(authorMetadataId, invitedMetadataId);
   }
 }
