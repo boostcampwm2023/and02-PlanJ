@@ -30,6 +30,9 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @Column({ name: "end_time", type: "time" })
   endTime: string;
 
+  @Column({ name: "user_id", type: "int" })
+  userId: number;
+
   @Column({ name: "category_id", type: "int", nullable: true })
   categoryId: number;
 

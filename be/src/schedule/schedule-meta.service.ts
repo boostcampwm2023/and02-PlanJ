@@ -87,7 +87,7 @@ export class ScheduleMetaService {
           startAt: schedule.startAt === null ? null : schedule.startAt,
           endAt: schedule.endAt,
           finished: schedule.finished,
-          failed: schedule.failed,
+          failed: schedule.failed, // TODO: 호출 시점에서 실패 처리
           remindMemo: schedule.remindMemo,
         };
 

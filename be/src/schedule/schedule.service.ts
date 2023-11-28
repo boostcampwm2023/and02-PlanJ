@@ -14,6 +14,7 @@ export class ScheduleService {
   ) {}
 
   async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetadataEntity): Promise<string> {
+    // TODO: repetition 기준으로 추가
     return await this.scheduleRepository.addSchedule(dto, scheduleMetadata);
   }
 
