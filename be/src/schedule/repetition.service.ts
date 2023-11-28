@@ -5,6 +5,7 @@ import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RepetitionEntity } from "./entity/repetition.entity";
 import { Repository } from "typeorm";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 
 @Injectable()
 export class RepetitionService {
@@ -13,13 +14,13 @@ export class RepetitionService {
     private repetitionRepository: Repository<RepetitionEntity>,
   ) {}
 
-  async updateRepetition(dto: UpdateScheduleDto, metadataId: number) {
-    let record = await this.repetitionRepository.findOne({ where: { metadataId: metadataId } });
+  async updateRepetition(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity) {
+    let record = await this.repetitionRepository.findOne({ where: { metadataId: scheduleMeta.metadataId } });
     const repetition: RepetitionDto = dto.repetition;
 
     // 반복 정보가 null 일 때
     if (!repetition) {
-      // record 가 null 일 때
+      // record 가 null 이 아닐 때
       if (!!record) {
         await this.repetitionRepository.remove(record);
       }
@@ -28,7 +29,7 @@ export class RepetitionService {
 
     if (!record) {
       record = this.repetitionRepository.create({
-        metadataId: metadataId,
+        metadataId: scheduleMeta.metadataId,
         cycleType: CycleType[repetition.cycleType],
         cycleCount: repetition.cycleCount,
       });
