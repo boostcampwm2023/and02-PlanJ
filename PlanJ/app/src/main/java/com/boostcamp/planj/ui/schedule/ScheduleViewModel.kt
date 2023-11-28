@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
-import com.boostcamp.planj.data.model.PatchScheduleBody
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

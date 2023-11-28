@@ -1,14 +1,17 @@
 package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.PatchCategoryResponse
-import com.boostcamp.planj.data.model.PatchScheduleBody
-import com.boostcamp.planj.data.model.PatchScheduleResponse
-import com.boostcamp.planj.data.model.PostCategoryBody
-import com.boostcamp.planj.data.model.PostCategoryResponse
-import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.GetCategoryResponse
+import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
+import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostCategoryBody
+import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
@@ -46,6 +49,7 @@ interface MainRepository {
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
     fun postSchedule(categoryId: String, title: String, endTime: String): Flow<PostScheduleResponse>
+
     fun getUser(): Flow<String>
 
     fun getCategory(categoryName: String): Category
@@ -66,4 +70,16 @@ interface MainRepository {
         categoryUuid: String,
         categoryName: String
     ): Flow<PatchCategoryResponse>
+
+    suspend fun getCategoryListApi(): Flow<GetCategoryResponse>
+
+    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
+
+    suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
+
+    suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse>
+
+    suspend fun postFriendApi()
+
+    suspend fun getFriendsApi(): Flow<GetFriendResponse>
 }

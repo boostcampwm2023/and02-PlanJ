@@ -6,17 +6,20 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.DeleteScheduleBody
-import com.boostcamp.planj.data.model.PatchCategoryRequest
-import com.boostcamp.planj.data.model.PatchCategoryResponse
-import com.boostcamp.planj.data.model.PatchScheduleBody
-import com.boostcamp.planj.data.model.PatchScheduleResponse
-import com.boostcamp.planj.data.model.PostCategoryBody
-import com.boostcamp.planj.data.model.PostCategoryResponse
-import com.boostcamp.planj.data.model.PostScheduleBody
-import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
+import com.boostcamp.planj.data.model.dto.GetCategoryResponse
+import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
+import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
+import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostCategoryBody
+import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostScheduleBody
+import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -165,5 +168,30 @@ class MainRepositoryImpl @Inject constructor(
 
     override fun getWeekSchedule(): Flow<List<Schedule>> {
         return db.scheduleDao().getWeekSchedule()
+    }
+
+    override suspend fun getCategoryListApi(): Flow<GetCategoryResponse> = flow {
+        emit(api.getCategoryList())
+    }
+
+    override suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse> =
+        flow {
+            emit(api.getCategorySchedule(categoryUuid))
+        }
+
+    override suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
+        emit(api.getWeeklySchedule(date))
+    }
+
+    override suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
+        emit(api.getDailySchedule(date))
+    }
+
+    override suspend fun postFriendApi() {
+        TODO("postFriend 요청 Body 확정X")
+    }
+
+    override suspend fun getFriendsApi(): Flow<GetFriendResponse> = flow {
+        emit(api.getFriends())
     }
 }
