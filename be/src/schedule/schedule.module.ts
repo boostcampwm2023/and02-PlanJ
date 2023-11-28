@@ -12,9 +12,10 @@ import { RepetitionRepository } from "./repetition.repository";
 import { ParticipateService } from "./participate.service";
 import { ParticipateRepository } from "./participate.repository";
 import { ParticipantEntity } from "./entity/participant.entity";
+import { RepetitionEntity } from "./entity/repetition.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ScheduleMetadataEntity, ParticipantEntity])],
+  imports: [TypeOrmModule.forFeature([ScheduleMetadataEntity, ParticipantEntity, RepetitionEntity])],
   providers: [
     ScheduleMetaRepository,
     ScheduleRepository,
@@ -27,6 +28,6 @@ import { ParticipantEntity } from "./entity/participant.entity";
     RepetitionRepository,
     ParticipateService,
   ],
-  exports: [ScheduleMetaService, ScheduleService, ScheduleLocationService, ParticipateService],
+  exports: [ScheduleMetaService, ScheduleService, ScheduleLocationService, ParticipateService, RepetitionService],
 })
 export class ScheduleModule {}

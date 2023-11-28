@@ -11,7 +11,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
   }
 
   async addDefaultParticipantGroup(user: UserEntity, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
-    const record = this.create({ author: true, user, scheduleMeta });
+    const record = this.create({ author: true, scheduleMeta });
 
     console.log(record);
 
