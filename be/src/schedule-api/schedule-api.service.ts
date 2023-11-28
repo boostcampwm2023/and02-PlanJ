@@ -57,6 +57,9 @@ export class ScheduleApiService {
 
     const body: HttpResponse = {
       message: "일정 수정 성공",
+      data: {
+        scheduleUuid: scheduleUuid,
+      },
     };
     return JSON.stringify(body);
   }
