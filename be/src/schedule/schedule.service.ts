@@ -104,4 +104,8 @@ export class ScheduleService {
     result[result.length - 1].last = true;
     await this.scheduleRepository.save(result);
   }
+
+  async getScheduleEntityByScheduleUuid(scheduleUuid: string) {
+    return await this.scheduleRepository.findOne({ where: { scheduleUuid }, relations: ["parent"] });
+  }
 }

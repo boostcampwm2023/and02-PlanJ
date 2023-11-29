@@ -5,7 +5,6 @@ import { ScheduleMetaRepository } from "./schedule-meta.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
-import { HttpResponse } from "src/utils/http.response";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleResponse } from "./dto/schedule.response";
 

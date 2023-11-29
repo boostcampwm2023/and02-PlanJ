@@ -10,9 +10,9 @@ import { ScheduleLocationService } from "src/schedule/schedule-location.service"
 import { AuthService } from "../auth/auth.service";
 import { RepetitionService } from "../schedule/repetition.service";
 import { ParticipateService } from "src/schedule/participate.service";
-import { InviteScheduleDto } from "src/schedule/dto/invite-schedule.dto";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { HttpResponse } from "src/utils/http.response";
+import { ScheduleMetadataEntity } from "../schedule/entity/schedule-metadata.entity";
 
 @Injectable()
 export class ScheduleApiService {
@@ -50,16 +50,13 @@ export class ScheduleApiService {
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
     await this.repetitionService.updateRepetition(dto, scheduleMeta);
-    await this.scheduleService.updateSchedule(dto);
-    dto.participants.forEach(async (email) => {
+    await this.scheduleService.updateSchedule(dto, scheduleMeta);
+    for (const email of dto.participants) {
       await this.inviteSchedule(dto.scheduleUuid, email);
-    });
+    }
 
     const body: HttpResponse = {
       message: "일정 수정 성공",
-      data: {
-        scheduleUuid: scheduleUuid,
-      },
     };
     return JSON.stringify(body);
   }
@@ -115,8 +112,7 @@ export class ScheduleApiService {
     };
 
     const invitedScheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(addScheduleDto, invitedUser);
-    const invitedHttpResponse = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
-    const invitedScheduleUuid = JSON.parse(invitedHttpResponse).data.scheduleUuid;
+    const invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
     const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
 
     const startLocation: ScheduleLocationDto = {
@@ -150,7 +146,7 @@ export class ScheduleApiService {
       invitedMetadataId,
     );
     await this.scheduleLocationService.updateLocation(updateScheduleDto, scheduleMeta);
-    await this.scheduleService.updateSchedule(updateScheduleDto);
+    await this.scheduleService.updateSchedule(updateScheduleDto, scheduleMeta);
     return await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
   }
 }
