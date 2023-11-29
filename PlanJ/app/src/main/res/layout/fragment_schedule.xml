@@ -586,7 +586,7 @@
 
 
                     <androidx.fragment.app.FragmentContainerView
-                        android:id="@+id/schedule_map_nav_host_fragment"
+                        android:id="@+id/fragment_container_show_map"
                         android:name="androidx.navigation.fragment.NavHostFragment"
                         app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view"
                         android:layout_width="match_parent"

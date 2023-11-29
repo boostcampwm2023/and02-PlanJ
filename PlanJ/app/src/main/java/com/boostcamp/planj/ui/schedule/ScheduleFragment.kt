@@ -40,7 +40,7 @@ import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
-class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSettingDialogListener{
+class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSettingDialogListener {
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
@@ -114,18 +114,20 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isEditMode.collect { isEditMode ->
                 updateToolbar(isEditMode)
-                if(isEditMode) {
-                    binding.ivScheduleStartMapDelete.visibility =  if(viewModel.startScheduleLocation.value == null){
-                        View.GONE
-                    }else{
-                        View.VISIBLE
-                    }
+                if (isEditMode) {
+                    binding.ivScheduleStartMapDelete.visibility =
+                        if (viewModel.startScheduleLocation.value == null) {
+                            View.GONE
+                        } else {
+                            View.VISIBLE
+                        }
 
-                    binding.ivScheduleEndMapDelete.visibility =  if(viewModel.endScheduleLocation.value == null){
-                        View.GONE
-                    }else{
-                        View.VISIBLE
-                    }
+                    binding.ivScheduleEndMapDelete.visibility =
+                        if (viewModel.endScheduleLocation.value == null) {
+                            View.GONE
+                        } else {
+                            View.VISIBLE
+                        }
 
                 }
             }
@@ -152,16 +154,16 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.scheduleAlarm.collect { alarm ->
-                    if(alarm == null){
+
+                    if (alarm != null && alarm.alarmType == "DEPARTURE") {
+                        binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
+                        binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
+
+                    } else {
                         binding.tvScheduleLocationAlarm.text = "위치 알람 설정"
                         binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_main2)
-                    }else{
-                        if(alarm.alarmType == "DEPARTURE"){
-                            binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
-                            binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
-                        }
                     }
                 }
             }
@@ -317,12 +319,13 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.tvScheduleLocationAlarm.setOnClickListener {
             viewModel.route.value?.let {
-                if(binding.tvScheduleLocationAlarm.text == "위치 알람 해제"){
+                if (binding.tvScheduleLocationAlarm.text == "위치 알람 해제") {
                     viewModel.setAlarm(null)
-                }else{
-                    val bottomSheet = ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration){min ->
-                        viewModel.setAlarm(Alarm("DEPARTURE", min))
-                    }
+                } else {
+                    val bottomSheet =
+                        ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration) { min ->
+                            viewModel.setAlarm(Alarm("DEPARTURE", min))
+                        }
                     bottomSheet.show(childFragmentManager, tag)
                 }
             }
