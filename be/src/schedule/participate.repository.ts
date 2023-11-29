@@ -11,7 +11,6 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
 
   async invite(authorScheduleMetadata: ScheduleMetadataEntity, invitedMetadataId: number): Promise<void> {
     const authorId = authorScheduleMetadata.metadataId;
-
     const isNotMade = await this.isNotMade(authorScheduleMetadata);
 
     if (isNotMade) {
@@ -33,7 +32,6 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
   // 만들어진 적 없으면 true
   private async isNotMade(authorScheduleMetadata: ScheduleMetadataEntity) {
     const count = await this.count({ where: { authorId: authorScheduleMetadata.metadataId } });
-    console.log(count);
     return count === 0;
   }
 }
