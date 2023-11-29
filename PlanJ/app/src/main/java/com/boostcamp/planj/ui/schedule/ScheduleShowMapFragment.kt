@@ -138,8 +138,8 @@ class ScheduleShowMapFragment : Fragment(), OnMapReadyCallback {
                     } else {
                         startMarker.map = null
                         viewModel.emptyRoute()
-                        if(endMarker.map != null){
-                            viewModel.endScheduleLocation.value?.let {el ->
+                        if (endMarker.map != null) {
+                            viewModel.endScheduleLocation.value?.let { el ->
                                 val latLng = LatLng(el.latitude.toDouble(), el.longitude.toDouble())
                                 val camera = CameraUpdate.scrollTo(latLng)
                                     .animate(CameraAnimation.Linear)
@@ -180,7 +180,7 @@ class ScheduleShowMapFragment : Fragment(), OnMapReadyCallback {
                             CameraUpdate.fitBounds(bounds, 150).animate(CameraAnimation.Linear)
                         naverMap.moveCamera(camera)
                     }
-                    if(route == null) {
+                    if (route == null) {
                         path.map = null
                     }
                 }

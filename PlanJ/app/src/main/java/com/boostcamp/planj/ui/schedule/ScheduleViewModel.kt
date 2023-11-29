@@ -179,11 +179,11 @@ class ScheduleViewModel @Inject constructor(
                 scheduleMemo.value ?: "",
                 scheduleStartDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
-                }?: "",
+                } ?: "",
                 scheduleEndDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
-                }?: "",
-                _endScheduleLocation.value?.placeName ?: "" ,
+                } ?: "",
+                _endScheduleLocation.value?.placeName ?: "",
                 _endScheduleLocation.value?.address ?: "",
                 _endScheduleLocation.value?.latitude ?: "",
                 _endScheduleLocation.value?.longitude ?: ""
@@ -201,9 +201,19 @@ class ScheduleViewModel @Inject constructor(
                         startTime = if (scheduleStartDate.value == null) {
                             null
                         } else {
-                            "${scheduleStartDate.value?.replace('/', '-')}T${scheduleStartTime.value}:00"
+                            "${
+                                scheduleStartDate.value?.replace(
+                                    '/',
+                                    '-'
+                                )
+                            }T${scheduleStartTime.value}:00"
                         },
-                        endTime = "${scheduleEndDate.value?.replace('/', '-')}T${scheduleEndTime.value}:00",
+                        endTime = "${
+                            scheduleEndDate.value?.replace(
+                                '/',
+                                '-'
+                            )
+                        }T${scheduleEndTime.value}:00",
                         categoryTitle = scheduleCategory.value,
                         repetition = scheduleRepetition.value,
                         alarm = scheduleAlarm.value,
@@ -226,11 +236,11 @@ class ScheduleViewModel @Inject constructor(
         _scheduleStartTime.value = null
     }
 
-    fun endMapDelete(){
+    fun endMapDelete() {
         _endScheduleLocation.value = null
     }
 
-    fun startMapDelete(){
+    fun startMapDelete() {
         startScheduleLocation.value = null
     }
 
@@ -243,17 +253,17 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _route.value = naverRepository.getNaverRoute(start, end)
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "error ${e.message}")
             }
         }
     }
 
-    fun emptyRoute(){
+    fun emptyRoute() {
         _route.value = null
     }
 
-    fun emptyStartLocation(){
+    fun emptyStartLocation() {
         startScheduleLocation.value = null
     }
 }

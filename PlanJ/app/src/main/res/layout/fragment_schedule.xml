@@ -515,23 +515,20 @@
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
 
 
-
                 <LinearLayout
                     android:id="@+id/layout_schedule_start_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:visibility="@{viewModel.endScheduleLocation == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location"
-                    android:orientation="vertical"
-                    >
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_location">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -570,7 +567,7 @@
                             android:onClick="@{() -> viewModel.startMapDelete()}"
                             android:padding="8dp"
                             android:src="@drawable/ic_delete"
-                            android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}"/>
+                            android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}" />
 
 
                         <ImageView
@@ -588,10 +585,10 @@
                     <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/fragment_container_show_map"
                         android:name="androidx.navigation.fragment.NavHostFragment"
-                        app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         app:defaultNavHost="true"
+                        app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view"
                         app:navGraph="@navigation/map_show_nav" />
 
                 </LinearLayout>
@@ -656,8 +653,8 @@
             android:id="@+id/standard_bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <!-- Bottom sheet contents. -->
 
