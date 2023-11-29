@@ -114,6 +114,20 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isEditMode.collect { isEditMode ->
                 updateToolbar(isEditMode)
+                if(isEditMode) {
+                    binding.ivScheduleStartMapDelete.visibility =  if(viewModel.startScheduleLocation.value == null){
+                        View.GONE
+                    }else{
+                        View.VISIBLE
+                    }
+
+                    binding.ivScheduleEndMapDelete.visibility =  if(viewModel.endScheduleLocation.value == null){
+                        View.GONE
+                    }else{
+                        View.VISIBLE
+                    }
+
+                }
             }
         }
 
