@@ -66,6 +66,7 @@ export class UserApiService {
       message: "회원 정보 조회 성공",
       data: {
         nickname: userEntity.nickname,
+        email: userEntity.email,
       },
     };
     return JSON.stringify(result);
