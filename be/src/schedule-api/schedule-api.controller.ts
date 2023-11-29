@@ -41,10 +41,4 @@ export class ScheduleApiController {
     const result = await this.scheduleApiService.deleteSchedule(token, dto);
     return JSON.parse(result);
   }
-
-  @Post("/invite")
-  async inviteSchedule(@Token() token: string, @Body() dto: InviteScheduleDto) {
-    const result = await this.scheduleApiService.inviteSchedule(token, dto);
-    // return JSON.parse(result);
-  }
 }

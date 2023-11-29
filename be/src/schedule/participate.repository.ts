@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Repository, DataSource } from "typeorm";
 import { ParticipantEntity } from "./entity/participant.entity";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 
 @Injectable()
 export class ParticipateRepository extends Repository<ParticipantEntity> {
@@ -8,16 +9,21 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     super(ParticipantEntity, dataSource.createEntityManager());
   }
 
-  async invite(authorMetadataId: number, invitedMetadataId: number): Promise<void> {
-    if (await this.isNotMade(authorMetadataId)) {
-      const authorRecord = this.create({ participantPeopleId: authorMetadataId, authorId: authorMetadataId });
+  async invite(authorScheduleMetadata: ScheduleMetadataEntity, invitedMetadataId: number): Promise<void> {
+    const authorId = authorScheduleMetadata.metadataId;
+
+    const isNotMade = await this.isNotMade(authorScheduleMetadata);
+
+    if (isNotMade) {
+      const authorRecord = this.create({ participantId: authorId, authorId });
       await this.save(authorRecord);
     }
 
-    const participantRecord = this.create({ participantPeopleId: invitedMetadataId, authorId: authorMetadataId });
+    const participantRecord = this.create({ participantId: invitedMetadataId, authorId });
 
     try {
       await this.save(participantRecord);
+      return;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
@@ -25,7 +31,9 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
   }
 
   // 만들어진 적 없으면 true
-  private async isNotMade(authorMetadataId: number) {
-    return (await this.findOne({ where: { authorId: authorMetadataId } })) === null;
+  private async isNotMade(authorScheduleMetadata: ScheduleMetadataEntity) {
+    const count = await this.count({ where: { authorId: authorScheduleMetadata.metadataId } });
+    console.log(count);
+    return count === 0;
   }
 }

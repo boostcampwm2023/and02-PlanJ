@@ -3,11 +3,11 @@ import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
 @Entity("participant")
 export class ParticipantEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "participant_id" })
-  participantId: number;
+  @PrimaryGeneratedColumn({ name: "id" })
+  id: number;
 
-  @Column({ name: "participant_people_id", type: "int" })
-  participantPeopleId: number;
+  @Column({ name: "participant_id", type: "int" })
+  participantId: number;
 
   @Column({ name: "author_id", type: "int" })
   authorId: number;
@@ -15,11 +15,10 @@ export class ParticipantEntity extends BaseEntity {
   /*
    * relation
    */
-  @OneToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.metadataId)
-  @JoinColumn({ name: "participant_people_id" })
-  participantPeople: ScheduleMetadataEntity;
+  @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.metadataId)
+  @JoinColumn({ name: "participant_id" })
+  participant: ScheduleMetadataEntity;
 
-  // participant 추가 시 삭제될 관계
   @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.author, {
     onDelete: "CASCADE",
   })

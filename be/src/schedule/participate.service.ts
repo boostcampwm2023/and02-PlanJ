@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ParticipateRepository } from "./participate.repository";
+import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 
 @Injectable()
 export class ParticipateService {
@@ -9,7 +10,7 @@ export class ParticipateService {
     private participateRepository: ParticipateRepository,
   ) {}
 
-  async inviteSchedule(authorMetadataId: number, invitedMetadataId: number) {
-    await this.participateRepository.invite(authorMetadataId, invitedMetadataId);
+  async inviteSchedule(authorScheduleMetadata: ScheduleMetadataEntity, invitedMetadataId: number) {
+    await this.participateRepository.invite(authorScheduleMetadata, invitedMetadataId);
   }
 }

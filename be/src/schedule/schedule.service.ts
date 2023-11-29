@@ -22,9 +22,9 @@ export class ScheduleService {
     return await this.scheduleRepository.getMetadataIdByScheduleUuid(scheduleUuid);
   }
 
-  async updateSchedule(dto: UpdateScheduleDto): Promise<string> {
+  async updateSchedule(dto: UpdateScheduleDto): Promise<void> {
     // TODO: repetition 기준으로 추가
-    return await this.scheduleRepository.updateSchedule(dto);
+    await this.scheduleRepository.updateSchedule(dto);
   }
 
   async deleteSchedule(dto: DeleteScheduleDto) {

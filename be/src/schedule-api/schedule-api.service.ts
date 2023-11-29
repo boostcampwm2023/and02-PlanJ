@@ -12,6 +12,7 @@ import { RepetitionService } from "../schedule/repetition.service";
 import { ParticipateService } from "src/schedule/participate.service";
 import { InviteScheduleDto } from "src/schedule/dto/invite-schedule.dto";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
+import { HttpResponse } from "src/utils/http.response";
 
 @Injectable()
 export class ScheduleApiService {
@@ -41,7 +42,16 @@ export class ScheduleApiService {
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
     await this.repetitionService.updateRepetition(dto, metadataId);
-    return await this.scheduleService.updateSchedule(dto);
+    await this.scheduleService.updateSchedule(dto);
+    dto.participants.forEach(async (email) => {
+      await this.inviteSchedule(dto.scheduleUuid, email);
+    });
+
+    const body: HttpResponse = {
+      message: "일정 수정 성공",
+    };
+
+    return JSON.stringify(body);
   }
 
   async getDailySchedule(token: string, date: Date): Promise<string> {
@@ -62,14 +72,13 @@ export class ScheduleApiService {
     return await this.scheduleMetaService.deleteScheduleMeta(metadataId);
   }
 
-  async inviteSchedule(token: string, dto: InviteScheduleDto) {
-    const userUuid = this.authService.verify(token);
-    const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
-    const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(dto.scheduleUuid);
+  async inviteSchedule(authorScheduleUuid: string, invitedUserEmail: string) {
+    const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(authorScheduleUuid);
+    const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(authorScheduleUuid);
     const authorScheduleMetadata = authorSchedule.parent;
     const authorScheduleLocation = await this.scheduleLocationService.getLocationByScheduleMetadataId(authorMetadataId);
 
-    const invitedUser = await this.userService.getUserEntityByEmail(dto.invitedUserEmail);
+    const invitedUser = await this.userService.getUserEntityByEmail(invitedUserEmail);
 
     const addScheduleDto: AddScheduleDto = {
       userUuid: invitedUser.userUuid,
@@ -115,6 +124,6 @@ export class ScheduleApiService {
     );
     await this.scheduleLocationService.updateLocation(updateScheduleDto, scheduleMeta);
     await this.scheduleService.updateSchedule(updateScheduleDto);
-    return await this.participateService.inviteSchedule(authorMetadataId, invitedMetadataId);
+    return await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
   }
 }
