@@ -1,5 +1,8 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,5 +21,6 @@ class ScheduleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_schedule)
 
         viewModel.setScheduleInfo(args.schedule)
+
     }
 }

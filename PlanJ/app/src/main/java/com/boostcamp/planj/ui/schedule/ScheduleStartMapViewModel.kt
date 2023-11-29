@@ -55,7 +55,7 @@ class ScheduleStartMapViewModel @Inject constructor(
         _startLocation.value = location
     }
 
-    fun emptyRoute(){
+    fun emptyRoute() {
         _route.value = null
     }
 
@@ -71,7 +71,7 @@ class ScheduleStartMapViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _route.value = naverRepository.getNaverRoute(start, end)
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "error ${e.message}")
             }
         }
