@@ -4,13 +4,14 @@ import { UserService } from "../user/user.service";
 import { AuthService } from "../auth/auth.service";
 import { HttpResponse } from "../utils/http.response";
 import { CreateUserDto } from "../user/dto/create-user.dto";
-import { UserModifyDto } from "../user/dto/user-modify.dto";
+import { ImageService } from "../image/image.service";
 
 @Injectable()
 export class UserApiService {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private imageService: ImageService,
   ) {}
 
   async register(dto: CreateUserDto): Promise<string> {
@@ -45,19 +46,6 @@ export class UserApiService {
     return JSON.stringify(body);
   }
 
-  async update(dto: UserModifyDto, token: string): Promise<string> {
-    const userUuid = this.authService.verify(token);
-    const updatedNickname = await this.userService.update(userUuid, dto);
-
-    const result: HttpResponse = {
-      message: "정보 수정 성공",
-      data: {
-        updated_nickname: updatedNickname,
-      },
-    };
-    return JSON.stringify(result);
-  }
-
   async getUserInfo(token: string) {
     const userUuid = this.authService.verify(token);
     const userEntity = await this.userService.getUserEntity(userUuid);
@@ -67,7 +55,25 @@ export class UserApiService {
       data: {
         nickname: userEntity.nickname,
         email: userEntity.email,
+        profileUrl: userEntity.profileUrl,
       },
+    };
+    return JSON.stringify(result);
+  }
+
+  async updateUserInfo(token: string, profileImage: Express.Multer.File, nickname: string) {
+    const userUuid = this.authService.verify(token);
+    let profileImageUrl = null;
+
+    // 사용자가 파일을 업로드 했을 때
+    if (!!profileImage) {
+      profileImageUrl = await this.imageService.uploadImage(profileImage);
+    }
+
+    await this.userService.update(userUuid, nickname, profileImageUrl);
+
+    const result: HttpResponse = {
+      message: "정보 수정 성공",
     };
     return JSON.stringify(result);
   }

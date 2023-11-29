@@ -3,7 +3,6 @@ import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "./user.repository";
-import { UserModifyDto } from "./dto/user-modify.dto";
 import { UserEntity } from "./entity/user.entity";
 import { ulid } from "ulid";
 import * as bcrypt from "bcryptjs";
@@ -64,14 +63,14 @@ export class UserService {
     await this.userRepository.deleteByUuid(userUuid);
   }
 
-  async update(userUuid: string, dto: UserModifyDto): Promise<string> {
-    const { nickname } = dto;
+  async update(userUuid: string, nickname: string, profileUrl: string | null): Promise<string> {
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
-
     user.nickname = nickname;
+    user.profileUrl = profileUrl;
+
     try {
       await this.userRepository.save(user);
-      return nickname;
+      return;
     } catch (e) {
       throw new InternalServerErrorException();
     }
