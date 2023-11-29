@@ -57,8 +57,8 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private fun saveId(id : String){
-        viewModelScope.launch(Dispatchers.IO){
+    private suspend fun saveId(id : String){
+        withContext(Dispatchers.IO){
             loginRepository.saveUser(id)
         }
     }

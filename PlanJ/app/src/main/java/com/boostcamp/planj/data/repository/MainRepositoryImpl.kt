@@ -2,6 +2,8 @@ package com.boostcamp.planj.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AppDatabase
@@ -12,7 +14,6 @@ import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
-import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
@@ -22,11 +23,14 @@ import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostUserBody
+import com.boostcamp.planj.data.model.dto.PostUserResponse
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
 import java.io.IOException
 import javax.inject.Inject
 
@@ -38,6 +42,7 @@ class MainRepositoryImpl @Inject constructor(
 
     companion object {
         val USER = stringPreferencesKey("User")
+        val ALARM_MODE = booleanPreferencesKey("alarm")
     }
 
     override suspend fun insertSchedule(schedule: Schedule) {
@@ -114,7 +119,13 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.postSchedule(postSchedule))
     }
 
-    override fun getUser(): Flow<String> {
+    override suspend fun emptyToken() {
+        dataStore.edit { prefs ->
+            prefs[USER] = ""
+        }
+    }
+
+    override fun getToken(): Flow<String> {
         return dataStore.data
             .catch { e ->
                 if (e is IOException) {
@@ -204,5 +215,38 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getMyInfo(): Flow<User> = flow {
         val myInfo = api.getMyInfo().data
         emit(User(imgUrl = "", email = myInfo.email, nickname = myInfo.nickname))
+    }
+
+    override fun postUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {
+        emit(api.postUser(PostUserBody(nickName), imageFile))
+    }
+
+    override suspend fun saveAlarmMode(mode: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[ALARM_MODE] = mode
+        }
+    }
+
+    override suspend fun getAlarmMode(): Flow<Boolean> {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    exception.printStackTrace()
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+
+            }
+            .map { prefs ->
+                prefs[ALARM_MODE] ?: false
+            }
+    }
+
+    override suspend fun deleteAllData() {
+        db.scheduleDao().deleteAllSchedule()
+        db.categoryDao().deleteAllCategory()
+        db.userDao().deleteAllUser()
+        db.alarmInfoDao().deleteAllAlarmInfo()
     }
 }

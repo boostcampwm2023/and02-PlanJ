@@ -84,6 +84,6 @@ class CategoryViewModel @Inject constructor(
     }
 
     suspend fun getUser() = withContext(Dispatchers.IO) {
-        mainRepository.getUser().first()
+        mainRepository.getToken().first()
     }
 }

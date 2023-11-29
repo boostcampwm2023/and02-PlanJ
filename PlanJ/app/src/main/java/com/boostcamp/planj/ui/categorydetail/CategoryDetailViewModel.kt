@@ -75,7 +75,7 @@ class CategoryDetailViewModel @Inject constructor(
     }
 
     suspend fun getUser() = withContext(Dispatchers.IO) {
-        mainRepository.getUser().first()
+        mainRepository.getToken().first()
     }
 
     fun checkBoxChange(schedule: Schedule, isCheck: Boolean){

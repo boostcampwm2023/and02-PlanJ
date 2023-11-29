@@ -1,8 +1,6 @@
 package com.boostcamp.planj.ui.main
 
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
@@ -55,7 +53,7 @@ class MainViewModel @Inject constructor(
 
 
     suspend fun getUser() = withContext(Dispatchers.IO){
-        mainRepository.getUser().first()
+        mainRepository.getToken().first()
     }
 }
 
