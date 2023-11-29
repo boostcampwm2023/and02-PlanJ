@@ -411,7 +411,6 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
 
-
                 <TextView
                     android:id="@+id/tv_schedule_location_title"
                     android:layout_width="wrap_content"
@@ -501,7 +500,6 @@
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
 
-
                 <ImageView
                     android:id="@+id/iv_schedule_map"
                     android:layout_width="wrap_content"
@@ -513,7 +511,6 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
-
 
                 <LinearLayout
                     android:id="@+id/layout_schedule_start_view"
@@ -569,7 +566,6 @@
                             android:src="@drawable/ic_delete"
                             android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}" />
 
-
                         <ImageView
                             android:id="@+id/iv_schedule_start_map"
                             android:layout_width="wrap_content"
@@ -580,7 +576,6 @@
                             android:src="@drawable/ic_location" />
 
                     </LinearLayout>
-
 
                     <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/fragment_container_show_map"
@@ -599,7 +594,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view" />
-
 
                 <TextView
                     android:id="@+id/tv_schedule_memo"
@@ -647,18 +641,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
-
-
-        <FrameLayout
-            android:id="@+id/standard_bottom_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <!-- Bottom sheet contents. -->
-
-        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
