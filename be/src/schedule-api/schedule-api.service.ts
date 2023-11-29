@@ -50,8 +50,10 @@ export class ScheduleApiService {
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
     await this.repetitionService.updateRepetition(dto, scheduleMeta);
     await this.scheduleService.updateSchedule(dto, scheduleMeta);
-    for (const email of dto.participants) {
-      await this.inviteSchedule(dto.scheduleUuid, email);
+    if (!!dto.participants) {
+      for (const email of dto.participants) {
+        await this.inviteSchedule(dto.scheduleUuid, email);
+      }
     }
 
     const body: HttpResponse = {
@@ -114,19 +116,23 @@ export class ScheduleApiService {
     const invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
     const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
 
-    const startLocation: ScheduleLocationDto = {
-      placeName: authorScheduleLocation.startPlaceName,
-      placeAddress: authorScheduleLocation.startPlaceAddress,
-      latitude: authorScheduleLocation.startLatitude,
-      longitude: authorScheduleLocation.startLongitude,
-    };
+    const startLocation: ScheduleLocationDto = !!authorScheduleLocation
+      ? {
+          placeName: authorScheduleLocation.startPlaceName,
+          placeAddress: authorScheduleLocation.startPlaceAddress,
+          latitude: authorScheduleLocation.startLatitude,
+          longitude: authorScheduleLocation.startLongitude,
+        }
+      : null;
 
-    const endLocation: ScheduleLocationDto = {
-      placeName: authorScheduleLocation.endPlaceName,
-      placeAddress: authorScheduleLocation.endPlaceAddress,
-      latitude: authorScheduleLocation.endLatitude,
-      longitude: authorScheduleLocation.endLongitude,
-    };
+    const endLocation: ScheduleLocationDto = !!authorScheduleLocation
+      ? {
+          placeName: authorScheduleLocation.endPlaceName ?? null,
+          placeAddress: authorScheduleLocation.endPlaceAddress ?? null,
+          latitude: authorScheduleLocation.endLatitude ?? null,
+          longitude: authorScheduleLocation.endLongitude ?? null,
+        }
+      : null;
 
     const updateScheduleDto: UpdateScheduleDto = {
       categoryUuid: "default",
