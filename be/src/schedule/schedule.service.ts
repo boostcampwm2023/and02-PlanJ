@@ -66,7 +66,6 @@ export class ScheduleService {
       console.log(error);
       throw new InternalServerErrorException();
     }
-    // TODO: repetition 기준으로 추가
   }
 
   async deleteSchedule(dto: DeleteScheduleDto) {
