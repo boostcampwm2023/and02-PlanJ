@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, UseGuards } from "@nestjs/common";
+import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, UseGuards, Get } from "@nestjs/common";
 import { UserLoginDto } from "../user/dto/user-login.dto";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { UserModifyDto } from "../user/dto/user-modify.dto";
@@ -35,6 +35,13 @@ export class UserApiController {
   @HttpCode(HttpStatus.OK)
   async updateUserInfo(@Token() token: string, @Body() dto: UserModifyDto): Promise<JSON> {
     const result = await this.userApiService.update(dto, token);
+    return JSON.parse(result);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  async getUserInfo(@Token() token: string): Promise<JSON> {
+    const result = await this.userApiService.getUserInfo(token);
     return JSON.parse(result);
   }
 }

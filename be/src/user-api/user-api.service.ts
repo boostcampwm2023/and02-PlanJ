@@ -57,4 +57,18 @@ export class UserApiService {
     };
     return JSON.stringify(result);
   }
+
+  async getUserInfo(token: string) {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+
+    const result: HttpResponse = {
+      message: "회원 정보 조회 성공",
+      data: {
+        nickname: userEntity.nickname,
+        email: userEntity.email,
+      },
+    };
+    return JSON.stringify(result);
+  }
 }
