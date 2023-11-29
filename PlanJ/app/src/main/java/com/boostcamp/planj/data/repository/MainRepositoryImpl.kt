@@ -12,12 +12,14 @@ import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.network.MainApi
@@ -187,8 +189,8 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.getDailySchedule(date))
     }
 
-    override suspend fun postFriendApi() {
-        TODO("postFriend 요청 Body 확정X")
+    override suspend fun postFriendApi(friendEmail: String) {
+        api.postFriend(PostFriendRequest(friendEmail))
     }
 
     override suspend fun getFriendsApi(): Flow<GetFriendResponse> = flow {
@@ -197,5 +199,10 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount() {
         api.deleteAccount()
+    }
+
+    override suspend fun getMyInfo(): Flow<User> = flow {
+        val myInfo = api.getMyInfo().data
+        emit(User(imgUrl = "", email = myInfo.email, nickname = myInfo.nickname))
     }
 }

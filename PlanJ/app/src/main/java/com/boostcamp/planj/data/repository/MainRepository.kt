@@ -6,6 +6,7 @@ import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
@@ -79,9 +80,11 @@ interface MainRepository {
 
     suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse>
 
-    suspend fun postFriendApi()
+    suspend fun postFriendApi(friendEmail: String)
 
     suspend fun getFriendsApi(): Flow<GetFriendResponse>
 
     suspend fun deleteAccount()
+
+    suspend fun getMyInfo(): Flow<User>
 }

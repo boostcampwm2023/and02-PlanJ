@@ -4,6 +4,7 @@ import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
@@ -62,4 +63,7 @@ interface MainApi {
 
     @DELETE("/api/auth/delete")
     suspend fun deleteAccount()
+
+    @GET("/api/auth")
+    suspend fun getMyInfo(): GetUserInfoResponse
 }
