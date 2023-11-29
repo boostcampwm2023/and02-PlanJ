@@ -105,7 +105,7 @@ export class ScheduleApiService {
 
     const invitedUser = await this.userService.getUserEntityByEmail(invitedUserEmail);
 
-    const [isAlreadyInvited, invitedMetadataId] = this.isAlreadyInvited(authorMetadataId, invitedUser.userId);
+    const [isAlreadyInvited, invitedMetadataId] = await this.isAlreadyInvited(authorMetadataId, invitedUser.userId);
 
     if (!isAlreadyInvited) {
       const addScheduleDto: AddScheduleDto = {
