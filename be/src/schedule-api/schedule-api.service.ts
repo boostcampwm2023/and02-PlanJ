@@ -12,7 +12,6 @@ import { RepetitionService } from "../schedule/repetition.service";
 import { ParticipateService } from "src/schedule/participate.service";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { HttpResponse } from "src/utils/http.response";
-import { ScheduleMetadataEntity } from "../schedule/entity/schedule-metadata.entity";
 
 @Injectable()
 export class ScheduleApiService {
