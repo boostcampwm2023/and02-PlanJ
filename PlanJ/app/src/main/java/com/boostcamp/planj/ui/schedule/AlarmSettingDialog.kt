@@ -85,10 +85,10 @@ class AlarmSettingDialog : DialogFragment() {
 
     private fun setBtnClicked(alarm: Alarm?) {
         with(binding) {
-            if (alarm !=null && alarm.alarmType=="end") {
+            if (alarm !=null && alarm.alarmType=="END") {
                 rbDialogAlarmEnd.isChecked = true
                 etDialogAlarmBeforeEnd.setText(alarm.alarmTime.toString())
-            } else if (alarm !=null && alarm.alarmType=="departure") {
+            } else if (alarm !=null && alarm.alarmType=="DEPARTURE") {
                 rbDialogAlarmDeparture.isChecked = true
                 etDialogAlarmBeforeDeparture.setText(alarm.alarmTime.toString())
             } else {

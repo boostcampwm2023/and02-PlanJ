@@ -12,10 +12,12 @@ import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.getDate
 import com.boostcamp.planj.getTime
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
+import com.boostcamp.planj.ui.schedule.ScheduleViewModel
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -47,7 +49,7 @@ fun TextView.setMemoLength(memo: String?) {
 fun TextView.setRepetitionInfo(repetition: Repetition?) {
     text = if (repetition == null) {
         resources.getString(R.string.not_set)
-    } else if (repetition.cycleType == "daily") {
+    } else if (repetition.cycleType == "DAILY") {
         resources.getString(R.string.repeat_per_day, repetition.cycleCount)
     } else {
         resources.getString(R.string.repeat_per_week, repetition.cycleCount)
@@ -56,9 +58,9 @@ fun TextView.setRepetitionInfo(repetition: Repetition?) {
 
 @BindingAdapter("alarmInfo")
 fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
-    text = if (alarmInfo != null && alarmInfo.alarmType == "departure") {
+    text = if (alarmInfo != null && alarmInfo.alarmType == "DEPARTURE") {
         resources.getString(R.string.before_departure_time, alarmInfo.alarmTime)
-    } else if (alarmInfo != null && alarmInfo.alarmType == "end") {
+    } else if (alarmInfo != null && alarmInfo.alarmType == "END") {
         resources.getString(R.string.before_end_time, alarmInfo.alarmTime)
     } else {
         resources.getString(R.string.not_set)
@@ -138,5 +140,36 @@ fun TextView.setDateTime(schedule: Schedule) {
         } else {
             "${startDate.replace("-", "/")} - ${endDate.replace("-", "/")}"
         }
+    }
+}
+
+
+@BindingAdapter("setTime")
+fun TextView.setTime(response: NaverResponse?){
+    response?.let {
+        var time = it.route.trafast[0].summary.duration
+        val hour = time/(1000 * 60 * 60)
+        time %= (1000 * 60 * 60)
+        val min = time/(1000 * 60)
+
+        text = if(hour == 0){
+            "소요 시간 ${min}분"
+        } else {
+            "소요 시간 ${hour}시 ${min}분"
+        }
+    }
+}
+
+@BindingAdapter("setDistance")
+fun TextView.setDistance(response: NaverResponse?){
+    response?.let {
+        val distance = it.route.trafast[0].summary.distance
+
+        text = if(distance >= 1000){
+            "거리 : ${distance/1000.0}km"
+        } else {
+            "거리 : ${distance}m "
+        }
+
     }
 }

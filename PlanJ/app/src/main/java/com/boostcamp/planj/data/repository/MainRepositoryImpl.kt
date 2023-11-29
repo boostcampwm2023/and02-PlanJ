@@ -6,17 +6,23 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.DeleteCategoryBody
-import com.boostcamp.planj.data.model.DeleteScheduleBody
-import com.boostcamp.planj.data.model.PatchScheduleBody
-import com.boostcamp.planj.data.model.PatchScheduleResponse
-import com.boostcamp.planj.data.model.PostCategoryBody
-import com.boostcamp.planj.data.model.PostCategoryResponse
-import com.boostcamp.planj.data.model.PostScheduleBody
-import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.network.PlanJAPI
+import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
+import com.boostcamp.planj.data.model.dto.GetCategoryResponse
+import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
+import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
+import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
+import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostCategoryBody
+import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostFriendRequest
+import com.boostcamp.planj.data.model.dto.PostScheduleBody
+import com.boostcamp.planj.data.model.dto.PostScheduleResponse
+import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -25,7 +31,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
-    private val api: PlanJAPI,
+    private val api: MainApi,
     private val db: AppDatabase,
     private val dataStore: DataStore<Preferences>
 ) : MainRepository {
@@ -93,19 +99,18 @@ class MainRepositoryImpl @Inject constructor(
     override fun searchSchedule(input: String): Flow<List<Schedule>> {
         return db.scheduleDao().searchSchedule(input)
     }
-    
+
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
         flow {
             emit(api.postCategory(postCategoryBody))
         }
 
     override fun postSchedule(
-        userId: String,
         categoryId: String,
         title: String,
         endTime: String
     ): Flow<PostScheduleResponse> = flow {
-        val postSchedule = PostScheduleBody(userId, categoryId, title, endTime)
+        val postSchedule = PostScheduleBody(categoryId, title, endTime)
         emit(api.postSchedule(postSchedule))
     }
 
@@ -128,31 +133,76 @@ class MainRepositoryImpl @Inject constructor(
         return db.categoryDao().getCategory(categoryName)
     }
 
-    override suspend fun deleteScheduleApi(userUuid: String, scheduleUuid: String) {
-        api.deleteSchedule(DeleteScheduleBody(userUuid, scheduleUuid))
+    override suspend fun deleteScheduleApi(scheduleUuid: String) {
+        api.deleteSchedule(DeleteScheduleBody(scheduleUuid))
     }
 
     override suspend fun updateSchedule(schedule: Schedule) {
         db.scheduleDao().updateSchedule(schedule)
     }
 
-    override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> = flow {
-        emit(api.patchSchedule(patchScheduleBody))
-    }
+    override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> =
+        flow {
+            emit(api.patchSchedule(patchScheduleBody))
+        }
 
-    override suspend fun deleteCategoryApi(userUuid: String, scheduleUuid: String) {
-        api.deleteCategory(DeleteCategoryBody(userUuid, scheduleUuid))
+    override suspend fun deleteCategoryApi(categoryUuid: String) {
+        api.deleteCategory(categoryUuid)
     }
 
     override suspend fun deleteScheduleUsingCategoryName(categoryName: String) {
         db.scheduleDao().deleteScheduleUsingCategory(categoryName)
     }
 
-    override suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryAfter : String) {
+    override suspend fun updateCategoryApi(
+        categoryUuid: String,
+        categoryName: String
+    ): Flow<PatchCategoryResponse> = flow {
+        emit(api.patchCategory(PatchCategoryRequest(categoryUuid, categoryName)))
+    }
+
+    override suspend fun updateScheduleUsingCategory(
+        categoryNameBefore: String,
+        categoryAfter: String
+    ) {
         db.scheduleDao().updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
     }
 
     override fun getWeekSchedule(): Flow<List<Schedule>> {
         return db.scheduleDao().getWeekSchedule()
+    }
+
+    override suspend fun getCategoryListApi(): Flow<GetCategoryResponse> = flow {
+        emit(api.getCategoryList())
+    }
+
+    override suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse> =
+        flow {
+            emit(api.getCategorySchedule(categoryUuid))
+        }
+
+    override suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
+        emit(api.getWeeklySchedule(date))
+    }
+
+    override suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
+        emit(api.getDailySchedule(date))
+    }
+
+    override suspend fun postFriendApi(friendEmail: String) {
+        api.postFriend(PostFriendRequest(friendEmail))
+    }
+
+    override suspend fun getFriendsApi(): Flow<GetFriendResponse> = flow {
+        emit(api.getFriends())
+    }
+
+    override suspend fun deleteAccount() {
+        api.deleteAccount()
+    }
+
+    override suspend fun getMyInfo(): Flow<User> = flow {
+        val myInfo = api.getMyInfo().data
+        emit(User(imgUrl = "", email = myInfo.email, nickname = myInfo.nickname))
     }
 }

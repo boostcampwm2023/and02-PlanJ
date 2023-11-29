@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/map_show_nav"
+    app:startDestination="@id/scheduleShowMapFragment">
+
+    <fragment
+        android:id="@+id/scheduleShowMapFragment"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleShowMapFragment"
+        android:label="ScheduleShowMapFragment" />
+</navigation>
