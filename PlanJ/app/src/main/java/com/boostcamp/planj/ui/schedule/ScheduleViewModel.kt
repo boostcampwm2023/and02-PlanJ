@@ -164,21 +164,19 @@ class ScheduleViewModel @Inject constructor(
                 withContext((Dispatchers.IO)) { mainRepository.getCategory(scheduleCategory.value) }
 
             val patchScheduleBody = PatchScheduleBody(
-                "01HFYAR1FX09FKQ2SW1HTG8BJ8",
                 getCategory.categoryId,
                 scheduleId,
                 scheduleTitle.value,
-                scheduleMemo.value ?: "",
+                scheduleMemo.value,
                 scheduleStartDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
-                } ?: "",
+                },
                 scheduleEndDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
                 } ?: "",
-                scheduleLocation.value?.placeName ?: "",
-                scheduleLocation.value?.address ?: "",
-                scheduleLocation.value?.latitude ?: "",
-                scheduleLocation.value?.longitude ?: ""
+                null,
+                scheduleLocation.value,
+                scheduleRepetition.value
             )
 
             mainRepository.patchSchedule(patchScheduleBody)
