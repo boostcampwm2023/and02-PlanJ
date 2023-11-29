@@ -39,6 +39,12 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @Column({ type: "boolean", default: false })
   repeated: boolean;
 
+  @Column({ type: "boolean", default: false })
+  shared: boolean;
+
+  @Column({ type: "boolean", default: false })
+  hasLocation: boolean;
+
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
 

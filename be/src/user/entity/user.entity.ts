@@ -9,8 +9,6 @@ import {
 } from "typeorm";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.entity";
-import { FriendEntity } from "src/friend/entity/friend.entity";
-import { ParticipantEntity } from "src/schedule/entity/participant.entity";
 
 @Entity("user")
 export class UserEntity extends BaseEntity {

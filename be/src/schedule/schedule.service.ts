@@ -1,11 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ScheduleRepository } from "./schedule.repository";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
+import { ulid } from "ulid";
 import { ScheduleEntity } from "./entity/schedule.entity";
+import { RepetitionDto } from "./dto/repetition.dto";
+import { add, addWeeks } from "date-fns";
 
 @Injectable()
 export class ScheduleService {
@@ -15,23 +18,93 @@ export class ScheduleService {
   ) {}
 
   async addSchedule(dto: AddScheduleDto, scheduleMetadata: ScheduleMetadataEntity): Promise<string> {
-    return await this.scheduleRepository.addSchedule(dto, scheduleMetadata);
+    const { endAt } = dto;
+
+    const scheduleUuid = ulid();
+
+    const schedule = this.scheduleRepository.create({
+      scheduleUuid,
+      startAt: null,
+      endAt,
+      finished: false,
+      failed: false,
+      remindMemo: "",
+      last: true,
+      metadataId: scheduleMetadata.metadataId,
+    });
+
+    try {
+      await this.scheduleRepository.save(schedule);
+      return scheduleUuid;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   async getMetadataIdByScheduleUuid(scheduleUuid: string): Promise<number> {
     return await this.scheduleRepository.getMetadataIdByScheduleUuid(scheduleUuid);
   }
 
-  async updateSchedule(dto: UpdateScheduleDto): Promise<void> {
-    // TODO: repetition 기준으로 추가
-    await this.scheduleRepository.updateSchedule(dto);
+  async updateSchedule(dto: UpdateScheduleDto, scheduleMetadata: ScheduleMetadataEntity): Promise<string> {
+    const { scheduleUuid, startAt, endAt } = dto;
+    const record = await this.scheduleRepository.findOne({ where: { scheduleUuid } });
+    record.startAt = startAt;
+    record.endAt = endAt;
+
+    if (scheduleMetadata.repeated) {
+      record.last = false;
+    }
+
+    try {
+      await this.scheduleRepository.save(record);
+      if (scheduleMetadata.repeated) {
+        await this.addRepeatedSchedule(record, dto.repetition);
+      }
+      return scheduleUuid;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   async deleteSchedule(dto: DeleteScheduleDto) {
     return await this.scheduleRepository.deleteSchedule(dto);
   }
 
-  async getScheduleEntityByScheduleUuid(scheduleUuid: string): Promise<ScheduleEntity> {
+  private async addRepeatedSchedule(record: ScheduleEntity, repetition: RepetitionDto) {
+    const result: ScheduleEntity[] = [];
+    let startDateTime = !!record.startAt ? new Date(record.startAt) : null;
+    let endDateTime = new Date(record.endAt);
+    // TODO: UTC 시간으로 변환됨
+    for (let i = 0; i < 30; i++) {
+      const scheduleUuid = ulid();
+      if (repetition.cycleType === "WEEKLY") {
+        startDateTime = !!startDateTime ? addWeeks(startDateTime, repetition.cycleCount) : null;
+        endDateTime = addWeeks(endDateTime, repetition.cycleCount);
+      } else {
+        startDateTime = !!startDateTime ? add(startDateTime, { days: repetition.cycleCount }) : null;
+        endDateTime = add(endDateTime, { days: repetition.cycleCount });
+      }
+      result.push(
+        this.scheduleRepository.create({
+          scheduleUuid,
+          startAt: !!startDateTime ? startDateTime.toISOString().slice(0, 19) : null,
+          endAt: endDateTime.toISOString().slice(0, 19),
+          finished: false,
+          failed: false,
+          remindMemo: "",
+          last: false,
+          metadataId: record.metadataId,
+        }),
+      );
+    }
+
+    result[result.length - 1].last = true;
+    await this.scheduleRepository.save(result);
+  }
+
+  async getScheduleEntityByScheduleUuid(scheduleUuid: string) {
     return await this.scheduleRepository.findOne({ where: { scheduleUuid }, relations: ["parent"] });
   }
 }

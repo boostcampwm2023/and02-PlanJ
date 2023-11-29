@@ -5,7 +5,6 @@ import { ScheduleMetaRepository } from "./schedule-meta.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
-import { HttpResponse } from "src/utils/http.response";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleResponse } from "./dto/schedule.response";
 
@@ -57,15 +56,17 @@ export class ScheduleMetaService {
 
     const record = await this.scheduleMetaRepository.findOne({ where: { metadataId } });
 
-    // if (!!record) {
-    //   throw new BadRequestException("해당하는 일정이 없습니다.");
-    // }
+    if (!record) {
+      throw new BadRequestException("해당하는 일정이 없습니다.");
+    }
 
     record.category = category;
     record.title = title;
     record.description = description;
     record.startTime = startTime;
     record.endTime = endTime;
+    record.hasLocation = !!dto.endLocation;
+    record.repeated = !!dto.repetition;
 
     try {
       await this.scheduleMetaRepository.save(record);
@@ -75,39 +76,19 @@ export class ScheduleMetaService {
     }
   }
 
-  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<string> {
+  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleResponse[]> {
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByDate(user, date);
-    const schedules = this.convertRawDataToResponse(rawSchedules);
-
-    const body: HttpResponse = {
-      message: "하루 일정 조회 성공",
-      data: schedules,
-    };
-
-    return JSON.stringify(body);
+    return this.convertRawDataToResponse(rawSchedules);
   }
 
-  async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<string> {
+  async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<ScheduleResponse[]> {
     const { firstDay, lastDay } = this.getWeekRange(date);
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByWeek(user, firstDay, lastDay);
-    const schedules = this.convertRawDataToResponse(rawSchedules);
-
-    const body: HttpResponse = {
-      message: "주간 일정 조회 성공",
-      data: schedules,
-    };
-
-    return JSON.stringify(body);
+    return this.convertRawDataToResponse(rawSchedules);
   }
 
-  async deleteScheduleMeta(metadataId: number): Promise<string> {
+  async deleteScheduleMeta(metadataId: number): Promise<void> {
     await this.scheduleMetaRepository.deleteScheduleMeta(metadataId);
-
-    const body: HttpResponse = {
-      message: "일정 삭제 성공",
-    };
-
-    return JSON.stringify(body);
   }
 
   async getAllScheduleByCategoryId(categoryId: number, userId: number) {

@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CategoryRepository } from "./category.repository";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -33,7 +33,13 @@ export class CategoryService {
   }
 
   async getCategoryEntity(categoryUuid: string): Promise<CategoryEntity> {
-    return await this.categoryRepository.findOneByCategoryUuid(categoryUuid);
+    const categoryEntity = await this.categoryRepository.findOneByCategoryUuid(categoryUuid);
+
+    if (!categoryEntity) {
+      throw new NotFoundException("존재하지 않는 category uuid");
+    }
+
+    return categoryEntity;
   }
 
   async deleteCategory(dto: DeleteCategoryDto) {

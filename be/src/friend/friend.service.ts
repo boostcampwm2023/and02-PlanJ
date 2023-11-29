@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { FriendRepository } from "./friend.repository";
 import { AddFriendDto } from "./dto/add-friend.dto";
 import { UserService } from "src/user/user.service";
