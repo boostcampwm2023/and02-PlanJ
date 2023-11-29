@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Alarm
+import com.boostcamp.planj.data.model.AlarmInfo
+import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
@@ -11,6 +13,7 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.naver.NaverResponse
+import com.boostcamp.planj.data.repository.AlarmRepository
 import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
     private val mainRepository: MainRepository,
+    private val alarmRepository: AlarmRepository,
     private val naverRepository: NaverRepository
 ) : ViewModel() {
 
@@ -167,6 +171,28 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun completeEditingSchedule() {
+        viewModelScope.launch {
+            if (scheduleAlarm.value != null) {
+                val dateList = scheduleEndDate.value?.split("/")!!
+                val timeList = scheduleEndTime.value?.split(":")!!
+                alarmRepository.setAlarm(
+                    AlarmInfo(
+                        scheduleId,
+                        scheduleTitle.value,
+                        DateTime(
+                            dateList[0].toInt(),
+                            dateList[1].toInt(),
+                            dateList[2].toInt(),
+                            timeList[0].toInt(),
+                            timeList[1].toInt()
+                        ),
+                        scheduleRepetition.value,
+                        scheduleAlarm.value!!
+                    )
+                )
+            }
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             val getCategory =
                 withContext((Dispatchers.IO)) { mainRepository.getCategory(scheduleCategory.value) }
