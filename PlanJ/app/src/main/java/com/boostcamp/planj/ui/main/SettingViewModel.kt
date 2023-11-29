@@ -6,6 +6,7 @@ import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,6 +19,9 @@ class SettingViewModel @Inject constructor(
     private val isAlarmOn = MutableStateFlow(false)
 
     val userInfo = MutableStateFlow<User?>(null)
+
+    private val _isEditMode = MutableStateFlow(false)
+    val isEditMode = _isEditMode.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -41,6 +45,9 @@ class SettingViewModel @Inject constructor(
                 TODO("로그인 화면으로 이동")
             }
         }
+    }
 
+    fun changeEditMode(){
+        _isEditMode.value = !_isEditMode.value
     }
 }

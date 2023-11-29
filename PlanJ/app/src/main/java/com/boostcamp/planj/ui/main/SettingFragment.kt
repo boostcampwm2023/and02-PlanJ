@@ -1,14 +1,20 @@
 package com.boostcamp.planj.ui.main
 
-import android.content.Intent
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.planj.databinding.FragmentSettingBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
@@ -31,8 +37,20 @@ class SettingFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.ivSettingIcon.setOnClickListener {
 
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.isEditMode.collectLatest { isMode ->
+                    if(isMode) {
+                        val focusView = binding.tvSettingNickname
+                        focusView.isEnabled = true
+                        focusView.requestFocus()
+                        focusView.setSelection(focusView.text.toString().length)
+                        val imm = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.showSoftInput(focusView, 0)
+                    }
+                }
+            }
         }
     }
 
