@@ -118,4 +118,7 @@ dependencies {
 
     //dateStore
     implementation(libs.androidx.datastore.preferences)
+
+    //glide
+    implementation(libs.glide)
 }

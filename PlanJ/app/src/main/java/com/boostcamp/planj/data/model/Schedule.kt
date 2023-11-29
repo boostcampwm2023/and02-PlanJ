@@ -20,5 +20,6 @@ data class Schedule(
     val doneMembers: List<User>? = null,
     val location: Location? = null,
     val isFinished: Boolean = false,
-    val isFailed: Boolean = false
+    val isFailed: Boolean = false,
+    val remindMemo: String = "",
 ) : Parcelable

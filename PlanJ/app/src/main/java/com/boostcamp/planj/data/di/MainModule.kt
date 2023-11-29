@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.boostcamp.planj.BuildConfig
+import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.network.MainApi
 import dagger.Module
@@ -88,6 +89,10 @@ object MainModule {
     fun provideRoom(@ApplicationContext context: Context): AppDatabase {
         return AppDatabase.getInstance(context)
     }
+
+    @Singleton
+    @Provides
+    fun provideAlarmDao(appDatabase: AppDatabase): AlarmInfoDao = appDatabase.alarmInfoDao()
 
     //DataStore
     @Singleton
