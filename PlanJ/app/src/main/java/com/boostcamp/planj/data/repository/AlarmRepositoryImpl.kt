@@ -25,7 +25,6 @@ class AlarmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setAlarm(alarmInfo: AlarmInfo) {
-
         alarmDao.insertAlarmInfo(alarmInfo)
 
         with(alarmInfo) {
