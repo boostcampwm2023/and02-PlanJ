@@ -1,23 +1,27 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "src/user/entity/user.entity";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
 @Entity("participant")
 export class ParticipantEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "participant_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
+  id: number;
+
+  @Column({ name: "participant_id", type: "int" })
   participantId: number;
 
-  @Column({ default: false })
-  author: boolean;
+  @Column({ name: "author_id", type: "int" })
+  authorId: number;
 
   /*
    * relation
    */
+  @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.metadataId)
+  @JoinColumn({ name: "participant_id" })
+  participant: ScheduleMetadataEntity;
 
-  // participant 추가 시 삭제될 관계
-  @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.participant, {
+  @ManyToOne(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.author, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "metadata_id" })
-  scheduleMeta: ScheduleMetadataEntity;
+  @JoinColumn({ name: "author_id" })
+  author: ScheduleMetadataEntity;
 }

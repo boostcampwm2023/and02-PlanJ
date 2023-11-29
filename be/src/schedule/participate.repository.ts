@@ -1,7 +1,6 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Repository, DataSource } from "typeorm";
 import { ParticipantEntity } from "./entity/participant.entity";
-import { UserEntity } from "src/user/entity/user.entity";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 
 @Injectable()
@@ -10,16 +9,31 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     super(ParticipantEntity, dataSource.createEntityManager());
   }
 
-  async addDefaultParticipantGroup(user: UserEntity, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
-    const record = this.create({ author: true, scheduleMeta });
+  async invite(authorScheduleMetadata: ScheduleMetadataEntity, invitedMetadataId: number): Promise<void> {
+    const authorId = authorScheduleMetadata.metadataId;
 
-    console.log(record);
+    const isNotMade = await this.isNotMade(authorScheduleMetadata);
+
+    if (isNotMade) {
+      const authorRecord = this.create({ participantId: authorId, authorId });
+      await this.save(authorRecord);
+    }
+
+    const participantRecord = this.create({ participantId: invitedMetadataId, authorId });
 
     try {
-      await this.save(record);
+      await this.save(participantRecord);
+      return;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  // 만들어진 적 없으면 true
+  private async isNotMade(authorScheduleMetadata: ScheduleMetadataEntity) {
+    const count = await this.count({ where: { authorId: authorScheduleMetadata.metadataId } });
+    console.log(count);
+    return count === 0;
   }
 }

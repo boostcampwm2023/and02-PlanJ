@@ -51,7 +51,7 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
     return record.metadataId;
   }
 
-  async updateSchedule(dto: UpdateScheduleDto): Promise<string> {
+  async updateSchedule(dto: UpdateScheduleDto): Promise<void> {
     const { scheduleUuid, startAt, endAt } = dto;
     const record = await this.findOne({ where: { scheduleUuid } });
     record.startAt = startAt;
@@ -59,14 +59,6 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
 
     try {
       await this.save(record);
-      const body: HttpResponse = {
-        message: "일정 수정 성공",
-        data: {
-          scheduleUuid: scheduleUuid,
-        },
-      };
-
-      return JSON.stringify(body);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
