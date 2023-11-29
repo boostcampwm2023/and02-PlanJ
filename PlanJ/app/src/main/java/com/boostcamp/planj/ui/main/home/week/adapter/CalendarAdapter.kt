@@ -1,6 +1,6 @@
 package com.boostcamp.planj.ui.main.home.week.adapter
 
-import android.content.Context
+
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,7 +15,7 @@ data class ScheduleType(
     val schedule: Schedule, val viewType: Int
 )
 
-class CalendarAdapter(val context: Context) :
+class CalendarAdapter() :
     ListAdapter<WeekSchedule, CalendarViewHolder>(diffUtil) {
 
 
@@ -25,7 +25,7 @@ class CalendarAdapter(val context: Context) :
 
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(currentList[position], context)
+        holder.bind(currentList[position])
     }
 
 

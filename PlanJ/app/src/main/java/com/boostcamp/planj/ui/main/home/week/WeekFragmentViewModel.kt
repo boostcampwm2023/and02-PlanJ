@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.WeekSchedule
-import com.boostcamp.planj.data.repository.MainRepositoryImpl
+import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.ui.main.home.week.adapter.CalendarVO
 import com.boostcamp.planj.ui.main.home.week.adapter.ScheduleType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeekFragmentViewModel @Inject constructor(
-    private val mainRepository: MainRepositoryImpl,
+    private val mainRepository: MainRepository,
 ) : ViewModel() {
 
     val scheduleList =
@@ -38,8 +38,8 @@ class WeekFragmentViewModel @Inject constructor(
 
             val emptyStart: List<Schedule> = scheduleList.value.filter {
                 (it.startTime == null
-                        && it.endTime.split("[-:T]".toRegex())[2].toInt() >= calendarVO.dayNumber.toInt()
-                        && today == calendarVO.dayNumber)
+                        && it.endTime.split("[-:T]".toRegex())[2].toInt() == calendarVO.dayNumber.toInt()
+                        )
                         ||
                         (it.startTime != null
                                 && it.startTime.split("[-:T]".toRegex())[2] == it.endTime.split("[-:T]".toRegex())[2]
@@ -49,7 +49,8 @@ class WeekFragmentViewModel @Inject constructor(
             val endList = scheduleList.value.filter {
                 it.endTime.split("[-:T]".toRegex())[2] == calendarVO.dayNumber
                         && calendarVO.dayNumber != today
-                        && ((it.startTime?.split("[-:T]".toRegex())?.get(2) ?: "") != it.endTime.split("[-:T]".toRegex())[2])
+                        && it.startTime != null
+                        && ((it.startTime.split("[-:T]".toRegex())[2]) != it.endTime.split("[-:T]".toRegex())[2])
             }
 
             val totalList: MutableList<ScheduleType> = mutableListOf()
