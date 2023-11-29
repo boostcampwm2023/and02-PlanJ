@@ -1,5 +1,6 @@
 package com.boostcamp.planj.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +30,10 @@ class SettingFragment : Fragment() {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.ivSettingIcon.setOnClickListener {
+
+        }
     }
 
     override fun onDestroyView() {

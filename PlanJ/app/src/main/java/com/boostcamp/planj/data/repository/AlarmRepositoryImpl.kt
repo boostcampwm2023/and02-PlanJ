@@ -5,13 +5,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.boostcamp.planj.data.PlanJReceiver
+import com.boostcamp.planj.data.db.AlarmInfoDao
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import java.util.Calendar
 import javax.inject.Inject
 
 class AlarmRepositoryImpl @Inject constructor(
-    private val context: Context
+    private val context: Context,
+    private val alarmDao: AlarmInfoDao
 ) : AlarmRepository {
 
     private val alarmManager by lazy {
@@ -43,6 +46,9 @@ class AlarmRepositoryImpl @Inject constructor(
                 dateList[4].toInt()
             )
             calendar.add(Calendar.MINUTE, -alarm.alarmTime)
+
+            //알람 정보 저장
+            alarmDao.insertAlarmInfo(AlarmInfo(schedule.scheduleId, calendar.timeInMillis))
 
             if (schedule.repetition == null) {
                 setOnTimeAlarm(calendar, pendingIntent)
