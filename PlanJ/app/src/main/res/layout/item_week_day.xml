@@ -2,15 +2,22 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/layout_week_day"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="1dp"
+        />
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="false">
 
         <TextView
             android:id="@+id/tv_week_day_week"
@@ -33,7 +40,8 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:clickable="false"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

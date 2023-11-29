@@ -1,10 +1,12 @@
 package com.boostcamp.planj.ui.main.home.week.adapter
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.databinding.ItemWeekScheduleBinding
 import com.boostcamp.planj.databinding.ItemWeekStartAndEndBinding
+
 
 class WeekScheduleAdapter(
     private val scheduleTypeList: List<ScheduleType>
