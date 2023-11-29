@@ -1,14 +1,17 @@
 package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.PatchScheduleBody
-import com.boostcamp.planj.data.model.PatchScheduleResponse
-import com.boostcamp.planj.data.model.PostCategoryBody
-import com.boostcamp.planj.data.model.PostCategoryResponse
-import com.boostcamp.planj.data.model.PostScheduleBody
-import com.boostcamp.planj.data.model.PostScheduleResponse
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.GetCategoryResponse
+import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
+import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostCategoryBody
+import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
@@ -46,13 +49,14 @@ interface MainRepository {
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
     fun postSchedule(categoryId: String, title: String, endTime: String): Flow<PostScheduleResponse>
+
     fun getUser(): Flow<String>
 
     fun getCategory(categoryName: String): Category
 
-    suspend fun deleteScheduleApi(userUuid: String, scheduleUuid: String)
+    suspend fun deleteScheduleApi(scheduleUuid: String)
 
-    suspend fun deleteCategoryApi(userUuid: String, scheduleUuid: String)
+    suspend fun deleteCategoryApi(categoryUuid: String)
 
     suspend fun updateSchedule(schedule: Schedule)
 
@@ -61,4 +65,23 @@ interface MainRepository {
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
 
     suspend fun deleteScheduleUsingCategoryName(categoryName: String)
+
+    suspend fun updateCategoryApi(
+        categoryUuid: String,
+        categoryName: String
+    ): Flow<PatchCategoryResponse>
+
+    suspend fun getCategoryListApi(): Flow<GetCategoryResponse>
+
+    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
+
+    suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
+
+    suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse>
+
+    suspend fun postFriendApi()
+
+    suspend fun getFriendsApi(): Flow<GetFriendResponse>
+
+    suspend fun deleteAccount()
 }

@@ -1,4 +1,4 @@
-package com.boostcamp.planj.data.model
+package com.boostcamp.planj.data.model.dto
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -9,5 +9,3 @@ data class PostScheduleBody(
     @SerializedName("title") val title : String,
     @SerializedName("endAt") val endAt : String,
 )
-
-

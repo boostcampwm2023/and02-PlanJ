@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
-import com.boostcamp.planj.data.model.PatchScheduleBody
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.NaverRepository
@@ -158,7 +158,7 @@ class ScheduleViewModel @Inject constructor(
     fun deleteSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                mainRepository.deleteScheduleApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", scheduleId)
+                mainRepository.deleteScheduleApi(scheduleId)
                 mainRepository.deleteScheduleUsingId(scheduleId)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
@@ -172,21 +172,19 @@ class ScheduleViewModel @Inject constructor(
                 withContext((Dispatchers.IO)) { mainRepository.getCategory(scheduleCategory.value) }
 
             val patchScheduleBody = PatchScheduleBody(
-                "01HFYAR1FX09FKQ2SW1HTG8BJ8",
                 getCategory.categoryId,
                 scheduleId,
                 scheduleTitle.value,
-                scheduleMemo.value ?: "",
+                scheduleMemo.value,
                 scheduleStartDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
-                } ?: "",
+                },
                 scheduleEndDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
                 } ?: "",
-                _endScheduleLocation.value?.placeName ?: "",
-                _endScheduleLocation.value?.address ?: "",
-                _endScheduleLocation.value?.latitude ?: "",
-                _endScheduleLocation.value?.longitude ?: ""
+                startScheduleLocation.value,
+                endScheduleLocation.value,
+                scheduleRepetition.value
             )
 
             mainRepository.patchSchedule(patchScheduleBody)

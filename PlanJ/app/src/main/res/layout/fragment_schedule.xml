@@ -449,7 +449,7 @@
                     android:gravity="center_vertical"
                     android:padding="8dp"
                     android:text="위치 알림 설정"
-                    android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{(viewModel.startScheduleLocation != null &amp;&amp; viewModel.isEditMode() == true) ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
@@ -495,7 +495,7 @@
                     android:onClick="@{() -> viewModel.endMapDelete()}"
                     android:padding="8dp"
                     android:src="@drawable/ic_delete"
-                    android:visibility="@{viewModel.endScheduleLocation == null ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{(viewModel.endScheduleLocation == null || viewModel.isEditMode() == false) ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
@@ -564,7 +564,7 @@
                             android:onClick="@{() -> viewModel.startMapDelete()}"
                             android:padding="8dp"
                             android:src="@drawable/ic_delete"
-                            android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}" />
+                            android:visibility="@{(viewModel.startScheduleLocation == null || viewModel.isEditMode() == false) ? View.GONE : View.VISIBLE}" />
 
                         <ImageView
                             android:id="@+id/iv_schedule_start_map"

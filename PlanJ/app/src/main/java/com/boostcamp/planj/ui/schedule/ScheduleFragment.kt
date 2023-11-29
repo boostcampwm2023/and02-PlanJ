@@ -114,22 +114,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isEditMode.collect { isEditMode ->
                 updateToolbar(isEditMode)
-                if (isEditMode) {
-                    binding.ivScheduleStartMapDelete.visibility =
-                        if (viewModel.startScheduleLocation.value == null) {
-                            View.GONE
-                        } else {
-                            View.VISIBLE
-                        }
-
-                    binding.ivScheduleEndMapDelete.visibility =
-                        if (viewModel.endScheduleLocation.value == null) {
-                            View.GONE
-                        } else {
-                            View.VISIBLE
-                        }
-
-                }
             }
         }
 
@@ -141,12 +125,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.categoryList.collect { categoryList ->
-//                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
-//                    categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
-//                )
-//                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
-//                    categoryList.toTypedArray()
-//                )
                 val arrayAdapter =
                     ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
