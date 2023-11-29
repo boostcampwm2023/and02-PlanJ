@@ -105,16 +105,20 @@ export class ScheduleApiService {
 
     const invitedUser = await this.userService.getUserEntityByEmail(invitedUserEmail);
 
-    const addScheduleDto: AddScheduleDto = {
-      userUuid: invitedUser.userUuid,
-      categoryUuid: "default",
-      title: authorScheduleMetadata.title,
-      endAt: authorSchedule.endAt,
-    };
+    const [isAlreadyInvited, invitedMetadataId] = this.isAlreadyInvited(authorMetadataId, invitedUser.userId);
 
-    const invitedScheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(addScheduleDto, invitedUser);
-    const invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
-    const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
+    if (!isAlreadyInvited) {
+      const addScheduleDto: AddScheduleDto = {
+        userUuid: invitedUser.userUuid,
+        categoryUuid: "default",
+        title: authorScheduleMetadata.title,
+        endAt: authorSchedule.endAt,
+      };
+
+      const invitedScheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(addScheduleDto, invitedUser);
+      const invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
+      const invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
+    }
 
     const startLocation: ScheduleLocationDto = !!authorScheduleLocation
       ? {
@@ -145,13 +149,21 @@ export class ScheduleApiService {
       endLocation,
     };
 
-    const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(
+    const invitedScheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(
       updateScheduleDto,
       null,
       invitedMetadataId,
     );
-    await this.scheduleLocationService.updateLocation(updateScheduleDto, scheduleMeta);
-    await this.scheduleService.updateSchedule(updateScheduleDto, scheduleMeta);
+
+    await this.scheduleLocationService.updateLocation(updateScheduleDto, invitedScheduleMeta);
+    await this.scheduleService.updateSchedule(updateScheduleDto, invitedScheduleMeta);
     return await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
+  }
+
+  // scheduleUuid에 연결된 schedulemetadataid가 이미 participant테이블의 author에 있는지 체크
+  // 초대된 사용자가 새롭게 초대된 것인지 체크
+  // 이미 있고 새롭게 초대된 것이 아니라면 add 필요없고 participant 테이블에 새로 만들 필요 없음
+  private async isAlreadyInvited(authorMetadataId: number, invitedUserId: number): Promise<(number | boolean)[]> {
+    return await this.participateService.isAlreadyInvited(authorMetadataId, invitedUserId);
   }
 }
