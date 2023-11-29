@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".PlanjApplication"
         android:allowBackup="true"
@@ -24,8 +26,7 @@
         <activity
             android:name=".ui.schedule.ScheduleActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -36,9 +37,8 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            >
-
+            android:windowSoftInputMode="adjustPan">
+   
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,12 +49,17 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
-
         </activity>
 
-        <activity android:name=".ui.categorydetail.CategoryDetailActivity"
-            android:exported="false"
-            />
+        <activity
+            android:name=".ui.categorydetail.CategoryDetailActivity"
+            android:exported="false" />
+
+        <receiver android:name=".data.PlanJReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

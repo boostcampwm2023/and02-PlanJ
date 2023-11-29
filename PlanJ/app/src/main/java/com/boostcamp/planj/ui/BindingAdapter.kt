@@ -49,7 +49,7 @@ fun TextView.setMemoLength(memo: String?) {
 fun TextView.setRepetitionInfo(repetition: Repetition?) {
     text = if (repetition == null) {
         resources.getString(R.string.not_set)
-    } else if (repetition.cycleType == "daily") {
+    } else if (repetition.cycleType == "DAILY") {
         resources.getString(R.string.repeat_per_day, repetition.cycleCount)
     } else {
         resources.getString(R.string.repeat_per_week, repetition.cycleCount)
