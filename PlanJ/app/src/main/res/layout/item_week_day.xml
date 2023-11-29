@@ -6,6 +6,14 @@
     android:clickable="true"
     android:focusable="true">
 
+    <FrameLayout
+        android:id="@+id/layout_click"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:elevation="1dp"
+        />
+
     <LinearLayout
         android:id="@+id/layout_week_day"
         android:layout_width="match_parent"

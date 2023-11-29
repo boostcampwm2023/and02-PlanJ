@@ -2,12 +2,10 @@ package com.boostcamp.planj.ui
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.BindingAdapter
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
@@ -19,7 +17,6 @@ import com.boostcamp.planj.getDate
 import com.boostcamp.planj.getTime
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
-import com.boostcamp.planj.ui.schedule.ScheduleStartMapViewModel
 import com.boostcamp.planj.ui.schedule.ScheduleViewModel
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -52,7 +49,7 @@ fun TextView.setMemoLength(memo: String?) {
 fun TextView.setRepetitionInfo(repetition: Repetition?) {
     text = if (repetition == null) {
         resources.getString(R.string.not_set)
-    } else if (repetition.cycleType == "daily") {
+    } else if (repetition.cycleType == "DAILY") {
         resources.getString(R.string.repeat_per_day, repetition.cycleCount)
     } else {
         resources.getString(R.string.repeat_per_week, repetition.cycleCount)
@@ -61,9 +58,9 @@ fun TextView.setRepetitionInfo(repetition: Repetition?) {
 
 @BindingAdapter("alarmInfo")
 fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
-    text = if (alarmInfo != null && alarmInfo.alarmType == "departure") {
+    text = if (alarmInfo != null && alarmInfo.alarmType == "DEPARTURE") {
         resources.getString(R.string.before_departure_time, alarmInfo.alarmTime)
-    } else if (alarmInfo != null && alarmInfo.alarmType == "end") {
+    } else if (alarmInfo != null && alarmInfo.alarmType == "END") {
         resources.getString(R.string.before_end_time, alarmInfo.alarmTime)
     } else {
         resources.getString(R.string.not_set)
@@ -146,15 +143,6 @@ fun TextView.setDateTime(schedule: Schedule) {
     }
 }
 
-
-@BindingAdapter("btnVisible")
-fun TextView.setVisible(viewModel : ScheduleViewModel){
-    visibility =if(viewModel.startScheduleLocation.value == null || viewModel.scheduleLocation.value == null) {
-        View.GONE
-    }else{
-        View.VISIBLE
-    }
-}
 
 @BindingAdapter("setTime")
 fun TextView.setTime(response: NaverResponse?){

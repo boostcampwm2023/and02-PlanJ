@@ -1,14 +1,21 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
@@ -16,11 +23,21 @@ import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapView
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+
 
 @AndroidEntryPoint
 class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSettingDialogListener {
@@ -69,21 +86,24 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.setLocation(args.location, args.startLocation)
-        binding.executePendingBindings()
 
         initAdapter()
         setObserver()
         setListener()
 
+        viewModel.setLocation(args.startLocation, args.location)
         repetitionSettingDialog.setRepetitionDialogListener(this)
         alarmSettingDialog.setAlarmSettingDialogListener(this)
+
+        binding.executePendingBindings()
     }
+
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
+
 
     private fun initAdapter() {
         val adapter = ScheduleParticipantAdapter(viewModel.members.value)
@@ -105,17 +125,28 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.categoryList.collect { categoryList ->
-//                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
-//                    categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
-//                )
-//                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
-//                    categoryList.toTypedArray()
-//                )
                 val arrayAdapter =
                     ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleAlarm.collect { alarm ->
+
+                    if (alarm != null && alarm.alarmType == "DEPARTURE") {
+                        binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
+                        binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
+
+                    } else {
+                        binding.tvScheduleLocationAlarm.text = "위치 알람 설정"
+                        binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_main2)
+                    }
+                }
+            }
+        }
+
     }
 
     private fun setListener() {
@@ -212,14 +243,14 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.ivScheduleMap.setOnClickListener {
             val action =
-                ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.endScheduleLocation.value)
             findNavController().navigate(action)
         }
 
         binding.ivScheduleStartMap.setOnClickListener {
             val action =
                 ScheduleFragmentDirections.actionScheduleFragmentToScheduleStartMapFragment(
-                    endLocation = viewModel.scheduleLocation.value,
+                    endLocation = viewModel.endScheduleLocation.value,
                     startLocation = viewModel.startScheduleLocation.value
                 )
             findNavController().navigate(action)
@@ -231,6 +262,50 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             participantDialog.arguments = bundle
             if (!participantDialog.isAdded) {
                 participantDialog.show(childFragmentManager, "전체 참가자")
+            }
+        }
+
+        binding.tvScheduleLocationUrlScheme.setOnClickListener {
+            activity?.let {
+
+                val startLocation =
+                    viewModel.startScheduleLocation.value ?: return@setOnClickListener
+                val endLocation = viewModel.endScheduleLocation.value ?: return@setOnClickListener
+                val url =
+                    "nmap://route/public?slat=${startLocation.latitude}&slng=${startLocation.longitude}&sname=${startLocation.placeName}&dlat=${endLocation.latitude}&dlng=${endLocation.longitude}&dname=${endLocation.placeName}&appname=com.boostcamp.planj";
+
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+
+                try {
+                    it.startActivity(intent)
+                } catch (e: Exception) {
+                    if (e is ActivityNotFoundException) {
+                        it.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("market://details?id=com.nhn.android.nmap")
+                            )
+                        )
+                    } else {
+                        Log.d("PLANJDEBUG", "${e.message}")
+                    }
+                }
+
+            }
+        }
+
+        binding.tvScheduleLocationAlarm.setOnClickListener {
+            viewModel.route.value?.let {
+                if (binding.tvScheduleLocationAlarm.text == "위치 알람 해제") {
+                    viewModel.setAlarm(null)
+                } else {
+                    val bottomSheet =
+                        ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration) { min ->
+                            viewModel.setAlarm(Alarm("DEPARTURE", min))
+                        }
+                    bottomSheet.show(childFragmentManager, tag)
+                }
             }
         }
     }

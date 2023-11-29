@@ -89,7 +89,6 @@ object MainModule {
         return AppDatabase.getInstance(context)
     }
 
-
     //DataStore
     @Singleton
     @Provides
@@ -98,4 +97,9 @@ object MainModule {
             produceFile = { context.preferencesDataStoreFile(BuildConfig.DATA_STORE_NAME) }
         )
 
+    @Singleton
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }

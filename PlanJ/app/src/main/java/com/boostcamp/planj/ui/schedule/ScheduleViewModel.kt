@@ -10,12 +10,15 @@ import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
+import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.data.repository.MainRepository
+import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -25,7 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val naverRepository: NaverRepository
 ) : ViewModel() {
 
     private lateinit var scheduleId: String
@@ -60,7 +64,8 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
 
-    val scheduleLocation = MutableStateFlow<Location?>(null)
+    private val _endScheduleLocation = MutableStateFlow<Location?>(null)
+    val endScheduleLocation = _endScheduleLocation.asStateFlow()
     val scheduleMemo = MutableStateFlow<String?>(null)
 
     val startScheduleLocation = MutableStateFlow<Location?>(null)
@@ -76,6 +81,9 @@ class ScheduleViewModel @Inject constructor(
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
+
+    private val _route = MutableStateFlow<NaverResponse?>(null)
+    val route: StateFlow<NaverResponse?> = _route.asStateFlow()
 
     fun setScheduleInfo(schedule: Schedule?) {
         schedule?.let { schedule ->
@@ -100,7 +108,7 @@ class ScheduleViewModel @Inject constructor(
             _scheduleAlarm.value = schedule.alarm
             _doneMembers.value = schedule.doneMembers
             //_members.value = schedule.members
-            scheduleLocation.value = schedule.location
+            _endScheduleLocation.value = schedule.location
             isFinished.value = schedule.isFinished
             isFailed.value = schedule.isFailed
         }
@@ -138,8 +146,8 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(location: Location?, startLocation: Location?) {
-        scheduleLocation.value = location
+    fun setLocation(startLocation: Location?, endLocation: Location?) {
+        _endScheduleLocation.value = endLocation
         startScheduleLocation.value = startLocation
     }
 
@@ -174,8 +182,8 @@ class ScheduleViewModel @Inject constructor(
                 scheduleEndDate.value?.let {
                     "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
                 } ?: "",
-                null,
-                scheduleLocation.value,
+                startScheduleLocation.value,
+                endScheduleLocation.value,
                 scheduleRepetition.value
             )
 
@@ -209,7 +217,7 @@ class ScheduleViewModel @Inject constructor(
                         alarm = scheduleAlarm.value,
                         members = emptyList(),
                         doneMembers = doneMembers.value,
-                        location = scheduleLocation.value,
+                        location = _endScheduleLocation.value,
                         isFinished = isFinished.value,
                         isFailed = isFailed.value
                     )
@@ -227,10 +235,33 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun endMapDelete() {
-        scheduleLocation.value = null
+        _endScheduleLocation.value = null
     }
 
     fun startMapDelete() {
+        startScheduleLocation.value = null
+    }
+
+
+    fun getNaverRoute(startLocation: Location?, endLocation: Location) {
+        if (startLocation == null) return
+
+        val start = "${startLocation.longitude},${startLocation.latitude}"
+        val end = "${endLocation.longitude},${endLocation.latitude}"
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _route.value = naverRepository.getNaverRoute(start, end)
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "error ${e.message}")
+            }
+        }
+    }
+
+    fun emptyRoute() {
+        _route.value = null
+    }
+
+    fun emptyStartLocation() {
         startScheduleLocation.value = null
     }
 }

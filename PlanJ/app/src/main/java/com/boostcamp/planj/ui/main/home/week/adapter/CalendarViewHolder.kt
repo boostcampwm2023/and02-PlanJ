@@ -26,7 +26,7 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
         binding.tvWeekDayWeek.text = scheduleList.calendar.dayOfWeek
         val today = scheduleList.calendar.dayNumber
 
-        binding.layoutWeekDay.setOnClickListener {
+        binding.layoutClick.setOnClickListener {
 
             val layoutInflater = LayoutInflater.from(context)
             val view = layoutInflater.inflate(R.layout.dialog_schedule_result, null)

@@ -38,7 +38,7 @@ class ScheduleMapViewModel @Inject constructor(
         }
     }
 
-    fun initLocation(location: Location?){
+    fun initLocation(location: Location?) {
         _location.value = location
         _clicked.value = true
     }
@@ -47,7 +47,6 @@ class ScheduleMapViewModel @Inject constructor(
     fun setLocation(location: Location?) {
         _location.value = location
     }
-
 
 
     fun changeClick() {
