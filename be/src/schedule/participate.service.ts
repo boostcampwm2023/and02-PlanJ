@@ -14,7 +14,7 @@ export class ParticipateService {
     await this.participateRepository.invite(authorScheduleMetadata, invitedMetadataId);
   }
 
-  async isAlreadyInvited(authorMetadataId: number, invitedUserId: number) {
+  async isAlreadyInvited(authorMetadataId: number, invitedUserId: number): Promise<(number | boolean)[]> {
     return await this.participateRepository.isAlreadyInvited(authorMetadataId, invitedUserId);
   }
 }
