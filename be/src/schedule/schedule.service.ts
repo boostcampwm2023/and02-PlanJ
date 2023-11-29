@@ -107,4 +107,10 @@ export class ScheduleService {
   async getScheduleEntityByScheduleUuid(scheduleUuid: string) {
     return await this.scheduleRepository.findOne({ where: { scheduleUuid }, relations: ["parent"] });
   }
+
+  async getFirstScheduleUuidByMetadataId(metadataId: number) {
+    const record = await this.scheduleRepository.findOne({ where: { metadataId } });
+    console.log(record);
+    return record.scheduleUuid;
+  }
 }

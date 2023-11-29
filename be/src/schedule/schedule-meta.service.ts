@@ -132,4 +132,10 @@ export class ScheduleMetaService {
 
     return { firstDay, lastDay };
   }
+
+  async updateSharedStatus(metadataId: number) {
+    const record = await this.scheduleMetaRepository.findOne({ where: { metadataId } });
+    record.shared = true;
+    await this.scheduleMetaRepository.save(record);
+  }
 }

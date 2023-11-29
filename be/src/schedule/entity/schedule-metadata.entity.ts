@@ -73,4 +73,9 @@ export class ScheduleMetadataEntity extends BaseEntity {
     cascade: true,
   })
   author: ParticipantEntity[];
+
+  @OneToMany(() => ParticipantEntity, (participant) => participant.participant, {
+    cascade: true,
+  })
+  participant: ParticipantEntity[];
 }
