@@ -39,6 +39,9 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true, name: "accept_notification" })
   acceptNotification: boolean;
 
+  @Column({ nullable: true, default: null, length: 256, name: "profile_url" })
+  profileUrl: string;
+
   /*
    * relation
    * */
