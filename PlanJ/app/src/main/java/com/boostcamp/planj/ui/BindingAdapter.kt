@@ -52,7 +52,7 @@ fun TextView.setMemoLength(memo: String?) {
 fun TextView.setRepetitionInfo(repetition: Repetition?) {
     text = if (repetition == null) {
         resources.getString(R.string.not_set)
-    } else if (repetition.cycleType == "daily") {
+    } else if (repetition.cycleType == "DAILY") {
         resources.getString(R.string.repeat_per_day, repetition.cycleCount)
     } else {
         resources.getString(R.string.repeat_per_week, repetition.cycleCount)
@@ -61,9 +61,9 @@ fun TextView.setRepetitionInfo(repetition: Repetition?) {
 
 @BindingAdapter("alarmInfo")
 fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
-    text = if (alarmInfo != null && alarmInfo.alarmType == "departure") {
+    text = if (alarmInfo != null && alarmInfo.alarmType == "DEPARTURE") {
         resources.getString(R.string.before_departure_time, alarmInfo.alarmTime)
-    } else if (alarmInfo != null && alarmInfo.alarmType == "end") {
+    } else if (alarmInfo != null && alarmInfo.alarmType == "END") {
         resources.getString(R.string.before_end_time, alarmInfo.alarmTime)
     } else {
         resources.getString(R.string.not_set)

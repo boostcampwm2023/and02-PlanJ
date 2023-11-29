@@ -1,5 +1,7 @@
 package com.boostcamp.planj.data.di
 
+import com.boostcamp.planj.data.repository.AlarmRepository
+import com.boostcamp.planj.data.repository.AlarmRepositoryImpl
 import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.LoginRepositoryImpl
 import com.boostcamp.planj.data.repository.MainRepository
@@ -32,6 +34,10 @@ abstract class RepositoryModule {
         searchRepositoryImpl: SearchRepositoryImpl
     ) : SearchRepository
 
+    @Binds
+    abstract fun provideAlarmRepository(
+        alarmRepositoryImpl: AlarmRepositoryImpl
+    ): AlarmRepository
 
     @Binds
     abstract fun provideNaverRepository(
