@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class UserInfo(
     @SerializedName("nickname") val nickname: String,
     @SerializedName("email") val email: String,
-    @SerializedName("profileImage") val imgUrl: String = ""
+    @SerializedName("profileUrl") val imgUrl: String = ""
 )
 
 data class GetUserInfoResponse(

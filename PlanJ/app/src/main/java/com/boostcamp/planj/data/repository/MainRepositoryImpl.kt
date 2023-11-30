@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -214,11 +215,12 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getMyInfo(): Flow<User> = flow {
         val myInfo = api.getMyInfo().data
-        emit(User(imgUrl = "", email = myInfo.email, nickname = myInfo.nickname))
+
+        emit(User(imgUrl = myInfo.imgUrl, email = myInfo.email, nickname = myInfo.nickname))
     }
 
     override fun postUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {
-        emit(api.postUser(PostUserBody(nickName), imageFile))
+        emit(api.patchUser(nickName, imageFile))
     }
 
     override suspend fun saveAlarmMode(mode: Boolean) {

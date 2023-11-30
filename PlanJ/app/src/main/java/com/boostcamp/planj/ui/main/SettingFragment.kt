@@ -75,6 +75,7 @@ class SettingFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.initUser()
 
         binding.ivSettingIconCamera.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -89,13 +90,13 @@ class SettingFragment : Fragment() {
                     try {
                         runBlocking {
                             viewModel.deleteAccount()
+                            val packageManager: PackageManager = requireContext().packageManager
+                            val intent = packageManager.getLaunchIntentForPackage(requireContext().packageName)
+                            val componentName = intent!!.component
+                            val mainIntent = Intent.makeRestartActivityTask(componentName)
+                            requireContext().startActivity(mainIntent)
+                            exitProcess(0)
                         }
-                        val packageManager: PackageManager = requireContext().packageManager
-                        val intent = packageManager.getLaunchIntentForPackage(requireContext().packageName)
-                        val componentName = intent!!.component
-                        val mainIntent = Intent.makeRestartActivityTask(componentName)
-                        requireContext().startActivity(mainIntent)
-                        exitProcess(0)
                     }catch (e : Exception){
                         Log.d("PLANJDEBUG", "delete error")
                     }
@@ -123,8 +124,9 @@ class SettingFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.userInfo.collectLatest { user ->
+                    Log.d("PLANJDEBUG", "user url ${user?.imgUrl}, userNicname ${user?.nickname}")
                     Glide.with(this@SettingFragment)
-                        .load(user?.imgUrl)
+                        .load("https://kr.object.ncloudstorage.com/and02-profile/2023/11/30/01HGEY4NRAV5FV6C73KM9TDGCC.jpg")
                         .error(R.drawable.ic_circle_person)
                         .apply(RequestOptions.circleCropTransform())
                         .into(binding.ivSettingImg)

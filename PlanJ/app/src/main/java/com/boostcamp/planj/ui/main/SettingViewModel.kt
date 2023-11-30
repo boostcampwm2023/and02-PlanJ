@@ -39,12 +39,15 @@ class SettingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            mainRepository.getMyInfo().collectLatest { user ->
-                _userInfo.value = user
-            }
-        }
-        viewModelScope.launch {
             _isAlarmOn.value = getAlarmMode()
+        }
+    }
+
+    fun initUser(){
+        viewModelScope.launch {
+            mainRepository.getMyInfo().collectLatest { user ->
+                _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
+            }
         }
     }
 
@@ -88,6 +91,7 @@ class SettingViewModel @Inject constructor(
 
     fun saveUser() {
         viewModelScope.launch {
+            Log.d("PLANJDEBUG", "userName : $nickName, ImageFiel : $imageFile ")
             mainRepository.postUser(nickName, imageFile)
                 .catch {
                     Log.d("PLANJDEBUG", "saveUser error ${it.message}")
@@ -110,5 +114,10 @@ class SettingViewModel @Inject constructor(
             Log.d("PLANJDEBUG", "saveAlarmMode $mode")
             mainRepository.saveAlarmMode(mode)
         }
+    }
+
+    override fun onCleared() {
+        Log.d("PLANJDEBUG", "onClear")
+        super.onCleared()
     }
 }

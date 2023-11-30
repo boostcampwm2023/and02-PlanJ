@@ -73,9 +73,9 @@ interface MainApi {
     suspend fun getMyInfo(): GetUserInfoResponse
 
     @Multipart
-    @POST("/api/auth")
-    suspend fun postUser(
-        @Part("nickname") nickname: PostUserBody,
+    @PATCH("/api/auth")
+    suspend fun patchUser(
+        @Part("nickname") nickname: String,
         @Part profileImage: MultipartBody.Part?
     ): PostUserResponse
 }

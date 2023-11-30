@@ -92,6 +92,7 @@ class CategoryDetailViewModel @Inject constructor(
             time[2].toInt()
         )
         val fail = calendar.timeInMillis < System.currentTimeMillis()
+
         viewModelScope.launch(Dispatchers.IO){
             mainRepository.updateSchedule(schedule.copy(isFailed = fail, isFinished = isCheck))
         }

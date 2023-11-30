@@ -15,6 +15,7 @@ import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostUserBody
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
