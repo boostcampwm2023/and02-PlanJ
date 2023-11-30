@@ -20,7 +20,11 @@ export class ParticipateService {
   }
 
   async getParticipantGroup(metadataId: number): Promise<ParticipantEntity[]> {
-    const authorId = (await this.participateRepository.findOne({ where: { participantId: metadataId } })).authorId;
-    return await this.participateRepository.find({ where: { authorId } });
+    const record = await this.participateRepository.findOne({ where: { participantId: metadataId } });
+    if (record === null) {
+      return null;
+    }
+
+    return await this.participateRepository.find({ where: { authorId: record.authorId } });
   }
 }
