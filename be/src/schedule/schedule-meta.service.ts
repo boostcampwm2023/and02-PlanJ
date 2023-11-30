@@ -107,12 +107,14 @@ export class ScheduleMetaService {
         const scheduleResponse: ScheduleResponse = {
           scheduleUuid: schedule.scheduleUuid,
           title: scheduleMeta.title,
-          description: scheduleMeta.description,
           startAt: schedule.startAt === null ? null : schedule.startAt,
           endAt: schedule.endAt,
           finished: schedule.finished,
           failed: schedule.failed, // TODO: 호출 시점에서 실패 처리
-          remindMemo: schedule.remindMemo,
+          repeated: scheduleMeta.repeated,
+          shared: scheduleMeta.shared,
+          participantCount: 0,
+          participantSuccessCount: 0,
         };
 
         return scheduleResponse;
