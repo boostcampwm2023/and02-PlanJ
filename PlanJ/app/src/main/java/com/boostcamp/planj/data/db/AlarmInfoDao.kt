@@ -10,7 +10,7 @@ import com.boostcamp.planj.data.model.AlarmInfo
 @Dao
 interface AlarmInfoDao {
 
-    @Query("DELETE FROM AlarmInfo")
+    @Query("DELETE FROM alarms")
     suspend fun deleteAllAlarmInfo()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

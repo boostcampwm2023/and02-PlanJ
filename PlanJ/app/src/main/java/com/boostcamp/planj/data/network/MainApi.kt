@@ -14,7 +14,6 @@ import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
-import com.boostcamp.planj.data.model.dto.PostUserBody
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import okhttp3.MultipartBody
 import retrofit2.http.Body

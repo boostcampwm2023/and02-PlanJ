@@ -163,7 +163,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun completeEditingSchedule() {
-        if (scheduleStartTime.value!!.toMilliseconds() > scheduleEndTime.value.toMilliseconds()) return
+        if (scheduleStartTime.value != null && (scheduleStartTime.value!!.toMilliseconds() > scheduleEndTime.value.toMilliseconds())) return
         viewModelScope.launch {
             if (scheduleAlarm.value != null) {
                 alarmRepository.setAlarm(

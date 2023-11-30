@@ -1,6 +1,5 @@
 package com.boostcamp.planj.data.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -23,7 +22,6 @@ import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
-import com.boostcamp.planj.data.model.dto.PostUserBody
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
