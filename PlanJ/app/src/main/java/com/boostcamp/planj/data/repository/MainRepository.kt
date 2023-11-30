@@ -1,10 +1,10 @@
 package com.boostcamp.planj.data.repository
 
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
-import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
@@ -91,10 +91,19 @@ interface MainRepository {
 
     suspend fun getMyInfo(): Flow<User>
 
-    fun postUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
+    fun postUser(nickName: String, imageFile: MultipartBody.Part?): Flow<PostUserResponse>
 
     suspend fun saveAlarmMode(mode: Boolean)
+
     suspend fun getAlarmMode(): Flow<Boolean>
 
     suspend fun deleteAllData()
+
+    suspend fun insertAlarmInfo(alarmInfo: AlarmInfo)
+
+    suspend fun getAllAlarmInfo(): List<AlarmInfo>
+
+    suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
+
+    suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
 }

@@ -20,10 +20,12 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
+import com.boostcamp.planj.ui.PlanjAlarm
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -57,6 +59,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD)
             .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+    }
+
+    private val planjAlarm by lazy {
+        PlanjAlarm(requireActivity())
     }
 
     override fun onCreateView(
@@ -113,6 +119,21 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isComplete.collect { isComplete ->
                 if (isComplete) activity?.finish()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.alarmEventFlow.collectLatest { alarmEvent ->
+                when (alarmEvent) {
+                    is AlarmEvent.Set -> {
+                        val alarmInfo = alarmEvent.alarmInfo
+                        planjAlarm.setAlarm(alarmInfo)
+                    }
+
+                    is AlarmEvent.Delete -> {
+                        planjAlarm.deleteAlarm(alarmEvent.scheduleId.hashCode())
+                    }
+                }
             }
         }
 
@@ -243,7 +264,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleLocationAlarm.setOnClickListener {
-            viewModel.route.value?.let {
+            viewModel.response.value?.let {
                 if (binding.tvScheduleLocationAlarm.text == "위치 알람 해제") {
                     viewModel.setAlarm(null)
                 } else {

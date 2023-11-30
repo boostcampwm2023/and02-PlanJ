@@ -9,6 +9,9 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.db.AppDatabase
+import com.boostcamp.planj.data.db.CategoryDao
+import com.boostcamp.planj.data.db.ScheduleDao
+import com.boostcamp.planj.data.db.UserDao
 import com.boostcamp.planj.data.network.MainApi
 import dagger.Module
 import dagger.Provides
@@ -52,7 +55,6 @@ object MainModule {
         }
     }
 
-
     //retrofit
     @Singleton
     @Provides
@@ -92,7 +94,19 @@ object MainModule {
 
     @Singleton
     @Provides
-    fun provideAlarmDao(appDatabase: AppDatabase): AlarmInfoDao = appDatabase.alarmInfoDao()
+    fun provideAlarmInfoDao(appDatabase: AppDatabase): AlarmInfoDao = appDatabase.alarmInfoDao()
+
+    @Singleton
+    @Provides
+    fun provideScheduleDao(appDatabase: AppDatabase): ScheduleDao = appDatabase.scheduleDao()
+
+    @Singleton
+    @Provides
+    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao = appDatabase.categoryDao()
+
+    @Singleton
+    @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao()
 
     //DataStore
     @Singleton

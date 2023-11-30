@@ -29,8 +29,8 @@
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.APP_BROWSER"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.APP_BROWSER" />
             </intent-filter>
 
         </activity>
@@ -38,7 +38,7 @@
             android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
-   
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,14 +48,15 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
 
         <activity
             android:name=".ui.categorydetail.CategoryDetailActivity"
             android:exported="false" />
 
-        <receiver android:name=".data.PlanJReceiver" android:exported="true">
+        <receiver
+            android:name=".ui.PlanJReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

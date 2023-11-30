@@ -20,8 +20,8 @@ interface AlarmInfoDao {
     suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
 
     @Query("DELETE FROM alarms WHERE scheduleId = :scheduleId")
-    suspend fun deleteAlarmInfoUsingCode(scheduleId: String)
+    suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
 
     @Query("SELECT * FROM alarms")
-    fun getAll(): List<AlarmInfo>
+    suspend fun getAll(): List<AlarmInfo>
 }
