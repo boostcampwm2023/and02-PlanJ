@@ -58,6 +58,7 @@ export class UserApiController {
     @UploadedFile() profileImage: Express.Multer.File,
     @Body("nickname") nickname: string,
   ): Promise<JSON> {
+    nickname = nickname.replace(/"/g, "");
     const result = await this.userApiService.updateUserInfo(token, profileImage, nickname);
     return JSON.parse(result);
   }

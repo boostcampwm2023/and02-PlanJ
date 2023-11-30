@@ -1,7 +1,8 @@
-import { Allow, IsArray, IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
+import { Allow, IsArray, IsNotEmpty, IsObject, IsOptional, IsString, Matches, ValidateNested } from "class-validator";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { RepetitionDto } from "./repetition.dto";
 import { ScheduleAlarmDto } from "./schedule-alarm.dto";
+import { Type } from "class-transformer";
 
 export class UpdateScheduleDto {
   userUuid?: string;
@@ -31,11 +32,13 @@ export class UpdateScheduleDto {
   @Matches(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$/, { message: "올바른 날짜 및 시간 형식이 아닙니다." })
   endAt: string;
 
-  @IsObject()
+  @ValidateNested({ each: true })
+  @Type(() => ScheduleLocationDto)
   @IsOptional()
   startLocation: ScheduleLocationDto;
 
-  @IsObject()
+  @ValidateNested({ each: true })
+  @Type(() => ScheduleLocationDto)
   @IsOptional()
   endLocation: ScheduleLocationDto;
 
@@ -47,7 +50,8 @@ export class UpdateScheduleDto {
   @IsOptional()
   participants?: string[];
 
-  @IsObject()
+  @ValidateNested({ each: true })
+  @Type(() => ScheduleAlarmDto)
   @IsOptional()
   alarm?: ScheduleAlarmDto;
 }
