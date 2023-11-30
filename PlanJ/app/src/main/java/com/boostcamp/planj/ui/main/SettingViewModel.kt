@@ -43,7 +43,7 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun initUser(){
+    fun initUser() {
         viewModelScope.launch {
             mainRepository.getMyInfo().collectLatest { user ->
                 _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
@@ -60,13 +60,13 @@ class SettingViewModel @Inject constructor(
     fun deleteAccount() {
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     mainRepository.deleteAccount()
                     mainRepository.emptyToken()
                     mainRepository.deleteAllData()
                     mainRepository.saveAlarmMode(false)
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
                 throw e
             }
@@ -77,12 +77,12 @@ class SettingViewModel @Inject constructor(
     fun logoutAccount() {
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     mainRepository.emptyToken()
                     mainRepository.deleteAllData()
                     mainRepository.saveAlarmMode(false)
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
                 throw e
             }
@@ -104,14 +104,11 @@ class SettingViewModel @Inject constructor(
 
     fun saveUser() {
         viewModelScope.launch {
-            Log.d("PLANJDEBUG", "userName : $nickName, ImageFiel : $imageFile ")
             mainRepository.postUser(nickName, imageFile)
                 .catch {
-                    Log.d("PLANJDEBUG", "saveUser error ${it.message}")
                     _isEditMode.value = false
                 }
                 .collectLatest {
-                    Log.d("PLANJDEBUG", "saveUser success $it")
                     _isEditMode.value = false
                 }
 
@@ -124,13 +121,8 @@ class SettingViewModel @Inject constructor(
 
     private fun saveAlarmMode(mode: Boolean) {
         viewModelScope.launch {
-            Log.d("PLANJDEBUG", "saveAlarmMode $mode")
             mainRepository.saveAlarmMode(mode)
         }
     }
 
-    override fun onCleared() {
-        Log.d("PLANJDEBUG", "onClear")
-        super.onCleared()
-    }
 }

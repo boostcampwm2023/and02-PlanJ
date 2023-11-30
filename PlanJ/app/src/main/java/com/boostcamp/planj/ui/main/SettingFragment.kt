@@ -45,7 +45,6 @@ class SettingFragment : Fragment() {
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            Log.d("PhotoPicker", "Selected URI: $uri")
             val file = File(absolutelyPath(uri, requireContext()))
             val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             viewModel.setImageFile(MultipartBody.Part.createFormData("profileImage", file.name, requestFile))
@@ -137,9 +136,8 @@ class SettingFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.userInfo.collectLatest { user ->
-                    Log.d("PLANJDEBUG", "user url ${user?.imgUrl}, userNicname ${user?.nickname}")
                     Glide.with(this@SettingFragment)
-                        .load("https://kr.object.ncloudstorage.com/and02-profile/2023/11/30/01HGEY4NRAV5FV6C73KM9TDGCC.jpg")
+                        .load(user?.imgUrl)
                         .error(R.drawable.ic_circle_person)
                         .apply(RequestOptions.circleCropTransform())
                         .into(binding.ivSettingImg)
