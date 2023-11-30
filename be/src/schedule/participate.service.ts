@@ -18,4 +18,13 @@ export class ParticipateService {
   async isAlreadyInvited(authorMetadataId: number, invitedUserId: number): Promise<number[]> {
     return await this.participateRepository.isAlreadyInvited(authorMetadataId, invitedUserId);
   }
+
+  async getParticipantGroup(metadataId: number): Promise<ParticipantEntity[]> {
+    const record = await this.participateRepository.findOne({ where: { participantId: metadataId } });
+    if (record === null) {
+      return null;
+    }
+
+    return await this.participateRepository.find({ where: { authorId: record.authorId } });
+  }
 }
