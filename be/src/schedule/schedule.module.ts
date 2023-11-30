@@ -12,10 +12,18 @@ import { ParticipateRepository } from "./participate.repository";
 import { ParticipantEntity } from "./entity/participant.entity";
 import { RepetitionEntity } from "./entity/repetition.entity";
 import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
+import { ScheduleAlarmService } from "./schedule-alarm.service";
+import { ScheduleAlarmEntity } from "./entity/schedule-alarm.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ScheduleMetadataEntity, ParticipantEntity, RepetitionEntity, ScheduleLocationEntity]),
+    TypeOrmModule.forFeature([
+      ScheduleMetadataEntity,
+      ParticipantEntity,
+      RepetitionEntity,
+      ScheduleLocationEntity,
+      ScheduleAlarmEntity,
+    ]),
   ],
   providers: [
     ScheduleMetaRepository,
@@ -26,6 +34,7 @@ import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
     ScheduleLocationService,
     RepetitionService,
     ParticipateService,
+    ScheduleAlarmService,
   ],
   exports: [ScheduleMetaService, ScheduleService, ScheduleLocationService, ParticipateService, RepetitionService],
 })

@@ -12,6 +12,7 @@ import { RepetitionService } from "../schedule/repetition.service";
 import { ParticipateService } from "src/schedule/participate.service";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { HttpResponse } from "src/utils/http.response";
+import { ScheduleAlarmService } from "../schedule/schedule-alarm.service";
 
 @Injectable()
 export class ScheduleApiService {
@@ -24,6 +25,7 @@ export class ScheduleApiService {
     private authService: AuthService,
     private repetitionService: RepetitionService,
     private participateService: ParticipateService,
+    private scheduleAlarmService: ScheduleAlarmService,
   ) {}
 
   async addSchedule(token: string, dto: AddScheduleDto): Promise<string> {
@@ -50,6 +52,7 @@ export class ScheduleApiService {
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
     await this.repetitionService.updateRepetition(dto, scheduleMeta);
     await this.scheduleService.updateSchedule(dto, scheduleMeta);
+    await this.scheduleAlarmService.addScheduleAlarm(dto, scheduleMeta);
     if (!!dto.participants) {
       for (const email of dto.participants) {
         await this.inviteSchedule(dto.scheduleUuid, email);

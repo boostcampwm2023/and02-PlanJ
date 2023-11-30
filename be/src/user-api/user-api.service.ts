@@ -61,7 +61,7 @@ export class UserApiService {
     return JSON.stringify(result);
   }
 
-  async updateUserInfo(token: string, profileImage: Express.Multer.File, nickname: string) {
+  async updateUserInfo(token: string, profileImage: Express.Multer.File, nickname: string): Promise<string> {
     const userUuid = this.authService.verify(token);
     let profileImageUrl = null;
 

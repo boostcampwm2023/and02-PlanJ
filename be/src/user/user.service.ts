@@ -63,7 +63,7 @@ export class UserService {
     await this.userRepository.deleteByUuid(userUuid);
   }
 
-  async update(userUuid: string, nickname: string, profileUrl: string | null): Promise<string> {
+  async update(userUuid: string, nickname: string, profileUrl: string | null): Promise<void> {
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
     user.nickname = nickname;
     user.profileUrl = profileUrl;
