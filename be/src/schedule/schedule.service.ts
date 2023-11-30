@@ -109,8 +109,12 @@ export class ScheduleService {
   }
 
   async getFirstScheduleUuidByMetadataId(metadataId: number) {
-    const record = await this.scheduleRepository.findOne({ where: { metadataId } });
-    console.log(record);
-    return record.scheduleUuid;
+    return (await this.scheduleRepository.findOne({ where: { metadataId } })).scheduleUuid;
+  }
+
+  async checkScheduleSuccessByMetadataIdAndEndAt(metadataId: number, endAt: string) {
+    const scheduleEntity = await this.scheduleRepository.findOne({ where: { metadataId, endAt } });
+    const result = !scheduleEntity.failed && scheduleEntity.finished;
+    return result;
   }
 }

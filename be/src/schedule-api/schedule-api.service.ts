@@ -13,6 +13,7 @@ import { ParticipateService } from "src/schedule/participate.service";
 import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { HttpResponse } from "src/utils/http.response";
 import { ScheduleAlarmService } from "../schedule/schedule-alarm.service";
+import { ScheduleResponse } from "src/schedule/dto/schedule.response";
 
 @Injectable()
 export class ScheduleApiService {
@@ -69,11 +70,12 @@ export class ScheduleApiService {
   async getDailySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    const schedules = await this.scheduleMetaService.getAllScheduleByDate(user, date);
+    const scheduleResponses = await this.scheduleMetaService.getAllScheduleByDate(user, date);
+    await this.updateParticipantInformation(scheduleResponses);
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
-      data: schedules,
+      data: scheduleResponses,
     };
     return JSON.stringify(body);
   }
@@ -81,13 +83,38 @@ export class ScheduleApiService {
   async getWeeklySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    const schedules = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+    const scheduleResponses = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+    await this.updateParticipantInformation(scheduleResponses);
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",
-      data: schedules,
+      data: scheduleResponses,
     };
     return JSON.stringify(body);
+  }
+
+  private async updateParticipantInformation(scheduleResponses: ScheduleResponse[]) {
+    for (const scheduleResponse of scheduleResponses) {
+      const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(scheduleResponse.scheduleUuid);
+      const group = await this.participateService.getParticipantGroup(metadataId);
+
+      if (group === null) {
+        continue;
+      }
+
+      const endAt = scheduleResponse.endAt;
+      scheduleResponse.participantCount = group.length;
+
+      for (const participant of group) {
+        const check = await this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(
+          participant.participantId,
+          endAt,
+        );
+        if (check) {
+          scheduleResponse.participantSuccessCount += 1;
+        }
+      }
+    }
   }
 
   async deleteSchedule(token: string, dto: DeleteScheduleDto): Promise<string> {
