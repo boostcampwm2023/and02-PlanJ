@@ -96,6 +96,7 @@ class ScheduleViewModel @Inject constructor(
             _doneMembers.value = schedule.doneMembers
             //_members.value = schedule.members
             _endScheduleLocation.value = schedule.location
+            startScheduleLocation.value = schedule.startLocation
             isFinished.value = schedule.isFinished
             isFailed.value = schedule.isFailed
         }
@@ -211,6 +212,7 @@ class ScheduleViewModel @Inject constructor(
                         members = emptyList(),
                         doneMembers = doneMembers.value,
                         location = _endScheduleLocation.value,
+                        startLocation = startScheduleLocation.value,
                         isFinished = isFinished.value,
                         isFailed = isFailed.value
                     )

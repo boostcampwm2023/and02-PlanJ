@@ -80,7 +80,11 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         setObserver()
         setListener()
 
-        viewModel.setLocation(args.startLocation, args.location)
+
+        if (args.startLocation != null || args.location != null) {
+            viewModel.setLocation(args.startLocation, args.location)
+        }
+
         repetitionSettingDialog.setRepetitionDialogListener(this)
         alarmSettingDialog.setAlarmSettingDialogListener(this)
 
