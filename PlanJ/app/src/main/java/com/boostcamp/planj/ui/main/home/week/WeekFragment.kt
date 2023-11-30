@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
+import com.boostcamp.planj.databinding.DialogScheduleResultBinding
 import com.boostcamp.planj.databinding.FragmentWeekBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
 import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
@@ -175,26 +176,21 @@ class WeekFragment : Fragment() {
 
 
     private fun makeDialog(list: List<Schedule>, title: String) {
+    val layoutInflater = LayoutInflater.from(requireContext())
+    val dialogBinding = DialogScheduleResultBinding.inflate(layoutInflater)
+    dialogBinding.tvDialogScheduleResultText.text = title
 
-        val layoutInflater = LayoutInflater.from(context)
-        val view = layoutInflater.inflate(R.layout.dialog_schedule_result, null)
-        view.findViewById<TextView>(R.id.tv_dialog_schedule_result_text).text = title
+    val dialog = AlertDialog.Builder(requireContext())
+        .setView(dialogBinding.root)
+        .create()
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(view)
-            .create()
-
-        val close = view.findViewById<ImageView>(R.id.iv_dialog_schedule_result_close)
-        close.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        val scheduleView =
-            view.findViewById<RecyclerView>(R.id.rv_dialog_schedule_result_week_schedule)
-        scheduleView.adapter = ScheduleSimpleViewAdapter(list)
+    dialogBinding.ivDialogScheduleResultClose.setOnClickListener{
+        dialog.dismiss()
+    }
+    dialogBinding.rvDialogScheduleResultWeekSchedule.adapter = ScheduleSimpleViewAdapter(list)
 
 
-        dialog.show()
+    dialog.show()
     }
 
 }

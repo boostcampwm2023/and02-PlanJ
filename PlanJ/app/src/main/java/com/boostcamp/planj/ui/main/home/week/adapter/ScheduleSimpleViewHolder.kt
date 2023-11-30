@@ -15,7 +15,6 @@ class ScheduleSimpleViewHolder(private val binding: ItemScheduleBinding) :
         binding.schedule = item
         binding.executePendingBindings()
         binding.cbDone.isEnabled = false
-        binding.cbDone.visibility = View.GONE
     }
 
     companion object {
