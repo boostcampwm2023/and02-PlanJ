@@ -40,4 +40,10 @@ export class ScheduleApiController {
     const result = await this.scheduleApiService.deleteSchedule(token, dto);
     return JSON.parse(result);
   }
+
+  @Get("/check")
+  async checkedSchedule(@Token() token: string, @Query("scheduleUuid") scheduleUuid: string): Promise<JSON> {
+    const result = await this.scheduleApiService.checkedSchedule(scheduleUuid);
+    return JSON.parse(result);
+  }
 }

@@ -41,7 +41,7 @@ export class FriendService {
       const friendList = await Promise.all(
         rawFriendList.map(async (friendEntity) => {
           const user = await this.userService.getUserEntityById(friendEntity.toId);
-          return { userUuid: user.userUuid, email: user.email, nickname: user.nickname };
+          return { profileUrl: user.profileUrl, email: user.email, nickname: user.nickname };
         }),
       );
 

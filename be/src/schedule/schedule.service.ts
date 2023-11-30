@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
@@ -76,7 +76,9 @@ export class ScheduleService {
     const result: ScheduleEntity[] = [];
     let startDateTime = !!record.startAt ? new Date(record.startAt) : null;
     let endDateTime = new Date(record.endAt);
-    // TODO: UTC 시간으로 변환됨
+    startDateTime = !!startDateTime ? add(startDateTime, { hours: 9 }) : null;
+    endDateTime = add(endDateTime, { hours: 9 });
+
     for (let i = 0; i < 30; i++) {
       const scheduleUuid = ulid();
       if (repetition.cycleType === "WEEKLY") {
@@ -86,6 +88,7 @@ export class ScheduleService {
         startDateTime = !!startDateTime ? add(startDateTime, { days: repetition.cycleCount }) : null;
         endDateTime = add(endDateTime, { days: repetition.cycleCount });
       }
+
       result.push(
         this.scheduleRepository.create({
           scheduleUuid,
@@ -109,12 +112,30 @@ export class ScheduleService {
   }
 
   async getFirstScheduleUuidByMetadataId(metadataId: number) {
-    return (await this.scheduleRepository.findOne({ where: { metadataId } })).scheduleUuid;
+    const record = await this.scheduleRepository.findOne({ where: { metadataId } });
+    return record.scheduleUuid;
   }
 
   async checkScheduleSuccessByMetadataIdAndEndAt(metadataId: number, endAt: string) {
     const scheduleEntity = await this.scheduleRepository.findOne({ where: { metadataId, endAt } });
-    const result = !scheduleEntity.failed && scheduleEntity.finished;
-    return result;
+    return !scheduleEntity.failed && scheduleEntity.finished;
+  }
+
+  async checkedSchedule(scheduleUuid: string) {
+    const record = await this.scheduleRepository.findOne({ where: { scheduleUuid } });
+
+    if (!record) {
+      throw new BadRequestException("해당하는 일정이 없습니다.");
+    }
+
+    record.finished = !record.finished;
+
+    const endAt = new Date(record.endAt);
+    const now = new Date();
+    if (endAt < now) {
+      record.failed = true;
+    }
+
+    await this.scheduleRepository.save(record);
   }
 }
