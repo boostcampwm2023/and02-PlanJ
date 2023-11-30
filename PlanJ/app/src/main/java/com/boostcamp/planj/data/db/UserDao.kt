@@ -17,6 +17,9 @@ interface UserDao {
     @Query("DELETE FROM users WHERE email = :email")
     suspend fun deleteUser(email: String)
 
+    @Query("DELETE FROM users")
+    suspend fun deleteAllUser()
+
     @Query("SELECT * FROM users")
     fun getAllUser(): Flow<List<User>>
 }

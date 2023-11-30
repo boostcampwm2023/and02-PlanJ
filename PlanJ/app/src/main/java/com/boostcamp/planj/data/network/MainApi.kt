@@ -14,12 +14,17 @@ import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
+import com.boostcamp.planj.data.model.dto.PostUserBody
+import com.boostcamp.planj.data.model.dto.PostUserResponse
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -66,4 +71,11 @@ interface MainApi {
 
     @GET("/api/auth")
     suspend fun getMyInfo(): GetUserInfoResponse
+
+    @Multipart
+    @PATCH("/api/auth")
+    suspend fun patchUser(
+        @Part("nickname") nickname: String,
+        @Part profileImage: MultipartBody.Part?
+    ): PostUserResponse
 }

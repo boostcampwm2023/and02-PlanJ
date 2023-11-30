@@ -70,7 +70,7 @@ class CategoryDetailViewModel @Inject constructor(
     }
 
     suspend fun getUser() = withContext(Dispatchers.IO) {
-        mainRepository.getUser().first()
+        mainRepository.getToken().first()
     }
 
     fun checkBoxChange(schedule: Schedule, isCheck: Boolean) {
@@ -86,6 +86,7 @@ class CategoryDetailViewModel @Inject constructor(
             endTime.second
         )
         val fail = calendar.timeInMillis < System.currentTimeMillis()
+        
         viewModelScope.launch(Dispatchers.IO) {
             mainRepository.updateSchedule(schedule.copy(isFailed = fail, isFinished = isCheck))
         }

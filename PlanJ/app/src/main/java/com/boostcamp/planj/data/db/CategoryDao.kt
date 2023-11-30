@@ -29,9 +29,12 @@ interface CategoryDao {
     fun getCategory(categoryName : String) : Category
 
     @Delete
-    fun deleteCategory(category: Category)
+    suspend fun deleteCategory(category: Category)
 
     @Update
     fun updateCategory(category: Category)
+
+    @Query("DELETE FROM categories")
+    fun deleteAllCategory()
 
 }

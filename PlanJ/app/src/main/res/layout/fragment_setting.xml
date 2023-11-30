@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.boostcamp.planj.ui.main.SettingViewModel" />
@@ -59,13 +61,28 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/iv_setting_icon"
+                    android:id="@+id/iv_setting_icon_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:contentDescription="@string/edit_profile"
+                    android:onClick="@{() -> viewModel.changeEditMode()}"
                     android:src="@drawable/ic_edit"
+                    android:visibility="@{viewModel.isEditMode() ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_setting_icon_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:contentDescription="프로필 수정"
+                    android:onClick="@{() -> viewModel.saveUser()}"
+                    android:src="@drawable/ic_check"
+                    android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,21 +91,37 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginTop="40dp"
-                    android:background="@color/light_gray"
+                    android:background="@android:color/transparent"
                     android:contentDescription="@string/user_profile_image"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <ImageView
+                    android:id="@+id/iv_setting_icon_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit_profile"
+                    android:src="@drawable/ic_camera"
+                    android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_setting_img"
+                    app:layout_constraintEnd_toEndOf="@id/iv_setting_img" />
+
+                <EditText
                     android:id="@+id/tv_setting_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:background="@{viewModel.isEditMode() ? @drawable/round_r8_stroke_w1 : null }"
+                    android:enabled="@{viewModel.isEditMode()}"
                     android:text="@{viewModel.userInfo.nickname}"
+                    android:afterTextChanged="@{(text) -> viewModel.changeText(text)}"
+                    android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    android:maxLength="12"
+                    android:paddingHorizontal="36dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_setting_img"
@@ -145,7 +178,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:onCheckedChanged="@{() -> viewModel.onClickAlarmSwitch()}"
+                    android:onClick="@{() -> viewModel.onClickAlarmSwitch()}"
+                    android:checked="@{viewModel.isAlarmOn()}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_setting_alarm"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_setting_alarm" />
@@ -162,7 +196,6 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:gravity="center_vertical"
-                    android:onClick="@{() -> viewModel.onClickLogout()}"
                     android:paddingHorizontal="16dp"
                     android:text="@string/logout"
                     android:textSize="16sp"
@@ -183,7 +216,6 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:gravity="center_vertical"
-                    android:onClick="@{() -> viewModel.onClickWithdrawal()}"
                     android:paddingHorizontal="16dp"
                     android:text="@string/withdrawal"
                     android:textSize="16sp"

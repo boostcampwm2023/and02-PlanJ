@@ -52,8 +52,8 @@ class MainViewModel @Inject constructor(
             viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
         )
 
-    suspend fun getUser() = withContext(Dispatchers.IO) {
-        mainRepository.getUser().first()
+    suspend fun getUser() = withContext(Dispatchers.IO){
+        mainRepository.getToken().first()
     }
 }
 

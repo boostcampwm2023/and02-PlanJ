@@ -65,7 +65,6 @@ class ScheduleStartMapViewModel @Inject constructor(
 
     fun getNaverRoute(startLocation: Location?, endLocation: Location) {
         if (startLocation == null) return
-
         val start = "${startLocation.longitude},${startLocation.latitude}"
         val end = "${endLocation.longitude},${endLocation.latitude}"
         viewModelScope.launch(Dispatchers.IO) {

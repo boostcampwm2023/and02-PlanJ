@@ -17,4 +17,5 @@ interface LoginRepository {
     fun getUser() : Flow<String>
 
     suspend fun saveUser(id : String)
+
 }
