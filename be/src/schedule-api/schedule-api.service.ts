@@ -70,9 +70,21 @@ export class ScheduleApiService {
   async getDailySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    let scheduleResponses = await this.scheduleMetaService.getAllScheduleByDate(user, date);
+    const scheduleResponses = await this.scheduleMetaService.getAllScheduleByDate(user, date);
 
-    scheduleResponses = await this.updateParticipantInformation(scheduleResponses);
+    scheduleResponses.forEach(async (scheduleResponse) => {
+      const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(scheduleResponse.scheduleUuid);
+      const group = await this.participateService.getParticipantGroup(metadataId);
+      const endAt = scheduleResponse.endAt;
+      scheduleResponse.participantCount = group.length;
+      scheduleResponse.participantSuccessCount = 0;
+
+      group.forEach((participant) => {
+        if (this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(participant.participantId, endAt)) {
+          scheduleResponse.participantSuccessCount += 1;
+        }
+      });
+    });
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
