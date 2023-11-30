@@ -36,6 +36,13 @@ import { ScheduleAlarmEntity } from "./entity/schedule-alarm.entity";
     ParticipateService,
     ScheduleAlarmService,
   ],
-  exports: [ScheduleMetaService, ScheduleService, ScheduleLocationService, ParticipateService, RepetitionService],
+  exports: [
+    ScheduleMetaService,
+    ScheduleService,
+    ScheduleLocationService,
+    ParticipateService,
+    RepetitionService,
+    ScheduleAlarmService,
+  ],
 })
 export class ScheduleModule {}
