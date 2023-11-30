@@ -128,6 +128,15 @@ export class ScheduleApiService {
     return JSON.stringify(body);
   }
 
+  async checkedSchedule(scheduleUuid: string): Promise<string> {
+    await this.scheduleService.checkedSchedule(scheduleUuid);
+
+    const body: HttpResponse = {
+      message: "일정 체크 처리 완료",
+    };
+    return JSON.stringify(body);
+  }
+
   async inviteSchedule(authorScheduleUuid: string, invitedUserEmail: string) {
     const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(authorScheduleUuid);
     const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(authorScheduleUuid);
