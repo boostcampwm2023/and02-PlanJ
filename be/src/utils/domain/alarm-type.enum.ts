@@ -1,4 +1,4 @@
 export enum AlarmType {
-  START = 0,
+  DEPARTURE = 0,
   END = 1,
 }
