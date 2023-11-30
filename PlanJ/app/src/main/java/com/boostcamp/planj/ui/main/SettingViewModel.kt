@@ -56,15 +56,28 @@ class SettingViewModel @Inject constructor(
         saveAlarmMode(_isAlarmOn.value)
     }
 
-    fun onClickLogout() {
-
-    }
 
     fun deleteAccount() {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO){
                     mainRepository.deleteAccount()
+                    mainRepository.emptyToken()
+                    mainRepository.deleteAllData()
+                    mainRepository.saveAlarmMode(false)
+                }
+            }catch (e : Exception){
+                Log.d("PLANJDEBUG", "delete error ${e.message}")
+                throw e
+            }
+
+        }
+    }
+
+    fun logoutAccount() {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO){
                     mainRepository.emptyToken()
                     mainRepository.deleteAllData()
                     mainRepository.saveAlarmMode(false)

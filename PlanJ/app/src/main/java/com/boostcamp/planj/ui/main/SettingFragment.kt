@@ -81,6 +81,19 @@ class SettingFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+
+        binding.tvSettingLogout.setOnClickListener {
+            runBlocking {
+                viewModel.logoutAccount()
+                val packageManager: PackageManager = requireContext().packageManager
+                val intent = packageManager.getLaunchIntentForPackage(requireContext().packageName)
+                val componentName = intent!!.component
+                val mainIntent = Intent.makeRestartActivityTask(componentName)
+                requireContext().startActivity(mainIntent)
+                exitProcess(0)
+            }
+        }
+
         binding.tvSettingWithdrawal.setOnClickListener {
             val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle("회원 탈퇴")
