@@ -83,9 +83,9 @@ class RepetitionSettingDialog : DialogFragment() {
                     val repetition = if (rbDialogRepetitionNo.isChecked) {
                         null
                     } else if (rbDialogRepetitionDay.isChecked) {
-                        Repetition("daily", etDialogRepetitionDay.text.toString().toInt())
+                        Repetition("DAILY", etDialogRepetitionDay.text.toString().toInt())
                     } else {
-                        Repetition("weekly", etDialogRepetitionWeek.text.toString().toInt())
+                        Repetition("WEEKLY", etDialogRepetitionWeek.text.toString().toInt())
                     }
                     repetitionSettingDialogListener?.onClickComplete(repetition)
                     dismiss()

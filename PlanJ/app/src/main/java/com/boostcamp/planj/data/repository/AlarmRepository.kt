@@ -1,10 +1,14 @@
 package com.boostcamp.planj.data.repository
 
-import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.AlarmInfo
 
 interface AlarmRepository {
 
-    fun setAlarm(schedule: Schedule)
+    suspend fun setAlarm(alarmInfo: AlarmInfo)
+
+    suspend fun setAllAlarm()
 
     fun deleteAlarm(requestCode: Int)
+
+    fun deleteAllAlarm()
 }

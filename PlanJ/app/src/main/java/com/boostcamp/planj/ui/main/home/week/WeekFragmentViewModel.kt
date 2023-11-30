@@ -19,38 +19,30 @@ class WeekFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     val scheduleList =
-        mainRepository.getWeekSchedule()
+        mainRepository.getSchedules()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(50000), emptyList())
     lateinit var calendarList: ArrayList<CalendarVO>
     lateinit var today: String
 
-
     fun makeWeekSchedule(calendarList: ArrayList<CalendarVO>): ArrayList<WeekSchedule> {
         val array: ArrayList<WeekSchedule> = arrayListOf()
 
-
-
         calendarList.forEach { calendarVO ->
             val haveStart = scheduleList.value.filter {
-                it.startTime != null && it.startTime.split("[-:T]".toRegex())[2].toInt() == calendarVO.dayNumber.toInt()
-                        && it.startTime.split("[-:T]".toRegex())[2] != it.endTime.split("[-:T]".toRegex())[2]
+                it.startTime != null && it.startTime.day == calendarVO.dayNumber.toInt()
+                        && it.startTime.day != it.endTime.day
             }
 
             val emptyStart: List<Schedule> = scheduleList.value.filter {
-                (it.startTime == null
-                        && it.endTime.split("[-:T]".toRegex())[2].toInt() == calendarVO.dayNumber.toInt()
-                        )
-                        ||
-                        (it.startTime != null
-                                && it.startTime.split("[-:T]".toRegex())[2] == it.endTime.split("[-:T]".toRegex())[2]
-                                && it.endTime.split("[-:T]".toRegex())[2] == calendarVO.dayNumber)
+                (it.startTime == null && it.endTime.day == calendarVO.dayNumber.toInt())
+                        || (it.startTime != null && it.startTime.day == it.endTime.day && it.endTime.day == calendarVO.dayNumber.toInt())
             }
 
             val endList = scheduleList.value.filter {
-                it.endTime.split("[-:T]".toRegex())[2] == calendarVO.dayNumber
+                it.endTime.day == calendarVO.dayNumber.toInt()
                         && calendarVO.dayNumber != today
                         && it.startTime != null
-                        && ((it.startTime.split("[-:T]".toRegex())[2]) != it.endTime.split("[-:T]".toRegex())[2])
+                        && (it.startTime.day != it.endTime.day)
             }
 
             val totalList: MutableList<ScheduleType> = mutableListOf()
@@ -68,5 +60,4 @@ class WeekFragmentViewModel @Inject constructor(
         }
         return array
     }
-
 }

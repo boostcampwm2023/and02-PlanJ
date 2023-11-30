@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="fragment"
+            type="com.boostcamp.planj.ui.schedule.ScheduleFragment" />
+
         <import type="android.view.View" />
 
         <variable
@@ -153,7 +157,8 @@
                     android:text="@string/not_set"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
-                    android:visibility="@{viewModel.scheduleStartDate == null ? View.VISIBLE : View.GONE}"
+                    android:onClick="@{() -> fragment.setStartTime()}"
+                    android:visibility="@{viewModel.scheduleStartTime == null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
                     app:layout_constraintTop_toBottomOf="@id/et_schedule_title" />
@@ -165,37 +170,24 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="20dp"
-                    android:visibility="@{viewModel.scheduleStartDate == null ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{viewModel.scheduleStartTime == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
                     app:layout_constraintTop_toBottomOf="@id/et_schedule_title">
 
                     <TextView
-                        android:id="@+id/tv_schedule_start_date"
+                        android:id="@+id/tv_schedule_start_date_time"
+                        dateTimeInfo="@{viewModel.scheduleStartTime}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:onClick="@{() -> fragment.setStartTime()}"
                         android:enabled="@{viewModel.isEditMode}"
                         android:maxLines="1"
                         android:padding="4dp"
-                        android:text='@{viewModel.scheduleStartDate ?? ""}'
                         android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_schedule_start_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:enabled="@{viewModel.isEditMode}"
-                        android:maxLines="1"
-                        android:padding="4dp"
-                        android:text='@{viewModel.scheduleStartTime ?? ""}'
-                        android:textColor="@color/selector_text_color"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/tv_schedule_start_date"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
@@ -232,34 +224,20 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_start" />
 
                 <TextView
-                    android:id="@+id/tv_schedule_end_date"
+                    android:id="@+id/tv_schedule_end_date_time"
+                    dateTimeInfo="@{viewModel.scheduleEndTime}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:enabled="@{viewModel.isEditMode}"
+                    android:onClick="@{() -> fragment.setEndTime()}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="4dp"
-                    android:text="@{viewModel.scheduleEndDate}"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_end"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_end"
-                    app:layout_constraintTop_toTopOf="@id/tv_schedule_end" />
-
-                <TextView
-                    android:id="@+id/tv_schedule_end_time"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:enabled="@{viewModel.isEditMode}"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:paddingHorizontal="4dp"
-                    android:text="@{viewModel.scheduleEndTime}"
-                    android:textColor="@color/selector_text_color"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_schedule_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_schedule_end_date"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_end" />
 
                 <com.google.android.material.divider.MaterialDivider

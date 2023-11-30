@@ -82,7 +82,7 @@ interface MainRepository {
 
     suspend fun postFriendApi(friendEmail: String)
 
-    suspend fun getFriendsApi(): Flow<GetFriendResponse>
+    suspend fun getFriendsApi(): Flow<List<User>>
 
     suspend fun deleteAccount()
 

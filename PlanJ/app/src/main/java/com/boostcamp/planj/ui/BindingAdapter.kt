@@ -10,14 +10,12 @@ import androidx.databinding.BindingAdapter
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.naver.NaverResponse
-import com.boostcamp.planj.getDate
-import com.boostcamp.planj.getTime
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
-import com.boostcamp.planj.ui.schedule.ScheduleViewModel
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -37,6 +35,22 @@ fun TextInputLayout.setPwdError(pwdState: PwdState) {
         PwdState.ERROR_LENGTH -> resources.getString(R.string.pwd_length_error)
         PwdState.ERROR_CONTENTS -> resources.getString(R.string.pwd_contents_error)
         else -> null
+    }
+}
+
+@BindingAdapter("dateTimeInfo")
+fun TextView.setDateTimeInfo(dateTime: DateTime?) {
+    text = if (dateTime == null) {
+        resources.getString(R.string.not_set)
+    } else {
+        String.format(
+            "%04d/%02d/%02d %02d:%02d",
+            dateTime.year,
+            dateTime.month,
+            dateTime.day,
+            dateTime.hour,
+            dateTime.minute
+        )
     }
 }
 
@@ -100,7 +114,7 @@ fun TextView.setTitle(schedule: Schedule) {
 
 @BindingAdapter("setCategoryBackground")
 fun LinearLayout.setBackground(item: Category) {
-    if (item.categoryId == "0")
+    if (item.categoryId == "all")
         setBackgroundResource(R.drawable.round_r8_main1)
     else
         setBackgroundResource(R.drawable.round_r8_main2)
@@ -118,41 +132,42 @@ fun TextView.isPopUpMenuVisible(category: Category) {
 @BindingAdapter("setDateTime")
 fun TextView.setDateTime(schedule: Schedule) {
     val currentDate =
-        SimpleDateFormat("yyyy-MM-dd", Locale("kr", "ko")).format(System.currentTimeMillis())
-    val endDate = schedule.endTime.getDate()
-    val endTime = schedule.endTime.getTime().split(":").subList(0, 2).joinToString(":")
+        SimpleDateFormat("yyyy/MM/dd", Locale("kr", "ko")).format(System.currentTimeMillis())
+    val scheduleEndTime = schedule.endTime
+    val endDate = String.format("%04d/%02d/%02d", scheduleEndTime.year, scheduleEndTime.month, scheduleEndTime.day)
+    val endTime = String.format("%02d:%02d", scheduleEndTime.hour, scheduleEndTime.minute)
     if (schedule.startTime == null) {
-
         text = if (currentDate == endDate) {
             "오늘 $endTime 까지"
         } else {
-            "${endDate.replace("-", "/")} $endTime"
+            "$endDate $endTime"
         }
     } else {
-        val startDate = schedule.startTime.getDate()
-        val startTime = schedule.startTime.getTime().split(":").subList(0, 2).joinToString(":")
+        val scheduleStartTime = schedule.startTime
+        val startDate = String.format("%04d/%02d/%02d", scheduleStartTime.year, scheduleStartTime.month, scheduleStartTime.day)
+        val startTime = String.format("%02d:%02d", scheduleStartTime.hour, scheduleStartTime.minute)
         text = if (startDate == endDate) {
             if (currentDate == startDate) {
                 "오늘 $startTime ~ $endTime"
             } else {
-                "${startDate.replace("-", "/")} $startTime ~ $endTime"
+                "$startDate $startTime ~ $endTime"
             }
         } else {
-            "${startDate.replace("-", "/")} - ${endDate.replace("-", "/")}"
+            "$startDate - $endDate"
         }
     }
 }
 
 
 @BindingAdapter("setTime")
-fun TextView.setTime(response: NaverResponse?){
+fun TextView.setTime(response: NaverResponse?) {
     response?.let {
         var time = it.route.trafast[0].summary.duration
-        val hour = time/(1000 * 60 * 60)
+        val hour = time / (1000 * 60 * 60)
         time %= (1000 * 60 * 60)
-        val min = time/(1000 * 60)
+        val min = time / (1000 * 60)
 
-        text = if(hour == 0){
+        text = if (hour == 0) {
             "소요 시간 ${min}분"
         } else {
             "소요 시간 ${hour}시 ${min}분"
@@ -161,12 +176,12 @@ fun TextView.setTime(response: NaverResponse?){
 }
 
 @BindingAdapter("setDistance")
-fun TextView.setDistance(response: NaverResponse?){
+fun TextView.setDistance(response: NaverResponse?) {
     response?.let {
         val distance = it.route.trafast[0].summary.distance
 
-        text = if(distance >= 1000){
-            "거리 : ${distance/1000.0}km"
+        text = if (distance >= 1000) {
+            "거리 : ${distance / 1000.0}km"
         } else {
             "거리 : ${distance}m "
         }

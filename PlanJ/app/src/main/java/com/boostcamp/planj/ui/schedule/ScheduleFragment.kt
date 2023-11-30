@@ -2,7 +2,6 @@ package com.boostcamp.planj.ui.schedule
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -25,18 +23,8 @@ import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraAnimation
-import com.naver.maps.map.CameraUpdate
-import com.naver.maps.map.MapView
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
@@ -84,6 +72,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         super.onViewCreated(view, savedInstanceState)
 
         binding.viewModel = viewModel
+        binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
 
@@ -146,7 +135,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 }
             }
         }
-
     }
 
     private fun setListener() {
@@ -176,51 +164,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.toolbarSchedule.setNavigationOnClickListener {
             activity?.finish()
-        }
-
-        binding.tvScheduleStartEmpty.setOnClickListener {
-            val datePicker = setDatePicker(viewModel.getStartDate())
-            datePicker.show(childFragmentManager, "시작 날짜 설정")
-            val timePicker = setTimePicker(viewModel.scheduleStartTime.value)
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartDate(datePicker.selection ?: 0)
-                timePicker.show(childFragmentManager, "시작 시간 설정")
-            }
-            timePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartTime(timePicker.hour, timePicker.minute)
-            }
-        }
-
-        binding.tvScheduleStartDate.setOnClickListener {
-            val datePicker = setDatePicker(viewModel.getStartDate())
-            datePicker.show(childFragmentManager, "시작 날짜 설정")
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartDate(datePicker.selection ?: 0)
-            }
-        }
-
-        binding.tvScheduleEndDate.setOnClickListener {
-            val datePicker = setDatePicker(viewModel.getEndDate())
-            datePicker.show(childFragmentManager, "종료 날짜 설정")
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setEndDate(datePicker.selection ?: 0)
-            }
-        }
-
-        binding.tvScheduleStartTime.setOnClickListener {
-            val timePicker = setTimePicker(viewModel.scheduleStartTime.value)
-            timePicker.show(childFragmentManager, "시작 시간 설정")
-            timePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartTime(timePicker.hour, timePicker.minute)
-            }
-        }
-
-        binding.tvScheduleEndTime.setOnClickListener {
-            val timePicker = setTimePicker(viewModel.scheduleEndTime.value)
-            timePicker.show(childFragmentManager, "종료 시간 설정")
-            timePicker.addOnPositiveButtonClickListener {
-                viewModel.setEndTime(timePicker.hour, timePicker.minute)
-            }
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
@@ -319,6 +262,40 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
     }
 
+    fun setStartTime() {
+        var dateMillis = 0L
+        val datePicker = setDatePicker(viewModel.getStartDate())
+        datePicker.show(childFragmentManager, "시작 날짜 설정")
+
+        val scheduleStartTime = viewModel.scheduleStartTime.value
+        val timePicker = setTimePicker(scheduleStartTime?.hour ?: 0, scheduleStartTime?.minute ?: 0)
+
+        datePicker.addOnPositiveButtonClickListener {
+            dateMillis = datePicker.selection ?: 0
+            timePicker.show(childFragmentManager, "시작 시간 설정")
+        }
+        timePicker.addOnPositiveButtonClickListener {
+            viewModel.setStartTime(dateMillis, timePicker.hour, timePicker.minute)
+        }
+    }
+
+    fun setEndTime() {
+        var dateMillis = 0L
+        val datePicker = setDatePicker(viewModel.getEndDate())
+        datePicker.show(childFragmentManager, "시작 날짜 설정")
+
+        val scheduleEndTime = viewModel.scheduleEndTime.value
+        val timePicker = setTimePicker(scheduleEndTime.hour, scheduleEndTime.minute)
+
+        datePicker.addOnPositiveButtonClickListener {
+            dateMillis = datePicker.selection ?: 0
+            timePicker.show(childFragmentManager, "시작 시간 설정")
+        }
+        timePicker.addOnPositiveButtonClickListener {
+            viewModel.setEndTime(dateMillis, timePicker.hour, timePicker.minute)
+        }
+    }
+
     private fun setDatePicker(selectedDate: Long?): MaterialDatePicker<Long> {
         if (selectedDate != null) {
             datePickerBuilder.setSelection(selectedDate)
@@ -326,14 +303,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         return datePickerBuilder.build()
     }
 
-    private fun setTimePicker(selectedTime: String?): MaterialTimePicker {
-        if (selectedTime == null) {
-            timePickerBuilder.setHour(0)
-            timePickerBuilder.setMinute(0)
-        } else {
-            timePickerBuilder.setHour(selectedTime.split(":")[0].toInt())
-            timePickerBuilder.setMinute(selectedTime.split(":")[1].toInt())
-        }
+    private fun setTimePicker(hour: Int = 0, minute: Int = 0): MaterialTimePicker {
+        timePickerBuilder.setHour(hour)
+        timePickerBuilder.setMinute(minute)
         return timePickerBuilder.build()
     }
 
