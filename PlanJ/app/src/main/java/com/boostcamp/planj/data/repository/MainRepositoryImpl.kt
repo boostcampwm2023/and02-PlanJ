@@ -206,7 +206,7 @@ class MainRepositoryImpl @Inject constructor(
         val friendInfo = api.getFriends().data
         val user = mutableListOf<User>()
         friendInfo.forEach { friendInfo ->
-            user.add(User("", friendInfo.nickname, friendInfo.email))
+            user.add(User(friendInfo.profileUrl, friendInfo.nickname, friendInfo.email))
         }
         emit(user.toList())
     }

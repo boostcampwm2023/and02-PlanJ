@@ -3,7 +3,7 @@ package com.boostcamp.planj.data.model.dto
 import com.google.gson.annotations.SerializedName
 
 data class FriendInfo(
-    @SerializedName("userUuid") val userUuid: String,
+    @SerializedName("profileUrl") val profileUrl: String? = null,
     @SerializedName("email") val email: String,
     @SerializedName("nickname") val nickname: String
 )
