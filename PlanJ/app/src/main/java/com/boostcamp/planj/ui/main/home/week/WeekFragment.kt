@@ -1,18 +1,14 @@
 package com.boostcamp.planj.ui.main.home.week
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -23,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
+import com.boostcamp.planj.databinding.DialogScheduleResultBinding
 import com.boostcamp.planj.databinding.FragmentWeekBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
 import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
@@ -103,7 +100,7 @@ class WeekFragment : Fragment() {
         var week_day: Array<String> = resources.getStringArray(R.array.calendar_day)
 
         calendarList.run {
-            val dateFormat = DateTimeFormatter.ofPattern("dd")
+            val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
             var preSunday: LocalDateTime =
                 (LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)))
@@ -115,7 +112,12 @@ class WeekFragment : Fragment() {
             for (i in 0..6) {
 
                 calendarList.run {
-                    add(CalendarVO(preSunday.plusDays(i.toLong()).format(dateFormat), week_day[i]))
+                    add(
+                        CalendarVO(
+                            preSunday.plusDays(i.toLong())
+                                .format(DateTimeFormatter.ofPattern("dd")), week_day[i]
+                        )
+                    )
                 }
             }
         }
@@ -137,70 +139,58 @@ class WeekFragment : Fragment() {
         weekAdapter =
             SegmentScheduleAdapter(swipeListener, clickListener, checkBoxListener)
         binding.rvWeekScheduleList.adapter = weekAdapter
+        binding.rvWeekScheduleList.isNestedScrollingEnabled = false
         weekAdapter.submitList(emptyList())
     }
 
     private fun resultSchedule() {
 
-        val finishList = viewModel.scheduleList.value.filter { schedule: Schedule ->
-            schedule.isFailed.not() && schedule.isFinished
+        val finishList = mutableListOf<Schedule>()
+        val failList = mutableListOf<Schedule>()
+        val haveList = mutableListOf<Schedule>()
+
+        viewModel.scheduleList.value.forEach { schedule: Schedule ->
+            if (schedule.isFinished) {
+                finishList.add(schedule)
+            } else {
+                haveList.add(schedule)
+            }
+            if (schedule.isFailed) {
+                failList.add(schedule)
+            }
         }
-        setResultBtn(binding.btnWeekFinish, finishList, Color.BLUE)
+        binding.tvWeekFinishCount.text = finishList.size.toString()
+        binding.tvWeekFailCount.text = failList.size.toString()
+        binding.tvWeekHaveCount.text = haveList.size.toString()
 
-
-        val failList =
-            viewModel.scheduleList.value.filter { schedule: Schedule -> schedule.isFailed }
-        setResultBtn(binding.btnWeekFail, failList, Color.RED)
-
-        val haveList =
-            viewModel.scheduleList.value.filter { schedule: Schedule -> schedule.isFinished.not() }
-        setResultBtn(binding.btnWeekHave, haveList, Color.BLACK)
-
-
-    }
-
-    private fun setResultBtn(
-        resultBtn: AppCompatButton,
-        scheduleList: List<Schedule>,
-        color: Int
-    ) {
-        val title = resultBtn.text.toString().split("\n")
-        val countText = SpannableString(
-            title[0].plus("\n${scheduleList.size}")
-        )
-
-        countText.setSpan(
-            ForegroundColorSpan(color),
-            title[0].length,
-            countText.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        resultBtn.text = countText
-        resultBtn.setOnClickListener {
-            makeDialog(scheduleList)
+        binding.btnWeekFinish.setOnClickListener {
+            makeDialog(finishList, getString(R.string.completeSchedule))
+        }
+        binding.btnWeekFail.setOnClickListener {
+            makeDialog(failList, getString(R.string.failSchedule))
+        }
+        binding.btnWeekHave.setOnClickListener {
+            makeDialog(haveList, getString(R.string.haveSchedule))
         }
     }
 
-    private fun makeDialog(list: List<Schedule>) {
 
-        val layoutInflater = LayoutInflater.from(context)
-        val view = layoutInflater.inflate(R.layout.dialog_schedule_result, null)
+    private fun makeDialog(list: List<Schedule>, title: String) {
+    val layoutInflater = LayoutInflater.from(requireContext())
+    val dialogBinding = DialogScheduleResultBinding.inflate(layoutInflater)
+    dialogBinding.tvDialogScheduleResultText.text = title
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(view)
-            .create()
+    val dialog = AlertDialog.Builder(requireContext())
+        .setView(dialogBinding.root)
+        .create()
 
-        val close = view.findViewById<ImageView>(R.id.iv_dialog_schedule_result_close)
-        close.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        val scheduleView =
-            view.findViewById<RecyclerView>(R.id.rv_dialog_schedule_result_week_schedule)
-        scheduleView.adapter = ScheduleSimpleViewAdapter(list)
+    dialogBinding.ivDialogScheduleResultClose.setOnClickListener{
+        dialog.dismiss()
+    }
+    dialogBinding.rvDialogScheduleResultWeekSchedule.adapter = ScheduleSimpleViewAdapter(list)
 
 
-        dialog.show()
+    dialog.show()
     }
 
 }
