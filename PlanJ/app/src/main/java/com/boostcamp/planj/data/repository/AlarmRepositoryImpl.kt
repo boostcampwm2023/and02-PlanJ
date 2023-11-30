@@ -8,7 +8,6 @@ import com.boostcamp.planj.data.PlanJReceiver
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Repetition
-import com.boostcamp.planj.data.model.Schedule
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -25,40 +24,71 @@ class AlarmRepositoryImpl @Inject constructor(
         Intent(context, PlanJReceiver::class.java)
     }
 
-    override fun setAlarm(schedule: Schedule) {
-        schedule.alarm?.let { alarm ->
-            val requestCode = schedule.scheduleId.hashCode()
-            val title = schedule.title
+    override suspend fun setAlarm(alarmInfo: AlarmInfo) {
+        alarmDao.insertAlarmInfo(alarmInfo)
+
+        with(alarmInfo) {
+            val requestCode = scheduleId.hashCode()
             val text = if (alarm.alarmType == "DEPARTURE") {
                 "출발 시간 ${alarm.alarmTime}분 전입니다."
             } else {
                 "종료 시간 ${alarm.alarmTime}분 전입니다."
             }
+
             val pendingIntent = createPendingIntent(requestCode, title, text)
 
-            val dateList = schedule.endTime.split("T", "/", ":")
             val calendar = Calendar.getInstance()
             calendar.set(
-                dateList[0].toInt(),
-                dateList[1].toInt() - 1,
-                dateList[2].toInt(),
-                dateList[3].toInt(),
-                dateList[4].toInt()
+                endTime.year,
+                endTime.month - 1,
+                endTime.day,
+                endTime.hour,
+                endTime.minute
             )
             calendar.add(Calendar.MINUTE, -alarm.alarmTime)
 
-            //알람 정보 저장
-            alarmDao.insertAlarmInfo(AlarmInfo(schedule.scheduleId, calendar.timeInMillis))
-
-            if (schedule.repetition == null) {
-                setOnTimeAlarm(calendar, pendingIntent)
+            if (repetition == null) {
+                setOneTimeAlarm(calendar, pendingIntent)
             } else {
-                setRepeatAlarm(calendar, schedule.repetition, pendingIntent)
+                setRepeatAlarm(calendar, repetition, pendingIntent)
             }
         }
     }
 
-    private fun setOnTimeAlarm(calendar: Calendar, pendingIntent: PendingIntent) {
+    override suspend fun setAllAlarm() {
+        alarmDao.getAll().forEach { alarmInfo ->
+            val alarmMillis = with(alarmInfo) {
+                val calendar = Calendar.getInstance()
+                calendar.set(
+                    endTime.year,
+                    endTime.month - 1,
+                    endTime.day,
+                    endTime.hour,
+                    endTime.minute
+                )
+                calendar.add(Calendar.MINUTE, -alarm.alarmTime)
+                calendar.timeInMillis
+            }
+            val nowMillis = System.currentTimeMillis()
+            if (nowMillis < alarmMillis || alarmInfo.repetition != null) {
+                alarmDao.deleteAlarmInfo(alarmInfo)
+            } else {
+                setAlarm(alarmInfo)
+            }
+        }
+    }
+
+    override fun deleteAlarm(requestCode: Int) {
+        alarmManager.cancel(createPendingIntent(requestCode))
+    }
+
+    override fun deleteAllAlarm() {
+        alarmDao.getAll().forEach { alarmInfo ->
+            deleteAlarm(alarmInfo.scheduleId.hashCode())
+        }
+    }
+
+    private fun setOneTimeAlarm(calendar: Calendar, pendingIntent: PendingIntent) {
         alarmManager.set(
             AlarmManager.RTC,
             calendar.timeInMillis,
@@ -82,10 +112,6 @@ class AlarmRepositoryImpl @Inject constructor(
             AlarmManager.INTERVAL_DAY * interval,
             pendingIntent
         )
-    }
-
-    override fun deleteAlarm(requestCode: Int) {
-        alarmManager.cancel(createPendingIntent(requestCode))
     }
 
     private fun createPendingIntent(

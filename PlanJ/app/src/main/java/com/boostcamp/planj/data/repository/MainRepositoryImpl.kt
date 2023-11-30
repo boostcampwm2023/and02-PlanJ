@@ -13,7 +13,6 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
-import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
@@ -205,8 +204,13 @@ class MainRepositoryImpl @Inject constructor(
         api.postFriend(PostFriendRequest(friendEmail))
     }
 
-    override suspend fun getFriendsApi(): Flow<GetFriendResponse> = flow {
-        emit(api.getFriends())
+    override suspend fun getFriendsApi(): Flow<List<User>> = flow {
+        val friendInfo = api.getFriends().data
+        val user = mutableListOf<User>()
+        friendInfo.forEach { friendInfo ->
+            user.add(User("", friendInfo.nickname, friendInfo.email))
+        }
+        emit(user.toList())
     }
 
     override suspend fun deleteAccount() {

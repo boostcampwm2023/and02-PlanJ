@@ -32,7 +32,6 @@ class TodayViewModel @Inject constructor(
         mainRepository.getSchedules()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-
     fun insertSchedule(schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO) {
             mainRepository.insertSchedule(schedule)
@@ -52,16 +51,15 @@ class TodayViewModel @Inject constructor(
 
     fun checkBoxChange(schedule: Schedule, isCheck: Boolean) {
         val calendar = Calendar.getInstance()
-        val date = schedule.endTime.getDate().split("-")
-        val time = schedule.endTime.getTime().split(":")
+        val endTime = schedule.endTime
 
         calendar.set(
-            date[0].toInt(),
-            date[1].toInt() - 1,
-            date[2].toInt(),
-            time[0].toInt(),
-            time[1].toInt(),
-            time[2].toInt()
+            endTime.year,
+            endTime.month - 1,
+            endTime.day,
+            endTime.hour,
+            endTime.minute,
+            endTime.second
         )
         val fail = calendar.timeInMillis < System.currentTimeMillis()
         viewModelScope.launch(Dispatchers.IO){

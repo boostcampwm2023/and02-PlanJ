@@ -2,6 +2,7 @@ package com.boostcamp.planj.data.db
 
 import androidx.room.TypeConverter
 import com.boostcamp.planj.data.model.Alarm
+import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.User
@@ -36,4 +37,11 @@ class TypeConverter {
     @TypeConverter
     fun toUserList(value: String?): List<User>? =
         Gson().fromJson(value, Array<User>::class.java)?.toList()
+
+    @TypeConverter
+    fun fromDateTimeList(value: DateTime?): String? = Gson().toJson(value)
+
+    @TypeConverter
+    fun toDateTimeList(value: String?): DateTime? =
+        Gson().fromJson(value, DateTime::class.java)
 }

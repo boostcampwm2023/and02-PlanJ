@@ -11,15 +11,16 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.databinding.DialogAddScheduleBinding
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class ScheduleDialog(
     private val categoryNames: List<String>,
     private val initText: String,
-    private val listener: (String, String, String) -> Unit
+    private val listener: (String, String, DateTime) -> Unit
 ) : DialogFragment() {
 
     private var _binding: DialogAddScheduleBinding? = null
@@ -73,14 +74,20 @@ class ScheduleDialog(
                 binding.tietDialogScheduleInputTitleSchedule.error = "비어있습니다."
                 return@setOnClickListener
             }
-            val current = System.currentTimeMillis()
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "kr"))
-            val date = simpleDateFormat.format(current)
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = System.currentTimeMillis()
 
             listener(
                 category,
                 title,
-                "${date}T23:59:59",
+                DateTime(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH),
+                    23,
+                    59,
+                    59
+                ),
             )
             dismiss()
         }
