@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ConfigType } from "@nestjs/config";
 import awsConfig from "../config/aws.config";
 import * as AWS from "aws-sdk";
@@ -38,11 +38,11 @@ export class ImageService {
         .promise();
       return this.getProfileImageUrl(filePath);
     } catch (e) {
-      console.log(e);
+      throw new InternalServerErrorException();
     }
   }
 
   private getProfileImageUrl(filePath: string) {
-    return this.config.endPoint + "/" + filePath;
+    return this.config.endPoint + "/" + this.config.bucket + "/" + filePath;
   }
 }
