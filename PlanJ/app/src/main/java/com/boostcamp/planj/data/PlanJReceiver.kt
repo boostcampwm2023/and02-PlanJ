@@ -12,7 +12,6 @@ import com.boostcamp.planj.R
 class PlanJReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("PLANJDEBUG", "ALARM CALL")
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
