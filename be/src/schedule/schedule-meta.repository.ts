@@ -14,8 +14,9 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     const todayEnd = date.toString().split("T")[0] + "T23:59:59";
 
     return await this.createQueryBuilder("schedule_metadata")
-      .leftJoinAndSelect("schedule_metadata.children", "schedule")
-      .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
+      .leftJoinAndSelect("schedule_metadata.children", "schedule", "schedule_metadata.user_id = :userId", {
+        userId: user.userId,
+      })
       .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
       .getMany();
   }
@@ -25,10 +26,13 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     const weekEnd = lastDay.toISOString().split("T")[0] + "T23:59:59";
 
     return await this.createQueryBuilder("schedule_metadata")
-      .leftJoinAndSelect("schedule_metadata.children", "schedule")
-      .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
-      .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd", { weekStart, weekEnd })
-      .orWhere("schedule.startAt BETWEEN :weekStart AND :weekEnd", { weekStart, weekEnd })
+      .leftJoinAndSelect("schedule_metadata.children", "schedule", "schedule_metadata.user_id = :userId", {
+        userId: user.userId,
+      })
+      .andWhere(
+        "(schedule.endAt BETWEEN :weekStart AND :weekEnd) OR (schedule.startAt BETWEEN :weekStart AND :weekEnd)",
+        { weekStart, weekEnd },
+      )
       .orderBy("schedule.endAt")
       .getMany();
   }
