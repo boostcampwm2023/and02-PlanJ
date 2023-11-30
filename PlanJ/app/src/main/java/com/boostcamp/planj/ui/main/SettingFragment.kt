@@ -89,7 +89,7 @@ class SettingFragment : Fragment() {
                 val componentName = intent!!.component
                 val mainIntent = Intent.makeRestartActivityTask(componentName)
                 requireContext().startActivity(mainIntent)
-                exitProcess(0)
+                activity?.finish()
             }
         }
 
@@ -107,7 +107,7 @@ class SettingFragment : Fragment() {
                             val componentName = intent!!.component
                             val mainIntent = Intent.makeRestartActivityTask(componentName)
                             requireContext().startActivity(mainIntent)
-                            exitProcess(0)
+                            activity?.finish()
                         }
                     }catch (e : Exception){
                         Log.d("PLANJDEBUG", "delete error")

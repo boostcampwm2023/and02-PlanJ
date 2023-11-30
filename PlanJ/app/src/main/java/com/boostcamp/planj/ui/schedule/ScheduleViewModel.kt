@@ -99,6 +99,7 @@ class ScheduleViewModel @Inject constructor(
             startScheduleLocation.value = schedule.startLocation
             isFinished.value = schedule.isFinished
             isFailed.value = schedule.isFailed
+            scheduleMemo.value = schedule.memo
         }
     }
 

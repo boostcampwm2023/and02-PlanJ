@@ -95,7 +95,7 @@
                         android:inputType="none"
                         android:maxLines="1"
                         android:paddingHorizontal="24dp"
-                        android:text="@{viewModel.scheduleCategory}"
+                        android:text="@={viewModel.scheduleCategory}"
                         android:textColor="@color/selector_text_color"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -256,7 +256,9 @@
                     android:paddingVertical="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end">
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end"
+                    android:visibility="gone"
+                    >
 
                     <TextView
                         android:id="@+id/tv_category_participants"
