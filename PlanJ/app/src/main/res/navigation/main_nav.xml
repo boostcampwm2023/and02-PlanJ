@@ -20,7 +20,11 @@
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
         android:label="SettingFragment"
         tools:layout="@layout/fragment_setting"
-        />
+        >
+        <action
+            android:id="@+id/action_fragment_user_to_loginActivity"
+            app:destination="@id/loginActivity" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_friend_list"
         android:name="com.boostcamp.planj.ui.main.friendlist.FriendListFragment"
@@ -66,4 +70,9 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </activity>
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.boostcamp.planj.ui.login.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
 </navigation>

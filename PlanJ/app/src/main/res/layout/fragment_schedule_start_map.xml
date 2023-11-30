@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewmodel"
+            type="com.boostcamp.planj.ui.schedule.ScheduleStartMapViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_schedule_map_search"
+            style="@style/ThemeOverlay.Material3.TextInputEditText.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:elevation="1dp"
+            app:boxBackgroundColor="@color/main2"
+            app:endIconMode="clear_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/ic_search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_schedule_map_search_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_search_drop_down"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_schedule_map_search">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_schedule_map_search_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/round_search_background"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_schedule_map_search" />
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.naver.maps.map.MapView
+                android:id="@+id/fragment_contain_map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:touchscreenBlocksFocus="true" />
+        </FrameLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_schedule_map_select_place"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/round_r8_main1"
+            android:elevation="1dp"
+            android:padding="16dp"
+            android:text="위치 등록하기"
+            android:textColor="@color/main2"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/btn_schedule_map_start_time"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:background="@drawable/round_r8_main2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_schedule_map_select_place"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="@{viewmodel.route == null ? View.GONE : View.VISIBLE}"
+            android:elevation="1dp"
+            app:setTime="@{viewmodel.route}"
+            android:textColor="@color/main3"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/btn_schedule_map_start_distance"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toEndOf="@id/btn_schedule_map_start_time"
+            app:layout_constraintBottom_toTopOf="@id/btn_schedule_map_select_place"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/round_r8_main2"
+            android:visibility="@{viewmodel.route == null ? View.GONE : View.VISIBLE}"
+            android:elevation="1dp"
+            android:gravity="center"
+            android:textColor="@color/main3"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:setDistance="@{viewmodel.route}"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

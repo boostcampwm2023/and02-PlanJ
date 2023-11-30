@@ -7,10 +7,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.model.LoginResponse
-import com.boostcamp.planj.data.model.SignInRequest
-import com.boostcamp.planj.data.model.SignUpRequest
+import com.boostcamp.planj.data.model.dto.SignInRequest
+import com.boostcamp.planj.data.model.dto.SignUpRequest
 import com.boostcamp.planj.data.network.ApiResult
-import com.boostcamp.planj.data.network.PlanJAPI
+import com.boostcamp.planj.data.network.LoginApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -19,11 +19,11 @@ import java.io.IOException
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val apiService: PlanJAPI,
-    private val dataStore : DataStore<Preferences>
+    private val apiService: LoginApi,
+    private val dataStore: DataStore<Preferences>
 ) : LoginRepository {
 
-    companion object{
+    companion object {
         val USER = stringPreferencesKey("User")
     }
 
@@ -61,15 +61,16 @@ class LoginRepositoryImpl @Inject constructor(
 
     override fun getUser(): Flow<String> {
         return dataStore.data
-            .catch {e ->
-                if(e is IOException){
+            .catch { e ->
+                if (e is IOException) {
                     e.printStackTrace()
                     emit(emptyPreferences())
-                }else {
+                } else {
                     throw e
                 }
             }.map { pref ->
                 pref[USER] ?: ""
             }
     }
+
 }

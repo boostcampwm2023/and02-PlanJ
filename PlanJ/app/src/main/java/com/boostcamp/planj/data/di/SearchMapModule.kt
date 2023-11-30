@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.di
 
+import android.util.Log
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.network.KaKaoSearchApi
 import dagger.Module

@@ -1,13 +1,15 @@
 package com.boostcamp.planj.ui.main.home.week.adapter
 
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.WeekSchedule
+import com.boostcamp.planj.databinding.DialogScheduleResultBinding
 import com.boostcamp.planj.databinding.ItemWeekDayBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -23,6 +25,24 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
         binding.tvWeekDayWeek.text = scheduleList.calendar.dayOfWeek
         val today = scheduleList.calendar.dayNumber
 
+        binding.layoutWeekDay.setOnClickListener {
+            val layoutInflater = LayoutInflater.from(binding.root.context)
+            val dialogBinding = DialogScheduleResultBinding.inflate(layoutInflater)
+
+            val dialog = AlertDialog.Builder(binding.root.context)
+                .setView(dialogBinding.root)
+                .create()
+
+            dialogBinding.ivDialogScheduleResultClose.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            val scheduleView = dialogBinding.rvDialogScheduleResultWeekSchedule
+
+            scheduleView.adapter = ScheduleSimpleViewAdapter(changeList(scheduleList))
+            dialog.show()
+        }
+
         val now = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate.now()
                 .format(
@@ -30,7 +50,7 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
                 )
         } else {
             SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
+                "dd",
                 Locale.getDefault()
             ).format(Calendar.getInstance().time)
         }
@@ -61,5 +81,13 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
                 )
             )
         }
+    }
+
+    private fun changeList(weekScheduleList: WeekSchedule): List<Schedule> {
+        val resultList: MutableList<Schedule> = mutableListOf()
+        weekScheduleList.scheduleList.forEach { scheduleType: ScheduleType ->
+            resultList.add(scheduleType.schedule)
+        }
+        return resultList
     }
 }

@@ -109,7 +109,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         naverMap.setOnMapClickListener { _, latLng ->
             getMarker(latLng)
         }
-        viewModel.setLocation(args.location)
+        viewModel.initLocation(args.location)
     }
 
     private fun setListener() {
@@ -118,10 +118,11 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
             adapter.submitList(emptyList())
             binding.tietScheduleMapSearchInput.setText("")
             viewModel.setLocation(null)
+
         }
         binding.btnScheduleMapSelectPlace.setOnClickListener {
             val action =
-                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(viewModel.location.value)
+                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(location = viewModel.location.value)
             findNavController().navigate(action)
         }
     }
@@ -229,7 +230,6 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
                 viewModel.location.collectLatest {
                     it?.let { location ->
                         if (location.address.isNotEmpty()) {
-                            Log.d("PLANJDEBUG", "${it.latitude} ${it.longitude}")
                             binding.tietScheduleMapSearchInput.setText(location.placeName)
                             binding.tietScheduleMapSearchInput.setSelection(location.placeName.length)
                             val camera = CameraUpdate.scrollTo(

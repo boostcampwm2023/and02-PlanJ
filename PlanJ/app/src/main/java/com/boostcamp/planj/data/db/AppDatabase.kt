@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 
 
 @Database(
-    entities = [User::class, Schedule::class, Category::class],
+    entities = [User::class, Schedule::class, Category::class, AlarmInfo::class],
     version = 1,
     exportSchema = false
 )
@@ -26,6 +27,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDao(): ScheduleDao
 
     abstract fun categoryDao(): CategoryDao
+
+    abstract fun alarmInfoDao(): AlarmInfoDao
 
     companion object {
         @Volatile
@@ -43,8 +46,8 @@ abstract class AppDatabase : RoomDatabase() {
                     CoroutineScope(Dispatchers.IO).launch {
                         getInstance(context).categoryDao().insertCategories(
                             listOf(
-                                Category("0", "전체 일정"),
-                                Category("1", "미분류")
+                                Category("all", "전체 일정"),
+                                Category("default", "미분류")
                             )
                         )
                     }

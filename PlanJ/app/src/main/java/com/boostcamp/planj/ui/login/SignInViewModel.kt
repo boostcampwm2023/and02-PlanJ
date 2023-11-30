@@ -51,12 +51,14 @@ class SignInViewModel @Inject constructor(
                         else -> _showToast.emit("Error")
                     }
                 }
+
+                else -> {}
             }
         }
     }
 
-    private fun saveId(id : String){
-        viewModelScope.launch(Dispatchers.IO){
+    private suspend fun saveId(id : String){
+        withContext(Dispatchers.IO){
             loginRepository.saveUser(id)
         }
     }

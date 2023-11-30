@@ -1,14 +1,15 @@
 package com.boostcamp.planj.ui.main.friendlist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,12 +18,29 @@ class FriendListViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    val userList: StateFlow<List<User>> = mainRepository.getAllUser()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _userList = MutableStateFlow<List<User>>(emptyList())
+    val userList: StateFlow<List<User>> = _userList
+
+    init {
+        getFriends()
+    }
+
+    private fun getFriends() {
+        viewModelScope.launch {
+            mainRepository.getFriendsApi().collectLatest { userList ->
+                _userList.value = userList
+            }
+        }
+    }
 
     fun addUser(email: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.insertUser(email)
+        viewModelScope.launch {
+            try {
+                mainRepository.postFriendApi(email)
+                getFriends()
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
+            }
         }
     }
 

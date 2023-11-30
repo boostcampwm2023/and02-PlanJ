@@ -30,6 +30,14 @@
             app:argType="com.boostcamp.planj.data.model.Location"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_scheduleFragment_to_scheduleStartMapFragment"
+            app:destination="@id/scheduleStartMapFragment" />
+        <argument
+            android:name="startLocation"
+            app:argType="com.boostcamp.planj.data.model.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/scheduleMapFragment"
@@ -46,5 +54,23 @@
             app:argType="com.boostcamp.planj.data.model.Location"
             app:nullable="true"
             android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/scheduleStartMapFragment"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleStartMapFragment"
+        android:label="ScheduleStartMapFragment" >
+        <argument
+            android:name="endLocation"
+            app:argType="com.boostcamp.planj.data.model.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="startLocation"
+            app:argType="com.boostcamp.planj.data.model.Location"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_scheduleStartMapFragment_to_scheduleFragment"
+            app:destination="@id/scheduleFragment" />
     </fragment>
 </navigation>

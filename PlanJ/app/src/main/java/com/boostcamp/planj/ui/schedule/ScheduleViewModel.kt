@@ -3,30 +3,38 @@ package com.boostcamp.planj.ui.schedule
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Alarm
-import com.boostcamp.planj.data.model.PatchScheduleBody
+import com.boostcamp.planj.data.model.AlarmInfo
+import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.Location
+import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.PatchScheduleBody
+import com.boostcamp.planj.data.model.naver.NaverResponse
+import com.boostcamp.planj.data.repository.AlarmRepository
 import com.boostcamp.planj.data.repository.MainRepository
+import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
-import java.lang.Exception
-import java.text.SimpleDateFormat
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val alarmRepository: AlarmRepository,
+    private val naverRepository: NaverRepository
 ) : ViewModel() {
 
     private lateinit var scheduleId: String
@@ -37,18 +45,16 @@ class ScheduleViewModel @Inject constructor(
     val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
 
-    private val _scheduleStartDate = MutableStateFlow<String?>(null)
-    val scheduleStartDate: StateFlow<String?> = _scheduleStartDate
-    private val _scheduleStartTime = MutableStateFlow<String?>(null)
-    val scheduleStartTime: StateFlow<String?> = _scheduleStartTime
+    private val _scheduleStartTime = MutableStateFlow<DateTime?>(null)
+    val scheduleStartTime: StateFlow<DateTime?> = _scheduleStartTime
 
-    private val _scheduleEndDate = MutableStateFlow<String?>("")
-    val scheduleEndDate: StateFlow<String?> = _scheduleEndDate
-    private val _scheduleEndTime = MutableStateFlow<String?>("")
-    val scheduleEndTime: StateFlow<String?> = _scheduleEndTime
+    private val _scheduleEndTime = MutableStateFlow(DateTime(0, 0, 0, 0, 0))
+    val scheduleEndTime: StateFlow<DateTime> = _scheduleEndTime
 
-    private val _members = MutableStateFlow<List<User>>(listOf())
-    val members: StateFlow<List<User>> = _members
+    // TODO: Schedule members 자료형 바꾸고 doneMembers 제거해야 함
+    // 어떤 응답이 올지 몰라 Participant data class 추가하여 구현
+    private val _members = MutableStateFlow<List<Participant>>(emptyList())
+    val members: StateFlow<List<Participant>> = _members
 
     private val _doneMembers = MutableStateFlow<List<User>?>(null)
     val doneMembers: StateFlow<List<User>?> = _doneMembers
@@ -59,10 +65,11 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
 
-    val scheduleLocation = MutableStateFlow<Location?>(null)
+    private val _endScheduleLocation = MutableStateFlow<Location?>(null)
+    val endScheduleLocation = _endScheduleLocation.asStateFlow()
     val scheduleMemo = MutableStateFlow<String?>(null)
 
-    private val dateFormat = SimpleDateFormat("yyyy/MM/dd")
+    val startScheduleLocation = MutableStateFlow<Location?>(null)
 
     val categoryList: StateFlow<List<String>> =
         mainRepository.getCategories()
@@ -74,57 +81,48 @@ class ScheduleViewModel @Inject constructor(
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
 
+    private val _route = MutableStateFlow<NaverResponse?>(null)
+    val route: StateFlow<NaverResponse?> = _route.asStateFlow()
+
     fun setScheduleInfo(schedule: Schedule?) {
         schedule?.let { schedule ->
             scheduleId = schedule.scheduleId
             scheduleCategory.value = schedule.categoryTitle
             scheduleTitle.value = schedule.title
-
-            if (schedule.startTime == null) {
-                _scheduleStartDate.value = null
-                _scheduleStartTime.value = null
-            } else {
-                val dateTime = schedule.startTime.split("T")
-                _scheduleStartDate.value = dateTime[0].replace("-", "/")
-                _scheduleStartTime.value = dateTime[1].split(":").dropLast(1).joinToString(":")
-            }
-
-            val dateTime = schedule.endTime.split("T")
-            _scheduleEndDate.value = dateTime[0].replace("-", "/")
-            _scheduleEndTime.value = dateTime[1].split(":").dropLast(1).joinToString(":")
-
+            _scheduleStartTime.value = schedule.startTime
+            _scheduleEndTime.value = schedule.endTime
             _scheduleRepetition.value = schedule.repetition
             _scheduleAlarm.value = schedule.alarm
             _doneMembers.value = schedule.doneMembers
-            _members.value = schedule.members
-            scheduleLocation.value = schedule.location
+            //_members.value = schedule.members
+            _endScheduleLocation.value = schedule.location
+            startScheduleLocation.value = schedule.startLocation
             isFinished.value = schedule.isFinished
             isFailed.value = schedule.isFailed
+            scheduleMemo.value = schedule.memo
         }
     }
 
     fun getStartDate(): Long? {
-        return scheduleStartDate.value?.let { dateFormat.parse(it)?.time }
+        return scheduleStartTime.value?.toMilliseconds()
     }
 
-    fun setStartDate(millis: Long) {
-        _scheduleStartDate.value = dateFormat.format(millis)
+    fun setStartTime(millis: Long, hour: Int, minute: Int) {
+        _scheduleStartTime.update {
+            val (year, month, day) = changeMillisToDate(millis)
+            DateTime(year, month, day, hour, minute)
+        }
     }
 
-    fun setStartTime(hour: Int, minute: Int) {
-        _scheduleStartTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
+    fun getEndDate(): Long {
+        return scheduleEndTime.value.toMilliseconds()
     }
 
-    fun getEndDate(): Long? {
-        return scheduleEndDate.value?.let { dateFormat.parse(it)?.time }
-    }
-
-    fun setEndDate(millis: Long) {
-        _scheduleEndDate.value = dateFormat.format(millis)
-    }
-
-    fun setEndTime(hour: Int, minute: Int) {
-        _scheduleEndTime.value = "${"%02d".format(hour)}:${"%02d".format(minute)}"
+    fun setEndTime(millis: Long, hour: Int, minute: Int) {
+        _scheduleEndTime.update {
+            val (year, month, day) = changeMillisToDate(millis)
+            DateTime(year, month, day, hour, minute)
+        }
     }
 
     fun setRepetition(repetition: Repetition?) {
@@ -135,8 +133,20 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(location: Location?) {
-        scheduleLocation.value = location
+    fun setLocation(startLocation: Location?, endLocation: Location?) {
+        _endScheduleLocation.value = endLocation
+        startScheduleLocation.value = startLocation
+    }
+
+    private fun changeMillisToDate(millis: Long): Triple<Int, Int, Int> {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+
+        return Triple(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
     }
 
     fun startEditingSchedule() {
@@ -146,7 +156,7 @@ class ScheduleViewModel @Inject constructor(
     fun deleteSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                mainRepository.deleteScheduleApi("01HFYAR1FX09FKQ2SW1HTG8BJ8", scheduleId)
+                mainRepository.deleteScheduleApi(scheduleId)
                 mainRepository.deleteScheduleUsingId(scheduleId)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
@@ -155,25 +165,35 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun completeEditingSchedule() {
+        if (scheduleStartTime.value != null && (scheduleStartTime.value!!.toMilliseconds() > scheduleEndTime.value.toMilliseconds())) return
+        viewModelScope.launch {
+            if (scheduleAlarm.value != null) {
+                alarmRepository.setAlarm(
+                    AlarmInfo(
+                        scheduleId,
+                        scheduleTitle.value,
+                        scheduleEndTime.value,
+                        scheduleRepetition.value,
+                        scheduleAlarm.value!!
+                    )
+                )
+            }
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
-            val getCategory = withContext((Dispatchers.IO)){ mainRepository.getCategory(scheduleCategory.value) }
+            val getCategory =
+                withContext((Dispatchers.IO)) { mainRepository.getCategory(scheduleCategory.value) }
 
             val patchScheduleBody = PatchScheduleBody(
-                "01HFYAR1FX09FKQ2SW1HTG8BJ8",
                 getCategory.categoryId,
                 scheduleId,
                 scheduleTitle.value,
-                scheduleMemo.value ?: "",
-                scheduleStartDate.value?.let {
-                    "${it.replace("/", "-")}T${scheduleStartTime.value}:00"
-                }?: "",
-                scheduleEndDate.value?.let {
-                    "${it.replace("/", "-")}T${scheduleEndTime.value}:00"
-                }?: "",
-                scheduleLocation.value?.placeName ?: "" ,
-                scheduleLocation.value?.address ?: "",
-                scheduleLocation.value?.latitude ?: "",
-                scheduleLocation.value?.longitude ?: ""
+                scheduleMemo.value,
+                scheduleStartTime.value?.toFormattedString(),
+                scheduleEndTime.value.toFormattedString(),
+                startScheduleLocation.value,
+                endScheduleLocation.value,
+                scheduleRepetition.value
             )
 
             mainRepository.patchSchedule(patchScheduleBody)
@@ -185,18 +205,15 @@ class ScheduleViewModel @Inject constructor(
                         scheduleId = scheduleId,
                         title = scheduleTitle.value,
                         memo = scheduleMemo.value,
-                        startTime = if (scheduleStartDate.value == null) {
-                            null
-                        } else {
-                            "${scheduleStartDate.value?.replace('/', '-')}T${scheduleStartTime.value}:00"
-                        },
-                        endTime = "${scheduleEndDate.value?.replace('/', '-')}T${scheduleEndTime.value}:00",
+                        startTime = scheduleStartTime.value,
+                        endTime = scheduleEndTime.value,
                         categoryTitle = scheduleCategory.value,
                         repetition = scheduleRepetition.value,
                         alarm = scheduleAlarm.value,
-                        members = members.value,
+                        members = emptyList(),
                         doneMembers = doneMembers.value,
-                        location = scheduleLocation.value,
+                        location = _endScheduleLocation.value,
+                        startLocation = startScheduleLocation.value,
                         isFinished = isFinished.value,
                         isFailed = isFailed.value
                     )
@@ -209,7 +226,39 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun resetStartTime() {
-        _scheduleStartDate.value = null
-        _scheduleStartTime.value = null
+        _scheduleStartTime.update {
+            null
+        }
+    }
+
+    fun endMapDelete() {
+        _endScheduleLocation.value = null
+    }
+
+    fun startMapDelete() {
+        startScheduleLocation.value = null
+    }
+
+
+    fun getNaverRoute(startLocation: Location?, endLocation: Location) {
+        if (startLocation == null) return
+
+        val start = "${startLocation.longitude},${startLocation.latitude}"
+        val end = "${endLocation.longitude},${endLocation.latitude}"
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _route.value = naverRepository.getNaverRoute(start, end)
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "error ${e.message}")
+            }
+        }
+    }
+
+    fun emptyRoute() {
+        _route.value = null
+    }
+
+    fun emptyStartLocation() {
+        startScheduleLocation.value = null
     }
 }

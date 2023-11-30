@@ -1,13 +1,19 @@
 package com.boostcamp.planj.ui.schedule
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
@@ -15,11 +21,11 @@ import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSettingDialogListener {
@@ -28,7 +34,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
     private val binding get() = _binding!!
     private val viewModel: ScheduleViewModel by activityViewModels()
 
-    private val args : ScheduleFragmentArgs by navArgs()
+    private val args: ScheduleFragmentArgs by navArgs()
 
     private val repetitionSettingDialog by lazy {
         RepetitionSettingDialog()
@@ -36,6 +42,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private val alarmSettingDialog by lazy {
         AlarmSettingDialog()
+    }
+
+    private val participantDialog by lazy {
+        ScheduleParticipantDialog()
     }
 
     private val datePickerBuilder by lazy {
@@ -62,22 +72,31 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         super.onViewCreated(view, savedInstanceState)
 
         binding.viewModel = viewModel
+        binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.setLocation(args.location)
 
         initAdapter()
         setObserver()
         setListener()
 
+
+        if (args.startLocation != null || args.location != null) {
+            viewModel.setLocation(args.startLocation, args.location)
+        }
+
         repetitionSettingDialog.setRepetitionDialogListener(this)
         alarmSettingDialog.setAlarmSettingDialogListener(this)
+
+        binding.executePendingBindings()
     }
+
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
+
 
     private fun initAdapter() {
         val adapter = ScheduleParticipantAdapter(viewModel.members.value)
@@ -99,12 +118,25 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.categoryList.collect { categoryList ->
-                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setText(
-                    categoryList.getOrNull(categoryList.indexOf(viewModel.selectedCategory))
-                )
-                (binding.tilScheduleCategory.editText as MaterialAutoCompleteTextView).setSimpleItems(
-                    categoryList.toTypedArray()
-                )
+                val arrayAdapter =
+                    ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
+                binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleAlarm.collect { alarm ->
+
+                    if (alarm != null && alarm.alarmType == "DEPARTURE") {
+                        binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
+                        binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
+
+                    } else {
+                        binding.tvScheduleLocationAlarm.text = "위치 알람 설정"
+                        binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_main2)
+                    }
+                }
             }
         }
     }
@@ -138,56 +170,11 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             activity?.finish()
         }
 
-        binding.tvScheduleStartEmpty.setOnClickListener {
-            val datePicker = setDatePicker(viewModel.getStartDate())
-            datePicker.show(childFragmentManager, "시작 날짜 설정")
-            val timePicker = setTimePicker(viewModel.scheduleStartTime.value)
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartDate(datePicker.selection ?: 0)
-                timePicker.show(childFragmentManager, "시작 시간 설정")
-            }
-            timePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartTime(timePicker.hour, timePicker.minute)
-            }
-        }
-
-        binding.tvScheduleStartDate.setOnClickListener {
-            val datePicker = setDatePicker(viewModel.getStartDate())
-            datePicker.show(childFragmentManager, "시작 날짜 설정")
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartDate(datePicker.selection ?: 0)
-            }
-        }
-
-        binding.tvScheduleEndDate.setOnClickListener {
-            val datePicker = setDatePicker(viewModel.getEndDate())
-            datePicker.show(childFragmentManager, "종료 날짜 설정")
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setEndDate(datePicker.selection ?: 0)
-            }
-        }
-
-        binding.tvScheduleStartTime.setOnClickListener {
-            val timePicker = setTimePicker(viewModel.scheduleStartTime.value)
-            timePicker.show(childFragmentManager, "시작 시간 설정")
-            timePicker.addOnPositiveButtonClickListener {
-                viewModel.setStartTime(timePicker.hour, timePicker.minute)
-            }
-        }
-
-        binding.tvScheduleEndTime.setOnClickListener {
-            val timePicker = setTimePicker(viewModel.scheduleEndTime.value)
-            timePicker.show(childFragmentManager, "종료 시간 설정")
-            timePicker.addOnPositiveButtonClickListener {
-                viewModel.setEndTime(timePicker.hour, timePicker.minute)
-            }
-        }
-
         binding.tvScheduleRepetitionSetting.setOnClickListener {
             val bundle = Bundle()
             bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
             repetitionSettingDialog.arguments = bundle
-            if(!repetitionSettingDialog.isAdded){
+            if (!repetitionSettingDialog.isAdded) {
                 repetitionSettingDialog.show(childFragmentManager, "반복 설정")
             }
         }
@@ -196,14 +183,77 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val bundle = Bundle()
             bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
             alarmSettingDialog.arguments = bundle
-            if(!alarmSettingDialog.isAdded){
+            if (!alarmSettingDialog.isAdded) {
                 alarmSettingDialog.show(childFragmentManager, "알림 설정")
             }
         }
 
         binding.ivScheduleMap.setOnClickListener {
-            val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.scheduleLocation.value)
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleMapFragment(viewModel.endScheduleLocation.value)
             findNavController().navigate(action)
+        }
+
+        binding.ivScheduleStartMap.setOnClickListener {
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleStartMapFragment(
+                    endLocation = viewModel.endScheduleLocation.value,
+                    startLocation = viewModel.startScheduleLocation.value
+                )
+            findNavController().navigate(action)
+        }
+
+        binding.tvScheduleAllParticipants.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("participantsInfo", ArrayList(viewModel.members.value))
+            participantDialog.arguments = bundle
+            if (!participantDialog.isAdded) {
+                participantDialog.show(childFragmentManager, "전체 참가자")
+            }
+        }
+
+        binding.tvScheduleLocationUrlScheme.setOnClickListener {
+            activity?.let {
+
+                val startLocation =
+                    viewModel.startScheduleLocation.value ?: return@setOnClickListener
+                val endLocation = viewModel.endScheduleLocation.value ?: return@setOnClickListener
+                val url =
+                    "nmap://route/public?slat=${startLocation.latitude}&slng=${startLocation.longitude}&sname=${startLocation.placeName}&dlat=${endLocation.latitude}&dlng=${endLocation.longitude}&dname=${endLocation.placeName}&appname=com.boostcamp.planj";
+
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+
+                try {
+                    it.startActivity(intent)
+                } catch (e: Exception) {
+                    if (e is ActivityNotFoundException) {
+                        it.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("market://details?id=com.nhn.android.nmap")
+                            )
+                        )
+                    } else {
+                        Log.d("PLANJDEBUG", "${e.message}")
+                    }
+                }
+
+            }
+        }
+
+        binding.tvScheduleLocationAlarm.setOnClickListener {
+            viewModel.route.value?.let {
+                if (binding.tvScheduleLocationAlarm.text == "위치 알람 해제") {
+                    viewModel.setAlarm(null)
+                } else {
+                    val bottomSheet =
+                        ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration) { min ->
+                            viewModel.setAlarm(Alarm("DEPARTURE", min))
+                        }
+                    bottomSheet.show(childFragmentManager, tag)
+                }
+            }
         }
     }
 
@@ -216,6 +266,40 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
     }
 
+    fun setStartTime() {
+        var dateMillis = 0L
+        val datePicker = setDatePicker(viewModel.getStartDate())
+        datePicker.show(childFragmentManager, "시작 날짜 설정")
+
+        val scheduleStartTime = viewModel.scheduleStartTime.value
+        val timePicker = setTimePicker(scheduleStartTime?.hour ?: 0, scheduleStartTime?.minute ?: 0)
+
+        datePicker.addOnPositiveButtonClickListener {
+            dateMillis = datePicker.selection ?: 0
+            timePicker.show(childFragmentManager, "시작 시간 설정")
+        }
+        timePicker.addOnPositiveButtonClickListener {
+            viewModel.setStartTime(dateMillis, timePicker.hour, timePicker.minute)
+        }
+    }
+
+    fun setEndTime() {
+        var dateMillis = 0L
+        val datePicker = setDatePicker(viewModel.getEndDate())
+        datePicker.show(childFragmentManager, "시작 날짜 설정")
+
+        val scheduleEndTime = viewModel.scheduleEndTime.value
+        val timePicker = setTimePicker(scheduleEndTime.hour, scheduleEndTime.minute)
+
+        datePicker.addOnPositiveButtonClickListener {
+            dateMillis = datePicker.selection ?: 0
+            timePicker.show(childFragmentManager, "시작 시간 설정")
+        }
+        timePicker.addOnPositiveButtonClickListener {
+            viewModel.setEndTime(dateMillis, timePicker.hour, timePicker.minute)
+        }
+    }
+
     private fun setDatePicker(selectedDate: Long?): MaterialDatePicker<Long> {
         if (selectedDate != null) {
             datePickerBuilder.setSelection(selectedDate)
@@ -223,14 +307,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         return datePickerBuilder.build()
     }
 
-    private fun setTimePicker(selectedTime: String?): MaterialTimePicker {
-        if (selectedTime == null) {
-            timePickerBuilder.setHour(0)
-            timePickerBuilder.setMinute(0)
-        } else {
-            timePickerBuilder.setHour(selectedTime.split(":")[0].toInt())
-            timePickerBuilder.setMinute(selectedTime.split(":")[1].toInt())
-        }
+    private fun setTimePicker(hour: Int = 0, minute: Int = 0): MaterialTimePicker {
+        timePickerBuilder.setHour(hour)
+        timePickerBuilder.setMinute(minute)
         return timePickerBuilder.build()
     }
 

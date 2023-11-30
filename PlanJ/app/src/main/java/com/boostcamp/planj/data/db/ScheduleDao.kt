@@ -27,6 +27,9 @@ interface ScheduleDao {
     @Query("DELETE FROM schedules WHERE categoryTitle = :categoryName")
     suspend fun deleteScheduleUsingCategory(categoryName : String)
 
+    @Query("DELETE FROM schedules")
+    suspend fun deleteAllSchedule()
+
     @Query("UPDATE schedules SET categoryTitle = :categoryNameAfter WHERE categoryTitle = :categoryNameBefore")
     suspend fun updateScheduleUsingCategory(categoryNameBefore : String, categoryNameAfter : String)
 
@@ -39,13 +42,7 @@ interface ScheduleDao {
     @Query("SELECT categoryTitle FROM schedules")
     fun getCategories(): Flow<List<String>>
 
-    @Query(
-        "SELECT * FROM schedules " +/*
-                "WHERE ((endTime BETWEEN :start And :end ) " +
-                "OR (startTime BETWEEN :start AND :end) " +
-                "OR (startTime is null AND endTime BETWEEN :start And :end ))" +*/
-                "ORDER BY startTime ASC"
-    )
+    @Query("SELECT * FROM schedules ORDER BY endTime")
     fun getWeekSchedule(): Flow<List<Schedule>>
 
     @Query("SELECT * FROM schedules WHERE categoryTitle = :title")
