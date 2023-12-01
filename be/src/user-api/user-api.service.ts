@@ -88,7 +88,7 @@ export class UserApiService {
       },
     });
     this.logger.verbose(response.data);
-    const data = response.data;
+    const data = response.data.response;
     const naverResponse: NaverResponseDto = {
       id: data.id,
       nickname: data.nickname,
