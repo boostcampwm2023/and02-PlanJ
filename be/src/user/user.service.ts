@@ -6,6 +6,7 @@ import { UserRepository } from "./user.repository";
 import { UserEntity } from "./entity/user.entity";
 import { ulid } from "ulid";
 import * as bcrypt from "bcryptjs";
+import { NaverResponseDto } from "./dto/naver-response.dto";
 
 // TODO: soft delete 된 사용자가 다시 가입을 하는 경우 처리 -> 현재는 새로 생성
 @Injectable()
@@ -66,7 +67,7 @@ export class UserService {
   async update(userUuid: string, nickname: string, profileUrl: string | null): Promise<void> {
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
     user.nickname = nickname;
-    user.profileUrl = profileUrl;
+    user.profileUrl = !!profileUrl ? user.profileUrl : profileUrl;
 
     try {
       await this.userRepository.save(user);
@@ -86,5 +87,26 @@ export class UserService {
 
   async getUserEntityByEmail(userEmail: string): Promise<UserEntity> {
     return await this.userRepository.findByEmail(userEmail);
+  }
+
+  async loginByNaver(response: NaverResponseDto) {
+    const user = await this.userRepository.findOne({ where: { naverId: response.id } });
+
+    if (!!user) {
+      const uuid = ulid();
+      const newUser = this.userRepository.create({
+        userUuid: uuid,
+        email: response.email,
+        password: null,
+        nickname: response.nickname,
+        profileUrl: response.profileImage,
+        naverId: response.id,
+      });
+
+      await this.userRepository.save(newUser);
+      return newUser;
+    }
+
+    return user;
   }
 }

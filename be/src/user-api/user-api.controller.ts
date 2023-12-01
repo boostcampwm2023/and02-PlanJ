@@ -33,6 +33,14 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @Post("/naver")
+  async loginByNaver(@Body("accessToken") accessToken: string): Promise<JSON> {
+    this.logger.log("Post /naver");
+    this.logger.verbose("Access Token: " + accessToken);
+    const result = await this.userApiService.loginByNaver(accessToken);
+    return JSON.parse(result);
+  }
+
   @Post("/login")
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: UserLoginDto): Promise<JSON> {
