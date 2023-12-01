@@ -21,8 +21,11 @@ export class UserEntity extends BaseEntity {
   @Column({ length: 60 })
   email: string;
 
-  @Column({ length: 60 })
+  @Column({ length: 60, nullable: true })
   password: string;
+
+  @Column({ length: 256, nullable: true, name: "naver_id" })
+  naverId: string;
 
   @Column({ length: 12 })
   nickname: string;
