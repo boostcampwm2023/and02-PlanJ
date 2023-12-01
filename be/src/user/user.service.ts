@@ -92,7 +92,7 @@ export class UserService {
   async loginByNaver(response: NaverResponseDto) {
     const user = await this.userRepository.findOne({ where: { naverId: response.id } });
 
-    if (!!user) {
+    if (!user) {
       const uuid = ulid();
       const newUser = this.userRepository.create({
         userUuid: uuid,
