@@ -36,6 +36,10 @@ export class CategoryService {
     return await this.categoryRepository.findOneByCategoryUuid(categoryUuid);
   }
 
+  async getCategoryEntityByCategoryId(categoryId: number): Promise<CategoryEntity> {
+    return await this.categoryRepository.findOne({ where: { categoryId } });
+  }
+
   async deleteCategory(dto: DeleteCategoryDto) {
     const { categoryUuid } = dto;
 
