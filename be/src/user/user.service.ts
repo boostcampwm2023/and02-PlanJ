@@ -67,7 +67,7 @@ export class UserService {
   async update(userUuid: string, nickname: string, profileUrl: string | null): Promise<void> {
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
     user.nickname = nickname;
-    user.profileUrl = profileUrl;
+    user.profileUrl = !!profileUrl ? user.profileUrl : profileUrl;
 
     try {
       await this.userRepository.save(user);
