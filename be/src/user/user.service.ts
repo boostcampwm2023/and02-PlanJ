@@ -1,4 +1,10 @@
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -11,6 +17,7 @@ import { NaverResponseDto } from "./dto/naver-response.dto";
 // TODO: soft delete 된 사용자가 다시 가입을 하는 경우 처리 -> 현재는 새로 생성
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
   constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
 
   async register(dto: CreateUserDto): Promise<void> {
@@ -67,8 +74,9 @@ export class UserService {
   async update(userUuid: string, nickname: string, profileUrl: string | null): Promise<void> {
     const user = await this.userRepository.findOne({ where: { userUuid: userUuid } });
     user.nickname = nickname;
-    user.profileUrl = !!profileUrl ? user.profileUrl : profileUrl;
+    user.profileUrl = profileUrl ?? user.profileUrl;
 
+    this.logger.verbose(JSON.stringify(user, null, 2));
     try {
       await this.userRepository.save(user);
       return;
