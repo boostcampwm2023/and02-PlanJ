@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.boostcamp.planj.data.model.AlarmInfo
 
 @Dao
@@ -24,4 +25,7 @@ interface AlarmInfoDao {
 
     @Query("SELECT * FROM alarms")
     suspend fun getAll(): List<AlarmInfo>
+
+    @Update
+    suspend fun updateAlarmInfo(alarmInfo: AlarmInfo)
 }

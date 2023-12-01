@@ -60,6 +60,7 @@ class SettingViewModel @Inject constructor(
 
     fun getAllAlarmInfo(): List<AlarmInfo> {
         return runBlocking {
+            mainRepository.updateAlarmInfo(System.currentTimeMillis())
             mainRepository.getAllAlarmInfo()
         }
     }

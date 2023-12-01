@@ -106,4 +106,6 @@ interface MainRepository {
     suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
 
     suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
+
+    suspend fun updateAlarmInfo(curTimeMillis: Long)
 }
