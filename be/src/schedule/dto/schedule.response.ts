@@ -7,6 +7,7 @@ export interface ScheduleResponse {
   failed: boolean;
   repeated: boolean;
   shared: boolean;
+  hasRetrospectiveMemo: boolean;
   participantCount: number;
   participantSuccessCount: number;
 }
