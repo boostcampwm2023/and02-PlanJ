@@ -28,7 +28,7 @@ export class ScheduleService {
       endAt,
       finished: false,
       failed: false,
-      remindMemo: "",
+      retrospectiveMemo: null,
       last: true,
       metadataId: scheduleMetadata.metadataId,
     });
@@ -96,7 +96,7 @@ export class ScheduleService {
           endAt: endDateTime.toISOString().slice(0, 19),
           finished: false,
           failed: false,
-          remindMemo: "",
+          retrospectiveMemo: "",
           last: false,
           metadataId: record.metadataId,
         }),
@@ -137,5 +137,9 @@ export class ScheduleService {
     }
 
     await this.scheduleRepository.save(record);
+  }
+
+  async getByMetadataIdAndEntAt(metadataId: number, endAt: string) {
+    return await this.scheduleRepository.findOne({ where: { metadataId, endAt } });
   }
 }
