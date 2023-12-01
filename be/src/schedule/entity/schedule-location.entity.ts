@@ -3,7 +3,7 @@ import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
 @Entity("schedule_location")
 export class ScheduleLocationEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "location_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   locationId: number;
 
   @Column({ name: "start_place_name", nullable: true, default: null })

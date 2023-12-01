@@ -9,10 +9,10 @@ export class ScheduleAlarmEntity extends BaseEntity {
   @Column({ name: "metadata_id", type: "int" })
   metadataId: number;
 
-  @Column({ name: "type", type: "tinyint" })
-  alarmType: number;
+  @Column({ name: "alarm_type", length: 9 })
+  alarmType: string;
 
-  @Column({ name: "time", type: "int" })
+  @Column({ name: "alarm_time", type: "int" })
   alarmTime: number;
 
   @OneToOne(() => ScheduleMetadataEntity, (scheduleMetadata) => scheduleMetadata.metadataId)
