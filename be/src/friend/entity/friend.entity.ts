@@ -3,7 +3,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 
 @Entity("friend")
 export class FriendEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "friend_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   friendId: number;
 
   @DeleteDateColumn({ default: null, name: "deleted_at" })

@@ -14,13 +14,13 @@ import {
 
 @Entity("category")
 export class CategoryEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "category_id", type: "int" })
+  @PrimaryGeneratedColumn({ name: "id", type: "int" })
   categoryId: number;
 
-  @Column({ length: 26, name: "category_uuid" })
+  @Column({ length: 26, name: "uuid" })
   categoryUuid: string;
 
-  @Column({ length: 128, name: "category_name" })
+  @Column({ length: 128, name: "name" })
   categoryName: string;
 
   @Column({ type: "int", name: "user_id" })
@@ -37,6 +37,7 @@ export class CategoryEntity extends BaseEntity {
    * */
   @ManyToOne(() => UserEntity, (user) => user.category, {
     onDelete: "CASCADE",
+    onUpdate: "CASCADE",
   })
   @JoinColumn({ name: "user_id" })
   user: UserEntity;

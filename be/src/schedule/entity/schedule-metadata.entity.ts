@@ -15,7 +15,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 
 @Entity("schedule_metadata")
 export class ScheduleMetadataEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "metadata_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   metadataId: number;
 
   @Column({ length: 20 })
@@ -54,12 +54,14 @@ export class ScheduleMetadataEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
     onDelete: "CASCADE",
+    onUpdate: "CASCADE",
   })
   @JoinColumn({ name: "user_id" })
   user: UserEntity;
 
   @ManyToOne(() => CategoryEntity, (category) => category.scheduleMeta, {
     onDelete: "CASCADE",
+    onUpdate: "CASCADE",
   })
   @JoinColumn({ name: "category_id" })
   category: CategoryEntity;

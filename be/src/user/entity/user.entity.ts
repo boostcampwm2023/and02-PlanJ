@@ -12,10 +12,10 @@ import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.en
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "user_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   userId: number;
 
-  @Column({ length: 26, name: "user_uuid" })
+  @Column({ length: 26, name: "uuid" })
   userUuid: string;
 
   @Column({ length: 60 })

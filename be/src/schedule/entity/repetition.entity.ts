@@ -9,8 +9,8 @@ export class RepetitionEntity extends BaseEntity {
   @Column({ name: "metadata_id", type: "int" })
   metadataId: number;
 
-  @Column({ name: "cycle_type", type: "int" })
-  cycleType: number;
+  @Column({ name: "cycle_type", length: 6 })
+  cycleType: string;
 
   @Column({ name: "cycle_count", type: "int" })
   cycleCount: number;

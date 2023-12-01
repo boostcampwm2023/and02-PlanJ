@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, Logger } from "@nestjs/common";
 import { AddScheduleDto } from "src/schedule/dto/add-schedule.dto";
 import { ScheduleMetaService } from "src/schedule/schedule-meta.service";
 import { ScheduleService } from "src/schedule/schedule.service";
@@ -14,9 +14,17 @@ import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { HttpResponse } from "src/utils/http.response";
 import { ScheduleAlarmService } from "../schedule/schedule-alarm.service";
 import { ScheduleResponse } from "src/schedule/dto/schedule.response";
+import { ParticipantEntity } from "../schedule/entity/participant.entity";
+import { ParticipantResponse } from "./interface/participant.response";
+import { UserEntity } from "../user/entity/user.entity";
+import { ScheduleDetailResponse } from "./interface/schedule-detail.response";
+import { LocationResponse } from "./interface/location.response";
+import { ScheduleLocationEntity } from "../schedule/entity/schedule-location.entity";
 
 @Injectable()
 export class ScheduleApiService {
+  private readonly logger = new Logger(ScheduleApiService.name);
+
   constructor(
     private userService: UserService,
     private categoryService: CategoryService,
@@ -41,6 +49,57 @@ export class ScheduleApiService {
       data: {
         scheduleUuid: scheduleUuid,
       },
+    };
+    return JSON.stringify(body);
+  }
+
+  async getSchedule(token: string, scheduleUuid: string) {
+    const userUuid = this.authService.verify(token);
+    const user = await this.userService.getUserEntity(userUuid);
+    const scheduleEntity = await this.scheduleService.getScheduleEntityByScheduleUuid(scheduleUuid);
+    const scheduleMetadata = await this.scheduleMetaService.getScheduleMetadataById(scheduleEntity.metadataId);
+
+    if (user.userId !== scheduleMetadata.userId) {
+      throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
+    }
+
+    const [scheduleLocationEntity, scheduleAlarmEntity, categoryEntity, repetitionEntity, participants] =
+      await Promise.all([
+        this.scheduleLocationService.getLocationByScheduleMetadataId(scheduleMetadata.metadataId),
+        this.scheduleAlarmService.getAlarmByMetadataId(scheduleMetadata.metadataId),
+        this.categoryService.getCategoryEntityByCategoryId(scheduleMetadata.categoryId),
+        this.repetitionService.getRepetitionByMetadataId(scheduleMetadata.metadataId),
+        this.participateService.getParticipantGroup(scheduleMetadata.metadataId),
+      ]);
+
+    const participantsInfo = await this.getParticipantSuccess(participants, scheduleEntity.endAt, user);
+    const scheduleDetailResponse: ScheduleDetailResponse = {
+      categoryName: categoryEntity.categoryName,
+      scheduleUuid: scheduleEntity.scheduleUuid,
+      title: scheduleMetadata.title,
+      description: scheduleMetadata.description,
+      startAt: scheduleEntity.startAt,
+      endAt: scheduleEntity.endAt,
+      startLocation: scheduleLocationEntity ? this.getStartLocation(scheduleLocationEntity) : null,
+      endLocation: scheduleLocationEntity ? this.getEndLocation(scheduleLocationEntity) : null,
+      repetition: repetitionEntity
+        ? {
+            cycleType: repetitionEntity.cycleType,
+            cycleCount: repetitionEntity.cycleCount,
+          }
+        : null,
+      participants: participantsInfo,
+      alarm: scheduleAlarmEntity
+        ? {
+            alarmType: scheduleAlarmEntity.alarmType,
+            alarmTime: scheduleAlarmEntity.alarmTime,
+          }
+        : null,
+    };
+
+    const body: HttpResponse = {
+      message: "일정 상세 조회 성공",
+      data: scheduleDetailResponse,
     };
     return JSON.stringify(body);
   }
@@ -71,7 +130,7 @@ export class ScheduleApiService {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
     const scheduleResponses = await this.scheduleMetaService.getAllScheduleByDate(user, date);
-    await this.updateParticipantInformation(scheduleResponses);
+    await this.getParticipantInformation(scheduleResponses);
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
@@ -84,7 +143,7 @@ export class ScheduleApiService {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
     const scheduleResponses = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
-    await this.updateParticipantInformation(scheduleResponses);
+    await this.getParticipantInformation(scheduleResponses);
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",
@@ -93,7 +152,7 @@ export class ScheduleApiService {
     return JSON.stringify(body);
   }
 
-  private async updateParticipantInformation(scheduleResponses: ScheduleResponse[]) {
+  private async getParticipantInformation(scheduleResponses: ScheduleResponse[]) {
     for (const scheduleResponse of scheduleResponses) {
       const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(scheduleResponse.scheduleUuid);
       const group = await this.participateService.getParticipantGroup(metadataId);
@@ -115,6 +174,27 @@ export class ScheduleApiService {
         }
       }
     }
+  }
+
+  private async getParticipantSuccess(participantEntities: ParticipantEntity[], endAt: string, user: UserEntity) {
+    const participants = participantEntities ?? [];
+    return await Promise.all(
+      participants.map(async (participant) => {
+        const scheduleMeta = await this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
+        const [userEntity, success] = await Promise.all([
+          this.userService.getUserEntityById(scheduleMeta.userId),
+          this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(scheduleMeta.metadataId, endAt),
+        ]);
+
+        const result: ParticipantResponse = {
+          nickname: userEntity.nickname,
+          profileUrl: userEntity.profileUrl,
+          finished: success,
+          currentUser: user.userId === scheduleMeta.userId,
+        };
+        return result;
+      }),
+    );
   }
 
   async deleteSchedule(token: string, dto: DeleteScheduleDto): Promise<string> {
@@ -149,7 +229,7 @@ export class ScheduleApiService {
       authorMetadataId,
       invitedUser.userId,
     );
-    let invitedScheduleUuid = "";
+    let invitedScheduleUuid: string;
 
     if (isAlreadyInvited === 0) {
       const addScheduleDto: AddScheduleDto = {
@@ -210,7 +290,27 @@ export class ScheduleApiService {
     }
   }
 
-  // scheduleUuid에 연결된 schedulemetadataid가 이미 participant테이블의 author에 있는지 체크
-  // 초대된 사용자가 새롭게 초대된 것인지 체크
-  // 이미 있고 새롭게 초대된 것이 아니라면 add 필요없고 participant 테이블에 새로 만들 필요 없음
+  private getStartLocation(scheduleLocationEntity: ScheduleLocationEntity) {
+    if (!scheduleLocationEntity.startLatitude) {
+      return null;
+    }
+
+    const result: LocationResponse = {
+      placeName: scheduleLocationEntity.startPlaceName,
+      placeAddress: scheduleLocationEntity.startPlaceAddress,
+      latitude: scheduleLocationEntity.startLatitude,
+      longitude: scheduleLocationEntity.startLongitude,
+    };
+    return result;
+  }
+
+  private getEndLocation(scheduleLocationEntity: ScheduleLocationEntity) {
+    const result: LocationResponse = {
+      placeName: scheduleLocationEntity.endPlaceName,
+      placeAddress: scheduleLocationEntity.endPlaceAddress,
+      latitude: scheduleLocationEntity.endLatitude,
+      longitude: scheduleLocationEntity.endLongitude,
+    };
+    return result;
+  }
 }

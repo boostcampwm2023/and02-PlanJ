@@ -40,4 +40,8 @@ export class ScheduleAlarmService {
       throw new InternalServerErrorException();
     }
   }
+
+  async getAlarmByMetadataId(metadataId: number) {
+    return await this.scheduleAlarmRepository.findOne({ where: { metadataId } });
+  }
 }

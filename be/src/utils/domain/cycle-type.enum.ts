@@ -1,4 +1,4 @@
 export enum CycleType {
-  DAILY = 0,
-  WEEKLY = 1,
+  DAILY = "DAILY",
+  WEEKLY = "WEEKLY",
 }

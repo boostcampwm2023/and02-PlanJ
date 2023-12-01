@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { FriendRepository } from "./friend.repository";
 import { AddFriendDto } from "./dto/add-friend.dto";
 import { UserService } from "src/user/user.service";
@@ -7,6 +7,7 @@ import { AuthService } from "src/auth/auth.service";
 
 @Injectable()
 export class FriendService {
+  private readonly logger = new Logger(FriendService.name);
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -26,7 +27,7 @@ export class FriendService {
       };
       return JSON.stringify(body);
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }

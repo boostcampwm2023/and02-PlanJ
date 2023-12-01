@@ -10,6 +10,7 @@ import {
   Get,
   UseInterceptors,
   UploadedFile,
+  Logger,
 } from "@nestjs/common";
 import { UserLoginDto } from "../user/dto/user-login.dto";
 import { CreateUserDto } from "../user/dto/create-user.dto";
@@ -20,10 +21,14 @@ import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("/api/auth")
 export class UserApiController {
+  private readonly logger = new Logger(UserApiController.name);
+
   constructor(private userApiService: UserApiService) {}
 
   @Post("/register")
   async register(@Body() dto: CreateUserDto): Promise<JSON> {
+    this.logger.log("Post /register");
+    this.logger.verbose("Create user dto: ", JSON.stringify(dto, null, 2));
     const result = await this.userApiService.register(dto);
     return JSON.parse(result);
   }
@@ -31,6 +36,8 @@ export class UserApiController {
   @Post("/login")
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: UserLoginDto): Promise<JSON> {
+    this.logger.log("Post /login");
+    this.logger.verbose("User login dto: " + JSON.stringify(dto, null, 2));
     const result = await this.userApiService.login(dto);
     return JSON.parse(result);
   }
@@ -38,6 +45,8 @@ export class UserApiController {
   @UseGuards(AuthGuard)
   @Delete("/delete")
   async deleteUser(@Token() token: string): Promise<JSON> {
+    this.logger.log("Delete /delete");
+    this.logger.verbose("Token: " + token);
     const result = await this.userApiService.delete(token);
     return JSON.parse(result);
   }
@@ -45,6 +54,8 @@ export class UserApiController {
   @UseGuards(AuthGuard)
   @Get()
   async getUserInfo(@Token() token: string): Promise<JSON> {
+    this.logger.log("Get /");
+    this.logger.verbose("Token: " + token);
     const result = await this.userApiService.getUserInfo(token);
     return JSON.parse(result);
   }

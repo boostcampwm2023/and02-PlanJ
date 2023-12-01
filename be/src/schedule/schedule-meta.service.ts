@@ -110,9 +110,10 @@ export class ScheduleMetaService {
           startAt: schedule.startAt === null ? null : schedule.startAt,
           endAt: schedule.endAt,
           finished: schedule.finished,
-          failed: schedule.failed, // TODO: 호출 시점에서 실패 처리
+          failed: this.checkFailed(schedule.endAt), // TODO: 호출 시점에서 실패 처리, 일정 업데이트 필요
           repeated: scheduleMeta.repeated,
           shared: scheduleMeta.shared,
+          hasRetrospectiveMemo: !!schedule.retrospectiveMemo,
           participantCount: 0,
           participantSuccessCount: 0,
         };
@@ -139,5 +140,15 @@ export class ScheduleMetaService {
     const record = await this.scheduleMetaRepository.findOne({ where: { metadataId } });
     record.shared = true;
     await this.scheduleMetaRepository.save(record);
+  }
+
+  async getScheduleMetadataById(metadataId: number) {
+    return await this.scheduleMetaRepository.findOne({ where: { metadataId } });
+  }
+
+  private checkFailed(endAt: string) {
+    const endTime = new Date(endAt);
+    const now = new Date();
+    return endTime <= now;
   }
 }

@@ -40,4 +40,8 @@ export class RepetitionService {
 
     await this.repetitionRepository.save(record);
   }
+
+  async getRepetitionByMetadataId(metadataId: number) {
+    return await this.repetitionRepository.findOne({ where: { metadataId } });
+  }
 }

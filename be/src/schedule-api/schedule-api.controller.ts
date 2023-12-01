@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Patch, Delete, Query, Body, UseGuards } from "@nestjs/common";
+import { Controller, Post, Get, Patch, Delete, Query, Body, UseGuards, Logger } from "@nestjs/common";
 import { AddScheduleDto } from "../schedule/dto/add-schedule.dto";
 import { ScheduleApiService } from "./schedule-api.service";
 import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
@@ -9,6 +9,7 @@ import { AuthGuard } from "../guard/auth.guard";
 @Controller("/api/schedule")
 @UseGuards(AuthGuard)
 export class ScheduleApiController {
+  private readonly logger = new Logger(ScheduleApiController.name);
   constructor(private scheduleApiService: ScheduleApiService) {}
 
   @Get("/daily")
@@ -44,6 +45,15 @@ export class ScheduleApiController {
   @Get("/check")
   async checkedSchedule(@Token() token: string, @Query("scheduleUuid") scheduleUuid: string): Promise<JSON> {
     const result = await this.scheduleApiService.checkedSchedule(scheduleUuid);
+    return JSON.parse(result);
+  }
+
+  @Get()
+  async getScheduleInfo(@Token() token: string, @Query("scheduleUuid") scheduleUuid: string): Promise<JSON> {
+    this.logger.log("Get /api/schedule");
+    this.logger.verbose("Schedule uuid: " + scheduleUuid);
+    const result = await this.scheduleApiService.getSchedule(token, scheduleUuid);
+    this.logger.verbose("Result: " + result);
     return JSON.parse(result);
   }
 }
