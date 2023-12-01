@@ -1,13 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { UserLoginDto } from "../user/dto/user-login.dto";
 import { UserService } from "../user/user.service";
 import { AuthService } from "../auth/auth.service";
 import { HttpResponse } from "../utils/http.response";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { ImageService } from "../image/image.service";
+import axios from "axios";
+import { NaverResponseDto } from "../user/dto/naver-response.dto";
 
 @Injectable()
 export class UserApiService {
+  private readonly logger = new Logger(UserApiService.name);
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -76,5 +79,32 @@ export class UserApiService {
       message: "정보 수정 성공",
     };
     return JSON.stringify(result);
+  }
+
+  async loginByNaver(accessToken: string) {
+    const response = await axios.get("https://openapi.naver.com/v1/nid/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    this.logger.verbose(response.data);
+    const data = response.data;
+    const naverResponse: NaverResponseDto = {
+      id: data.id,
+      nickname: data.nickname,
+      profileImage: data.profile_image,
+      email: data.email,
+    };
+
+    const userEntity = await this.userService.loginByNaver(naverResponse);
+    const token = this.authService.issue(userEntity.userUuid);
+
+    const body: HttpResponse = {
+      message: "네이버 로그인 성공",
+      data: {
+        token: token,
+      },
+    };
+    return JSON.stringify(body);
   }
 }
