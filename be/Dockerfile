@@ -21,7 +21,6 @@ COPY package*.json ./
 
 RUN npm install --only=production
 
-COPY . .
 COPY --from=development /usr/src/planj/dist ./dist
 
 EXPOSE 3000
