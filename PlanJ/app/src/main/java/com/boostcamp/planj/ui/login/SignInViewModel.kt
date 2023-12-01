@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -60,6 +62,20 @@ class SignInViewModel @Inject constructor(
     private suspend fun saveId(id : String){
         withContext(Dispatchers.IO){
             loginRepository.saveUser(id)
+        }
+    }
+
+    fun postSignInNaver(accessToken: String){
+        viewModelScope.launch {
+            loginRepository.postSignInNaver(accessToken)
+                .catch {
+                    Log.d("PLANJDEBUG", "postSignInNaver error : ${it.message}")
+                }
+                .collectLatest {
+                    Log.d("PLANJDEBUG", "postSignInNaver success : $it")
+                    saveId(it.uid.token)
+                    _showToast.emit("로그인이 완료되었습니다.")
+                }
         }
     }
 }

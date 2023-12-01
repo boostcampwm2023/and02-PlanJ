@@ -91,7 +91,7 @@ interface MainRepository {
 
     suspend fun getMyInfo(): Flow<User>
 
-    fun postUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
+    fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
     suspend fun saveAlarmMode(mode: Boolean)
     suspend fun getAlarmMode(): Flow<Boolean>

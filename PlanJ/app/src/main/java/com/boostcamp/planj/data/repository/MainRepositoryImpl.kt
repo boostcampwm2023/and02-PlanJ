@@ -221,7 +221,7 @@ class MainRepositoryImpl @Inject constructor(
         emit(User(imgUrl = myInfo.imgUrl, email = myInfo.email, nickname = myInfo.nickname))
     }
 
-    override fun postUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {
+    override fun patchUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {
         emit(api.patchUser(nickName, imageFile))
     }
 
