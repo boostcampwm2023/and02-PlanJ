@@ -21,6 +21,7 @@ import { ScheduleDetailResponse } from "./dto/schedule-detail.response";
 import { LocationResponse } from "./dto/location.response";
 import { ScheduleLocationEntity } from "../schedule/entity/schedule-location.entity";
 import { AddRetrospectiveMemoDto } from "./dto/add-retrospective-memo.dto";
+import { ScheduleEntity } from "../schedule/entity/schedule.entity";
 
 @Injectable()
 export class ScheduleApiService {
@@ -130,8 +131,13 @@ export class ScheduleApiService {
   async getDailySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    const scheduleResponses = await this.scheduleMetaService.getAllScheduleByDate(user, date);
-    await this.getParticipantInformation(scheduleResponses);
+    const [scheduleResponses, updatedSchedules]: [ScheduleResponse[], ScheduleEntity[]] =
+      await this.scheduleMetaService.getAllScheduleByDate(user, date);
+
+    await Promise.all([
+      this.getParticipantInformation(scheduleResponses),
+      this.scheduleService.updateScheduleEntities(updatedSchedules),
+    ]);
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
@@ -143,8 +149,13 @@ export class ScheduleApiService {
   async getWeeklySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    const scheduleResponses = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
-    await this.getParticipantInformation(scheduleResponses);
+    const [scheduleResponses, updatedSchedules]: [ScheduleResponse[], ScheduleEntity[]] =
+      await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+
+    await Promise.all([
+      this.getParticipantInformation(scheduleResponses),
+      this.scheduleService.updateScheduleEntities(updatedSchedules),
+    ]);
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",

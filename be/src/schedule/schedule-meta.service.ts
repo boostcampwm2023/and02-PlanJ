@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetaRepository } from "./schedule-meta.repository";
@@ -7,9 +7,11 @@ import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleResponse } from "./dto/schedule.response";
+import { ScheduleEntity } from "./entity/schedule.entity";
 
 @Injectable()
 export class ScheduleMetaService {
+  private readonly logger = new Logger(ScheduleMetaService.name);
   constructor(
     @InjectRepository(ScheduleMetaRepository)
     private scheduleMetaRepository: ScheduleMetaRepository,
@@ -72,16 +74,17 @@ export class ScheduleMetaService {
       await this.scheduleMetaRepository.save(record);
       return record;
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
 
-  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleResponse[]> {
+  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<[ScheduleResponse[], ScheduleEntity[]]> {
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByDate(user, date);
     return this.convertRawDataToResponse(rawSchedules);
   }
 
-  async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<ScheduleResponse[]> {
+  async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<[ScheduleResponse[], ScheduleEntity[]]> {
     const { firstDay, lastDay } = this.getWeekRange(date);
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByWeek(user, firstDay, lastDay);
     return this.convertRawDataToResponse(rawSchedules);
@@ -101,16 +104,24 @@ export class ScheduleMetaService {
     return this.convertRawDataToResponse(rawSchedules);
   }
 
-  private convertRawDataToResponse(rawSchedules: ScheduleMetadataEntity[]) {
-    return rawSchedules.flatMap((scheduleMeta) => {
+  private convertRawDataToResponse(rawSchedules: ScheduleMetadataEntity[]): [ScheduleResponse[], ScheduleEntity[]] {
+    const updatedSchedules: ScheduleEntity[] = [];
+    const scheduleResponses: ScheduleResponse[] = rawSchedules.flatMap((scheduleMeta) => {
       return scheduleMeta.children.map((schedule) => {
+        if (!schedule.finished && !schedule.failed) {
+          schedule.failed = this.checkFailed(schedule.endAt);
+
+          if (schedule.failed) {
+            updatedSchedules.push(schedule);
+          }
+        }
         const scheduleResponse: ScheduleResponse = {
           scheduleUuid: schedule.scheduleUuid,
           title: scheduleMeta.title,
-          startAt: schedule.startAt === null ? null : schedule.startAt,
+          startAt: schedule.startAt ?? null,
           endAt: schedule.endAt,
           finished: schedule.finished,
-          failed: this.checkFailed(schedule.endAt), // TODO: 호출 시점에서 실패 처리, 일정 업데이트 필요
+          failed: schedule.failed,
           repeated: scheduleMeta.repeated,
           shared: scheduleMeta.shared,
           hasRetrospectiveMemo: !!schedule.retrospectiveMemo,
@@ -121,6 +132,8 @@ export class ScheduleMetaService {
         return scheduleResponse;
       });
     });
+
+    return [scheduleResponses, updatedSchedules];
   }
 
   private getWeekRange(date: Date) {
@@ -149,6 +162,6 @@ export class ScheduleMetaService {
   private checkFailed(endAt: string) {
     const endTime = new Date(endAt);
     const now = new Date();
-    return endTime <= now;
+    return endTime < now;
   }
 }

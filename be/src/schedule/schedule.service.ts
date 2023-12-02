@@ -150,11 +150,19 @@ export class ScheduleService {
     const schedule = await this.scheduleRepository.findOne({ where: { scheduleUuid: scheduleUuid } });
 
     if (!schedule || !schedule.failed) {
-      this.logger.error(!schedule ? "요청한 스케줄이 없음" : "실패한 일정이 아님");
-      throw new BadRequestException("잘못된 요청입니다.");
+      const message: string = !schedule ? "요청한 스케줄이 없습니다." : "실패한 일정이 아닙니다";
+      this.logger.error(message);
+      throw new BadRequestException(message);
     }
 
     schedule.retrospectiveMemo = retrospectiveMemo;
     await this.scheduleRepository.save(schedule);
+  }
+
+  async updateScheduleEntities(updatedSchedules: ScheduleEntity[]) {
+    if (updatedSchedules.length === 0) {
+      return;
+    }
+    await this.scheduleRepository.save(updatedSchedules);
   }
 }
