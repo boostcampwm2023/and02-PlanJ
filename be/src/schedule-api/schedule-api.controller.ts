@@ -5,6 +5,7 @@ import { UpdateScheduleDto } from "src/schedule/dto/update-schedule.dto";
 import { DeleteScheduleDto } from "src/schedule/dto/delete-schedule.dto";
 import { Token } from "../utils/token.decorator";
 import { AuthGuard } from "../guard/auth.guard";
+import { AddRetrospectiveMemoDto } from "./dto/add-retrospective-memo.dto";
 
 @Controller("/api/schedule")
 @UseGuards(AuthGuard)
@@ -54,6 +55,14 @@ export class ScheduleApiController {
     this.logger.verbose("Schedule uuid: " + scheduleUuid);
     const result = await this.scheduleApiService.getSchedule(token, scheduleUuid);
     this.logger.verbose("Result: " + result);
+    return JSON.parse(result);
+  }
+
+  @Post("/add-memo")
+  async addRetrospectiveMemo(@Token() token: string, @Body() dto: AddRetrospectiveMemoDto): Promise<JSON> {
+    this.logger.log("Post /api/schedule");
+    this.logger.verbose("Data: " + JSON.stringify(dto, null, 2));
+    const result = await this.scheduleApiService.addRetrospectiveMemo(token, dto);
     return JSON.parse(result);
   }
 }
