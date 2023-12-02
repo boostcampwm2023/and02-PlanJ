@@ -15,11 +15,12 @@ import { HttpResponse } from "src/utils/http.response";
 import { ScheduleAlarmService } from "../schedule/schedule-alarm.service";
 import { ScheduleResponse } from "src/schedule/dto/schedule.response";
 import { ParticipantEntity } from "../schedule/entity/participant.entity";
-import { ParticipantResponse } from "./interface/participant.response";
+import { ParticipantResponse } from "./dto/participant.response";
 import { UserEntity } from "../user/entity/user.entity";
-import { ScheduleDetailResponse } from "./interface/schedule-detail.response";
-import { LocationResponse } from "./interface/location.response";
+import { ScheduleDetailResponse } from "./dto/schedule-detail.response";
+import { LocationResponse } from "./dto/location.response";
 import { ScheduleLocationEntity } from "../schedule/entity/schedule-location.entity";
+import { AddRetrospectiveMemoDto } from "./dto/add-retrospective-memo.dto";
 
 @Injectable()
 export class ScheduleApiService {
@@ -312,5 +313,15 @@ export class ScheduleApiService {
       longitude: scheduleLocationEntity.endLongitude,
     };
     return result;
+  }
+
+  async addRetrospectiveMemo(token: string, dto: AddRetrospectiveMemoDto) {
+    await this.scheduleService.addRetrospectiveMemo(dto);
+
+    const result: HttpResponse = {
+      message: "회고 메모 추가 완료",
+    };
+    this.logger.verbose(result);
+    return JSON.stringify(result);
   }
 }

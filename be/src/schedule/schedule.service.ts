@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
@@ -9,9 +9,11 @@ import { ulid } from "ulid";
 import { ScheduleEntity } from "./entity/schedule.entity";
 import { RepetitionDto } from "./dto/repetition.dto";
 import { add, addWeeks } from "date-fns";
+import { AddRetrospectiveMemoDto } from "../schedule-api/dto/add-retrospective-memo.dto";
 
 @Injectable()
 export class ScheduleService {
+  private readonly logger = new Logger(ScheduleService.name);
   constructor(
     @InjectRepository(ScheduleRepository)
     private scheduleRepository: ScheduleRepository,
@@ -37,7 +39,7 @@ export class ScheduleService {
       await this.scheduleRepository.save(schedule);
       return scheduleUuid;
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -63,7 +65,7 @@ export class ScheduleService {
       }
       return scheduleUuid;
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -141,5 +143,18 @@ export class ScheduleService {
 
   async getByMetadataIdAndEntAt(metadataId: number, endAt: string) {
     return await this.scheduleRepository.findOne({ where: { metadataId, endAt } });
+  }
+
+  async addRetrospectiveMemo(dto: AddRetrospectiveMemoDto) {
+    const { scheduleUuid, retrospectiveMemo } = dto;
+    const schedule = await this.scheduleRepository.findOne({ where: { scheduleUuid: scheduleUuid } });
+
+    if (!schedule || !schedule.failed) {
+      this.logger.error(!schedule ? "요청한 스케줄이 없음" : "실패한 일정이 아님");
+      throw new BadRequestException("잘못된 요청입니다.");
+    }
+
+    schedule.retrospectiveMemo = retrospectiveMemo;
+    await this.scheduleRepository.save(schedule);
   }
 }
