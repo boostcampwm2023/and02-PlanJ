@@ -59,10 +59,12 @@ class SettingViewModel @Inject constructor(
     }
 
     fun getAllAlarmInfo(): List<AlarmInfo> {
-        return runBlocking {
+        var alarmList: List<AlarmInfo> = emptyList()
+        viewModelScope.launch {
             mainRepository.updateAlarmInfo(System.currentTimeMillis())
-            mainRepository.getAllAlarmInfo()
+            alarmList = mainRepository.getAllAlarmInfo()
         }
+        return alarmList
     }
 
     fun deleteAccount() {
