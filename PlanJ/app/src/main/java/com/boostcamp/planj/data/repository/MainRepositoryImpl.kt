@@ -28,6 +28,7 @@ import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
+import com.boostcamp.planj.data.model.dto.ScheduleDetail
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -305,7 +306,10 @@ class MainRepositoryImpl @Inject constructor(
                     while (calendar.timeInMillis < curTimeMillis) {
                         calendar.timeInMillis += (interval * oneDayMillis)
                     }
-                    calendar.add(Calendar.MINUTE, alarmInfo.alarm.alarmTime + alarmInfo.estimatedTime)
+                    calendar.add(
+                        Calendar.MINUTE,
+                        alarmInfo.alarm.alarmTime + alarmInfo.estimatedTime
+                    )
                     val endTime = DateTime(
                         calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH) + 1,
@@ -319,5 +323,9 @@ class MainRepositoryImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail {
+        return api.getDetailSchedule(scheduleId).scheduleDetail
     }
 }

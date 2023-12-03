@@ -1,6 +1,6 @@
 package com.boostcamp.planj.data.network
 
-import com.boostcamp.planj.data.model.LoginResponse
+import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.model.dto.SignInRequest
 import com.boostcamp.planj.data.model.dto.SignUpRequest
 import retrofit2.Response
