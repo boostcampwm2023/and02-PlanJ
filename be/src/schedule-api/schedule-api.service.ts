@@ -44,6 +44,7 @@ export class ScheduleApiService {
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
     const scheduleUuid = await this.scheduleService.addSchedule(dto, scheduleMetadata);
+    await this.repetitionService.updateRepetition(dto.repetition, scheduleMetadata);
 
     const body: HttpResponse = {
       message: "일정 추가 성공",
@@ -111,7 +112,7 @@ export class ScheduleApiService {
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
-    await this.repetitionService.updateRepetition(dto, scheduleMeta);
+    await this.repetitionService.updateRepetition(dto.repetition, scheduleMeta);
     await this.scheduleService.updateSchedule(dto, scheduleMeta);
     await this.scheduleAlarmService.addScheduleAlarm(dto, scheduleMeta);
     if (!!dto.participants) {
