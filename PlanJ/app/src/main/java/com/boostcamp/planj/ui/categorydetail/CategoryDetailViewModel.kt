@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,7 +31,6 @@ class CategoryDetailViewModel @Inject constructor(
 
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
-
 
 
     fun deleteSchedule(schedule: Schedule) {
@@ -56,12 +56,12 @@ class CategoryDetailViewModel @Inject constructor(
 
     fun setTitle(category: Category) {
         _cateogry.value = category
-        viewModelScope.launch{
+        viewModelScope.launch {
             getScheduleInCategory(category)
         }
     }
 
-    fun getScheduleInCategory(category : Category){
+    fun getScheduleInCategory(category: Category) {
         //TODO 카테고리 모든 일정 가져오기
     }
 
@@ -84,4 +84,14 @@ class CategoryDetailViewModel @Inject constructor(
         val fail = calendar.timeInMillis < System.currentTimeMillis()
     }
 
+    fun getCategoryDetailSchedules() {
+        viewModelScope.launch {
+            mainRepository.getCategorySchedulesApi(_cateogry.value.categoryUuid)
+                .catch {
+                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules Error ${it.message}")
+                }.collectLatest {
+                    _schedules.value = it.
+                }
+        }
+    }
 }

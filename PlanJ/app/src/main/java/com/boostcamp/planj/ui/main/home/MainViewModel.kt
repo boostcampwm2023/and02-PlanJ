@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getScheduleDaily(date : String){
+    fun getScheduleDaily(date: String) {
         viewModelScope.launch {
             mainRepository.getDailyScheduleApi(date)
                 .catch {
@@ -72,43 +72,64 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setCalendarTitle(title : String){
+    fun setCalendarTitle(title: String) {
         _calendarTitle.value = title
     }
 
 
-    fun setDate(date : String){
+    fun setDate(date: String) {
         _selectDate.value = date
     }
 
-    fun setIsCurrent(position : Int) {
+    fun setIsCurrent(position: Int) {
         val now = LocalDate.now()
-        _isCurrent.value =  (_selectDate.value == "${now.year}-${String.format("%02d",now.monthValue)}-${String.format("%02d", now.dayOfMonth)}") && (position == Int.MAX_VALUE / 2)
+        _isCurrent.value = (_selectDate.value == "${now.year}-${
+            String.format(
+                "%02d",
+                now.monthValue
+            )
+        }-${String.format("%02d", now.dayOfMonth)}") && (position == Int.MAX_VALUE / 2)
     }
 
-    fun deleteSchedule(scheduleId:String){
+    fun deleteSchedule(scheduleId: String) {
         viewModelScope.launch {
             try {
                 mainRepository.deleteScheduleApi(scheduleId)
                 getScheduleDaily("${_selectDate.value}T00:00:00")
-            }catch (e:Exception){
-                Log.d("PLANJDEBUG","deleteSchedule Error ${e.message}")
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "deleteSchedule Error ${e.message}")
             }
         }
     }
 
-    fun getCategories(){
+    fun getCategories() {
         viewModelScope.launch {
             mainRepository.getCategoryListApi().catch {
-                Log.d("PLANJDEBUG","getCategories Error ${it.message}")
-            }.collect{
-                Log.d("PLANJDEBUG","getCategories Success $it")
-                val list= it.toMutableList()
-                list.add(0,Category("default","미분류"))
-                _categories.value=list
+                Log.d("PLANJDEBUG", "getCategories Error ${it.message}")
+            }.collect {
+                Log.d("PLANJDEBUG", "getCategories Success $it")
+                val list = it.toMutableList()
+                list.add(0, Category("default", "미분류"))
+                _categories.value = list
             }
         }
 
     }
+
+    fun scheduleFinishChange(schedule: Schedule) {
+        viewModelScope.launch {
+            mainRepository.getScheduleChecked(schedule.scheduleId).catch {
+                Log.d("PLANJDEBUG","getScheduleChecked Error ${it.message}")
+            }.collectLatest {
+                if(it.isFail&&!it.isWrite){
+                    //TODO: 일정 실패시 실패이유 작성해야함
+                }
+                getScheduleDaily("${_selectDate.value}T00:00:00")
+            }
+
+        }
+    }
+
+
 }
 

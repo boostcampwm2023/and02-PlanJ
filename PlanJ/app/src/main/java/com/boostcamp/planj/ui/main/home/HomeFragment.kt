@@ -90,8 +90,8 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.actionFragmentHomeToScheduleActivity(it.scheduleId)
             findNavController().navigate(action)
         }
-        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
-            //viewModel.checkBoxChange(schedule, isCheck)
+        val checkBoxListener = ScheduleDoneListener { schedule ->
+            viewModel.scheduleFinishChange(schedule)
         }
         val segmentScheduleAdapter = SegmentScheduleAdapter(
             swipeListener = swipeListener,

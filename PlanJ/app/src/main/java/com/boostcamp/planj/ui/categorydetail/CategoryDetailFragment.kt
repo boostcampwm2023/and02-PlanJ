@@ -42,6 +42,8 @@ class CategoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewmodel = viewModel
+        binding.lifecycleOwner=viewLifecycleOwner
+
         initAdapter()
         setObserver()
         setListener()
@@ -79,8 +81,8 @@ class CategoryDetailFragment : Fragment() {
                 CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(it.scheduleId)
             findNavController().navigate(action)
         }
-        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
-            viewModel.checkBoxChange(schedule, isCheck)
+        val checkBoxListener = ScheduleDoneListener { schedule ->
+            viewModel.checkBoxChange(schedule, !schedule.isFinished)
         }
         segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter

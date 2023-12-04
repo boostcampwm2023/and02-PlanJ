@@ -8,6 +8,7 @@ import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
 import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -82,6 +83,7 @@ interface MainApi {
         @Part profileImage: MultipartBody.Part?
     ): PostUserResponse
 
-
+    @GET("/api/schedule/check")
+    suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
 
 }

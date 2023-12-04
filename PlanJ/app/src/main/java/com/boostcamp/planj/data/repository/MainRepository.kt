@@ -7,6 +7,7 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -73,4 +74,6 @@ interface MainRepository {
     suspend fun updateAlarmInfo(curTimeMillis: Long)
 
     suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail
+
+    fun getScheduleChecked(scheduleId: String):Flow<GetScheduleCheckedResponse>
 }
