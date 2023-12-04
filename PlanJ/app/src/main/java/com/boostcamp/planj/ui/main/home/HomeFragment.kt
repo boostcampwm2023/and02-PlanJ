@@ -1,26 +1,40 @@
 package com.boostcamp.planj.ui.main.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
+import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
-import com.google.android.material.tabs.TabLayoutMediator
+import com.boostcamp.planj.ui.adapter.ScheduleClickListener
+import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
+import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
+import com.boostcamp.planj.ui.adapter.SwipeListener
+import com.boostcamp.planj.ui.schedule.ScheduleDialog
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Calendar
+import java.util.Locale
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MainViewModel by activityViewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.viewPagerHome.adapter = MyFragmentPagerAdapter(this)
-        val title = listOf("Today", "Week")
-        TabLayoutMediator(binding.tabLayoutHome, binding.viewPagerHome) { tab, position ->
-            tab.text = title[position]
-        }.attach()
-    }
+    private var categoryList = emptyList<Category>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +43,151 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        val onClickListener = OnClickListener {
+            viewModel.setDate(it)
+        }
+
+        val calendar = Calendar.getInstance()
+        viewModel.setDate(
+            "${calendar.get(Calendar.YEAR)}-${
+                String.format(
+                    "%02d",
+                    calendar.get(Calendar.MONTH) + 1
+                )
+            }-${String.format("%02d", calendar.get(Calendar.DATE))}"
+        )
+        val current = String.format(
+            "%04d-%02d-%02dT%02d:%02d:%02d",
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DAY_OF_MONTH),
+            calendar.get(Calendar.HOUR),
+            calendar.get(Calendar.MINUTE),
+            calendar.get(Calendar.SECOND)
+        )
+        viewModel.getScheduleDaily(current)
+        calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
+        val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
+        viewModel.setCalendarTitle(currentDate)
+
+        val calendarAdapter = CalendarFragmentStateAdapter(onClickListener, requireActivity())
+        initViewPager(calendarAdapter)
+
+
+        val swipeListener = SwipeListener {
+            //viewModel.deleteSchedule(it)
+        }
+        val scheduleClickListener = ScheduleClickListener {
+            val action =
+                HomeFragmentDirections.actionFragmentHomeToScheduleActivity(it.scheduleId)
+            findNavController().navigate(action)
+        }
+        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
+            //viewModel.checkBoxChange(schedule, isCheck)
+        }
+        val segmentScheduleAdapter = SegmentScheduleAdapter(
+            swipeListener = swipeListener,
+            checkBoxListener = checkBoxListener,
+            clickListener = scheduleClickListener
+        )
+        binding.rvMainHomeDailySchedule.adapter = segmentScheduleAdapter
+        segmentScheduleAdapter.submitList(emptyList())
+
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.categories.collectLatest {
+                    categoryList = it.filter { c -> c.categoryName != "전체 일정" }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.selectDate.collectLatest {
+                    viewModel.setIsCurrent(binding.vpMainCalendarWeek.currentItem)
+                    viewModel.getScheduleDaily("${it}T00:00:00")
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.schedules.collectLatest {
+                    Log.d("PLANDEBUG", "schedules collectLatest")
+                    val list = listOf("일정", "완료", "실패")
+                    val schedules = listOf(
+                        it.filter { scheduleInfo ->  !scheduleInfo.isFinished },
+                        it.filter { scheduleInfo ->  scheduleInfo.isFinished && !scheduleInfo.isFailed },
+                        it.filter { scheduleInfo ->  scheduleInfo.isFinished && scheduleInfo.isFailed }
+                    )
+
+                    val segmentList = mutableListOf<ScheduleSegment>()
+                    repeat(3){index ->
+                        //segmentList.add(ScheduleSegment(list[index], schedules[index]))
+                    }
+                    segmentScheduleAdapter.submitList(segmentList)
+                }
+            }
+        }
+
+        setListener()
+        binding.executePendingBindings()
+    }
+
+    private fun initViewPager(calendarAdapter: CalendarFragmentStateAdapter) {
+        binding.vpMainCalendarWeek.adapter = calendarAdapter
+        binding.vpMainCalendarWeek.setCurrentItem(Int.MAX_VALUE / 2, false)
+        binding.vpMainCalendarWeek.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.WEEK_OF_MONTH, position - (Int.MAX_VALUE / 2))
+                calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
+                val date = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
+                viewModel.setCalendarTitle(date)
+                viewModel.setIsCurrent(position)
+            }
+        })
+    }
+
+
+    private fun setListener() {
+        binding.fbAddSchedule.setOnClickListener {
+            val dialog = ScheduleDialog(
+                categoryList.map { it.categoryName },
+                "미분류"
+            ) { category, title, endTime ->
+                viewModel.insertSchedule(category, title, endTime)
+                viewModel.getScheduleDaily(endTime.toFormattedString())
+            }
+            dialog.show(
+                parentFragmentManager, null
+            )
+        }
+
+        binding.btnMainCurrentDate.setOnClickListener {
+            binding.vpMainCalendarWeek.setCurrentItem(Int.MAX_VALUE / 2, false)
+            val now = LocalDate.now()
+            Log.d("ABCDE", "${now.year}-${now.monthValue + 1}-${now.dayOfMonth}")
+            viewModel.setDate(
+                "${now.year}-${String.format("%02d", now.monthValue)}-${
+                    String.format(
+                        "%02d",
+                        now.dayOfMonth
+                    )
+                }"
+            )
+        }
     }
 
     override fun onDestroyView() {

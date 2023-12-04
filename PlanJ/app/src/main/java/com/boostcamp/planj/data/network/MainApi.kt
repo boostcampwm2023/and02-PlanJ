@@ -81,4 +81,7 @@ interface MainApi {
         @Part("nickname") nickname: String,
         @Part profileImage: MultipartBody.Part?
     ): PostUserResponse
+
+
+
 }

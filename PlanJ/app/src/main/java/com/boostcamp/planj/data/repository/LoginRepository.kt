@@ -1,6 +1,6 @@
 package com.boostcamp.planj.data.repository
 
-import com.boostcamp.planj.data.model.dto.SignInNaverRequest
+
 import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.network.ApiResult
 import kotlinx.coroutines.flow.Flow

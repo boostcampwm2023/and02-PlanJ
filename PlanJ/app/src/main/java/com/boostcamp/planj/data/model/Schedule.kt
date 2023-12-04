@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class Schedule(
     @PrimaryKey val scheduleId: String,
     val title: String,
-    val memo: String? = null,
+    val hasRetrospectiveMemo: String? = null,
     val startTime: DateTime? = null,
     val endTime: DateTime,
     val categoryTitle: String,

@@ -1,0 +1,94 @@
+package com.boostcamp.planj.ui.main.home
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleDummy
+import com.boostcamp.planj.data.model.ScheduleInfo
+import com.boostcamp.planj.data.repository.MainRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import javax.inject.Inject
+
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val mainRepository: MainRepository
+) : ViewModel() {
+
+    private val _selectDate = MutableStateFlow("")
+    val selectDate = _selectDate.asStateFlow()
+
+    val categories =
+        mainRepository.getAllCategories().stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
+        )
+
+    private val _calendarTitle = MutableStateFlow("")
+    val calendarTitle = _calendarTitle.asStateFlow()
+
+
+    private val _isCurrent = MutableStateFlow(true)
+    val isCurrent = _isCurrent.asStateFlow()
+
+
+    private val _schedules = MutableStateFlow<List<ScheduleDummy>>(emptyList())
+    val schedules = _schedules.asStateFlow()
+
+    fun insertSchedule(category: String, title: String, endTime: DateTime) {
+        viewModelScope.launch(Dispatchers.IO) {
+            categories.value.find { it.categoryName == category }?.let { c ->
+                mainRepository.postSchedule(c.categoryId, title, endTime.toFormattedString())
+                    .catch {
+                        Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
+                    }
+                    .collect {
+                        val schedule = Schedule(
+                            scheduleId = it.data.scheduleUuid,
+                            categoryTitle = category,
+                            title = title,
+                            endTime = endTime
+                        )
+                        mainRepository.insertSchedule(schedule)
+                    }
+            }
+        }
+    }
+
+    fun getScheduleDaily(date : String){
+        viewModelScope.launch {
+            mainRepository.getDailyScheduleApi(date)
+                .catch {
+                    Log.d("PLANJDEBUG", "getScheduleDaily Error ${it.message}")
+                }
+                .collectLatest {
+                    Log.d("PLANJDEBUG", "getScheduleDaily Success")
+                    _schedules.value = it
+                }
+        }
+    }
+
+    fun setCalendarTitle(title : String){
+        _calendarTitle.value = title
+    }
+
+
+    fun setDate(date : String){
+        _selectDate.value = date
+    }
+
+    fun setIsCurrent(position : Int) {
+        val now = LocalDate.now()
+        _isCurrent.value =  (_selectDate.value == "${now.year}-${String.format("%02d",now.monthValue)}-${String.format("%02d", now.dayOfMonth)}") && (position == Int.MAX_VALUE / 2)
+    }
+}
+
