@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Repository, DataSource } from "typeorm";
 import { ParticipantEntity } from "./entity/participant.entity";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 @Injectable()
 export class ParticipateRepository extends Repository<ParticipantEntity> {
@@ -35,23 +36,53 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     return count === 0;
   }
 
-  // scheduleUuid에 연결된 schedulemetadataid가 이미 participant테이블의 author에 있는지 체크
-  // 초대된 사용자가 새롭게 초대된 것인지 체크
-  // 이미 있고 새롭게 초대된 것이 아니라면 add 필요없고 participant 테이블에 새로 만들 필요 없음
-  async isAlreadyInvited(authorMetadataId: number, invitedUserId: number): Promise<number[]> {
+  async unInvite(authorMetadataId: number, invitedMetadataId: number) {
+    try {
+      await this.softDelete({ authorId: authorMetadataId, participantId: invitedMetadataId });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getInvitedMetadataId(authorMetadataId: number, invitedUserId: number): Promise<number> {
     const records = await this.createQueryBuilder("participant")
       .leftJoinAndSelect("participant.participant", "schedule_metadata")
       .where("participant.author_id = :authorId", { authorId: authorMetadataId })
       .where("schedule_metadata.user_id = :userId", { userId: invitedUserId })
       .getMany();
 
-    console.log(records);
-    if (records.length === 1) {
-      return [1, records[0].participantId];
+    return records[0].participantId;
+  }
+
+  async checkInvitedStatus(
+    authorMetadata: ScheduleMetadataEntity,
+    groupUserEntities: UserEntity[],
+    invitedUserEntities: UserEntity[],
+  ) {
+    const invitedStatus = {}; // value  0: not added (new) 1: already added(changed) 2: deletded
+
+    for (const participant of groupUserEntities) {
+      if (participant.userId === authorMetadata.userId) {
+        continue;
+      }
+      invitedStatus[participant.email] = 2;
     }
 
-    if (records.length === 0) {
-      return [0, 0];
+    for (const invited of invitedUserEntities) {
+      invitedStatus[invited.email] = 0;
     }
+
+    for (const participant of groupUserEntities) {
+      for (const invited of invitedUserEntities) {
+        if (participant.email === invited.email) {
+          invitedStatus[participant.email] = 1;
+        }
+      }
+    }
+
+    console.log(invitedStatus);
+    const invitedStatusArray: [string, number][] = Object.entries(invitedStatus);
+    return invitedStatusArray;
   }
 }
