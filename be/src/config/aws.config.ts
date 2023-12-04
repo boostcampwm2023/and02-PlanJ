@@ -6,4 +6,5 @@ export default registerAs("aws", () => ({
   region: process.env.AWS_REGION,
   endPoint: process.env.S3_END_POINT,
   bucket: process.env.S3_BUCKET,
+  acl: process.env.S3_ACL,
 }));
