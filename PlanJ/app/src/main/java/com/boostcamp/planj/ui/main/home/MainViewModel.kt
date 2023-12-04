@@ -41,15 +41,19 @@ class MainViewModel @Inject constructor(
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
 
-    fun postSchedule(category: String, title: String, endTime: DateTime) {
+    fun postSchedule(category: String, title: String) {
+
+        val date = _selectDate.value.split("-").map { it.toInt() }
+        val dateTime = DateTime(date[0], date[1], date[2], 23, 59)
         viewModelScope.launch(Dispatchers.IO) {
             categories.value.find { it.categoryName == category }?.let { c ->
-                mainRepository.postSchedule(c.categoryUuid, title, endTime)
+                mainRepository.postSchedule("default"/*c.categoryUuid*/, title, dateTime)
                     .catch {
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }
                     .collectLatest {
-                        getScheduleDaily(endTime.toFormattedString())
+                        Log.d("PLANJDEBUG", "postSchedule success ${it}")
+                        getScheduleDaily(dateTime.toFormattedString())
                     }
             }
         }

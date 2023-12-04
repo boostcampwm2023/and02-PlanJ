@@ -43,6 +43,7 @@ class CategoryViewModel @Inject constructor(
                     }
                     .collect {
                         //TODO 카데고리 조회 요청 api 쏘기
+                        getCategory()
                     }
             }
             CategoryState.SUCCESS
@@ -58,6 +59,7 @@ class CategoryViewModel @Inject constructor(
                 }
                 .collectLatest {
                     //TODO 카테고리 조회 요청 api 쏘기
+                    getCategory()
                 }
 
         }
@@ -79,10 +81,23 @@ class CategoryViewModel @Inject constructor(
                         }
                         .collectLatest {
                             //TODO 카테고리 조회 요청 api 쓰기
+                            getCategory()
                         }
                 }
             }
             CategoryState.SUCCESS
+        }
+    }
+
+    fun getCategory(){
+        viewModelScope.launch {
+            mainRepository.getCategoryListApi()
+                .catch {
+                    Log.d("PLANJDEBUG", "getCategory error ${it.message}")
+                }
+                .collectLatest {
+                    _categories.value = it
+                }
         }
     }
 
