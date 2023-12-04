@@ -1,10 +1,11 @@
 import { DataSource, Repository } from "typeorm";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { UserEntity } from "src/user/entity/user.entity";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
+  private readonly logger = new Logger(ScheduleMetaRepository.name);
   constructor(dataSource: DataSource) {
     super(ScheduleMetadataEntity, dataSource.createEntityManager());
   }
@@ -53,7 +54,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
     try {
       await this.softDelete({ metadataId });
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -64,6 +65,14 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
       .where("schedule_metadata.user_id = :userId", { userId: userId })
       .andWhere("schedule_metadata.category_id IS NULL")
       .orderBy("schedule.endAt")
+      .getMany();
+  }
+
+  async findByKeyword(keyword: string, userId: number) {
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .where("schedule_metadata.user_id = :userId", { userId: userId })
+      .andWhere("schedule_metadata.title LIKE :keyword", { keyword: `%${keyword}%` })
       .getMany();
   }
 }

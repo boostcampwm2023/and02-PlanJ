@@ -386,4 +386,26 @@ export class ScheduleApiService {
     this.logger.verbose(result);
     return JSON.stringify(result);
   }
+
+  async searchByKeyword(token: string, keyword: string) {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+    const [scheduleResponses, updatedSchedules] = await this.scheduleMetaService.getAllScheduleByKeyword(
+      keyword,
+      userEntity.userId,
+    );
+
+    await Promise.all([
+      this.getParticipantInformation(scheduleResponses),
+      this.scheduleService.updateScheduleEntities(updatedSchedules),
+    ]);
+
+    scheduleResponses.sort((a, b) => a.endAt.localeCompare(b.endAt));
+
+    const body: HttpResponse = {
+      message: "일정 검색 성공",
+      data: scheduleResponses,
+    };
+    return JSON.stringify(body);
+  }
 }

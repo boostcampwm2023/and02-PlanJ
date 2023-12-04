@@ -104,6 +104,11 @@ export class ScheduleMetaService {
     return this.convertRawDataToResponse(rawSchedules);
   }
 
+  async getAllScheduleByKeyword(keyword: string, userId: number) {
+    const rawSchedules = await this.scheduleMetaRepository.findByKeyword(keyword, userId);
+    return this.convertRawDataToResponse(rawSchedules);
+  }
+
   private convertRawDataToResponse(rawSchedules: ScheduleMetadataEntity[]): [ScheduleResponse[], ScheduleEntity[]] {
     const updatedSchedules: ScheduleEntity[] = [];
     const scheduleResponses: ScheduleResponse[] = rawSchedules.flatMap((scheduleMeta) => {
