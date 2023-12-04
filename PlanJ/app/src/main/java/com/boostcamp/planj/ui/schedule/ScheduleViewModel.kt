@@ -81,6 +81,9 @@ class ScheduleViewModel @Inject constructor(
     private val _alarmEventFlow = MutableSharedFlow<AlarmEvent>()
     val alarmEventFlow = _alarmEventFlow.asSharedFlow()
 
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast = _showToast.asSharedFlow()
+
     fun setScheduleId(newScheduleId: String?) {
         scheduleId = newScheduleId ?: ""
         getScheduleInfo()
@@ -183,10 +186,35 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun completeEditingSchedule() {
-        // 시작시간 > 종료시간
-        if (scheduleStartTime.value != null && (scheduleStartTime.value!!.toMilliseconds() > scheduleEndTime.value.toMilliseconds())) return
+        scheduleStartTime.value?.let { startTime ->
+            // 시작시간 > 종료시간
+            if (startTime.toMilliseconds() > scheduleEndTime.value.toMilliseconds()) {
+                viewModelScope.launch {
+                    _showToast.emit("종료 시각이 시작 시간보다 빠릅니다.")
+                }
+                return
+            }
+
+            // 반복 주기 < 일정 시간
+            scheduleRepetition.value?.let { repetition ->
+                val oneDayMillis = 24 * 60 * 60 * 1000L
+                val interval =
+                    if (repetition.cycleType == "DAILY") repetition.cycleCount else repetition.cycleCount * 7
+                if (interval * oneDayMillis < scheduleEndTime.value.toMilliseconds() - startTime.toMilliseconds()) {
+                    viewModelScope.launch {
+                        _showToast.emit("일정 반복 주기가 일정보다 짧습니다.")
+                    }
+                    return
+                }
+            }
+        }
         // 현재 > 종료시간
-        if (System.currentTimeMillis() > scheduleEndTime.value.toMilliseconds()) return
+        if (System.currentTimeMillis() > scheduleEndTime.value.toMilliseconds()) {
+            viewModelScope.launch {
+                _showToast.emit("종료 시각이 현재 시간보다 빠릅니다.")
+            }
+            return
+        }
 
         setAlarmInfo()
 
@@ -212,6 +240,7 @@ class ScheduleViewModel @Inject constructor(
                     }
                     .collect {
                         _isEditMode.value = false
+                        _showToast.emit("일정을 수정했습니다.")
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
                     }
             }

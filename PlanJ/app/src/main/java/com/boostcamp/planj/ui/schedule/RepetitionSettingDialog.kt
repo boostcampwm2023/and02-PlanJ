@@ -32,7 +32,7 @@ class RepetitionSettingDialog(
 
         setVisibility()
         setListener()
-        setBtnClicked(repetition)
+        setBtnClicked()
     }
 
     override fun onResume() {
@@ -88,7 +88,7 @@ class RepetitionSettingDialog(
         }
     }
 
-    private fun setBtnClicked(repetition: Repetition?) {
+    private fun setBtnClicked() {
         with(binding) {
             if (repetition == null) {
                 rbDialogRepetitionNo.isChecked = true

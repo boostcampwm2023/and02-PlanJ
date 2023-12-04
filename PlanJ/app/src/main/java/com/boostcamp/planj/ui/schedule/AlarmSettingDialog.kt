@@ -32,7 +32,7 @@ class AlarmSettingDialog(
 
         setVisibility()
         setListener()
-        setBtnClicked(alarm)
+        setBtnClicked()
     }
 
     override fun onResume() {
@@ -77,7 +77,7 @@ class AlarmSettingDialog(
         }
     }
 
-    private fun setBtnClicked(alarm: Alarm?) {
+    private fun setBtnClicked() {
         with(binding) {
             if (alarm != null && alarm.alarmType == "END") {
                 rbDialogAlarmEnd.isChecked = true

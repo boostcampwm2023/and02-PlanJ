@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -92,13 +93,13 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isEditMode.collect { isEditMode ->
+            viewModel.isEditMode.collectLatest { isEditMode ->
                 updateToolbar(isEditMode)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isComplete.collect { isComplete ->
+            viewModel.isComplete.collectLatest { isComplete ->
                 if (isComplete) activity?.finish()
             }
         }
@@ -119,7 +120,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.categoryList.collect { categoryList ->
+            viewModel.categoryList.collectLatest { categoryList ->
                 val arrayAdapter =
                     ArrayAdapter(
                         requireContext(),
@@ -131,7 +132,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.scheduleAlarm.collect { alarm ->
+                viewModel.scheduleAlarm.collectLatest { alarm ->
 
                     if (alarm != null && alarm.alarmType == "DEPARTURE") {
                         binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
@@ -147,8 +148,16 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.participants.collect {
+                viewModel.participants.collectLatest {
                     initAdapter()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collectLatest {message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
             }
         }

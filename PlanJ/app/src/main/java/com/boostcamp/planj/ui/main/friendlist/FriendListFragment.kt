@@ -91,7 +91,7 @@ class FriendListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.showToast.collectLatest { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
             }
         }

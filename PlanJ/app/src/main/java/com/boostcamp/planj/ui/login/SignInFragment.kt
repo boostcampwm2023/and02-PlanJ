@@ -96,7 +96,7 @@ class SignInFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.showToast.collect { message ->
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
             }
         }
 
