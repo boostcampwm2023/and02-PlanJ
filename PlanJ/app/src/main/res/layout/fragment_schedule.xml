@@ -250,11 +250,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_schedule_participants"
                     android:layout_width="0dp"
-                    android:layout_height="350dp"
+                    android:layout_height="wrap_content"
                     android:maxHeight="150dp"
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="8dp"
-                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_end">
@@ -295,15 +294,16 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_schedule_participants"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
+                        android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_category_participants"
-                        tools:listoitem="@layout/item_participant" />
+                        tools:listitem="@layout/item_participant_profile" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.divider.MaterialDivider

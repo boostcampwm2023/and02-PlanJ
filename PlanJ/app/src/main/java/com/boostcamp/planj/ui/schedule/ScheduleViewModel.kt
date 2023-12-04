@@ -201,7 +201,9 @@ class ScheduleViewModel @Inject constructor(
                     endAt = scheduleEndTime.value.toFormattedString(),
                     startLocation = startScheduleLocation.value,
                     endLocation = endScheduleLocation.value,
-                    repetition = scheduleRepetition.value
+                    repetition = scheduleRepetition.value,
+                    participants = participants.value,
+                    alarm = scheduleAlarm.value
                 )
 
                 mainRepository.patchSchedule(patchScheduleBody)

@@ -83,7 +83,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewModel.getCategories()
 
-        initAdapter()
         setObserver()
         setListener()
 
@@ -103,7 +102,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
     }
 
     private fun initAdapter() {
-        val adapter = ScheduleParticipantAdapter(viewModel.participants.value)
+        val adapter = ScheduleParticipantProfileAdapter(viewModel.participants.value)
         binding.rvScheduleParticipants.adapter = adapter
     }
 
@@ -158,6 +157,14 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                         binding.tvScheduleLocationAlarm.text = "위치 알람 설정"
                         binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_main2)
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.participants.collect {
+                    initAdapter()
                 }
             }
         }
