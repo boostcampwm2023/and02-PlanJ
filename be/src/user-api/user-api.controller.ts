@@ -51,7 +51,7 @@ export class UserApiController {
   }
 
   @UseGuards(AuthGuard)
-  @Get("/set-default-image")
+  @Patch("/set-default-image")
   async setProfileImageDefault(@Token() token: string): Promise<JSON> {
     this.logger.log("Get /api/auth/set-default-image");
     this.logger.verbose("Token: " + token);
