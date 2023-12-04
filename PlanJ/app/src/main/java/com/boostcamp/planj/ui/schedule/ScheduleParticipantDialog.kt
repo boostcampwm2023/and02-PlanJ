@@ -1,6 +1,5 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,10 @@ import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.databinding.DialogParticipantsBinding
 
-class ScheduleParticipantDialog : DialogFragment() {
+class ScheduleParticipantDialog(private val participants: List<Participant>) : DialogFragment() {
 
     private var _binding: DialogParticipantsBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var participants: List<Participant>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,13 +26,6 @@ class ScheduleParticipantDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val participantsInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelableArrayList("participantsInfo", Participant::class.java)
-        } else {
-            arguments?.getParcelableArrayList("participantsInfo")
-        }
-
-        participants = participantsInfo?.toList() ?: emptyList()
         initAdapter()
         setListener()
     }

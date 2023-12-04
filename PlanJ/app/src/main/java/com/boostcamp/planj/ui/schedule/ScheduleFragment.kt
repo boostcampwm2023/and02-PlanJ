@@ -38,17 +38,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private val args: ScheduleFragmentArgs by navArgs()
 
-    private val repetitionSettingDialog by lazy {
-        RepetitionSettingDialog()
-    }
-
-    private val alarmSettingDialog by lazy {
-        AlarmSettingDialog()
-    }
-
-    private val participantDialog by lazy {
-        ScheduleParticipantDialog()
-    }
+    private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
+    private var alarmSettingDialog = AlarmSettingDialog(null, this)
+    private var participantDialog = ScheduleParticipantDialog(emptyList())
 
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -90,20 +82,12 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             viewModel.setLocation(args.startLocation, args.location)
         }
 
-        repetitionSettingDialog.setRepetitionDialogListener(this)
-        alarmSettingDialog.setAlarmSettingDialogListener(this)
-
         binding.executePendingBindings()
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    private fun initAdapter() {
-        val adapter = ScheduleParticipantProfileAdapter(viewModel.participants.value)
-        binding.rvScheduleParticipants.adapter = adapter
     }
 
     private fun setObserver() {
@@ -170,6 +154,11 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
     }
 
+    private fun initAdapter() {
+        val adapter = ScheduleParticipantProfileAdapter(viewModel.participants.value)
+        binding.rvScheduleParticipants.adapter = adapter
+    }
+
     private fun setListener() {
         binding.toolbarSchedule.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -200,20 +189,18 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
-            repetitionSettingDialog.arguments = bundle
             if (!repetitionSettingDialog.isAdded) {
+                repetitionSettingDialog =
+                    RepetitionSettingDialog(viewModel.scheduleRepetition.value, this)
                 repetitionSettingDialog.show(childFragmentManager, "반복 설정")
             }
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
-            alarmSettingDialog.arguments = bundle
             if (!alarmSettingDialog.isAdded) {
-                alarmSettingDialog.show(childFragmentManager, "알림 설정")
+                alarmSettingDialog =
+                    AlarmSettingDialog(viewModel.scheduleAlarm.value, this)
+                alarmSettingDialog.show(childFragmentManager, "알람 설정")
             }
         }
 
@@ -233,13 +220,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleAllParticipants.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelableArrayList(
-                "participantsInfo",
-                ArrayList(viewModel.participants.value)
-            )
-            participantDialog.arguments = bundle
             if (!participantDialog.isAdded) {
+                participantDialog = ScheduleParticipantDialog(viewModel.participants.value)
                 participantDialog.show(childFragmentManager, "전체 참가자")
             }
         }
