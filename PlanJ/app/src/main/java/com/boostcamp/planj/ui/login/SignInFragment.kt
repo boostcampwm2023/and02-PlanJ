@@ -32,8 +32,6 @@ class SignInFragment : Fragment() {
                         Log.d("PLANJDEBUG", "${token}")
                         viewModel.postSignInNaver(it)
                     } ?: Log.d("PLANJDEBUG", "naver Login Token null")
-
-
                 }
 
                 Activity.RESULT_CANCELED -> {

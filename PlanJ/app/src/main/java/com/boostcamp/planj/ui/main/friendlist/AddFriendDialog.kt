@@ -67,7 +67,8 @@ class AddFriendDialog : DialogFragment() {
                     addFriendDialogListener?.onClickComplete(email.toString())
                     dismiss()
                 } else {
-                    tilDialogAddFriendLayout.error = resources.getString(R.string.email_format_error)
+                    tilDialogAddFriendLayout.error =
+                        resources.getString(R.string.email_format_error)
                 }
             }
         }

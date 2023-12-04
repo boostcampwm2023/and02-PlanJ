@@ -1,6 +1,5 @@
 package com.boostcamp.planj.data.repository
 
-
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -34,7 +33,6 @@ import okhttp3.MultipartBody
 import java.io.IOException
 import java.util.Calendar
 import javax.inject.Inject
-
 
 class MainRepositoryImpl @Inject constructor(
     private val api: MainApi,
@@ -86,7 +84,6 @@ class MainRepositoryImpl @Inject constructor(
         api.deleteSchedule(DeleteScheduleBody(scheduleUuid))
     }
 
-
     override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> =
         flow {
             emit(api.patchSchedule(patchScheduleBody))
@@ -95,7 +92,6 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun deleteCategoryApi(categoryUuid: String): Flow<CategoryResponse> = flow {
         emit(api.deleteCategory(categoryUuid))
     }
-
 
     override suspend fun updateCategoryApi(
         categoryUuid: String,
@@ -151,7 +147,6 @@ class MainRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.d("PLANJDEBUG", "getDailyScheduleApi error  ${e.message}")
         }
-
     }
 
     override suspend fun postFriendApi(friendEmail: String) {

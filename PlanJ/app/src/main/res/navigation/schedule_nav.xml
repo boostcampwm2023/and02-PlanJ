@@ -19,55 +19,54 @@
     <fragment
         android:id="@+id/scheduleFragment"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleFragment"
-        android:label="ScheduleFragment" >
+        android:label="ScheduleFragment">
         <action
             android:id="@+id/action_scheduleFragment_to_scheduleMapFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/scheduleMapFragment" />
+            app:destination="@id/scheduleMapFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="location"
+            android:defaultValue="@null"
             app:argType="com.boostcamp.planj.data.model.Location"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_scheduleFragment_to_scheduleStartMapFragment"
             app:destination="@id/scheduleStartMapFragment" />
         <argument
             android:name="startLocation"
+            android:defaultValue="@null"
             app:argType="com.boostcamp.planj.data.model.Location"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/scheduleMapFragment"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleMapFragment"
-        android:label="ScheduleMapFragment"
-        >
+        android:label="ScheduleMapFragment">
         <action
             android:id="@+id/action_scheduleMapFragment_to_scheduleFragment"
-            app:popUpToInclusive="true"
+            app:destination="@id/scheduleFragment"
             app:popUpTo="@id/scheduleFragment"
-            app:destination="@id/scheduleFragment" />
+            app:popUpToInclusive="true" />
         <argument
             android:name="location"
+            android:defaultValue="@null"
             app:argType="com.boostcamp.planj.data.model.Location"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/scheduleStartMapFragment"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleStartMapFragment"
-        android:label="ScheduleStartMapFragment" >
+        android:label="ScheduleStartMapFragment">
         <argument
             android:name="endLocation"
+            android:defaultValue="@null"
             app:argType="com.boostcamp.planj.data.model.Location"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <argument
             android:name="startLocation"
+            android:defaultValue="@null"
             app:argType="com.boostcamp.planj.data.model.Location"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_scheduleStartMapFragment_to_scheduleFragment"
             app:destination="@id/scheduleFragment" />

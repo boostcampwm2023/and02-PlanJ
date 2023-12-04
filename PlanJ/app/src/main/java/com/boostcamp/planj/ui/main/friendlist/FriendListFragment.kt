@@ -89,7 +89,7 @@ class FriendListFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showToast.collectLatest { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
@@ -99,7 +99,7 @@ class FriendListFragment : Fragment() {
 
     private fun setListener() {
         binding.layoutFriendListAdd.setOnClickListener {
-            if(!addFriendDialog.isAdded){
+            if (!addFriendDialog.isAdded) {
                 addFriendDialog.show(childFragmentManager, "친구 추가")
             }
         }

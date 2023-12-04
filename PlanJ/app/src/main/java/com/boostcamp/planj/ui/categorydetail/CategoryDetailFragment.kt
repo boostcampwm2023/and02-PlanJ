@@ -69,7 +69,6 @@ class CategoryDetailFragment : Fragment() {
         super.onDestroyView()
     }
 
-
     private fun initAdapter() {
         val swipeListener = SwipeListener {
             viewModel.deleteSchedule(it)
@@ -109,7 +108,5 @@ class CategoryDetailFragment : Fragment() {
                 }
             }
         }
-
     }
-
 }
