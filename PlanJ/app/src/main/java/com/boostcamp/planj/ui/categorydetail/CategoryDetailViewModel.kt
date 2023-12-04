@@ -40,8 +40,9 @@ class CategoryDetailViewModel @Inject constructor(
 
     fun postSchedule(category: String, title: String, endTime: DateTime) {
         viewModelScope.launch(Dispatchers.IO) {
-            val getCategory = mainRepository.getCategory(category)
-            mainRepository.postSchedule(getCategory.categoryId, title, endTime)
+            //TODO 카테고리 id 조회하기
+            val getCategory = ""
+            mainRepository.postSchedule(getCategory, title, endTime)
                 .catch {
                     Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                 }

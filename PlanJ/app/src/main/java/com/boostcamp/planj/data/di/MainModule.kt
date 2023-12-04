@@ -6,18 +6,24 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.db.AppDatabase
-import com.boostcamp.planj.data.db.CategoryDao
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.network.MainApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -87,16 +93,16 @@ object MainModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "planj"
+        ).build()
     }
 
     @Singleton
     @Provides
     fun provideAlarmInfoDao(appDatabase: AppDatabase): AlarmInfoDao = appDatabase.alarmInfoDao()
-
-    @Singleton
-    @Provides
-    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao = appDatabase.categoryDao()
 
     //DataStore
     @Singleton
@@ -106,9 +112,4 @@ object MainModule {
             produceFile = { context.preferencesDataStoreFile(BuildConfig.DATA_STORE_NAME) }
         )
 
-    @Singleton
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
 }

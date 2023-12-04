@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.AlarmInfo
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
@@ -76,9 +77,8 @@ class ScheduleViewModel @Inject constructor(
 
     val startScheduleLocation = MutableStateFlow<Location?>(null)
 
-    val categoryList: StateFlow<List<String>> =
-        mainRepository.getCategories()
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
+    val categoryList = _categoryList.asStateFlow()
 
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode: StateFlow<Boolean> = _isEditMode
@@ -188,11 +188,11 @@ class ScheduleViewModel @Inject constructor(
         setAlarmInfo()
 
         viewModelScope.launch(Dispatchers.IO) {
-            val getCategory =
-                withContext((Dispatchers.IO)) { mainRepository.getCategory(scheduleCategory.value) }
+            //TODO 카테고리 id 찾기
+            val getCategory = ""
 
             val patchScheduleBody = PatchScheduleBody(
-                getCategory.categoryId,
+                getCategory,
                 scheduleId,
                 scheduleTitle.value,
                 scheduleMemo.value,

@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.main.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.repository.MainRepository
@@ -26,10 +27,8 @@ class MainViewModel @Inject constructor(
     private val _selectDate = MutableStateFlow("")
     val selectDate = _selectDate.asStateFlow()
 
-    val categories =
-        mainRepository.getAllCategories().stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
-        )
+    private val _categories = MutableStateFlow<List<Category>>(emptyList())
+    val categories = _categories.asStateFlow()
 
     private val _calendarTitle = MutableStateFlow("")
     val calendarTitle = _calendarTitle.asStateFlow()
@@ -45,7 +44,7 @@ class MainViewModel @Inject constructor(
     fun postSchedule(category: String, title: String, endTime: DateTime) {
         viewModelScope.launch(Dispatchers.IO) {
             categories.value.find { it.categoryName == category }?.let { c ->
-                mainRepository.postSchedule(c.categoryId, title, endTime)
+                mainRepository.postSchedule(c.categoryUuid, title, endTime)
                     .catch {
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }

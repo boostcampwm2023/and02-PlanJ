@@ -16,45 +16,13 @@ import kotlinx.coroutines.launch
 
 
 @Database(
-    entities = [Category::class, AlarmInfo::class],
+    entities = [AlarmInfo::class],
     version = 1,
     exportSchema = false
 )
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun categoryDao(): CategoryDao
-
     abstract fun alarmInfoDao(): AlarmInfoDao
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        private fun buildDatabase(context: Context): AppDatabase =
-            Room.databaseBuilder(
-                context,
-                AppDatabase::class.java,
-                "planj"
-            ).addCallback(object : Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-
-                    CoroutineScope(Dispatchers.IO).launch {
-                        getInstance(context).categoryDao().insertCategories(
-                            listOf(
-                                Category("all", "전체 일정"),
-                                Category("default", "미분류")
-                            )
-                        )
-                    }
-                }
-            })
-                .build()
-
-        fun getInstance(context: Context): AppDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
-            }
-    }
 }

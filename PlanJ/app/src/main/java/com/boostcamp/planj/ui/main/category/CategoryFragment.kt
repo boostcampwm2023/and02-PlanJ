@@ -72,11 +72,11 @@ class CategoryFragment : Fragment() {
     fun addCategoryDialog(title: String = "") {
         val dialog = if (title == "") {
             CategoryDialog {
-                viewModel.insertCategory(it)
+                viewModel.postCategory(it)
             }
         } else {
             CategoryDialog(title) {
-                viewModel.updateCategory(it, title)
+                viewModel.patchCategory(it, title)
             }
         }
 

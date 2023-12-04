@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.repository
 
+
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -8,17 +9,14 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AlarmInfoDao
-import com.boostcamp.planj.data.db.CategoryDao
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
-import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
-import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
-import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -38,36 +36,16 @@ import java.io.IOException
 import java.util.Calendar
 import javax.inject.Inject
 
+
 class MainRepositoryImpl @Inject constructor(
     private val api: MainApi,
     private val dataStore: DataStore<Preferences>,
     private val alarmInfoDao: AlarmInfoDao,
-    private val categoryDao: CategoryDao
 ) : MainRepository {
 
     companion object {
         val USER = stringPreferencesKey("User")
         val ALARM_MODE = booleanPreferencesKey("alarm")
-    }
-
-    override fun getCategories(): Flow<List<String>> {
-        return categoryDao.getCategories()
-    }
-
-    override suspend fun insertCategory(category: Category) {
-        categoryDao.insertCategory(category)
-    }
-
-    override fun getAllCategories(): Flow<List<Category>> {
-        return categoryDao.getAllCategory()
-    }
-
-    override suspend fun deleteCategory(category: Category) {
-        categoryDao.deleteCategory(category)
-    }
-
-    override suspend fun updateCategory(category: Category) {
-        categoryDao.updateCategory(category)
     }
 
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
@@ -105,10 +83,6 @@ class MainRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getCategory(categoryName: String): Category {
-        return categoryDao.getCategory(categoryName)
-    }
-
     override suspend fun deleteScheduleApi(scheduleUuid: String) {
         api.deleteSchedule(DeleteScheduleBody(scheduleUuid))
     }
@@ -119,19 +93,21 @@ class MainRepositoryImpl @Inject constructor(
             emit(api.patchSchedule(patchScheduleBody))
         }
 
-    override suspend fun deleteCategoryApi(categoryUuid: String) {
-        api.deleteCategory(categoryUuid)
+    override suspend fun deleteCategoryApi(categoryUuid: String) : Flow<CategoryResponse> = flow {
+        emit(api.deleteCategory(categoryUuid))
     }
+
+
 
     override suspend fun updateCategoryApi(
         categoryUuid: String,
         categoryName: String
-    ): Flow<PatchCategoryResponse> = flow {
-        emit(api.patchCategory(PatchCategoryRequest(categoryUuid, categoryName)))
+    ): Flow<CategoryResponse> = flow {
+        emit(api.patchCategory(Category(categoryUuid, categoryName)))
     }
 
-    override suspend fun getCategoryListApi(): Flow<GetCategoryResponse> = flow {
-        emit(api.getCategoryList())
+    override suspend fun getCategoryListApi(): Flow<List<Category>> = flow {
+        emit(api.getCategoryList().data)
     }
 
     override suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse> =
@@ -280,3 +256,4 @@ class MainRepositoryImpl @Inject constructor(
         return api.getDetailSchedule(scheduleId).scheduleDetail
     }
 }
+

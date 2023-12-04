@@ -5,9 +5,8 @@ import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
-import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -20,16 +19,6 @@ import okhttp3.MultipartBody
 
 interface MainRepository {
 
-    fun getCategories(): Flow<List<String>>
-
-    fun getAllCategories(): Flow<List<Category>>
-
-    suspend fun insertCategory(category: Category)
-
-    suspend fun deleteCategory(category: Category)
-
-    suspend fun updateCategory(category: Category)
-
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
     fun postSchedule(categoryId: String, title: String, endTime: DateTime): Flow<PostScheduleResponse>
@@ -38,20 +27,18 @@ interface MainRepository {
 
     suspend fun emptyToken()
 
-    fun getCategory(categoryName: String): Category
-
     suspend fun deleteScheduleApi(scheduleUuid: String)
 
-    suspend fun deleteCategoryApi(categoryUuid: String)
+    suspend fun deleteCategoryApi(categoryUuid: String) : Flow<CategoryResponse>
 
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
 
     suspend fun updateCategoryApi(
         categoryUuid: String,
         categoryName: String
-    ): Flow<PatchCategoryResponse>
+    ): Flow<CategoryResponse>
 
-    suspend fun getCategoryListApi(): Flow<GetCategoryResponse>
+    suspend fun getCategoryListApi(): Flow<List<Category>>
 
     suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
 

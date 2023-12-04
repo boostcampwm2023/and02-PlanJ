@@ -125,7 +125,7 @@ fun TextView.setTitle(schedule: Schedule) {
 
 @BindingAdapter("setCategoryBackground")
 fun LinearLayout.setBackground(item: Category) {
-    if (item.categoryId == "all")
+    if (item.categoryUuid == "all")
         setBackgroundResource(R.drawable.round_r8_main1)
     else
         setBackgroundResource(R.drawable.round_r8_main2)
