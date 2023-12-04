@@ -4,12 +4,11 @@ import dbConfig from "./db.config";
 
 export class TypeOrmConfigService {
   static createTypeOrmOptions(configService: ConfigService): TypeOrmModuleOptions {
-    // TODO: JOI 적용하기
     const config: ConfigType<typeof dbConfig> = configService.get("db");
     return {
       type: "mysql",
       host: config.host,
-      port: parseInt(config.port),
+      port: config.port,
       username: config.username,
       password: config.password,
       database: config.database,
