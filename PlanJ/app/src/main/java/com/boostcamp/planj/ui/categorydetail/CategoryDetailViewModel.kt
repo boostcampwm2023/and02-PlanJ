@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.categorydetail
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.repository.MainRepository
@@ -24,8 +25,8 @@ class CategoryDetailViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    private val _title = MutableStateFlow("")
-    val title: StateFlow<String> = _title.asStateFlow()
+    private val _cateogry = MutableStateFlow(Category("", ""))
+    val category: StateFlow<Category> = _cateogry.asStateFlow()
 
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
@@ -47,20 +48,21 @@ class CategoryDetailViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                 }
                 .collect {
-//                    val schedule = Schedule(
-//                        scheduleId = it.data.scheduleUuid,
-//                        categoryName = category,
-//                        title = title,
-//                        endAt = endTime
-//                    )
 
                     //TODO post 성공 후 다시 api 요청하기
                 }
         }
     }
 
-    fun setTitle(title: String) {
-        _title.value = title
+    fun setTitle(category: Category) {
+        _cateogry.value = category
+        viewModelScope.launch{
+            getScheduleInCategory(category)
+        }
+    }
+
+    fun getScheduleInCategory(category : Category){
+        //TODO 카테고리 모든 일정 가져오기
     }
 
     suspend fun getUser() = withContext(Dispatchers.IO) {

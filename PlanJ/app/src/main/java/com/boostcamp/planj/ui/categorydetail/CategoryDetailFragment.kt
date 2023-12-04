@@ -51,7 +51,7 @@ class CategoryDetailFragment : Fragment() {
         binding.fbCategoryDetailAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
                 emptyList(),
-                initText = viewModel.title.value
+                initText = viewModel.category.value.categoryName
             ) { category, title, endTime ->
                 viewModel.postSchedule(category, title, endTime)
             }
@@ -106,6 +106,7 @@ class CategoryDetailFragment : Fragment() {
                 }
             }
         }
+
 
     }
 

@@ -43,8 +43,8 @@
         tools:layout="@layout/activity_category"
         >
         <argument
-            android:name="categoryId"
-            app:argType="string" />
+            android:name="category"
+            app:argType="com.boostcamp.planj.data.model.Category" />
     </activity>
     <fragment
         android:id="@+id/fragment_category"
