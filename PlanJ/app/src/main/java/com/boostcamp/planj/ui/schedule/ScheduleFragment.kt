@@ -81,6 +81,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.getCategories()
+
         initAdapter()
         setObserver()
         setListener()
@@ -136,7 +138,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.categoryList.collect { categoryList ->
                 val arrayAdapter =
-                    ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
+                    ArrayAdapter(
+                        requireContext(),
+                        R.layout.item_dropdown,
+                        categoryList.map { it.categoryName })
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }

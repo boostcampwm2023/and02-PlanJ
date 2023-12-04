@@ -18,8 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -48,16 +47,16 @@ class ScheduleViewModel @Inject constructor(
     val participants = _participants.asStateFlow()
 
     private val _scheduleStartTime = MutableStateFlow<DateTime?>(null)
-    val scheduleStartTime: StateFlow<DateTime?> = _scheduleStartTime
+    val scheduleStartTime = _scheduleStartTime.asStateFlow()
 
     private val _scheduleEndTime = MutableStateFlow(DateTime(0, 0, 0, 0, 0))
-    val scheduleEndTime: StateFlow<DateTime> = _scheduleEndTime
+    val scheduleEndTime = _scheduleEndTime.asStateFlow()
 
     private val _scheduleAlarm = MutableStateFlow<Alarm?>(null)
-    val scheduleAlarm: StateFlow<Alarm?> = _scheduleAlarm
+    val scheduleAlarm = _scheduleAlarm.asStateFlow()
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
-    val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
+    val scheduleRepetition = _scheduleRepetition.asStateFlow()
 
     private val _startScheduleLocation = MutableStateFlow<Location?>(null)
     val startScheduleLocation = _startScheduleLocation.asStateFlow()
@@ -71,16 +70,16 @@ class ScheduleViewModel @Inject constructor(
     val categoryList = _categoryList.asStateFlow()
 
     private val _isEditMode = MutableStateFlow(false)
-    val isEditMode: StateFlow<Boolean> = _isEditMode
+    val isEditMode = _isEditMode.asStateFlow()
 
     private val _isComplete = MutableStateFlow(false)
-    val isComplete: StateFlow<Boolean> = _isComplete
+    val isComplete = _isComplete.asStateFlow()
 
     private val _response = MutableStateFlow<NaverResponse?>(null)
-    val response: StateFlow<NaverResponse?> = _response.asStateFlow()
+    val response = _response.asStateFlow()
 
     private val _alarmEventFlow = MutableSharedFlow<AlarmEvent>()
-    val alarmEventFlow: SharedFlow<AlarmEvent> = _alarmEventFlow
+    val alarmEventFlow = _alarmEventFlow.asSharedFlow()
 
     fun setScheduleId(newScheduleId: String?) {
         scheduleId = newScheduleId ?: ""
@@ -91,7 +90,7 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             mainRepository.getDetailSchedule(scheduleId)
                 .catch {
-                    Log.d("PLANJDEBUG", "scheduleFragment Delete error ${it.message}")
+                    Log.d("PLANJDEBUG", "scheduleFragment getScheduleDetail error ${it.message}")
                 }
                 .collectLatest { schedule ->
                     scheduleCategory.value = schedule.categoryName
@@ -105,6 +104,14 @@ class ScheduleViewModel @Inject constructor(
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
                 }
+        }
+    }
+
+    fun getCategories() {
+        viewModelScope.launch {
+            mainRepository.getCategoryListApi().collectLatest { categories ->
+                _categoryList.value = listOf(Category("default", "미분류")) + categories
+            }
         }
     }
 
@@ -159,7 +166,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun deleteSchedule() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 mainRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
                 mainRepository.getAlarmMode().collectLatest { alarmMode ->
@@ -183,30 +190,29 @@ class ScheduleViewModel @Inject constructor(
 
         setAlarmInfo()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            //TODO 카테고리 id 찾기
-            val getCategory = ""
+        viewModelScope.launch {
+            categoryList.value.find { it.categoryName == scheduleCategory.value }?.let { category ->
+                val patchScheduleBody = PatchScheduleBody(
+                    categoryUuid = category.categoryUuid,
+                    scheduleUuid = scheduleId,
+                    title = scheduleTitle.value,
+                    description = scheduleMemo.value,
+                    startAt = scheduleStartTime.value?.toFormattedString(),
+                    endAt = scheduleEndTime.value.toFormattedString(),
+                    startLocation = startScheduleLocation.value,
+                    endLocation = endScheduleLocation.value,
+                    repetition = scheduleRepetition.value
+                )
 
-            val patchScheduleBody = PatchScheduleBody(
-                getCategory,
-                scheduleId,
-                scheduleTitle.value,
-                scheduleMemo.value,
-                scheduleStartTime.value?.toFormattedString(),
-                scheduleEndTime.value.toFormattedString(),
-                startScheduleLocation.value,
-                endScheduleLocation.value,
-                scheduleRepetition.value
-            )
-
-            mainRepository.patchSchedule(patchScheduleBody)
-                .catch {
-                    Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
-                }
-                .collect {
-                    _isEditMode.value = false
-                    Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
-                }
+                mainRepository.patchSchedule(patchScheduleBody)
+                    .catch {
+                        Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
+                    }
+                    .collect {
+                        _isEditMode.value = false
+                        Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
+                    }
+            }
         }
     }
 
