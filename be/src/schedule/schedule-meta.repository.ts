@@ -10,14 +10,17 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
   }
 
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetadataEntity[]> {
-    const todayStart = date.toString().split("T")[0] + "T00:00:00";
-    const todayEnd = date.toString().split("T")[0] + "T23:59:59";
+    const [today] = date.toString().split("T");
+    const todayStart = today + "T00:00:00";
+    const todayEnd = today + "T23:59:59";
 
     return await this.createQueryBuilder("schedule_metadata")
       .leftJoinAndSelect("schedule_metadata.children", "schedule", "schedule_metadata.user_id = :userId", {
         userId: user.userId,
       })
       .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
+      .orWhere(":today > schedule.startAt AND :today < schedule.endAt", { today })
+      .orderBy("schedule.endAt")
       .getMany();
   }
 
