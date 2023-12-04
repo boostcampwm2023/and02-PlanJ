@@ -1,6 +1,7 @@
 package com.boostcamp.planj.data.repository
 
-import com.boostcamp.planj.data.model.LoginResponse
+
+import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 
@@ -17,5 +18,7 @@ interface LoginRepository {
     fun getUser() : Flow<String>
 
     suspend fun saveUser(id : String)
+
+    fun postSignInNaver(accessToken : String) : Flow<LoginResponse>
 
 }

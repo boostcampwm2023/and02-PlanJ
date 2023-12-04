@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 )
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun userDao(): UserDao
 
     abstract fun scheduleDao(): ScheduleDao

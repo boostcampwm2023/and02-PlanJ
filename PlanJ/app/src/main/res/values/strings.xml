@@ -33,9 +33,9 @@
     <string name="category">카테고리</string>
     <string name="memo_length">%d/255</string>
     <string name="weekSchedule">주간 통계</string>
-    <string name="completeSchedule">성공한 일정\n</string>
-    <string name="failSchedule">실패한 일정\n</string>
-    <string name="haveSchedule">남은 일정\n</string>
+    <string name="completeSchedule">성공한 일정</string>
+    <string name="failSchedule">실패한 일정</string>
+    <string name="haveSchedule">남은 일정</string>
     <string name="edit_schedule">수정</string>
     <string name="delete_schedule">삭제</string>
     <string name="schedule_title_condition">25자 이내</string>
@@ -73,6 +73,8 @@
     <string name="settings">Settings</string>
     <string name="schedule_not_done">일정 미완료</string>
     <string name="schedule_done">일정 완료</string>
+    <string name="post_notifications_allowed">알림을 허용했습니다.</string>
+    <string name="post_notifications_denied">알림을 거부했습니다.</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

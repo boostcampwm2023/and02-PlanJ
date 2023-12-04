@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.ScheduleDummy
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener

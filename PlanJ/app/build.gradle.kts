@@ -39,6 +39,8 @@ android {
         buildConfigField("String", "BASE_URL", properties["baseUrl"] as String)
         buildConfigField("String", "USER", properties["user"] as String)
         buildConfigField("String", "NAVER_CLIENT_SECRET", properties["naverClientSecret"] as String)
+        buildConfigField("String", "NAVER_LOGIN_CLIENT_ID", properties["naverLoginClientId"] as String)
+        buildConfigField("String", "NAVER_LOGIN_SECRET", properties["naverLoginSecret"] as String)
 
 
         manifestPlaceholders["NAVER_API_KEY"] = properties["naverKey"] as String
@@ -48,6 +50,8 @@ android {
         manifestPlaceholders["BASE_URL"] = properties["baseUrl"] as String
         manifestPlaceholders["USER"] = properties["user"] as String
         manifestPlaceholders["NAVER_CLIENT_SECRET"] = properties["naverClientSecret"] as String
+        manifestPlaceholders["NAVER_LOGIN_CLIENT_ID"] = properties["naverLoginClientId"] as String
+        manifestPlaceholders["NAVER_LOGIN_SECRET"] = properties["naverLoginSecret"] as String
     }
 
     buildTypes {
@@ -74,6 +78,18 @@ android {
     }
     kapt {
         correctErrorTypes = true
+    }
+
+    packagingOptions {
+        exclude ("com/navercorp/nid/NaverIdLoginSDK.class")
+        exclude ("com/navercorp/nid/cookie/NidOAuthCookieManager.class")
+        exclude ("com/navercorp/nid/exception/NaverIdLoginSDKNotInitializedException.class")
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force("com.navercorp.nid:oauth:5.9.0")
+        }
     }
 }
 
@@ -126,4 +142,11 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
+
+    //naver login
+    implementation("com.navercorp.nid:oauth:5.9.0")
+    implementation ("androidx.core:core-ktx:1.3.0")
+    implementation ("androidx.fragment:fragment-ktx:1.3.6")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+
 }

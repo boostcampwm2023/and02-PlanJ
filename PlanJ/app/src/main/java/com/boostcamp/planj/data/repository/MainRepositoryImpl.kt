@@ -7,7 +7,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.boostcamp.planj.data.db.AppDatabase
+import com.boostcamp.planj.data.db.AlarmInfoDao
+import com.boostcamp.planj.data.db.CategoryDao
+import com.boostcamp.planj.data.db.ScheduleDao
+import com.boostcamp.planj.data.db.UserDao
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
@@ -26,6 +30,7 @@ import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
+import com.boostcamp.planj.data.model.dto.ScheduleDetail
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -38,8 +43,11 @@ import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     private val api: MainApi,
-    private val db: AppDatabase,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val userDao: UserDao,
+    private val scheduleDao: ScheduleDao,
+    private val alarmInfoDao: AlarmInfoDao,
+    private val categoryDao: CategoryDao
 ) : MainRepository {
 
     companion object {
@@ -48,63 +56,63 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertSchedule(schedule: Schedule) {
-        db.scheduleDao().insertSchedule(schedule)
+        scheduleDao.insertSchedule(schedule)
     }
 
     override suspend fun deleteSchedule(schedule: Schedule) {
-        db.scheduleDao().deleteSchedule(schedule)
+        scheduleDao.deleteSchedule(schedule)
     }
 
     override suspend fun deleteScheduleUsingId(id: String) {
-        db.scheduleDao().deleteScheduleUsingId(id)
+        scheduleDao.deleteScheduleUsingId(id)
     }
 
     override fun getSchedules(): Flow<List<Schedule>> {
-        return db.scheduleDao().getSchedules()
+        return scheduleDao.getSchedules()
     }
 
     override fun getCategories(): Flow<List<String>> {
-        return db.categoryDao().getCategories()
+        return categoryDao.getCategories()
     }
 
     override suspend fun insertCategory(category: Category) {
-        db.categoryDao().insertCategory(category)
+        categoryDao.insertCategory(category)
     }
 
     override fun getAllCategories(): Flow<List<Category>> {
-        return db.categoryDao().getAllCategory()
+        return categoryDao.getAllCategory()
     }
 
     override suspend fun deleteCategory(category: Category) {
-        db.categoryDao().deleteCategory(category)
+        categoryDao.deleteCategory(category)
     }
 
     override suspend fun updateCategory(category: Category) {
-        db.categoryDao().updateCategory(category)
+        categoryDao.updateCategory(category)
     }
 
     override fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>> {
         return if (title == "전체 일정") {
-            db.scheduleDao().getSchedules()
+            scheduleDao.getSchedules()
         } else {
-            db.scheduleDao().getCategoryTitleSchedule(title)
+            scheduleDao.getCategoryTitleSchedule(title)
         }
     }
 
     override suspend fun insertUser(email: String) {
-        db.userDao().insertUser(User("aaa", email, email))
+        userDao.insertUser(User("aaa", email, email))
     }
 
     override suspend fun deleteUser(email: String) {
-        db.userDao().deleteUser(email)
+        userDao.deleteUser(email)
     }
 
     override fun getAllUser(): Flow<List<User>> {
-        return db.userDao().getAllUser()
+        return userDao.getAllUser()
     }
 
     override fun searchSchedule(input: String): Flow<List<Schedule>> {
-        return db.scheduleDao().searchSchedule(input)
+        return scheduleDao.searchSchedule(input)
     }
 
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
@@ -143,7 +151,7 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override fun getCategory(categoryName: String): Category {
-        return db.categoryDao().getCategory(categoryName)
+        return categoryDao.getCategory(categoryName)
     }
 
     override suspend fun deleteScheduleApi(scheduleUuid: String) {
@@ -151,7 +159,7 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateSchedule(schedule: Schedule) {
-        db.scheduleDao().updateSchedule(schedule)
+        scheduleDao.updateSchedule(schedule)
     }
 
     override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> =
@@ -164,7 +172,7 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteScheduleUsingCategoryName(categoryName: String) {
-        db.scheduleDao().deleteScheduleUsingCategory(categoryName)
+        scheduleDao.deleteScheduleUsingCategory(categoryName)
     }
 
     override suspend fun updateCategoryApi(
@@ -178,11 +186,11 @@ class MainRepositoryImpl @Inject constructor(
         categoryNameBefore: String,
         categoryAfter: String
     ) {
-        db.scheduleDao().updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
+        scheduleDao.updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
     }
 
     override fun getWeekSchedule(): Flow<List<Schedule>> {
-        return db.scheduleDao().getWeekSchedule()
+        return scheduleDao.getWeekSchedule()
     }
 
     override suspend fun getCategoryListApi(): Flow<GetCategoryResponse> = flow {
@@ -235,7 +243,7 @@ class MainRepositoryImpl @Inject constructor(
         val friendInfo = api.getFriends().data
         val user = mutableListOf<User>()
         friendInfo.forEach { friendInfo ->
-            user.add(User("", friendInfo.nickname, friendInfo.email))
+            user.add(User(friendInfo.profileUrl, friendInfo.nickname, friendInfo.email))
         }
         emit(user.toList())
     }
@@ -250,7 +258,7 @@ class MainRepositoryImpl @Inject constructor(
         emit(User(imgUrl = myInfo.imgUrl, email = myInfo.email, nickname = myInfo.nickname))
     }
 
-    override fun postUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {
+    override fun patchUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {
         emit(api.patchUser(nickName, imageFile))
     }
 
@@ -272,14 +280,76 @@ class MainRepositoryImpl @Inject constructor(
 
             }
             .map { prefs ->
-                prefs[ALARM_MODE] ?: false
+                prefs[ALARM_MODE] ?: true
             }
     }
 
     override suspend fun deleteAllData() {
-        db.scheduleDao().deleteAllSchedule()
-        db.categoryDao().deleteAllCategory()
-        db.userDao().deleteAllUser()
-        db.alarmInfoDao().deleteAllAlarmInfo()
+        scheduleDao.deleteAllSchedule()
+        categoryDao.deleteAllCategory()
+        userDao.deleteAllUser()
+        alarmInfoDao.deleteAllAlarmInfo()
+    }
+
+    override suspend fun insertAlarmInfo(alarmInfo: AlarmInfo) {
+        alarmInfoDao.insertAlarmInfo(alarmInfo)
+    }
+
+    override suspend fun getAllAlarmInfo(): List<AlarmInfo> {
+        return alarmInfoDao.getAll()
+    }
+
+    override suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo) {
+        alarmInfoDao.deleteAlarmInfo(alarmInfo)
+    }
+
+    override suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String) {
+        alarmInfoDao.deleteAlarmInfoUsingScheduleId(scheduleId)
+    }
+
+    override suspend fun updateAlarmInfo(curTimeMillis: Long) {
+        val alarmList = alarmInfoDao.getAll()
+        val calendar = Calendar.getInstance()
+        alarmList.forEach { alarmInfo ->
+            calendar.timeInMillis = alarmInfo.endTime.toMilliseconds()
+            calendar.add(Calendar.MINUTE, -alarmInfo.alarm.alarmTime - alarmInfo.estimatedTime)
+
+            // 알림 시간 < 현재 시간 -> 알람 삭제 or 업데이트
+            if (calendar.timeInMillis < curTimeMillis) {
+                // 일회성 -> 알림 DB에서 삭제
+                // 반복 -> DB 업데이트
+                if (alarmInfo.repetition == null) {
+                    alarmInfoDao.deleteAlarmInfo(alarmInfo)
+                } else {
+                    val oneDayMillis = 24 * 60 * 60 * 1000L
+                    val interval = if (alarmInfo.repetition.cycleType == "DAILY") {
+                        alarmInfo.repetition.cycleCount
+                    } else {
+                        alarmInfo.repetition.cycleCount * 7
+                    }
+                    while (calendar.timeInMillis < curTimeMillis) {
+                        calendar.timeInMillis += (interval * oneDayMillis)
+                    }
+                    calendar.add(
+                        Calendar.MINUTE,
+                        alarmInfo.alarm.alarmTime + alarmInfo.estimatedTime
+                    )
+                    val endTime = DateTime(
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE)
+                    )
+                    alarmInfoDao.updateAlarmInfo(
+                        alarmInfo.copy(endTime = endTime)
+                    )
+                }
+            }
+        }
+    }
+
+    override suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail {
+        return api.getDetailSchedule(scheduleId).scheduleDetail
     }
 }

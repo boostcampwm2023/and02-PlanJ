@@ -2,6 +2,7 @@ package com.boostcamp.planj.data.network
 
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
+import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
@@ -40,6 +41,9 @@ interface MainApi {
 
     @HTTP(method = "DELETE", path = "/api/schedule/delete", hasBody = true)
     suspend fun deleteSchedule(@Body deleteScheduleBody: DeleteScheduleBody)
+
+    @GET("/api/schedule")
+    suspend fun getDetailSchedule(@Query("scheduleUuid") scheduleUuid: String): GetDetailScheduleResponse
 
     @PATCH("/api/schedule/update")
     suspend fun patchSchedule(@Body patchScheduleBody: PatchScheduleBody): PatchScheduleResponse

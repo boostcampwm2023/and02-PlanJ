@@ -21,11 +21,7 @@ class FriendListViewModel @Inject constructor(
     private val _userList = MutableStateFlow<List<User>>(emptyList())
     val userList: StateFlow<List<User>> = _userList
 
-    init {
-        getFriends()
-    }
-
-    private fun getFriends() {
+    fun getFriends() {
         viewModelScope.launch {
             mainRepository.getFriendsApi().collectLatest { userList ->
                 _userList.value = userList

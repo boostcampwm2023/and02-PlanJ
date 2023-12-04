@@ -1,11 +1,11 @@
 package com.boostcamp.planj.data.repository
 
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleDummy
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
-import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
@@ -14,6 +14,7 @@ import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
+import com.boostcamp.planj.data.model.dto.ScheduleDetail
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
@@ -92,10 +93,23 @@ interface MainRepository {
 
     suspend fun getMyInfo(): Flow<User>
 
-    fun postUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
+    fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
     suspend fun saveAlarmMode(mode: Boolean)
+
     suspend fun getAlarmMode(): Flow<Boolean>
 
     suspend fun deleteAllData()
+
+    suspend fun insertAlarmInfo(alarmInfo: AlarmInfo)
+
+    suspend fun getAllAlarmInfo(): List<AlarmInfo>
+
+    suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
+
+    suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
+
+    suspend fun updateAlarmInfo(curTimeMillis: Long)
+
+    suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail
 }
