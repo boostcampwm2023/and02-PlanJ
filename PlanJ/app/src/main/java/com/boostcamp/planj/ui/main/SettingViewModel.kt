@@ -4,8 +4,8 @@ import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -56,6 +55,14 @@ class SettingViewModel @Inject constructor(
         saveAlarmMode(_isAlarmOn.value)
     }
 
+    fun getAllAlarmInfo(): List<AlarmInfo> {
+        var alarmList: List<AlarmInfo> = emptyList()
+        viewModelScope.launch {
+            mainRepository.updateAlarmInfo(System.currentTimeMillis())
+            alarmList = mainRepository.getAllAlarmInfo()
+        }
+        return alarmList
+    }
 
     fun deleteAccount() {
         viewModelScope.launch {
@@ -111,7 +118,6 @@ class SettingViewModel @Inject constructor(
                 .collectLatest {
                     _isEditMode.value = false
                 }
-
         }
     }
 

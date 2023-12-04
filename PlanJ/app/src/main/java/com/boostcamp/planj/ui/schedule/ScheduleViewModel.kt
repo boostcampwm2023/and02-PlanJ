@@ -13,16 +13,18 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.naver.NaverResponse
-import com.boostcamp.planj.data.repository.AlarmRepository
 import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,10 +32,14 @@ import kotlinx.coroutines.withContext
 import java.util.Calendar
 import javax.inject.Inject
 
+sealed class AlarmEvent {
+    data class Delete(val scheduleId: String) : AlarmEvent()
+    data class Set(val alarmInfo: AlarmInfo) : AlarmEvent()
+}
+
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    private val alarmRepository: AlarmRepository,
     private val naverRepository: NaverRepository
 ) : ViewModel() {
 
@@ -42,7 +48,6 @@ class ScheduleViewModel @Inject constructor(
     private val isFailed = MutableStateFlow(false)
 
     val scheduleCategory = MutableStateFlow("")
-    val selectedCategory = scheduleCategory.value
     val scheduleTitle = MutableStateFlow("")
 
     private val _scheduleStartTime = MutableStateFlow<DateTime?>(null)
@@ -81,8 +86,11 @@ class ScheduleViewModel @Inject constructor(
     private val _isComplete = MutableStateFlow(false)
     val isComplete: StateFlow<Boolean> = _isComplete
 
-    private val _route = MutableStateFlow<NaverResponse?>(null)
-    val route: StateFlow<NaverResponse?> = _route.asStateFlow()
+    private val _response = MutableStateFlow<NaverResponse?>(null)
+    val response: StateFlow<NaverResponse?> = _response.asStateFlow()
+
+    private val _alarmEventFlow = MutableSharedFlow<AlarmEvent>()
+    val alarmEventFlow: SharedFlow<AlarmEvent> = _alarmEventFlow
 
     fun setScheduleInfo(schedule: Schedule?) {
         schedule?.let { schedule ->
@@ -156,6 +164,14 @@ class ScheduleViewModel @Inject constructor(
     fun deleteSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // 등록된 알림이 있다면 삭제
+                mainRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
+                mainRepository.getAlarmMode().collectLatest { alarmMode ->
+                    if (alarmMode) {
+                        _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
+                    }
+                }
+
                 mainRepository.deleteScheduleApi(scheduleId)
                 mainRepository.deleteScheduleUsingId(scheduleId)
             } catch (e: Exception) {
@@ -165,20 +181,12 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun completeEditingSchedule() {
+        // 시작시간 > 종료시간
         if (scheduleStartTime.value != null && (scheduleStartTime.value!!.toMilliseconds() > scheduleEndTime.value.toMilliseconds())) return
-        viewModelScope.launch {
-            if (scheduleAlarm.value != null) {
-                alarmRepository.setAlarm(
-                    AlarmInfo(
-                        scheduleId,
-                        scheduleTitle.value,
-                        scheduleEndTime.value,
-                        scheduleRepetition.value,
-                        scheduleAlarm.value!!
-                    )
-                )
-            }
-        }
+        // 현재 > 종료시간
+        if (System.currentTimeMillis() > scheduleEndTime.value.toMilliseconds()) return
+
+        setAlarmInfo()
 
         viewModelScope.launch(Dispatchers.IO) {
             val getCategory =
@@ -221,7 +229,44 @@ class ScheduleViewModel @Inject constructor(
                     _isEditMode.value = false
                     Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
                 }
+        }
+    }
 
+    private fun setAlarmInfo() {
+        if (scheduleAlarm.value == null) {
+            viewModelScope.launch {
+                mainRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
+                mainRepository.getAlarmMode().collectLatest { alarmMode ->
+                    if (alarmMode) {
+                        _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
+                    }
+                }
+            }
+        } else {
+            val estimatedTimeInMillis = if (response.value != null) {
+                response.value!!.route.trafast[0].summary.duration
+            } else {
+                0
+            }
+            val alarmInfo = AlarmInfo(
+                scheduleId,
+                scheduleTitle.value,
+                scheduleEndTime.value,
+                scheduleRepetition.value,
+                scheduleAlarm.value!!,
+                estimatedTimeInMillis / (1000 * 60)
+            )
+
+            // db에는 무조건 알람 정보 저장
+            viewModelScope.launch {
+                mainRepository.insertAlarmInfo(alarmInfo)
+                mainRepository.getAlarmMode().collectLatest { alarmMode ->
+                    // 알람 모드 켜져 있을 경우에만 알람매니저를 통해 알람 설정
+                    if (alarmMode) {
+                        _alarmEventFlow.emit(AlarmEvent.Set(alarmInfo))
+                    }
+                }
+            }
         }
     }
 
@@ -247,7 +292,7 @@ class ScheduleViewModel @Inject constructor(
         val end = "${endLocation.longitude},${endLocation.latitude}"
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _route.value = naverRepository.getNaverRoute(start, end)
+                _response.value = naverRepository.getNaverRoute(start, end)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "error ${e.message}")
             }
@@ -255,7 +300,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun emptyRoute() {
-        _route.value = null
+        _response.value = null
     }
 
     fun emptyStartLocation() {

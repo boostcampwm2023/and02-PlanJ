@@ -16,6 +16,8 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -81,6 +83,15 @@ fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
     }
 }
 
+@BindingAdapter("userImg")
+fun ImageView.setImage(url: String?) {
+    Glide.with(this)
+        .load(url)
+        .error(R.drawable.ic_circle_person)
+        .apply(RequestOptions.circleCropTransform())
+        .into(this)
+}
+
 @BindingAdapter("participation")
 fun TextView.setParticipation(schedule: Schedule) {
     if (schedule.members.size < 2) {
@@ -134,7 +145,12 @@ fun TextView.setDateTime(schedule: Schedule) {
     val currentDate =
         SimpleDateFormat("yyyy/MM/dd", Locale("kr", "ko")).format(System.currentTimeMillis())
     val scheduleEndTime = schedule.endTime
-    val endDate = String.format("%04d/%02d/%02d", scheduleEndTime.year, scheduleEndTime.month, scheduleEndTime.day)
+    val endDate = String.format(
+        "%04d/%02d/%02d",
+        scheduleEndTime.year,
+        scheduleEndTime.month,
+        scheduleEndTime.day
+    )
     val endTime = String.format("%02d:%02d", scheduleEndTime.hour, scheduleEndTime.minute)
     if (schedule.startTime == null) {
         text = if (currentDate == endDate) {
@@ -144,7 +160,12 @@ fun TextView.setDateTime(schedule: Schedule) {
         }
     } else {
         val scheduleStartTime = schedule.startTime
-        val startDate = String.format("%04d/%02d/%02d", scheduleStartTime.year, scheduleStartTime.month, scheduleStartTime.day)
+        val startDate = String.format(
+            "%04d/%02d/%02d",
+            scheduleStartTime.year,
+            scheduleStartTime.month,
+            scheduleStartTime.day
+        )
         val startTime = String.format("%02d:%02d", scheduleStartTime.hour, scheduleStartTime.minute)
         text = if (startDate == endDate) {
             if (currentDate == startDate) {
