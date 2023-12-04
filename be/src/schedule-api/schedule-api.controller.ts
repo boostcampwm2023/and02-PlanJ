@@ -25,6 +25,14 @@ export class ScheduleApiController {
     return JSON.parse(result);
   }
 
+  @Get("/search")
+  async searchByKeyword(@Token() token: string, @Query("keyword") keyword: string): Promise<JSON> {
+    this.logger.log("Get /api/schedule/search");
+    this.logger.verbose("Keyword: " + keyword);
+    const result = await this.scheduleApiService.searchByKeyword(token, keyword);
+    return JSON.parse(result);
+  }
+
   @Post("/add")
   async addSchedule(@Token() token: string, @Body() dto: AddScheduleDto): Promise<JSON> {
     const result = await this.scheduleApiService.addSchedule(token, dto);
