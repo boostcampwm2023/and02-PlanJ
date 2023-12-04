@@ -69,6 +69,7 @@ export class ScheduleMetaService {
     record.endTime = endTime;
     record.hasLocation = !!dto.endLocation;
     record.repeated = !!dto.repetition;
+    record.hasAlarm = !!dto.alarm;
 
     try {
       await this.scheduleMetaRepository.save(record);
@@ -129,6 +130,7 @@ export class ScheduleMetaService {
           failed: schedule.failed,
           repeated: scheduleMeta.repeated,
           shared: scheduleMeta.shared,
+          hasAlarm: scheduleMeta.hasAlarm,
           hasRetrospectiveMemo: !!schedule.retrospectiveMemo,
           participantCount: 0,
           participantSuccessCount: 0,
