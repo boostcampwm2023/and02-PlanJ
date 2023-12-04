@@ -20,7 +20,7 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
         userId: user.userId,
       })
       .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
-      .orWhere(":today > schedule.startAt AND :today < schedule.endAt", { today })
+      .orWhere(":todayEnd >= schedule.startAt AND :todayStart <= schedule.endAt", { todayEnd, todayStart })
       .orderBy("schedule.endAt")
       .getMany();
   }
