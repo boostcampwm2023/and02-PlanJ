@@ -7,6 +7,9 @@ import { AuthService } from "../auth/auth.service";
 import { UpdateCategoryDto } from "../category/dto/update-category.dto";
 import { HttpResponse } from "../utils/http.response";
 import { ScheduleMetaService } from "../schedule/schedule-meta.service";
+import { ScheduleResponse } from "../schedule/dto/schedule.response";
+import { ScheduleEntity } from "../schedule/entity/schedule.entity";
+import { ScheduleService } from "../schedule/schedule.service";
 
 @Injectable()
 export class CategoryApiService {
@@ -15,6 +18,7 @@ export class CategoryApiService {
     private categoryService: CategoryService,
     private authService: AuthService,
     private scheduleMetaService: ScheduleMetaService,
+    private scheduleService: ScheduleService,
   ) {}
 
   async add(dto: AddCategoryDto, token: string): Promise<string> {
@@ -60,7 +64,7 @@ export class CategoryApiService {
   async getSchedules(categoryUuid: string, token: string) {
     const userUuid = this.authService.verify(token);
     const userEntity = await this.userService.getUserEntity(userUuid);
-    let schedules;
+    let schedules: ScheduleResponse[], updatedSchedules: ScheduleEntity[];
 
     if (categoryUuid !== "default") {
       const categoryEntity = await this.categoryService.getCategoryEntity(categoryUuid);
@@ -69,13 +73,16 @@ export class CategoryApiService {
         throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
       }
 
-      schedules = await this.scheduleMetaService.getAllScheduleByCategoryId(
+      [schedules, updatedSchedules] = await this.scheduleMetaService.getAllScheduleByCategoryId(
         categoryEntity.categoryId,
         userEntity.userId,
       );
     } else {
-      schedules = await this.scheduleMetaService.getAllScheduleByNullCategory(userEntity.userId);
+      [schedules, updatedSchedules] = await this.scheduleMetaService.getAllScheduleByNullCategory(userEntity.userId);
     }
+
+    await this.scheduleService.updateScheduleEntities(updatedSchedules);
+    schedules.sort((a, b) => a.endAt.localeCompare(b.endAt));
 
     const result: HttpResponse = {
       message: "카테고리내 일정 조회 성공",
