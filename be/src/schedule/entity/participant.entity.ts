@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
 @Entity("participant")
@@ -11,6 +11,9 @@ export class ParticipantEntity extends BaseEntity {
 
   @Column({ name: "author_id", type: "int" })
   authorId: number;
+
+  @DeleteDateColumn({ default: null, name: "deleted_at" })
+  deletedAt: Date | null;
 
   /*
    * relation
