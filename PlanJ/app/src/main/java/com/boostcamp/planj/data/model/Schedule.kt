@@ -19,7 +19,7 @@ data class Schedule(
     val startLocation: Location? = null,
     val endLocation: Location? = null,
     val repetition: Repetition? = null,
-    val description: String = "",
+    val description: String? = null,
     val participants: List<Participant> = emptyList(),
     val alarm: Alarm? = null,
     val categoryName: String = "미분류",

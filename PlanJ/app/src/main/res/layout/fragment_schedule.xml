@@ -153,11 +153,11 @@
                     android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
+                    android:onClick="@{() -> fragment.setStartTime()}"
                     android:paddingHorizontal="24dp"
                     android:text="@string/not_set"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
-                    android:onClick="@{() -> fragment.setStartTime()}"
                     android:visibility="@{viewModel.scheduleStartTime == null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
@@ -180,9 +180,9 @@
                         dateTimeInfo="@{viewModel.scheduleStartTime}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> fragment.setStartTime()}"
                         android:enabled="@{viewModel.isEditMode}"
                         android:maxLines="1"
+                        android:onClick="@{() -> fragment.setStartTime()}"
                         android:padding="4dp"
                         android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
@@ -230,9 +230,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:enabled="@{viewModel.isEditMode}"
-                    android:onClick="@{() -> fragment.setEndTime()}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
+                    android:onClick="@{() -> fragment.setEndTime()}"
                     android:paddingHorizontal="4dp"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
@@ -254,11 +254,10 @@
                     android:maxHeight="150dp"
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="8dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end"
-                    android:visibility="gone"
-                    >
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end">
 
                     <TextView
                         android:id="@+id/tv_category_participants"
@@ -273,10 +272,10 @@
 
                     <TextView
                         android:id="@+id/tv_category_done_total_participants"
+                        participantsNum="@{viewModel.participants}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
-                        android:text='@{viewModel.doneMembers.size + "/" + viewModel.members.size}'
                         android:textColor="@color/main3"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_category_participants"

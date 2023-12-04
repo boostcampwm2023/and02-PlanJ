@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
@@ -84,9 +83,9 @@ class HomeFragment : Fragment() {
         val swipeListener = SwipeListener {
             //viewModel.deleteSchedule(it)
         }
-        val scheduleClickListener = ScheduleClickListener {
+        val scheduleClickListener = ScheduleClickListener { scheduleId ->
             val action =
-                HomeFragmentDirections.actionFragmentHomeToScheduleActivity(it.scheduleId)
+                HomeFragmentDirections.actionFragmentHomeToScheduleActivity(scheduleId)
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
@@ -124,13 +123,13 @@ class HomeFragment : Fragment() {
                     Log.d("PLANDEBUG", "schedules collectLatest")
                     val list = listOf("일정", "완료", "실패")
                     val schedules = listOf(
-                        it.filter { scheduleInfo ->  !scheduleInfo.isFinished },
-                        it.filter { scheduleInfo ->  scheduleInfo.isFinished && !scheduleInfo.isFailed },
-                        it.filter { scheduleInfo ->  scheduleInfo.isFinished && scheduleInfo.isFailed }
+                        it.filter { scheduleInfo -> !scheduleInfo.isFinished },
+                        it.filter { scheduleInfo -> scheduleInfo.isFinished && !scheduleInfo.isFailed },
+                        it.filter { scheduleInfo -> scheduleInfo.isFinished && scheduleInfo.isFailed }
                     )
 
                     val segmentList = mutableListOf<ScheduleSegment>()
-                    repeat(3){index ->
+                    repeat(3) { index ->
                         segmentList.add(ScheduleSegment(list[index], schedules[index]))
                     }
                     segmentScheduleAdapter.submitList(segmentList)

@@ -9,13 +9,17 @@ import com.boostcamp.planj.databinding.ItemScheduleBinding
 class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: Schedule, clickListener: ScheduleClickListener, checkBoxListener: ScheduleDoneListener) {
+    fun bind(
+        item: Schedule,
+        clickListener: ScheduleClickListener,
+        checkBoxListener: ScheduleDoneListener
+    ) {
         binding.schedule = item
         binding.executePendingBindings()
         itemView.setOnClickListener {
-            clickListener.onClick(item)
+            clickListener.onClick(item.scheduleId)
         }
-        binding.cbDone.setOnCheckedChangeListener { _ , isChecked ->
+        binding.cbDone.setOnCheckedChangeListener { _, isChecked ->
             checkBoxListener.onClick(item, isChecked)
         }
     }

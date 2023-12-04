@@ -81,11 +81,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
-
         initAdapter()
         setObserver()
         setListener()
-
 
         if (args.startLocation != null || args.location != null) {
             viewModel.setLocation(args.startLocation, args.location)
@@ -97,15 +95,13 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.executePendingBindings()
     }
 
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
 
-
     private fun initAdapter() {
-        val adapter = ScheduleParticipantAdapter(viewModel.members.value)
+        val adapter = ScheduleParticipantAdapter(viewModel.participants.value)
         binding.rvScheduleParticipants.adapter = adapter
     }
 
@@ -226,7 +222,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         binding.tvScheduleAllParticipants.setOnClickListener {
             val bundle = Bundle()
-            bundle.putParcelableArrayList("participantsInfo", ArrayList(viewModel.members.value))
+            bundle.putParcelableArrayList(
+                "participantsInfo",
+                ArrayList(viewModel.participants.value)
+            )
             participantDialog.arguments = bundle
             if (!participantDialog.isAdded) {
                 participantDialog.show(childFragmentManager, "전체 참가자")
@@ -240,10 +239,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                     viewModel.startScheduleLocation.value ?: return@setOnClickListener
                 val endLocation = viewModel.endScheduleLocation.value ?: return@setOnClickListener
                 val url =
-                    "nmap://route/public?slat=${startLocation.latitude}&slng=${startLocation.longitude}&sname=${startLocation.placeName}&dlat=${endLocation.latitude}&dlng=${endLocation.longitude}&dname=${endLocation.placeName}&appname=com.boostcamp.planj";
+                    "nmap://route/public?slat=${startLocation.latitude}&slng=${startLocation.longitude}&sname=${startLocation.placeName}&dlat=${endLocation.latitude}&dlng=${endLocation.longitude}&dname=${endLocation.placeName}&appname=com.boostcamp.planj"
 
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.addCategory(Intent.CATEGORY_BROWSABLE)
 
                 try {
                     it.startActivity(intent)

@@ -74,15 +74,18 @@ class CategoryDetailFragment : Fragment() {
         val swipeListener = SwipeListener {
             viewModel.deleteSchedule(it)
         }
-        val scheduleClickListener = ScheduleClickListener {
+        val scheduleClickListener = ScheduleClickListener { scheduleId ->
             val action =
-                CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(it.scheduleId)
+                CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(
+                    scheduleId
+                )
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
             viewModel.checkBoxChange(schedule, isCheck)
         }
-        segmentScheduleAdapter = SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
+        segmentScheduleAdapter =
+            SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }

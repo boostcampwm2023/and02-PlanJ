@@ -10,8 +10,6 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
-import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.data.repository.MainRepository
@@ -21,15 +19,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -45,11 +40,12 @@ class ScheduleViewModel @Inject constructor(
 ) : ViewModel() {
 
     private lateinit var scheduleId: String
-    private val isFinished = MutableStateFlow(false)
-    private val isFailed = MutableStateFlow(false)
 
     val scheduleCategory = MutableStateFlow("")
     val scheduleTitle = MutableStateFlow("")
+
+    private val _participants = MutableStateFlow<List<Participant>>(emptyList())
+    val participants = _participants.asStateFlow()
 
     private val _scheduleStartTime = MutableStateFlow<DateTime?>(null)
     val scheduleStartTime: StateFlow<DateTime?> = _scheduleStartTime
@@ -57,25 +53,19 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleEndTime = MutableStateFlow(DateTime(0, 0, 0, 0, 0))
     val scheduleEndTime: StateFlow<DateTime> = _scheduleEndTime
 
-    // TODO: Schedule members 자료형 바꾸고 doneMembers 제거해야 함
-    // 어떤 응답이 올지 몰라 Participant data class 추가하여 구현
-    private val _members = MutableStateFlow<List<Participant>>(emptyList())
-    val members: StateFlow<List<Participant>> = _members
-
-    private val _doneMembers = MutableStateFlow<List<User>?>(null)
-    val doneMembers: StateFlow<List<User>?> = _doneMembers
-
     private val _scheduleAlarm = MutableStateFlow<Alarm?>(null)
     val scheduleAlarm: StateFlow<Alarm?> = _scheduleAlarm
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
     val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
 
+    private val _startScheduleLocation = MutableStateFlow<Location?>(null)
+    val startScheduleLocation = _startScheduleLocation.asStateFlow()
+
     private val _endScheduleLocation = MutableStateFlow<Location?>(null)
     val endScheduleLocation = _endScheduleLocation.asStateFlow()
-    val scheduleMemo = MutableStateFlow<String?>(null)
 
-    val startScheduleLocation = MutableStateFlow<Location?>(null)
+    val scheduleMemo = MutableStateFlow<String?>(null)
 
     private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList = _categoryList.asStateFlow()
@@ -92,22 +82,29 @@ class ScheduleViewModel @Inject constructor(
     private val _alarmEventFlow = MutableSharedFlow<AlarmEvent>()
     val alarmEventFlow: SharedFlow<AlarmEvent> = _alarmEventFlow
 
-    fun setScheduleInfo(schedule: Schedule?) {
-        schedule?.let { schedule ->
-            scheduleId = schedule.scheduleId
-            scheduleCategory.value = schedule.categoryName
-            scheduleTitle.value = schedule.title
-            _scheduleStartTime.value = schedule.startAt
-            _scheduleEndTime.value = schedule.endAt
-            _scheduleRepetition.value = schedule.repetition
-            _scheduleAlarm.value = schedule.alarm
-            //_doneMembers.value = schedule.doneMembers
-            //_members.value = schedule.members
-            _endScheduleLocation.value = schedule.endLocation
-            startScheduleLocation.value = schedule.startLocation
-            isFinished.value = schedule.isFinished
-            isFailed.value = schedule.isFailed
-            //scheduleMemo.value = schedule.remindMemo
+    fun setScheduleId(newScheduleId: String?) {
+        scheduleId = newScheduleId ?: ""
+        getScheduleInfo()
+    }
+
+    private fun getScheduleInfo() {
+        viewModelScope.launch {
+            mainRepository.getDetailSchedule(scheduleId)
+                .catch {
+                    Log.d("PLANJDEBUG", "scheduleFragment Delete error ${it.message}")
+                }
+                .collectLatest { schedule ->
+                    scheduleCategory.value = schedule.categoryName
+                    scheduleTitle.value = schedule.title
+                    _scheduleStartTime.value = schedule.startAt
+                    _scheduleEndTime.value = schedule.endAt
+                    _scheduleRepetition.value = schedule.repetition
+                    _scheduleAlarm.value = schedule.alarm
+                    _participants.value = schedule.participants
+                    _endScheduleLocation.value = schedule.endLocation
+                    _startScheduleLocation.value = schedule.startLocation
+                    scheduleMemo.value = schedule.description
+                }
         }
     }
 
@@ -143,7 +140,7 @@ class ScheduleViewModel @Inject constructor(
 
     fun setLocation(startLocation: Location?, endLocation: Location?) {
         _endScheduleLocation.value = endLocation
-        startScheduleLocation.value = startLocation
+        _startScheduleLocation.value = startLocation
     }
 
     private fun changeMillisToDate(millis: Long): Triple<Int, Int, Int> {
@@ -164,7 +161,6 @@ class ScheduleViewModel @Inject constructor(
     fun deleteSchedule() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // 등록된 알림이 있다면 삭제
                 mainRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
                 mainRepository.getAlarmMode().collectLatest { alarmMode ->
                     if (alarmMode) {
@@ -263,9 +259,8 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun startMapDelete() {
-        startScheduleLocation.value = null
+        _startScheduleLocation.value = null
     }
-
 
     fun getNaverRoute(startLocation: Location?, endLocation: Location) {
         if (startLocation == null) return
@@ -286,6 +281,6 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun emptyStartLocation() {
-        startScheduleLocation.value = null
+        _startScheduleLocation.value = null
     }
 }

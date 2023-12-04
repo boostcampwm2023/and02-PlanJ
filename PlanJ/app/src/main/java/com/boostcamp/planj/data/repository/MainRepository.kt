@@ -72,5 +72,5 @@ interface MainRepository {
 
     suspend fun updateAlarmInfo(curTimeMillis: Long)
 
-    suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail
+    suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule>
 }
