@@ -1,14 +1,15 @@
 package com.boostcamp.planj.data.model
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "users")
 data class User(
-    val imgUrl: String? = null,
-    val nickname: String,
-    @PrimaryKey val email: String
+    @SerializedName("profileUrl") val profileUrl: String? = null,
+    @SerializedName("email") val email: String,
+    @SerializedName("nickname") val nickname: String
 ) : Parcelable
+
+

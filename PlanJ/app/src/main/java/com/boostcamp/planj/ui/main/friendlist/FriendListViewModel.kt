@@ -42,7 +42,7 @@ class FriendListViewModel @Inject constructor(
 
     fun deleteUser(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.deleteUser(email)
+            //TODO api로 변경
         }
     }
 }

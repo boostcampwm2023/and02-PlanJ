@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.db.CategoryDao
-import com.boostcamp.planj.data.db.UserDao
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
@@ -42,7 +41,6 @@ import javax.inject.Inject
 class MainRepositoryImpl @Inject constructor(
     private val api: MainApi,
     private val dataStore: DataStore<Preferences>,
-    private val userDao: UserDao,
     private val alarmInfoDao: AlarmInfoDao,
     private val categoryDao: CategoryDao
 ) : MainRepository {
@@ -51,10 +49,6 @@ class MainRepositoryImpl @Inject constructor(
         val USER = stringPreferencesKey("User")
         val ALARM_MODE = booleanPreferencesKey("alarm")
     }
-
-//    override fun getSchedules(): Flow<List<Schedule>> {
-//        return scheduleDao.getSchedules()
-//    }
 
     override fun getCategories(): Flow<List<String>> {
         return categoryDao.getCategories()
@@ -74,19 +68,6 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun updateCategory(category: Category) {
         categoryDao.updateCategory(category)
-    }
-
-
-    override suspend fun insertUser(email: String) {
-        userDao.insertUser(User("aaa", email, email))
-    }
-
-    override suspend fun deleteUser(email: String) {
-        userDao.deleteUser(email)
-    }
-
-    override fun getAllUser(): Flow<List<User>> {
-        return userDao.getAllUser()
     }
 
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
@@ -196,12 +177,7 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFriendsApi(): Flow<List<User>> = flow {
-        val friendInfo = api.getFriends().data
-        val user = mutableListOf<User>()
-        friendInfo.forEach { friendInfo ->
-            user.add(User(friendInfo.profileUrl, friendInfo.nickname, friendInfo.email))
-        }
-        emit(user.toList())
+        emit(api.getFriends().data)
     }
 
     override suspend fun deleteAccount() {
@@ -209,9 +185,7 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMyInfo(): Flow<User> = flow {
-        val myInfo = api.getMyInfo().data
-
-        emit(User(imgUrl = myInfo.imgUrl, email = myInfo.email, nickname = myInfo.nickname))
+        emit(api.getMyInfo().data)
     }
 
     override fun patchUser(nickName : String, imageFile : MultipartBody.Part?): Flow<PostUserResponse> = flow {

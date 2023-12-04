@@ -30,13 +30,6 @@ interface MainRepository {
 
     suspend fun updateCategory(category: Category)
 
-
-    suspend fun insertUser(email: String)
-
-    suspend fun deleteUser(email: String)
-
-    fun getAllUser(): Flow<List<User>>
-
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
     fun postSchedule(categoryId: String, title: String, endTime: DateTime): Flow<PostScheduleResponse>

@@ -16,14 +16,12 @@ import kotlinx.coroutines.launch
 
 
 @Database(
-    entities = [User::class, Category::class, AlarmInfo::class],
+    entities = [Category::class, AlarmInfo::class],
     version = 1,
     exportSchema = false
 )
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
-
-    abstract fun userDao(): UserDao
 
     abstract fun categoryDao(): CategoryDao
 
