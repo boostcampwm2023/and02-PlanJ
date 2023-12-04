@@ -38,7 +38,7 @@ interface MainRepository {
         categoryName: String
     ): Flow<CategoryResponse>
 
-    suspend fun getCategoryListApi(): Flow<List<Category>>
+    fun getCategoryListApi(): Flow<List<Category>>
 
     suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
 

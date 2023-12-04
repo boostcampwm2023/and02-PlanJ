@@ -106,7 +106,7 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.patchCategory(Category(categoryUuid, categoryName)))
     }
 
-    override suspend fun getCategoryListApi(): Flow<List<Category>> = flow {
+    override fun getCategoryListApi(): Flow<List<Category>> = flow {
         emit(api.getCategoryList().data)
     }
 

@@ -47,7 +47,7 @@ class MainViewModel @Inject constructor(
         val dateTime = DateTime(date[0], date[1], date[2], 23, 59)
         viewModelScope.launch(Dispatchers.IO) {
             categories.value.find { it.categoryName == category }?.let { c ->
-                mainRepository.postSchedule("default"/*c.categoryUuid*/, title, dateTime)
+                mainRepository.postSchedule(c.categoryUuid, title, dateTime)
                     .catch {
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }
@@ -84,6 +84,31 @@ class MainViewModel @Inject constructor(
     fun setIsCurrent(position : Int) {
         val now = LocalDate.now()
         _isCurrent.value =  (_selectDate.value == "${now.year}-${String.format("%02d",now.monthValue)}-${String.format("%02d", now.dayOfMonth)}") && (position == Int.MAX_VALUE / 2)
+    }
+
+    fun deleteSchedule(scheduleId:String){
+        viewModelScope.launch {
+            try {
+                mainRepository.deleteScheduleApi(scheduleId)
+                getScheduleDaily("${_selectDate.value}T00:00:00")
+            }catch (e:Exception){
+                Log.d("PLANJDEBUG","deleteSchedule Error ${e.message}")
+            }
+        }
+    }
+
+    fun getCategories(){
+        viewModelScope.launch {
+            mainRepository.getCategoryListApi().catch {
+                Log.d("PLANJDEBUG","getCategories Error ${it.message}")
+            }.collect{
+                Log.d("PLANJDEBUG","getCategories Success $it")
+                val list= it.toMutableList()
+                list.add(0,Category("default","미분류"))
+                _categories.value=list
+            }
+        }
+
     }
 }
 
