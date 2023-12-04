@@ -27,12 +27,6 @@ class SignInFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
-                    // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
-                    //Log.d("PLANJDEBUG", "${NaverIdLoginSDK.getAccessToken()}")
-//                Log.d("PLANJDEBUG", "${NaverIdLoginSDK.getRefreshToken()}")
-//                Log.d("PLANJDEBUG", "${NaverIdLoginSDK.getExpiresAt().toString()}")
-//                Log.d("PLANJDEBUG", "${NaverIdLoginSDK.getTokenType()}")
-//                Log.d("PLANJDEBUG", "${NaverIdLoginSDK.getState().toString()}")
                     val token = NaverIdLoginSDK.getAccessToken()
                     token?.let {
                         Log.d("PLANJDEBUG", "${token}")
@@ -120,7 +114,7 @@ class SignInFragment : Fragment() {
         binding.btnSignInSignUp.setOnClickListener {
             findNavController().navigate(R.id.action_signInFragment_to_signUpFragment2)
         }
-        binding.ivLoginNaver.setOnClickListener {
+        binding.ivSignInNaver.setOnClickListener {
             NaverIdLoginSDK.authenticate(requireContext(), launcher)
         }
     }

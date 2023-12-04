@@ -123,7 +123,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_sign_in_easy" />
 
         <ImageView
-            android:id="@+id/iv_login_naver"
+            android:id="@+id/iv_sign_in_naver"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"

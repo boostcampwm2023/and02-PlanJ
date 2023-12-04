@@ -141,9 +141,4 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun setInitUser(imageFile: MultipartBody.Part?, nickName: String) {
-        this.imageFile = imageFile
-        this.nickName = nickName
-    }
-
 }
