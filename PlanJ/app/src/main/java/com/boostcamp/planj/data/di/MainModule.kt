@@ -10,7 +10,6 @@ import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.db.CategoryDao
-import com.boostcamp.planj.data.db.ScheduleDao
 import com.boostcamp.planj.data.db.UserDao
 import com.boostcamp.planj.data.network.MainApi
 import dagger.Module
@@ -95,11 +94,7 @@ object MainModule {
     @Singleton
     @Provides
     fun provideAlarmInfoDao(appDatabase: AppDatabase): AlarmInfoDao = appDatabase.alarmInfoDao()
-
-    @Singleton
-    @Provides
-    fun provideScheduleDao(appDatabase: AppDatabase): ScheduleDao = appDatabase.scheduleDao()
-
+    
     @Singleton
     @Provides
     fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao = appDatabase.categoryDao()

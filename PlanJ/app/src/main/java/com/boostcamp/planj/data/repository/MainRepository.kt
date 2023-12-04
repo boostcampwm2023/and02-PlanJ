@@ -2,8 +2,8 @@ package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.ScheduleDummy
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
@@ -20,14 +20,6 @@ import okhttp3.MultipartBody
 
 interface MainRepository {
 
-    fun getSchedules(): Flow<List<Schedule>>
-
-    suspend fun insertSchedule(schedule: Schedule)
-
-    suspend fun deleteSchedule(schedule: Schedule)
-
-    suspend fun deleteScheduleUsingId(id: String)
-
     fun getCategories(): Flow<List<String>>
 
     fun getAllCategories(): Flow<List<Category>>
@@ -38,9 +30,6 @@ interface MainRepository {
 
     suspend fun updateCategory(category: Category)
 
-    fun getWeekSchedule(): Flow<List<Schedule>>
-
-    fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>>
 
     suspend fun insertUser(email: String)
 
@@ -48,11 +37,9 @@ interface MainRepository {
 
     fun getAllUser(): Flow<List<User>>
 
-    fun searchSchedule(input: String): Flow<List<Schedule>>
-
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
-    fun postSchedule(categoryId: String, title: String, endTime: String): Flow<PostScheduleResponse>
+    fun postSchedule(categoryId: String, title: String, endTime: DateTime): Flow<PostScheduleResponse>
 
     fun getToken(): Flow<String>
 
@@ -64,13 +51,7 @@ interface MainRepository {
 
     suspend fun deleteCategoryApi(categoryUuid: String)
 
-    suspend fun updateSchedule(schedule: Schedule)
-
-    suspend fun updateScheduleUsingCategory(categoryNameBefore: String, categoryAfter: String)
-
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
-
-    suspend fun deleteScheduleUsingCategoryName(categoryName: String)
 
     suspend fun updateCategoryApi(
         categoryUuid: String,
@@ -83,7 +64,7 @@ interface MainRepository {
 
     suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
 
-    suspend fun getDailyScheduleApi(date: String): Flow<List<ScheduleDummy>>
+    suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>>
 
     suspend fun postFriendApi(friendEmail: String)
 

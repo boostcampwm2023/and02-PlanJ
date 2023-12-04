@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.ScheduleDummy
-import com.boostcamp.planj.data.model.ScheduleInfo
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -41,24 +39,18 @@ class MainViewModel @Inject constructor(
     val isCurrent = _isCurrent.asStateFlow()
 
 
-    private val _schedules = MutableStateFlow<List<ScheduleDummy>>(emptyList())
+    private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
 
-    fun insertSchedule(category: String, title: String, endTime: DateTime) {
+    fun postSchedule(category: String, title: String, endTime: DateTime) {
         viewModelScope.launch(Dispatchers.IO) {
             categories.value.find { it.categoryName == category }?.let { c ->
-                mainRepository.postSchedule(c.categoryId, title, endTime.toFormattedString())
+                mainRepository.postSchedule(c.categoryId, title, endTime)
                     .catch {
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }
-                    .collect {
-                        val schedule = Schedule(
-                            scheduleId = it.data.scheduleUuid,
-                            categoryTitle = category,
-                            title = title,
-                            endTime = endTime
-                        )
-                        mainRepository.insertSchedule(schedule)
+                    .collectLatest {
+                        getScheduleDaily(endTime.toFormattedString())
                     }
             }
         }

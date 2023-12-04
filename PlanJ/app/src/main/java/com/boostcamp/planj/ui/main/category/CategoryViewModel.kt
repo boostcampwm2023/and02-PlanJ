@@ -53,12 +53,15 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
+    fun patchCategory(){
+
+    }
+
     fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 mainRepository.deleteCategoryApi(category.categoryId)
                 mainRepository.deleteCategory(category)
-                mainRepository.deleteScheduleUsingCategoryName(category.categoryName)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "category delete error  ${e.message}")
             }
@@ -76,7 +79,6 @@ class CategoryViewModel @Inject constructor(
                 categories.value.find { it.categoryName == title }?.let { category ->
                     val categoryId = category.categoryId
                     mainRepository.updateCategory(category.copy(categoryName = categoryName))
-                    mainRepository.updateScheduleUsingCategory(title, categoryName)
                     mainRepository.updateCategoryApi(categoryId, title)
                 }
             }

@@ -9,13 +9,11 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.db.CategoryDao
-import com.boostcamp.planj.data.db.ScheduleDao
 import com.boostcamp.planj.data.db.UserDao
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.ScheduleDummy
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
@@ -45,7 +43,6 @@ class MainRepositoryImpl @Inject constructor(
     private val api: MainApi,
     private val dataStore: DataStore<Preferences>,
     private val userDao: UserDao,
-    private val scheduleDao: ScheduleDao,
     private val alarmInfoDao: AlarmInfoDao,
     private val categoryDao: CategoryDao
 ) : MainRepository {
@@ -55,21 +52,9 @@ class MainRepositoryImpl @Inject constructor(
         val ALARM_MODE = booleanPreferencesKey("alarm")
     }
 
-    override suspend fun insertSchedule(schedule: Schedule) {
-        scheduleDao.insertSchedule(schedule)
-    }
-
-    override suspend fun deleteSchedule(schedule: Schedule) {
-        scheduleDao.deleteSchedule(schedule)
-    }
-
-    override suspend fun deleteScheduleUsingId(id: String) {
-        scheduleDao.deleteScheduleUsingId(id)
-    }
-
-    override fun getSchedules(): Flow<List<Schedule>> {
-        return scheduleDao.getSchedules()
-    }
+//    override fun getSchedules(): Flow<List<Schedule>> {
+//        return scheduleDao.getSchedules()
+//    }
 
     override fun getCategories(): Flow<List<String>> {
         return categoryDao.getCategories()
@@ -91,13 +76,6 @@ class MainRepositoryImpl @Inject constructor(
         categoryDao.updateCategory(category)
     }
 
-    override fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>> {
-        return if (title == "전체 일정") {
-            scheduleDao.getSchedules()
-        } else {
-            scheduleDao.getCategoryTitleSchedule(title)
-        }
-    }
 
     override suspend fun insertUser(email: String) {
         userDao.insertUser(User("aaa", email, email))
@@ -111,10 +89,6 @@ class MainRepositoryImpl @Inject constructor(
         return userDao.getAllUser()
     }
 
-    override fun searchSchedule(input: String): Flow<List<Schedule>> {
-        return scheduleDao.searchSchedule(input)
-    }
-
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
         flow {
             emit(api.postCategory(postCategoryBody))
@@ -123,9 +97,9 @@ class MainRepositoryImpl @Inject constructor(
     override fun postSchedule(
         categoryId: String,
         title: String,
-        endTime: String
+        endTime: DateTime
     ): Flow<PostScheduleResponse> = flow {
-        val postSchedule = PostScheduleBody(categoryId, title, endTime)
+        val postSchedule = PostScheduleBody(categoryId, title, endTime.toFormattedString())
         emit(api.postSchedule(postSchedule))
     }
 
@@ -158,9 +132,6 @@ class MainRepositoryImpl @Inject constructor(
         api.deleteSchedule(DeleteScheduleBody(scheduleUuid))
     }
 
-    override suspend fun updateSchedule(schedule: Schedule) {
-        scheduleDao.updateSchedule(schedule)
-    }
 
     override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> =
         flow {
@@ -171,26 +142,11 @@ class MainRepositoryImpl @Inject constructor(
         api.deleteCategory(categoryUuid)
     }
 
-    override suspend fun deleteScheduleUsingCategoryName(categoryName: String) {
-        scheduleDao.deleteScheduleUsingCategory(categoryName)
-    }
-
     override suspend fun updateCategoryApi(
         categoryUuid: String,
         categoryName: String
     ): Flow<PatchCategoryResponse> = flow {
         emit(api.patchCategory(PatchCategoryRequest(categoryUuid, categoryName)))
-    }
-
-    override suspend fun updateScheduleUsingCategory(
-        categoryNameBefore: String,
-        categoryAfter: String
-    ) {
-        scheduleDao.updateScheduleUsingCategory(categoryNameBefore, categoryAfter)
-    }
-
-    override fun getWeekSchedule(): Flow<List<Schedule>> {
-        return scheduleDao.getWeekSchedule()
     }
 
     override suspend fun getCategoryListApi(): Flow<GetCategoryResponse> = flow {
@@ -206,7 +162,7 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.getWeeklySchedule(date))
     }
 
-    override suspend fun getDailyScheduleApi(date: String): Flow<List<ScheduleDummy>> = flow {
+    override suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>> = flow {
         try {
             val scheduleInfo = api.getDailySchedule(date)
             val scheduleDummy = scheduleInfo.date.map {
@@ -214,7 +170,7 @@ class MainRepositoryImpl @Inject constructor(
                 val startAt = it.startAt?.split("T","-",":")?.map { time -> time.toInt() } ?: emptyList()
                 val endAt = it.endAt.split("T","-",":").map { time -> time.toInt() }
 
-                ScheduleDummy(
+                Schedule(
                     scheduleId = it.scheduleUuid,
                     title =  it.title,
                     startAt = if(startAt.isEmpty()) null else DateTime(startAt[0],startAt[1], startAt[2], startAt[3], startAt[4], startAt[5]),
@@ -285,9 +241,6 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAllData() {
-        scheduleDao.deleteAllSchedule()
-        categoryDao.deleteAllCategory()
-        userDao.deleteAllUser()
         alarmInfoDao.deleteAllAlarmInfo()
     }
 

@@ -1,7 +1,6 @@
 package com.boostcamp.planj.ui.categorydetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,7 @@ class CategoryDetailFragment : Fragment() {
                 emptyList(),
                 initText = viewModel.title.value
             ) { category, title, endTime ->
-                viewModel.insertSchedule(category, title, endTime)
+                viewModel.postSchedule(category, title, endTime)
             }
             activity?.supportFragmentManager?.let {
                 dialog.show(it, null)

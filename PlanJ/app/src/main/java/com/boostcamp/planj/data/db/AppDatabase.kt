@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 
 @Database(
-    entities = [User::class, Schedule::class, Category::class, AlarmInfo::class],
+    entities = [User::class, Category::class, AlarmInfo::class],
     version = 1,
     exportSchema = false
 )
@@ -24,8 +24,6 @@ import kotlinx.coroutines.launch
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
-
-    abstract fun scheduleDao(): ScheduleDao
 
     abstract fun categoryDao(): CategoryDao
 

@@ -9,12 +9,10 @@ import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -29,40 +27,35 @@ class CategoryDetailViewModel @Inject constructor(
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title.asStateFlow()
 
-    val schedules by lazy {
-        mainRepository.getCategoryTitleSchedule(title.value)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    }
+    private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
+    val schedules = _schedules.asStateFlow()
+
+
 
     fun deleteSchedule(schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.deleteSchedule(schedule)
+            //TODO api로 변경
         }
     }
 
-    fun insertSchedule(category: String, title: String, endTime: DateTime) {
+    fun postSchedule(category: String, title: String, endTime: DateTime) {
         viewModelScope.launch(Dispatchers.IO) {
             val getCategory = mainRepository.getCategory(category)
-            mainRepository.postSchedule(getCategory.categoryId, title, endTime.toFormattedString())
+            mainRepository.postSchedule(getCategory.categoryId, title, endTime)
                 .catch {
                     Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                 }
                 .collect {
-                    val schedule = Schedule(
-                        scheduleId = it.data.scheduleUuid,
-                        categoryTitle = category,
-                        title = title,
-                        endTime = endTime
-                    )
-                    mainRepository.insertSchedule(schedule)
+//                    val schedule = Schedule(
+//                        scheduleId = it.data.scheduleUuid,
+//                        categoryName = category,
+//                        title = title,
+//                        endAt = endTime
+//                    )
+
+                    //TODO post 성공 후 다시 api 요청하기
                 }
         }
-
-        //retrofit 요청으로
-        //응답받아야 할 것이 id
-        //schedule.copy(scheduleId =  = )
-
-        //viewModelScope.launch(Dispatchers.IO) { mainRepository.insertSchedule(schedule) }
     }
 
     fun setTitle(title: String) {
@@ -75,7 +68,7 @@ class CategoryDetailViewModel @Inject constructor(
 
     fun checkBoxChange(schedule: Schedule, isCheck: Boolean) {
         val calendar = Calendar.getInstance()
-        val endTime = schedule.endTime
+        val endTime = schedule.endAt
 
         calendar.set(
             endTime.year,
@@ -86,10 +79,6 @@ class CategoryDetailViewModel @Inject constructor(
             endTime.second
         )
         val fail = calendar.timeInMillis < System.currentTimeMillis()
-        
-        viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.updateSchedule(schedule.copy(isFailed = fail, isFinished = isCheck))
-        }
     }
 
 }

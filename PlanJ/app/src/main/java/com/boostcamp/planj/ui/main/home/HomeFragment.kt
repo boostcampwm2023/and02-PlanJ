@@ -130,7 +130,7 @@ class HomeFragment : Fragment() {
 
                     val segmentList = mutableListOf<ScheduleSegment>()
                     repeat(3){index ->
-                        //segmentList.add(ScheduleSegment(list[index], schedules[index]))
+                        segmentList.add(ScheduleSegment(list[index], schedules[index]))
                     }
                     segmentScheduleAdapter.submitList(segmentList)
                 }
@@ -167,8 +167,7 @@ class HomeFragment : Fragment() {
                 categoryList.map { it.categoryName },
                 "미분류"
             ) { category, title, endTime ->
-                viewModel.insertSchedule(category, title, endTime)
-                viewModel.getScheduleDaily(endTime.toFormattedString())
+                viewModel.postSchedule(category, title, endTime)
             }
             dialog.show(
                 parentFragmentManager, null
