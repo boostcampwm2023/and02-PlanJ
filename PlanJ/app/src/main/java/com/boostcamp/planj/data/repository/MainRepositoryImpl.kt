@@ -256,7 +256,7 @@ class MainRepositoryImpl @Inject constructor(
 
             }
             .map { prefs ->
-                prefs[ALARM_MODE] ?: false
+                prefs[ALARM_MODE] ?: true
             }
     }
 

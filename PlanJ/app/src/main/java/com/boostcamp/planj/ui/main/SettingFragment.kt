@@ -89,7 +89,6 @@ class SettingFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-
         binding.tvSettingLogout.setOnClickListener {
             runBlocking {
                 viewModel.logoutAccount()

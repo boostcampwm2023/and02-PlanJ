@@ -78,9 +78,17 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, resources.getString(R.string.post_notifications_allowed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        resources.getString(R.string.post_notifications_allowed),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    Toast.makeText(this, resources.getString(R.string.post_notifications_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        resources.getString(R.string.post_notifications_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 return
             }
@@ -89,7 +97,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") { category, title, endTime ->
+            val dialog = ScheduleDialog(
+                categoryList.map { it.categoryName },
+                "미분류"
+            ) { category, title, endTime ->
                 viewModel.insertSchedule(category, title, endTime)
             }
             dialog.show(
@@ -117,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setupWithNavController(navController)
     }
 
-    companion object{
+    companion object {
         val REQUEST_CODE = 100
     }
 }
