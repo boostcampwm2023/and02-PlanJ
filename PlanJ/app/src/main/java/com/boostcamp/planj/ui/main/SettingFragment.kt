@@ -101,40 +101,44 @@ class SettingFragment : Fragment() {
                 activity?.finish()
 
             }
+        }
 
-            binding.tvSettingWithdrawal.setOnClickListener {
-                val dialog = MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("회원 탈퇴")
-                    .setMessage("정말로 회원 탈퇴를 하시겠습니까?")
-                    .setNegativeButton("아니요") { _, _ -> }
-                    .setPositiveButton("네") { _, _ ->
-                        try {
-                            viewModel.deleteAccount()
-                            val packageManager: PackageManager = requireContext().packageManager
-                            val intent =
-                                packageManager.getLaunchIntentForPackage(requireContext().packageName)
-                            val componentName = intent!!.component
-                            val mainIntent = Intent.makeRestartActivityTask(componentName)
-                            requireContext().startActivity(mainIntent)
-                            activity?.finish()
+        binding.tvSettingWithdrawal.setOnClickListener {
+            val dialog = MaterialAlertDialogBuilder(requireContext())
+                .setTitle("회원 탈퇴")
+                .setMessage("정말로 회원 탈퇴를 하시겠습니까?")
+                .setNegativeButton("아니요") { _, _ -> }
+                .setPositiveButton("네") { _, _ ->
+                    try {
+                        viewModel.deleteAccount()
+                        val packageManager: PackageManager = requireContext().packageManager
+                        val intent =
+                            packageManager.getLaunchIntentForPackage(requireContext().packageName)
+                        val componentName = intent!!.component
+                        val mainIntent = Intent.makeRestartActivityTask(componentName)
+                        requireContext().startActivity(mainIntent)
+                        activity?.finish()
 
-                        } catch (e: Exception) {
-                            Log.d("PLANJDEBUG", "delete error")
-                        }
+                    } catch (e: Exception) {
+                        Log.d("PLANJDEBUG", "delete error")
                     }
+                }
 
-                dialog.background = resources.getDrawable(R.drawable.round_r8_main2, null)
-                dialog.show()
+            dialog.background = resources.getDrawable(R.drawable.round_r8_main2, null)
+            dialog.show()
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userInfo.collectLatest { user ->
+                    Glide.with(this@SettingFragment)
+                        .load(user?.imgUrl)
+                        .error(R.drawable.ic_circle_person)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(binding.ivSettingImg)
+                }
             }
-            
-            lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.userInfo.collectLatest { user ->
-                        Glide.with(this@SettingFragment)
-                            .load(user?.imgUrl)
-                            .error(R.drawable.ic_circle_person)
-                            .apply(RequestOptions.circleCropTransform())
-                            .into(binding.ivSettingImg)
+        }
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -150,13 +154,16 @@ class SettingFragment : Fragment() {
                     }
                 }
             }
+        }
 
 
-            lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.showToast.collectLatest {
-                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                    }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collectLatest {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -175,10 +182,10 @@ class SettingFragment : Fragment() {
         }
     }
 
-        override fun onDestroyView() {
-            _binding = null
-            super.onDestroyView()
-        }
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 
     // 절대경로 변환
     private fun absolutelyPath(path: Uri?, context: Context): String {
@@ -188,9 +195,9 @@ class SettingFragment : Fragment() {
         val index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         c?.moveToFirst()
 
-            val result = c?.getString(index!!)
+        val result = c?.getString(index!!)
 
-            return result ?: ""
-        }
+        return result ?: ""
+    }
 
 }
