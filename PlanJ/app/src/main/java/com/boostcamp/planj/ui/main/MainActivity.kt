@@ -37,41 +37,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setJetpackNavigation()
-        floatingButtonVisibleListener()
-        setListener()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.categories.collectLatest {
-                    categoryList = it.filter { c -> c.categoryName != "전체 일정" }
-                }
-            }
-        }
-
     }
 
-    private fun setListener() {
-        binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(categoryList.map { it.categoryName }, "미분류") { category, title, endTime ->
-                viewModel.insertSchedule(category, title, endTime)
-            }
-            dialog.show(
-                supportFragmentManager, null
-            )
-        }
-    }
 
-    private fun floatingButtonVisibleListener() {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.fragment_home, R.id.fragment_category -> {
-                    binding.fbAddSchedule.visibility = View.VISIBLE
-                }
-
-                else -> binding.fbAddSchedule.visibility = View.GONE
-            }
-        }
-    }
 
     private fun setJetpackNavigation() {
         val host =

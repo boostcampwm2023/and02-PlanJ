@@ -99,7 +99,7 @@ class ScheduleViewModel @Inject constructor(
             startScheduleLocation.value = schedule.startLocation
             isFinished.value = schedule.isFinished
             isFailed.value = schedule.isFailed
-            scheduleMemo.value = schedule.memo
+            //scheduleMemo.value = schedule.remindMemo
         }
     }
 
@@ -204,7 +204,7 @@ class ScheduleViewModel @Inject constructor(
                     val newSchedule = Schedule(
                         scheduleId = scheduleId,
                         title = scheduleTitle.value,
-                        memo = scheduleMemo.value,
+                        //memo = scheduleMemo.value,
                         startTime = scheduleStartTime.value,
                         endTime = scheduleEndTime.value,
                         categoryTitle = scheduleCategory.value,

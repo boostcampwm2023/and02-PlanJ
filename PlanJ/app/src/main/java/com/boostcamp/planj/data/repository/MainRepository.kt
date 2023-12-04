@@ -2,6 +2,7 @@ package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleDummy
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
@@ -81,7 +82,7 @@ interface MainRepository {
 
     suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
 
-    suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse>
+    suspend fun getDailyScheduleApi(date: String): Flow<List<ScheduleDummy>>
 
     suspend fun postFriendApi(friendEmail: String)
 

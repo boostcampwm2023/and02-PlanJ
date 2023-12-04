@@ -20,7 +20,7 @@ class ScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        viewModel.setScheduleInfo(args.schedule)
+        //viewModel.setScheduleInfo(args)
 
     }
 }

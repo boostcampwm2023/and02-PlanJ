@@ -77,7 +77,7 @@ class CategoryDetailFragment : Fragment() {
         }
         val scheduleClickListener = ScheduleClickListener {
             val action =
-                CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(it)
+                CategoryDetailFragmentDirections.actionCategoryDetailFragmentToScheduleActivity(it.scheduleId)
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->

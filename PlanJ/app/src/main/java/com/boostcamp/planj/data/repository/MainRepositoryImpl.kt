@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -8,7 +9,9 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleDummy
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
@@ -30,6 +33,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import java.io.IOException
+import java.util.Calendar
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -194,8 +198,33 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.getWeeklySchedule(date))
     }
 
-    override suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
-        emit(api.getDailySchedule(date))
+    override suspend fun getDailyScheduleApi(date: String): Flow<List<ScheduleDummy>> = flow {
+        try {
+            val scheduleInfo = api.getDailySchedule(date)
+            val scheduleDummy = scheduleInfo.date.map {
+
+                val startAt = it.startAt?.split("T","-",":")?.map { time -> time.toInt() } ?: emptyList()
+                val endAt = it.endAt.split("T","-",":").map { time -> time.toInt() }
+
+                ScheduleDummy(
+                    scheduleId = it.scheduleUuid,
+                    title =  it.title,
+                    startAt = if(startAt.isEmpty()) null else DateTime(startAt[0],startAt[1], startAt[2], startAt[3], startAt[4], startAt[5]),
+                    endAt = DateTime(endAt[0],endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+                    isFinished = it.isFinished,
+                    isFailed = it.isFailed,
+                    repeated = it.repeated,
+                    hasRetrospectiveMemo = it.hasRetrospectiveMemo,
+                    shared = it.shared,
+                    participantCount = it.participantCount,
+                    participantSuccessCount = it.participantSuccessCount
+                )
+            }
+            emit(scheduleDummy)
+        }catch (e: Exception){
+            Log.d("PLANJDEBUG", "getDailyScheduleApi error  ${e.message}")
+        }
+
     }
 
     override suspend fun postFriendApi(friendEmail: String) {
