@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.network
 
+import com.boostcamp.planj.data.model.dto.SignInNaverRequest
 import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.model.dto.SignInRequest
 import com.boostcamp.planj.data.model.dto.SignUpRequest
@@ -14,5 +15,8 @@ interface LoginApi {
 
     @POST("/api/auth/login")
     suspend fun postSignIn(@Body signInRequest: SignInRequest): Response<LoginResponse>
+
+    @POST("/api/auth/naver")
+    suspend fun postSignInNaver(@Body accessToken : SignInNaverRequest) : LoginResponse
 
 }

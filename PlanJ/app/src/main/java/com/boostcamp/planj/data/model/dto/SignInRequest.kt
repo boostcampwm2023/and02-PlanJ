@@ -6,3 +6,7 @@ data class SignInRequest(
     @SerializedName("email") val email: String,
     @SerializedName("password") val password: String
 )
+
+data class SignInNaverRequest(
+    @SerializedName("accessToken") val accessToken: String
+)

@@ -9,14 +9,18 @@ import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +40,9 @@ class SettingViewModel @Inject constructor(
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode = _isEditMode.asStateFlow()
 
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast = _showToast.asSharedFlow()
+
     init {
         viewModelScope.launch {
             _isAlarmOn.value = getAlarmMode()
@@ -44,9 +51,14 @@ class SettingViewModel @Inject constructor(
 
     fun initUser() {
         viewModelScope.launch {
-            mainRepository.getMyInfo().collectLatest { user ->
-                _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
-            }
+            mainRepository.getMyInfo()
+                .catch {
+                    Log.d("PLANJDEBUG", "initUser error ${it.message}")
+                }
+                .collectLatest { user ->
+                    _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
+                    nickName = user.nickname
+                }
         }
     }
 
@@ -111,7 +123,11 @@ class SettingViewModel @Inject constructor(
 
     fun saveUser() {
         viewModelScope.launch {
-            mainRepository.postUser(nickName, imageFile)
+            if(nickName.isEmpty()) {
+                _showToast.emit("닉네임이 비어있습니다.")
+                return@launch
+            }
+            mainRepository.patchUser(nickName, imageFile)
                 .catch {
                     _isEditMode.value = false
                 }
