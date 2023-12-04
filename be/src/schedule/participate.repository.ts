@@ -1,3 +1,4 @@
+import { InviteStatus } from "./../utils/domain/invite-status.enum";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Repository, DataSource } from "typeorm";
 import { ParticipantEntity } from "./entity/participant.entity";
@@ -60,29 +61,29 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     groupUserEntities: UserEntity[],
     invitedUserEntities: UserEntity[],
   ) {
-    const invitedStatus = {}; // value  0: not added (new) 1: already added(changed) 2: deletded
+    const invitedStatus = {};
 
     for (const participant of groupUserEntities) {
       if (participant.userId === authorMetadata.userId) {
         continue;
       }
-      invitedStatus[participant.email] = 2;
+      invitedStatus[participant.email] = InviteStatus.DELETED;
     }
 
     for (const invited of invitedUserEntities) {
-      invitedStatus[invited.email] = 0;
+      invitedStatus[invited.email] = InviteStatus.NEW;
     }
 
     for (const participant of groupUserEntities) {
       for (const invited of invitedUserEntities) {
         if (participant.email === invited.email) {
-          invitedStatus[participant.email] = 1;
+          invitedStatus[participant.email] = InviteStatus.CHANGED;
         }
       }
     }
 
     console.log(invitedStatus);
-    const invitedStatusArray: [string, number][] = Object.entries(invitedStatus);
+    const invitedStatusArray: [string, InviteStatus][] = Object.entries(invitedStatus);
     return invitedStatusArray;
   }
 }
