@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { RepetitionDto } from "./dto/repetition.dto";
 import { CycleType } from "../utils/domain/cycle-type.enum";
-import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RepetitionEntity } from "./entity/repetition.entity";
 import { Repository } from "typeorm";
@@ -14,9 +13,9 @@ export class RepetitionService {
     private repetitionRepository: Repository<RepetitionEntity>,
   ) {}
 
-  async updateRepetition(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity) {
+  async updateRepetition(repetitionDto: RepetitionDto, scheduleMeta: ScheduleMetadataEntity) {
     let record = await this.repetitionRepository.findOne({ where: { metadataId: scheduleMeta.metadataId } });
-    const repetition: RepetitionDto = dto.repetition;
+    const repetition: RepetitionDto = repetitionDto;
 
     // 반복 정보가 null 일 때
     if (!repetition) {

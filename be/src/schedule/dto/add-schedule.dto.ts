@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
+import { RepetitionDto } from "./repetition.dto";
 
 export class AddScheduleDto {
   userUuid: string;
