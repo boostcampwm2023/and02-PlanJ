@@ -1,20 +1,28 @@
-import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from "@nestjs/common";
 import { ConfigType } from "@nestjs/config";
 import awsConfig from "../config/aws.config";
 import * as AWS from "aws-sdk";
 import { ulid } from "ulid";
+import axios from "axios";
+import { CheckImageDto } from "./dto/check-image.dto";
+import greenEyeConfig from "../config/green-eye.config";
+import * as http from "http";
 
 @Injectable()
 export class ImageService {
   private s3: AWS.S3;
+  private readonly logger = new Logger(ImageService.name);
 
-  constructor(@Inject(awsConfig.KEY) private config: ConfigType<typeof awsConfig>) {
+  constructor(
+    @Inject(awsConfig.KEY) private s3Config: ConfigType<typeof awsConfig>,
+    @Inject(greenEyeConfig.KEY) private imageConfig: ConfigType<typeof greenEyeConfig>,
+  ) {
     this.s3 = new AWS.S3({
-      endpoint: new AWS.Endpoint(config.endPoint as string),
-      region: config.region as string,
+      endpoint: new AWS.Endpoint(s3Config.endPoint),
+      region: s3Config.region,
       credentials: {
-        accessKeyId: config.accessKey as string,
-        secretAccessKey: config.secretKey as string,
+        accessKeyId: s3Config.accessKey,
+        secretAccessKey: s3Config.secretKey,
       },
     });
   }
@@ -26,14 +34,15 @@ export class ImageService {
     const fileName = ulid();
     const directoryPath = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/`;
     const filePath = directoryPath + `${fileName}.${extension}`;
+    await this.checkValidateImage(profileImage);
 
     try {
       await this.s3
         .putObject({
-          Bucket: this.config.bucket as string,
+          Bucket: this.s3Config.bucket,
           Key: filePath,
           Body: buffer,
-          ACL: "public-read",
+          ACL: this.s3Config.acl,
         })
         .promise();
       return this.getProfileImageUrl(filePath);
@@ -42,7 +51,44 @@ export class ImageService {
     }
   }
 
+  private async checkValidateImage(profileImage: Express.Multer.File) {
+    const buffer = profileImage.buffer;
+    const base64String = buffer.toString("base64");
+    const data: CheckImageDto = {
+      version: this.imageConfig.version,
+      requestId: ulid(),
+      timestamp: Date.now(),
+      images: [
+        {
+          name: profileImage.originalname,
+          data: base64String,
+        },
+      ],
+    };
+
+    try {
+      const response = await axios.post(this.imageConfig.url, data, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-GREEN-EYE-SECRET": this.imageConfig.secret,
+        },
+      });
+
+      const [images] = response.data.images;
+      const adultConfidence = images.result.adult.confidence as number;
+      const pornConfidence = images.result.porn.confidence as number;
+
+      if (adultConfidence > this.imageConfig.adultThreshold || pornConfidence > this.imageConfig.pornThreshold) {
+        throw new UnprocessableEntityException("서비스 규칙에 위배되는 사진입니다.");
+      }
+      return;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
   private getProfileImageUrl(filePath: string) {
-    return this.config.endPoint + "/" + this.config.bucket + "/" + filePath;
+    return this.s3Config.endPoint + "/" + this.s3Config.bucket + "/" + filePath;
   }
 }
