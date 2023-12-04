@@ -18,12 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:paddingHorizontal="8dp"
         android:onClick="@{() -> listener.onClick(user)}"
+        android:paddingHorizontal="8dp"
         android:paddingVertical="12dp">
 
         <ImageView
             android:id="@+id/iv_friend_img"
+            userImg="@{user.imgUrl}"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"

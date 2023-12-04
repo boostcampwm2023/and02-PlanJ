@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.boostcamp.planj.data.model.LoginResponse
 import com.boostcamp.planj.data.model.dto.SignInNaverRequest
+import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.model.dto.SignInRequest
 import com.boostcamp.planj.data.model.dto.SignUpRequest
 import com.boostcamp.planj.data.network.ApiResult

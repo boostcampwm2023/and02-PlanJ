@@ -1,5 +1,6 @@
 package com.boostcamp.planj.ui.main.home.week.adapter
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import java.util.Locale
 class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
+    @SuppressLint("ResourceAsColor")
     fun bind(scheduleList: WeekSchedule) {
         binding.tvWeekDayNumber.text = scheduleList.calendar.dayNumber
         binding.tvWeekDayWeek.text = scheduleList.calendar.dayOfWeek
@@ -28,6 +30,7 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
         binding.layoutWeekDay.setOnClickListener {
             val layoutInflater = LayoutInflater.from(binding.root.context)
             val dialogBinding = DialogScheduleResultBinding.inflate(layoutInflater)
+            dialogBinding.tvDialogScheduleResultText.text = "${today}일"
 
             val dialog = AlertDialog.Builder(binding.root.context)
                 .setView(dialogBinding.root)
@@ -57,8 +60,11 @@ class CalendarViewHolder(private val binding: ItemWeekDayBinding) :
 
 
         if (today == now) {
-            binding.tvWeekDayWeek.setBackgroundColor(R.color.main1)
-            binding.tvWeekDayNumber.setBackgroundColor(R.color.main1)
+            binding.tvWeekDayWeek.setBackgroundResource(R.color.main1)
+            binding.tvWeekDayNumber.setBackgroundResource(R.color.main1)
+        } else {
+            binding.tvWeekDayWeek.setBackgroundResource(R.color.white)
+            binding.tvWeekDayNumber.setBackgroundResource(R.color.white)
         }
 
         addAdapter(WeekScheduleAdapter(scheduleList.scheduleList))

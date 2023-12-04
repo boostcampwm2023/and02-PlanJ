@@ -29,43 +29,105 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_week_week" />
 
-        <androidx.appcompat.widget.AppCompatButton
+
+        <LinearLayout
             android:id="@+id/btn_week_finish"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/round_light_gray"
-            android:text="@string/completeSchedule"
-            android:textSize="16sp"
-            android:textStyle="bold"
-
+            android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@id/btn_week_fail"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btn_week_fail" />
+            app:layout_constraintTop_toTopOf="@id/btn_week_fail">
 
-        <androidx.appcompat.widget.AppCompatButton
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:text="@string/completeSchedule"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_week_finish_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#0000ff"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text=""/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btn_week_fail"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/round_light_gray"
-            android:text="@string/failSchedule"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_week_week_schedule" />
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@id/btn_week_have"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/btn_week_finish"
+            app:layout_constraintTop_toBottomOf="@id/tv_week_week_schedule">
 
-        <androidx.appcompat.widget.AppCompatButton
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:text="@string/failSchedule"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_week_fail_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <LinearLayout
             android:id="@+id/btn_week_have"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/round_light_gray"
-            android:text="@string/haveSchedule"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@id/btn_week_fail"
-            app:layout_constraintTop_toTopOf="@id/btn_week_fail" />
+            app:layout_constraintTop_toTopOf="@id/btn_week_fail">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:text="@string/haveSchedule"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_week_have_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_week_schedule_list"

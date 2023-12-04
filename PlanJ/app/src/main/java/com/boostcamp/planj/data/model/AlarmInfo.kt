@@ -9,5 +9,6 @@ data class AlarmInfo(
     val title: String,
     val endTime: DateTime,
     val repetition: Repetition?,
-    val alarm: Alarm
+    val alarm: Alarm,
+    val estimatedTime: Int = 0
 )

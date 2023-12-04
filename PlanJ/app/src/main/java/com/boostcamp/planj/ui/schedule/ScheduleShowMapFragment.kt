@@ -154,7 +154,7 @@ class ScheduleShowMapFragment : Fragment(), OnMapReadyCallback {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.route.collect { route ->
+                viewModel.response.collect { route ->
                     route?.let { response ->
                         val latLngList = response.route.trafast[0].path.map { position ->
                             LatLng(

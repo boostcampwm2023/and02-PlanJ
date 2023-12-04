@@ -1,6 +1,5 @@
 package com.boostcamp.planj.ui.main
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -22,9 +21,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSettingBinding
+import com.boostcamp.planj.ui.PlanjAlarm
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -36,7 +35,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
@@ -67,6 +65,10 @@ class SettingFragment : Fragment() {
             }
         }
 
+    private val planjAlarm by lazy {
+        PlanjAlarm(requireActivity())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -88,7 +90,6 @@ class SettingFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-
         binding.tvSettingLogout.setOnClickListener {
             runBlocking {
                 viewModel.logoutAccount()
@@ -108,7 +109,6 @@ class SettingFragment : Fragment() {
                     .setNegativeButton("아니요") { _, _ -> }
                     .setPositiveButton("네") { _, _ ->
                         try {
-
                             viewModel.deleteAccount()
                             val packageManager: PackageManager = requireContext().packageManager
                             val intent =
@@ -126,23 +126,7 @@ class SettingFragment : Fragment() {
                 dialog.background = resources.getDrawable(R.drawable.round_r8_main2, null)
                 dialog.show()
             }
-
-            lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.isEditMode.collectLatest { isMode ->
-                        if (isMode) {
-                            val focusView = binding.tvSettingNickname
-                            focusView.isEnabled = true
-                            focusView.requestFocus()
-                            focusView.setSelection(focusView.text.toString().length)
-                            val imm =
-                                context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.showSoftInput(focusView, 0)
-                        }
-                    }
-                }
-            }
-
+            
             lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.userInfo.collectLatest { user ->
@@ -152,14 +136,39 @@ class SettingFragment : Fragment() {
                             .apply(RequestOptions.circleCropTransform())
                             .into(binding.ivSettingImg)
 
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isEditMode.collectLatest { isMode ->
+                    if (isMode) {
+                        val focusView = binding.tvSettingNickname
+                        focusView.isEnabled = true
+                        focusView.requestFocus()
+                        focusView.setSelection(focusView.text.toString().length)
+                        val imm =
+                            context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.showSoftInput(focusView, 0)
                     }
                 }
             }
+
 
             lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.showToast.collectLatest {
                         Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isAlarmOn.collectLatest { isAlarmOn ->
+                    if (isAlarmOn) {
+                        // TODO: 일회성/반복성, 현재시간/알람시간 모두 비교 필요
+                        // 무조건 알람을 set하면 시간이 지난 알람은 바로 울림
+                        viewModel.getAllAlarmInfo()
+                            .forEach { alarmInfo -> planjAlarm.setAlarm(alarmInfo) }
+                    } else {
+                        viewModel.getAllAlarmInfo()
+                            .forEach { alarmInfo -> planjAlarm.deleteAlarm(alarmInfo.scheduleId.hashCode()) }
                     }
                 }
             }
@@ -171,14 +180,13 @@ class SettingFragment : Fragment() {
             super.onDestroyView()
         }
 
-
-        // 절대경로 변환
-        private fun absolutelyPath(path: Uri?, context: Context): String {
-            if (path == null) return ""
-            val proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-            val c: Cursor? = context.contentResolver.query(path, proj, null, null, null)
-            val index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            c?.moveToFirst()
+    // 절대경로 변환
+    private fun absolutelyPath(path: Uri?, context: Context): String {
+        if (path == null) return ""
+        val proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        val c: Cursor? = context.contentResolver.query(path, proj, null, null, null)
+        val index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        c?.moveToFirst()
 
             val result = c?.getString(index!!)
 

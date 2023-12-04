@@ -19,7 +19,7 @@ data class Schedule(
     val members: List<User> = listOf(),
     val doneMembers: List<User>? = null,
     val location: Location? = null,
-    val startLocation : Location? = null,
+    val startLocation: Location? = null,
     val isFinished: Boolean = false,
     val isFailed: Boolean = false,
     val remindMemo: String = "",
