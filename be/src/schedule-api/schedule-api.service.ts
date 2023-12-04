@@ -22,6 +22,8 @@ import { LocationResponse } from "./dto/location.response";
 import { ScheduleLocationEntity } from "../schedule/entity/schedule-location.entity";
 import { AddRetrospectiveMemoDto } from "./dto/add-retrospective-memo.dto";
 import { ScheduleEntity } from "../schedule/entity/schedule.entity";
+import { RepetitionDto } from "src/schedule/dto/repetition.dto";
+import { InviteStatus } from "src/utils/domain/invite-status.enum";
 
 @Injectable()
 export class ScheduleApiService {
@@ -115,10 +117,32 @@ export class ScheduleApiService {
     await this.repetitionService.updateRepetition(dto.repetition, scheduleMeta);
     await this.scheduleService.updateSchedule(dto, scheduleMeta);
     await this.scheduleAlarmService.addScheduleAlarm(dto, scheduleMeta);
+
+    const authorGroup = await this.participateService.getAuthorGroup(metadataId);
+
+    const groupUserEntities: UserEntity[] = [];
+    for (const entity of authorGroup) {
+      const user = await this.userService.getUserEntityById(entity.participant.userId);
+      groupUserEntities.push(user);
+    }
+
+    const invitedUserEntities: UserEntity[] = [];
+    for (const participantEmail of dto.participants) {
+      const entity = await this.userService.getUserEntityByEmail(participantEmail);
+      invitedUserEntities.push(entity);
+    }
+
+    const invitedStatus = await this.participateService.checkInvitedStatus(
+      scheduleMeta,
+      groupUserEntities,
+      invitedUserEntities,
+    );
+
     if (!!dto.participants) {
-      for (const email of dto.participants) {
-        await this.inviteSchedule(dto.scheduleUuid, email);
+      for (const [email, invitedStatusEnum] of invitedStatus) {
+        await this.inviteSchedule(email, invitedStatusEnum, dto.scheduleUuid, dto.repetition);
       }
+
       await this.scheduleMetaService.updateSharedStatus(metadataId);
     }
 
@@ -229,7 +253,14 @@ export class ScheduleApiService {
     return JSON.stringify(body);
   }
 
-  async inviteSchedule(authorScheduleUuid: string, invitedUserEmail: string) {
+  async inviteSchedule(
+    invitedUserEmail: string,
+    invitedStatus: InviteStatus,
+    authorScheduleUuid: string,
+    repetition: RepetitionDto,
+  ) {
+    // invitedStatusCode 0: not added (new) 1: already added(changed) 2: deleted
+
     const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(authorScheduleUuid);
     const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(authorScheduleUuid);
     const authorScheduleMetadata = authorSchedule.parent;
@@ -237,13 +268,30 @@ export class ScheduleApiService {
 
     const invitedUser = await this.userService.getUserEntityByEmail(invitedUserEmail);
 
-    let [isAlreadyInvited, invitedMetadataId] = await this.participateService.isAlreadyInvited(
-      authorMetadataId,
-      invitedUser.userId,
-    );
     let invitedScheduleUuid: string;
+    let invitedMetadataId: number;
 
-    if (isAlreadyInvited === 0) {
+    if (invitedStatus === InviteStatus.DELETED) {
+      const unInvitedMetadataId = await this.participateService.getInvitedMetadataId(
+        authorMetadataId,
+        invitedUser.userId,
+      );
+      const unInvitedScheduleUuid = await this.scheduleService.getFirstScheduleUuidByMetadataId(unInvitedMetadataId);
+      const unInvitedMetadata = await this.scheduleMetaService.getScheduleMetadataById(unInvitedMetadataId);
+      const unInvitedUserEntity = await this.userService.getUserEntityById(unInvitedMetadata.userId);
+
+      const deleteScheduleDto: DeleteScheduleDto = {
+        userUuid: unInvitedUserEntity.userUuid,
+        scheduleUuid: unInvitedScheduleUuid,
+      };
+
+      const metadataId = await this.scheduleService.deleteSchedule(deleteScheduleDto);
+      await this.scheduleMetaService.deleteScheduleMeta(metadataId);
+      await this.participateService.unInviteSchedule(authorScheduleMetadata.metadataId, unInvitedMetadataId);
+      return;
+    }
+
+    if (invitedStatus === InviteStatus.NEW) {
       const addScheduleDto: AddScheduleDto = {
         userUuid: invitedUser.userUuid,
         categoryUuid: "default",
@@ -255,7 +303,9 @@ export class ScheduleApiService {
       invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
       invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
       await this.scheduleMetaService.updateSharedStatus(invitedMetadataId);
-    } else {
+    }
+    if (invitedStatus === InviteStatus.CHANGED) {
+      invitedMetadataId = await this.participateService.getInvitedMetadataId(authorMetadataId, invitedUser.userId);
       invitedScheduleUuid = await this.scheduleService.getFirstScheduleUuidByMetadataId(invitedMetadataId);
     }
 
@@ -296,8 +346,9 @@ export class ScheduleApiService {
 
     await this.scheduleLocationService.updateLocation(updateScheduleDto, invitedScheduleMeta);
     await this.scheduleService.updateSchedule(updateScheduleDto, invitedScheduleMeta);
+    await this.repetitionService.updateRepetition(repetition, invitedScheduleMeta);
 
-    if (isAlreadyInvited === 0) {
+    if (invitedStatus === InviteStatus.NEW) {
       await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
     }
   }
