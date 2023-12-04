@@ -24,8 +24,6 @@ interface MainRepository {
 
     fun postSchedule(categoryId: String, title: String, endTime: DateTime): Flow<PostScheduleResponse>
 
-    fun getToken(): Flow<String>
-
     suspend fun emptyToken()
 
     suspend fun deleteScheduleApi(scheduleUuid: String)
@@ -57,23 +55,9 @@ interface MainRepository {
 
     fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
-    suspend fun saveAlarmMode(mode: Boolean)
-
-    suspend fun getAlarmMode(): Flow<Boolean>
-
-    suspend fun deleteAllData()
-
-    suspend fun insertAlarmInfo(alarmInfo: AlarmInfo)
-
-    suspend fun getAllAlarmInfo(): List<AlarmInfo>
-
-    suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
-
-    suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
-
-    suspend fun updateAlarmInfo(curTimeMillis: Long)
-
     suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail
 
     fun getScheduleChecked(scheduleId: String):Flow<GetScheduleCheckedResponse>
+
+    suspend fun getUserImageRemove()
 }

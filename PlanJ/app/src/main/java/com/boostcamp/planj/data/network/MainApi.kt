@@ -83,6 +83,9 @@ interface MainApi {
         @Part profileImage: MultipartBody.Part?
     ): PostUserResponse
 
+    @PATCH("/api/auth/set-default-image")
+    suspend fun patchUserImageRemove()
+
     @GET("/api/schedule/check")
     suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
 

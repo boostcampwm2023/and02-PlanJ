@@ -45,6 +45,7 @@ class SettingFragment : Fragment() {
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
+                Log.d("PLANJDEBUG", "url : ${uri.toString()}")
                 val file = File(absolutelyPath(uri, requireContext()))
                 val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
                 viewModel.setImageFile(
@@ -54,7 +55,6 @@ class SettingFragment : Fragment() {
                         requestFile
                     )
                 )
-
                 Glide.with(this)
                     .load(uri)
                     .error(R.drawable.ic_circle_person)
@@ -90,17 +90,22 @@ class SettingFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+        binding.ivSettingIconCancel.setOnClickListener {
+            viewModel.getUserImageRemove()
+        }
+
         binding.tvSettingLogout.setOnClickListener {
             runBlocking {
                 viewModel.logoutAccount()
-                val packageManager: PackageManager = requireContext().packageManager
-                val intent = packageManager.getLaunchIntentForPackage(requireContext().packageName)
-                val componentName = intent!!.component
-                val mainIntent = Intent.makeRestartActivityTask(componentName)
-                requireContext().startActivity(mainIntent)
-                activity?.finish()
-
             }
+
+            val packageManager: PackageManager = requireContext().packageManager
+            val intent = packageManager.getLaunchIntentForPackage(requireContext().packageName)
+            val componentName = intent!!.component
+            val mainIntent = Intent.makeRestartActivityTask(componentName)
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            activity?.startActivity(mainIntent)
+            activity?.finish()
         }
 
         binding.tvSettingWithdrawal.setOnClickListener {
@@ -110,13 +115,16 @@ class SettingFragment : Fragment() {
                 .setNegativeButton("아니요") { _, _ -> }
                 .setPositiveButton("네") { _, _ ->
                     try {
-                        viewModel.deleteAccount()
+                        runBlocking {
+                            viewModel.deleteAccount()
+                        }
                         val packageManager: PackageManager = requireContext().packageManager
                         val intent =
                             packageManager.getLaunchIntentForPackage(requireContext().packageName)
                         val componentName = intent!!.component
                         val mainIntent = Intent.makeRestartActivityTask(componentName)
-                        requireContext().startActivity(mainIntent)
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        activity?.startActivity(mainIntent)
                         activity?.finish()
 
                     } catch (e: Exception) {

@@ -65,10 +65,6 @@ class CategoryDetailViewModel @Inject constructor(
         //TODO 카테고리 모든 일정 가져오기
     }
 
-    suspend fun getUser() = withContext(Dispatchers.IO) {
-        mainRepository.getToken().first()
-    }
-
     fun checkBoxChange(schedule: Schedule, isCheck: Boolean) {
         val calendar = Calendar.getInstance()
         val endTime = schedule.endAt
@@ -85,12 +81,14 @@ class CategoryDetailViewModel @Inject constructor(
     }
 
     fun getCategoryDetailSchedules() {
+        Log.d("PLANJDEBUG", "getCategoryDetailSchedules call")
         viewModelScope.launch {
             mainRepository.getCategorySchedulesApi(_cateogry.value.categoryUuid)
                 .catch {
                     Log.d("PLANJDEBUG", "getCategoryDetailSchedules Error ${it.message}")
                 }.collectLatest {
-                    _schedules.value = it.
+//                    _schedules.value = it
+                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules Success ${it.date}")
                 }
         }
     }

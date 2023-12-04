@@ -43,7 +43,7 @@ class CategoryDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewmodel = viewModel
         binding.lifecycleOwner=viewLifecycleOwner
-
+        viewModel.getCategoryDetailSchedules()
         initAdapter()
         setObserver()
         setListener()
