@@ -6,7 +6,6 @@ import { ulid } from "ulid";
 import axios from "axios";
 import { CheckImageDto } from "./dto/check-image.dto";
 import greenEyeConfig from "../config/green-eye.config";
-import * as http from "http";
 
 @Injectable()
 export class ImageService {
