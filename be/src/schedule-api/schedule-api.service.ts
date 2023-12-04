@@ -44,7 +44,6 @@ export class ScheduleApiService {
     const category = await this.categoryService.getCategoryEntity(dto.categoryUuid);
     const scheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(dto, user, category);
     const scheduleUuid = await this.scheduleService.addSchedule(dto, scheduleMetadata);
-    await this.repetitionService.updateRepetition(dto.repetition, scheduleMetadata);
 
     const body: HttpResponse = {
       message: "일정 추가 성공",
