@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ParticipateRepository } from "./participate.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ParticipantEntity } from "./entity/participant.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 @Injectable()
 export class ParticipateService {
@@ -15,8 +16,12 @@ export class ParticipateService {
     await this.participateRepository.invite(authorScheduleMetadata, invitedMetadataId);
   }
 
-  async isAlreadyInvited(authorMetadataId: number, invitedUserId: number): Promise<number[]> {
-    return await this.participateRepository.isAlreadyInvited(authorMetadataId, invitedUserId);
+  async unInviteSchedule(authorMetadataId: number, invitedMetadataId: number) {
+    await this.participateRepository.unInvite(authorMetadataId, invitedMetadataId);
+  }
+
+  async getInvitedMetadataId(authorMetadataId: number, invitedUserId: number): Promise<number> {
+    return await this.participateRepository.getInvitedMetadataId(authorMetadataId, invitedUserId);
   }
 
   async getParticipantGroup(metadataId: number): Promise<ParticipantEntity[]> {
@@ -26,5 +31,23 @@ export class ParticipateService {
     }
 
     return await this.participateRepository.find({ where: { authorId: record.authorId } });
+  }
+
+  async getAuthorGroup(authorMetadataId: number) {
+    const group = await this.participateRepository
+      .createQueryBuilder("participant")
+      .leftJoinAndSelect("participant.participant", "schedule_metadata")
+      .where("participant.author_id = :authorId", { authorId: authorMetadataId })
+      .getMany();
+
+    return group;
+  }
+
+  async checkInvitedStatus(
+    authorMetadata: ScheduleMetadataEntity,
+    groupUserEntities: UserEntity[],
+    invitedUserEntities: UserEntity[],
+  ) {
+    return await this.participateRepository.checkInvitedStatus(authorMetadata, groupUserEntities, invitedUserEntities);
   }
 }
