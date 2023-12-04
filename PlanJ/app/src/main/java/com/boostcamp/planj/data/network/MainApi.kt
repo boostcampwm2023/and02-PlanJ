@@ -1,13 +1,13 @@
 package com.boostcamp.planj.data.network
 
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
-import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
-import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
+import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -37,7 +37,7 @@ interface MainApi {
     suspend fun postSchedule(@Body postScheduleBody: PostScheduleBody): PostScheduleResponse
 
     @DELETE("/api/category/delete/{categoryUuid}")
-    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String)
+    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String) : CategoryResponse
 
     @HTTP(method = "DELETE", path = "/api/schedule/delete", hasBody = true)
     suspend fun deleteSchedule(@Body deleteScheduleBody: DeleteScheduleBody)
@@ -49,7 +49,7 @@ interface MainApi {
     suspend fun patchSchedule(@Body patchScheduleBody: PatchScheduleBody): PatchScheduleResponse
 
     @PATCH("/api/category/update")
-    suspend fun patchCategory(@Body patchCategoryRequest: PatchCategoryRequest): PatchCategoryResponse
+    suspend fun patchCategory(@Body patchCategoryRequest: Category): CategoryResponse
 
     @GET("/api/category/list")
     suspend fun getCategoryList(): GetCategoryResponse

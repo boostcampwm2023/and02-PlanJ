@@ -94,11 +94,11 @@ fun ImageView.setImage(url: String?) {
 
 @BindingAdapter("participation")
 fun TextView.setParticipation(schedule: Schedule) {
-    if (schedule.members.size < 2) {
+    if (schedule.participantCount < 2) {
         visibility = View.GONE
         return
     }
-    text = "${schedule.doneMembers?.size ?: 0} / ${schedule.members.size}"
+    text = "${schedule.participantSuccessCount ?: 0} / ${schedule.participantCount}"
 }
 
 @BindingAdapter("checkFail")
@@ -125,7 +125,7 @@ fun TextView.setTitle(schedule: Schedule) {
 
 @BindingAdapter("setCategoryBackground")
 fun LinearLayout.setBackground(item: Category) {
-    if (item.categoryId == "all")
+    if (item.categoryUuid == "all")
         setBackgroundResource(R.drawable.round_r8_main1)
     else
         setBackgroundResource(R.drawable.round_r8_main2)
@@ -144,7 +144,7 @@ fun TextView.isPopUpMenuVisible(category: Category) {
 fun TextView.setDateTime(schedule: Schedule) {
     val currentDate =
         SimpleDateFormat("yyyy/MM/dd", Locale("kr", "ko")).format(System.currentTimeMillis())
-    val scheduleEndTime = schedule.endTime
+    val scheduleEndTime = schedule.endAt
     val endDate = String.format(
         "%04d/%02d/%02d",
         scheduleEndTime.year,
@@ -152,14 +152,14 @@ fun TextView.setDateTime(schedule: Schedule) {
         scheduleEndTime.day
     )
     val endTime = String.format("%02d:%02d", scheduleEndTime.hour, scheduleEndTime.minute)
-    if (schedule.startTime == null) {
+    if (schedule.startAt == null) {
         text = if (currentDate == endDate) {
             "오늘 $endTime 까지"
         } else {
             "$endDate $endTime"
         }
     } else {
-        val scheduleStartTime = schedule.startTime
+        val scheduleStartTime = schedule.startAt
         val startDate = String.format(
             "%04d/%02d/%02d",
             scheduleStartTime.year,

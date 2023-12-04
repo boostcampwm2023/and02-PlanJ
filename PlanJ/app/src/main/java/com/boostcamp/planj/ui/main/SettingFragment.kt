@@ -132,7 +132,7 @@ class SettingFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userInfo.collectLatest { user ->
                     Glide.with(this@SettingFragment)
-                        .load(user?.imgUrl)
+                        .load(user?.profileUrl)
                         .error(R.drawable.ic_circle_person)
                         .apply(RequestOptions.circleCropTransform())
                         .into(binding.ivSettingImg)

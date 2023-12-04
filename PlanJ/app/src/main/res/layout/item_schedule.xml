@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:src="@drawable/id_group"
-            android:visibility="@{schedule.members.size() > 1 ? View.VISIBLE : View.GONE }"
+            android:visibility="@{schedule.participantCount > 1 ? View.VISIBLE : View.GONE }"
             app:layout_constraintBottom_toTopOf="@id/tv_main_group_participation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

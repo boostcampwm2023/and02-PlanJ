@@ -3,10 +3,9 @@ package com.boostcamp.planj.ui.main.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.ScheduleDummy
-import com.boostcamp.planj.data.model.ScheduleInfo
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,10 +27,8 @@ class MainViewModel @Inject constructor(
     private val _selectDate = MutableStateFlow("")
     val selectDate = _selectDate.asStateFlow()
 
-    val categories =
-        mainRepository.getAllCategories().stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
-        )
+    private val _categories = MutableStateFlow<List<Category>>(emptyList())
+    val categories = _categories.asStateFlow()
 
     private val _calendarTitle = MutableStateFlow("")
     val calendarTitle = _calendarTitle.asStateFlow()
@@ -41,24 +38,22 @@ class MainViewModel @Inject constructor(
     val isCurrent = _isCurrent.asStateFlow()
 
 
-    private val _schedules = MutableStateFlow<List<ScheduleDummy>>(emptyList())
+    private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
 
-    fun insertSchedule(category: String, title: String, endTime: DateTime) {
+    fun postSchedule(category: String, title: String) {
+
+        val date = _selectDate.value.split("-").map { it.toInt() }
+        val dateTime = DateTime(date[0], date[1], date[2], 23, 59)
         viewModelScope.launch(Dispatchers.IO) {
             categories.value.find { it.categoryName == category }?.let { c ->
-                mainRepository.postSchedule(c.categoryId, title, endTime.toFormattedString())
+                mainRepository.postSchedule("default"/*c.categoryUuid*/, title, dateTime)
                     .catch {
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }
-                    .collect {
-                        val schedule = Schedule(
-                            scheduleId = it.data.scheduleUuid,
-                            categoryTitle = category,
-                            title = title,
-                            endTime = endTime
-                        )
-                        mainRepository.insertSchedule(schedule)
+                    .collectLatest {
+                        Log.d("PLANJDEBUG", "postSchedule success ${it}")
+                        getScheduleDaily(dateTime.toFormattedString())
                     }
             }
         }

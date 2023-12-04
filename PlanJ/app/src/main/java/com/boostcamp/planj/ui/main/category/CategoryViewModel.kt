@@ -8,12 +8,13 @@ import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,14 +23,14 @@ class CategoryViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    val categories = mainRepository.getAllCategories()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _categories = MutableStateFlow<List<Category>>(emptyList())
+    val categories = _categories.asStateFlow()
 
 
-    fun insertCategory(categoryName: String): CategoryState {
+    fun postCategory(categoryName: String): CategoryState {
         return if (categoryName.isEmpty()) {
             CategoryState.EMPTY
-        } else if (categories.value.map { c -> c.categoryName }
+        } else if (_categories.value.map { c -> c.categoryName }
                 .contains(categoryName)) {
             CategoryState.EXIST
         } else {
@@ -41,12 +42,8 @@ class CategoryViewModel @Inject constructor(
                         Log.d("PLANJDEBUG", "postCategory Error ${it.message}")
                     }
                     .collect {
-                        mainRepository.insertCategory(
-                            Category(
-                                it.categoryData.categoryUuid,
-                                categoryName
-                            )
-                        )
+                        //TODO 카데고리 조회 요청 api 쏘기
+                        getCategory()
                     }
             }
             CategoryState.SUCCESS
@@ -55,32 +52,52 @@ class CategoryViewModel @Inject constructor(
 
     fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                mainRepository.deleteCategoryApi(category.categoryId)
-                mainRepository.deleteCategory(category)
-                mainRepository.deleteScheduleUsingCategoryName(category.categoryName)
-            } catch (e: Exception) {
-                Log.d("PLANJDEBUG", "category delete error  ${e.message}")
-            }
+
+            mainRepository.deleteCategoryApi(category.categoryUuid)
+                .catch {
+                    Log.d("PLANJDEBUG", "category delete error  ${it.message}")
+                }
+                .collectLatest {
+                    //TODO 카테고리 조회 요청 api 쏘기
+                    getCategory()
+                }
+
         }
     }
 
-    fun updateCategory(categoryName: String, title: String): CategoryState {
+    fun patchCategory(categoryName: String, title: String): CategoryState {
         return if (categoryName.isEmpty()) {
             CategoryState.EMPTY
-        } else if (categories.value.map { c -> c.categoryName }
+        } else if (_categories.value.map { c -> c.categoryName }
                 .contains(categoryName)) {
             CategoryState.EXIST
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                categories.value.find { it.categoryName == title }?.let { category ->
-                    val categoryId = category.categoryId
-                    mainRepository.updateCategory(category.copy(categoryName = categoryName))
-                    mainRepository.updateScheduleUsingCategory(title, categoryName)
+                _categories.value.find { it.categoryName == title }?.let { category ->
+                    val categoryId = category.categoryUuid
                     mainRepository.updateCategoryApi(categoryId, title)
+                        .catch {
+                            Log.d("PLANJBUG", "updateCategoryApi error ${it.message}")
+                        }
+                        .collectLatest {
+                            //TODO 카테고리 조회 요청 api 쓰기
+                            getCategory()
+                        }
                 }
             }
             CategoryState.SUCCESS
+        }
+    }
+
+    fun getCategory(){
+        viewModelScope.launch {
+            mainRepository.getCategoryListApi()
+                .catch {
+                    Log.d("PLANJDEBUG", "getCategory error ${it.message}")
+                }
+                .collectLatest {
+                    _categories.value = it
+                }
         }
     }
 

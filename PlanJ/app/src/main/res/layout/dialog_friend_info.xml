@@ -17,7 +17,7 @@
 
         <ImageView
             android:id="@+id/iv_dialog_friend_img"
-            userImg="@{user.imgUrl}"
+            userImg="@{user.profileUrl}"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginHorizontal="60dp"

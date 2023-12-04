@@ -26,12 +26,8 @@ class SearchViewModel @Inject constructor(
     private val isFiltered = MutableStateFlow(false)
 
     fun onClickSearch() {
-        // TODO: userInput.value 이용해서 데이터 요청
         viewModelScope.launch {
-            mainRepository.searchSchedule(userInput.value).collectLatest { resultList ->
-                scheduleList.value = resultList
-                filterSchedules()
-            }
+            // TODO: userInput.value 이용해서 데이터 요청
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.AlarmInfo
+import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
@@ -76,9 +77,8 @@ class ScheduleViewModel @Inject constructor(
 
     val startScheduleLocation = MutableStateFlow<Location?>(null)
 
-    val categoryList: StateFlow<List<String>> =
-        mainRepository.getCategories()
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
+    val categoryList = _categoryList.asStateFlow()
 
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode: StateFlow<Boolean> = _isEditMode
@@ -95,15 +95,15 @@ class ScheduleViewModel @Inject constructor(
     fun setScheduleInfo(schedule: Schedule?) {
         schedule?.let { schedule ->
             scheduleId = schedule.scheduleId
-            scheduleCategory.value = schedule.categoryTitle
+            scheduleCategory.value = schedule.categoryName
             scheduleTitle.value = schedule.title
-            _scheduleStartTime.value = schedule.startTime
-            _scheduleEndTime.value = schedule.endTime
+            _scheduleStartTime.value = schedule.startAt
+            _scheduleEndTime.value = schedule.endAt
             _scheduleRepetition.value = schedule.repetition
             _scheduleAlarm.value = schedule.alarm
-            _doneMembers.value = schedule.doneMembers
+            //_doneMembers.value = schedule.doneMembers
             //_members.value = schedule.members
-            _endScheduleLocation.value = schedule.location
+            _endScheduleLocation.value = schedule.endLocation
             startScheduleLocation.value = schedule.startLocation
             isFinished.value = schedule.isFinished
             isFailed.value = schedule.isFailed
@@ -173,7 +173,6 @@ class ScheduleViewModel @Inject constructor(
                 }
 
                 mainRepository.deleteScheduleApi(scheduleId)
-                mainRepository.deleteScheduleUsingId(scheduleId)
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
             }
@@ -189,11 +188,11 @@ class ScheduleViewModel @Inject constructor(
         setAlarmInfo()
 
         viewModelScope.launch(Dispatchers.IO) {
-            val getCategory =
-                withContext((Dispatchers.IO)) { mainRepository.getCategory(scheduleCategory.value) }
+            //TODO 카테고리 id 찾기
+            val getCategory = ""
 
             val patchScheduleBody = PatchScheduleBody(
-                getCategory.categoryId,
+                getCategory,
                 scheduleId,
                 scheduleTitle.value,
                 scheduleMemo.value,
@@ -209,23 +208,6 @@ class ScheduleViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
                 }
                 .collect {
-                    val newSchedule = Schedule(
-                        scheduleId = scheduleId,
-                        title = scheduleTitle.value,
-                        //memo = scheduleMemo.value,
-                        startTime = scheduleStartTime.value,
-                        endTime = scheduleEndTime.value,
-                        categoryTitle = scheduleCategory.value,
-                        repetition = scheduleRepetition.value,
-                        alarm = scheduleAlarm.value,
-                        members = emptyList(),
-                        doneMembers = doneMembers.value,
-                        location = _endScheduleLocation.value,
-                        startLocation = startScheduleLocation.value,
-                        isFinished = isFinished.value,
-                        isFailed = isFailed.value
-                    )
-                    mainRepository.insertSchedule(newSchedule)
                     _isEditMode.value = false
                     Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
                 }
