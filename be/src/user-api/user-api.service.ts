@@ -107,4 +107,14 @@ export class UserApiService {
     };
     return JSON.stringify(body);
   }
+
+  async setProfileImageDefault(token: string) {
+    const userUuid = this.authService.verify(token);
+    await this.userService.setUserProfileImageNull(userUuid);
+
+    const body: HttpResponse = {
+      message: "프로필 이미지를 기본 이미지로 변경 하였습니다.",
+    };
+    return JSON.stringify(body);
+  }
 }

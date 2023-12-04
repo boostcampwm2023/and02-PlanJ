@@ -117,4 +117,25 @@ export class UserService {
 
     return user;
   }
+
+  async setUserProfileImageNull(userUuid: any) {
+    const userEntity = await this.userRepository.findOne({ where: { userUuid } });
+
+    if (!userEntity) {
+      throw new UnauthorizedException("유효하지 않은 사용자입니다.");
+    }
+
+    // 사용자의 프로필 사진이 이미 기본 사진일 때
+    if (!userEntity.profileUrl) {
+      return;
+    }
+
+    userEntity.profileUrl = null;
+    try {
+      await this.userRepository.save(userEntity);
+      return;
+    } catch (e) {
+      throw new InternalServerErrorException();
+    }
+  }
 }

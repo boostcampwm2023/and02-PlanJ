@@ -51,6 +51,15 @@ export class UserApiController {
   }
 
   @UseGuards(AuthGuard)
+  @Get("/set-default-image")
+  async setProfileImageDefault(@Token() token: string): Promise<JSON> {
+    this.logger.log("Get /api/auth/set-default-image");
+    this.logger.verbose("Token: " + token);
+    const result = await this.userApiService.setProfileImageDefault(token);
+    return JSON.parse(result);
+  }
+
+  @UseGuards(AuthGuard)
   @Delete()
   async deleteUser(@Token() token: string): Promise<JSON> {
     this.logger.log("Delete /api/auth/");
