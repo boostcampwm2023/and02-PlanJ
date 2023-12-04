@@ -16,6 +16,7 @@ class FriendAdapterViewHolder(private val binding: ItemFriendBinding) :
     fun bind(user: User, listener: FriendClickListener) {
         binding.user = user
         binding.listener = listener
+        friendMenu.inflate(R.menu.friend_menu)
 
         friendMenu.setOnMenuItemClickListener {
             listener.onDelete(user.email)
@@ -23,7 +24,6 @@ class FriendAdapterViewHolder(private val binding: ItemFriendBinding) :
         }
 
         binding.tvFriendMenu.setOnClickListener {
-            friendMenu.inflate(R.menu.friend_menu)
             friendMenu.show()
         }
     }

@@ -67,7 +67,7 @@ class AddFriendDialog : DialogFragment() {
                     addFriendDialogListener?.onClickComplete(email.toString())
                     dismiss()
                 } else {
-                    tilDialogAddFriendLayout.error = "이메일 형식이 옳지 않습니다."
+                    tilDialogAddFriendLayout.error = resources.getString(R.string.email_format_error)
                 }
             }
         }
