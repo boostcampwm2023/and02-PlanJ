@@ -23,7 +23,7 @@ import { ScheduleLocationEntity } from "../schedule/entity/schedule-location.ent
 import { AddRetrospectiveMemoDto } from "./dto/add-retrospective-memo.dto";
 import { ScheduleEntity } from "../schedule/entity/schedule.entity";
 import { RepetitionDto } from "src/schedule/dto/repetition.dto";
-import { DeleteEarthObservationJobInput } from "aws-sdk/clients/sagemakergeospatial";
+import { InviteStatus } from "src/utils/domain/invite-status.enum";
 
 @Injectable()
 export class ScheduleApiService {
@@ -139,8 +139,8 @@ export class ScheduleApiService {
     );
 
     if (!!dto.participants) {
-      for (const [email, invitedStatusCode] of invitedStatus) {
-        await this.inviteSchedule(email, invitedStatusCode, dto.scheduleUuid, dto.repetition);
+      for (const [email, invitedStatusEnum] of invitedStatus) {
+        await this.inviteSchedule(email, invitedStatusEnum, dto.scheduleUuid, dto.repetition);
       }
 
       await this.scheduleMetaService.updateSharedStatus(metadataId);
@@ -255,7 +255,7 @@ export class ScheduleApiService {
 
   async inviteSchedule(
     invitedUserEmail: string,
-    invitedStatusCode: number,
+    invitedStatus: InviteStatus,
     authorScheduleUuid: string,
     repetition: RepetitionDto,
   ) {
@@ -271,7 +271,7 @@ export class ScheduleApiService {
     let invitedScheduleUuid: string;
     let invitedMetadataId: number;
 
-    if (invitedStatusCode === 2) {
+    if (invitedStatus === InviteStatus.DELETED) {
       const unInvitedMetadataId = await this.participateService.getInvitedMetadataId(
         authorMetadataId,
         invitedUser.userId,
@@ -291,7 +291,7 @@ export class ScheduleApiService {
       return;
     }
 
-    if (invitedStatusCode === 0) {
+    if (invitedStatus === InviteStatus.NEW) {
       const addScheduleDto: AddScheduleDto = {
         userUuid: invitedUser.userUuid,
         categoryUuid: "default",
@@ -304,7 +304,7 @@ export class ScheduleApiService {
       invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
       await this.scheduleMetaService.updateSharedStatus(invitedMetadataId);
     }
-    if (invitedStatusCode === 1) {
+    if (invitedStatus === InviteStatus.CHANGED) {
       invitedMetadataId = await this.participateService.getInvitedMetadataId(authorMetadataId, invitedUser.userId);
       invitedScheduleUuid = await this.scheduleService.getFirstScheduleUuidByMetadataId(invitedMetadataId);
     }
@@ -348,7 +348,7 @@ export class ScheduleApiService {
     await this.scheduleService.updateSchedule(updateScheduleDto, invitedScheduleMeta);
     await this.repetitionService.updateRepetition(repetition, invitedScheduleMeta);
 
-    if (invitedStatusCode === 0) {
+    if (invitedStatus === InviteStatus.NEW) {
       await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
     }
   }
