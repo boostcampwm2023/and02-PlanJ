@@ -16,6 +16,6 @@ data class PatchScheduleBody(
     @SerializedName("startLocation") val startLocation: Location?,
     @SerializedName("endLocation") val endLocation: Location?,
     @SerializedName("repetition") val repetition: Repetition?,
-    @SerializedName("participants") val participants: List<Participant> = emptyList(),
+    @SerializedName("participants") val participants: List<String> = emptyList(),
     @SerializedName("alarm") val alarm: Alarm?
 )

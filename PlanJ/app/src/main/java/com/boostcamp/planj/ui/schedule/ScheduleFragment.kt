@@ -234,7 +234,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.tvScheduleAllParticipants.setOnClickListener {
             val action =
                 ScheduleFragmentDirections.actionScheduleFragmentToScheduleParticipantsFragment(
-                    viewModel.participants.value.toTypedArray()
+                    viewModel.participants.value.toTypedArray(),
+                    viewModel.isEditMode.value
                 )
             findNavController().navigate(action)
         }

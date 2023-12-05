@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
+import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.databinding.FragmentScheduleParticipantsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -26,6 +27,7 @@ class ScheduleParticipantsFragment : Fragment() {
     private val viewModel: ScheduleParticipantsViewModel by viewModels()
     private lateinit var adapter: ScheduleParticipantAdapter
     private val args: ScheduleParticipantsFragmentArgs by navArgs()
+    private var isScheduleEditMode = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,21 +42,37 @@ class ScheduleParticipantsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.setParticipants(args.participants?.toList() ?: emptyList())
+        isScheduleEditMode = args.isScheduleEditMode
+
         initAdapter()
         setObserver()
         setListener()
     }
 
     private fun initAdapter() {
-        adapter = ScheduleParticipantAdapter(viewModel.participantList.value)
+        val listener = object : ScheduleParticipantsListener {
+            override fun onCheckedChanged(isChecked: Boolean, participant: Participant) {
+                if (isChecked) {
+                    viewModel.addParticipant(participant)
+                } else {
+                    viewModel.deleteParticipant(participant)
+                }
+            }
+        }
+        adapter = ScheduleParticipantAdapter(listener)
         binding.rvScheduleParticipantsList.adapter = adapter
     }
 
     private fun setObserver() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.participantList.collectLatest {
-                    initAdapter()
+                viewModel.friendStateList.collectLatest {
+                    adapter.isEditMode = viewModel.isEditMode.value
+                    if (!adapter.isEditMode) {
+                        adapter.submitList(viewModel.friendStateList.value.filter { it.isParticipated })
+                    } else {
+                        adapter.submitList(viewModel.friendStateList.value)
+                    }
                 }
             }
         }
@@ -63,6 +81,9 @@ class ScheduleParticipantsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isEditMode.collectLatest { isEditMode ->
                     updateToolbar(isEditMode)
+                    adapter.isEditMode = isEditMode
+                    adapter.submitList(null)
+                    adapter.submitList(viewModel.friendStateList.value)
                 }
             }
         }
@@ -70,9 +91,9 @@ class ScheduleParticipantsFragment : Fragment() {
 
     private fun updateToolbar(isEditMode: Boolean) {
         with(binding.tbScheduleParticipants.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
+            findItem(R.id.item_schedule_edit).isVisible = !isEditMode && isScheduleEditMode
             findItem(R.id.item_schedule_delete).isVisible = false
-            findItem(R.id.item_schedule_complete).isVisible = isEditMode
+            findItem(R.id.item_schedule_complete).isVisible = isEditMode && isScheduleEditMode
         }
     }
 
@@ -99,7 +120,9 @@ class ScheduleParticipantsFragment : Fragment() {
             }
         }
         binding.tbScheduleParticipants.setNavigationOnClickListener {
-            TODO("schedulefragment로 이동")
+            val action =
+                ScheduleParticipantsFragmentDirections.actionScheduleParticipantsFragmentToScheduleFragment()
+            findNavController().navigate(action)
         }
     }
 }
