@@ -32,7 +32,8 @@ class SearchViewModel @Inject constructor(
             mainRepository.getSearchSchedules(userInput.value).catch {
                 Log.d("PLANJDEBUG","onClickSearch getSearchSchedules Error ${it.message}")
             }.collectLatest {
-                _filteredScheduleList.value=it
+                scheduleList.value=it
+                filterSchedules()
             }
         }
     }
