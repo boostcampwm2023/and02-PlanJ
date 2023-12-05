@@ -160,7 +160,8 @@ class HomeFragment : Fragment() {
         binding.fbAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
                 viewModel.categories.value.map{it.categoryName},
-                "미분류"
+                "미분류",
+                true
             ) { category, title, _ ->
 
                 viewModel.postSchedule(category, title)

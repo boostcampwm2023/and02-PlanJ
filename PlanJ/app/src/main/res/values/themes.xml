@@ -18,4 +18,11 @@
         <item name="android:editTextColor">@color/main2</item>
     </style>
 
+    <style name="abc" parent="Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
+
+    </style>
+
+    <style name="def" parent="Widget.Material3.TextInputLayout.FilledBox.Dense">
+
+    </style>
 </resources>

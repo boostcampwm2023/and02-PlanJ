@@ -52,7 +52,8 @@ class CategoryDetailFragment : Fragment() {
         binding.fbCategoryDetailAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
                 emptyList(),
-                initText = if (viewModel.category.value.categoryName == "전체 일정") "미분류" else viewModel.category.value.categoryName
+                initText = if (viewModel.category.value.categoryName == "전체 일정") "미분류" else viewModel.category.value.categoryName,
+                false
             ) { category, title, endTime ->
                 viewModel.postSchedule(category, title, endTime)
             }

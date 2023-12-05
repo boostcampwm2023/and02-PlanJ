@@ -21,6 +21,7 @@ import java.util.Locale
 class ScheduleDialog(
     private val categoryNames: List<String>,
     private val initText: String,
+    private val isDropdownMode : Boolean,
     private val listener: (String, String, DateTime) -> Unit
 ) : DialogFragment() {
 
@@ -44,6 +45,10 @@ class ScheduleDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.isDropDown = isDropdownMode
+        if(!isDropdownMode)
+            binding.actvDialogScheduleCategorySelectNoDropDown.setText(initText)
         initAdapter()
         requestFocus()
         setListener()
@@ -55,12 +60,14 @@ class ScheduleDialog(
     }
 
     private fun initAdapter() {
-        if (categoryNames.isEmpty()) {
-            binding.actvDialogScheduleCategorySelect.isEnabled = false
+        if(isDropdownMode){
+            if (categoryNames.isEmpty()) {
+                binding.actvDialogScheduleCategorySelect.isEnabled = false
+            }
+            val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryNames)
+            binding.actvDialogScheduleCategorySelect.setText(initText)
+            binding.actvDialogScheduleCategorySelect.setAdapter(arrayAdapter)
         }
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryNames)
-        binding.actvDialogScheduleCategorySelect.setText(initText)
-        binding.actvDialogScheduleCategorySelect.setAdapter(arrayAdapter)
     }
 
     private fun setListener() {
