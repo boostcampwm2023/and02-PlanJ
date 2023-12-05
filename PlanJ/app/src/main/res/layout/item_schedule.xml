@@ -9,6 +9,10 @@
         <variable
             name="schedule"
             type="com.boostcamp.planj.data.model.Schedule" />
+
+        <variable
+            name="isCheck"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +32,7 @@
             android:background="@drawable/checkbox"
             android:button="@null"
             android:checked="@{schedule.finished}"
-            android:visibility="gone"
+            android:visibility="@{isCheck ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
