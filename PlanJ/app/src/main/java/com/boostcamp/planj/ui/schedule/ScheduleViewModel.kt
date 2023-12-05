@@ -150,9 +150,16 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(startLocation: Location?, endLocation: Location?) {
-        _endScheduleLocation.value = endLocation
+    fun setStartLocation(startLocation: Location) {
         _startScheduleLocation.value = startLocation
+    }
+
+    fun setEndLocation(endLocation: Location) {
+        _endScheduleLocation.value = endLocation
+    }
+
+    fun setParticipants(participants: List<Participant>) {
+        _participants.value = participants
     }
 
     private fun changeMillisToDate(millis: Long): Triple<Int, Int, Int> {

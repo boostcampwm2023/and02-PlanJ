@@ -41,7 +41,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
     private var alarmSettingDialog = AlarmSettingDialog(null, this)
-    private var participantDialog = ScheduleParticipantDialog(emptyList())
 
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -74,14 +73,18 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
+        if (args.startLocation != null) {
+            viewModel.setStartLocation(args.startLocation!!)
+        } else if (args.endLocation != null) {
+            viewModel.setEndLocation(args.endLocation!!)
+        } else if (args.participants != null) {
+            viewModel.setParticipants(args.participants!!.toList())
+        }
+
         viewModel.getCategories()
 
         setObserver()
         setListener()
-
-        if (args.startLocation != null || args.location != null) {
-            viewModel.setLocation(args.startLocation, args.location)
-        }
 
         binding.executePendingBindings()
     }
@@ -156,7 +159,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.showToast.collectLatest {message ->
+                viewModel.showToast.collectLatest { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -229,10 +232,11 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleAllParticipants.setOnClickListener {
-            if (!participantDialog.isAdded) {
-                participantDialog = ScheduleParticipantDialog(viewModel.participants.value)
-                participantDialog.show(childFragmentManager, "전체 참가자")
-            }
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleParticipantsFragment(
+                    viewModel.participants.value.toTypedArray()
+                )
+            findNavController().navigate(action)
         }
 
         binding.tvScheduleLocationUrlScheme.setOnClickListener {

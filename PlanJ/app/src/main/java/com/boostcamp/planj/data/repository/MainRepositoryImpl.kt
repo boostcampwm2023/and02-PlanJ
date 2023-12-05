@@ -232,7 +232,6 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getUserImageRemove() {
         return api.patchUserImageRemove()
-
     }
 }
 

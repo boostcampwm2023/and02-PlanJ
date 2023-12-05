@@ -109,7 +109,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         naverMap.setOnMapClickListener { _, latLng ->
             getMarker(latLng)
         }
-        viewModel.initLocation(args.location)
+        viewModel.initLocation(args.endLocation)
     }
 
     private fun setListener() {
@@ -122,7 +122,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         }
         binding.btnScheduleMapSelectPlace.setOnClickListener {
             val action =
-                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(location = viewModel.location.value)
+                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(endLocation = viewModel.location.value)
             findNavController().navigate(action)
         }
     }
