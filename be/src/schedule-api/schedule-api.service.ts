@@ -248,10 +248,14 @@ export class ScheduleApiService {
   }
 
   async checkedSchedule(scheduleUuid: string): Promise<string> {
-    await this.scheduleService.checkedSchedule(scheduleUuid);
+    const data = await this.scheduleService.checkedSchedule(scheduleUuid);
 
     const body: HttpResponse = {
       message: "일정 체크 처리 완료",
+      data: {
+        failed: data.failed,
+        hasRetrospectiveMemo: data.hasRetrospectiveMemo,
+      },
     };
     return JSON.stringify(body);
   }

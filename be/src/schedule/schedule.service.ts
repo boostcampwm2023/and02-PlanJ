@@ -10,6 +10,7 @@ import { ScheduleEntity } from "./entity/schedule.entity";
 import { RepetitionDto } from "./dto/repetition.dto";
 import { add, addWeeks } from "date-fns";
 import { AddRetrospectiveMemoDto } from "../schedule-api/dto/add-retrospective-memo.dto";
+import { CheckScheduleResponse } from "./dto/check-schedule.response";
 
 @Injectable()
 export class ScheduleService {
@@ -146,6 +147,12 @@ export class ScheduleService {
     }
 
     await this.scheduleRepository.save(record);
+    const result: CheckScheduleResponse = {
+      failed: record.failed,
+      hasRetrospectiveMemo: !!record.retrospectiveMemo,
+    };
+
+    return result;
   }
 
   async getByMetadataIdAndEntAt(metadataId: number, endAt: string) {
