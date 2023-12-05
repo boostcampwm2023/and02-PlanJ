@@ -42,8 +42,7 @@ class CategoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewmodel = viewModel
-        binding.lifecycleOwner=viewLifecycleOwner
-        viewModel.getCategoryDetailSchedules()
+        binding.lifecycleOwner = viewLifecycleOwner
         initAdapter()
         setObserver()
         setListener()
@@ -53,7 +52,7 @@ class CategoryDetailFragment : Fragment() {
         binding.fbCategoryDetailAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
                 emptyList(),
-                initText = viewModel.category.value.categoryName
+                initText = if (viewModel.category.value.categoryName == "전체 일정") "미분류" else viewModel.category.value.categoryName
             ) { category, title, endTime ->
                 viewModel.postSchedule(category, title, endTime)
             }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
@@ -51,21 +52,15 @@ class CategoryDialog(
             dismiss()
         }
         binding.tvDialogCategorySuccess.setOnClickListener {
-            val title = binding.tietDialogCategoryInputCategoryName.text.toString()
-            when (listener(title)) {
-                CategoryState.EXIST -> {
-                    binding.tietDialogCategoryInputCategoryName.error = "같은 카테고리가 존재합니다."
-                    getFocus()
-                }
+            makeCategory()
+        }
 
-                CategoryState.EMPTY -> {
-                    binding.tietDialogCategoryInputCategoryName.error = "값이 비어있습니다."
-                    getFocus()
-                }
-
-                CategoryState.SUCCESS -> {
-                    dismiss()
-                }
+        binding.tietDialogCategoryInputCategoryName.setOnEditorActionListener { _, actionId, _ ->
+            if ( actionId == EditorInfo.IME_ACTION_DONE) {
+                makeCategory()
+                true
+            } else {
+                false
             }
         }
 
@@ -74,6 +69,25 @@ class CategoryDialog(
         }
 
         getFocus()
+    }
+
+    private fun makeCategory() {
+        val title = binding.tietDialogCategoryInputCategoryName.text.toString()
+        when (listener(title)) {
+            CategoryState.EXIST -> {
+                binding.tietDialogCategoryInputCategoryName.error = "같은 카테고리가 존재합니다."
+                getFocus()
+            }
+
+            CategoryState.EMPTY -> {
+                binding.tietDialogCategoryInputCategoryName.error = "값이 비어있습니다."
+                getFocus()
+            }
+
+            CategoryState.SUCCESS -> {
+                dismiss()
+            }
+        }
     }
 
     private fun getFocus() {

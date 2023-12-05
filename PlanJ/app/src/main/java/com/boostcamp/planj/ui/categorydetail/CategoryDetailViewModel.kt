@@ -7,6 +7,7 @@ import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.repository.MainRepository
+import com.boostcamp.planj.data.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -35,21 +34,24 @@ class CategoryDetailViewModel @Inject constructor(
 
     fun deleteSchedule(schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO) {
-            //TODO api로 변경
+            try {
+                mainRepository.deleteScheduleApi(schedule.scheduleId)
+                getCategoryDetailSchedules()
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "deleteSchedule Error ${e.message}")
+            }
         }
     }
 
     fun postSchedule(category: String, title: String, endTime: DateTime) {
         viewModelScope.launch(Dispatchers.IO) {
-            //TODO 카테고리 id 조회하기
-            val getCategory = ""
+            val getCategory = _cateogry.value.categoryUuid
             mainRepository.postSchedule(getCategory, title, endTime)
                 .catch {
                     Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                 }
                 .collect {
-
-                    //TODO post 성공 후 다시 api 요청하기
+                    getCategoryDetailSchedules()
                 }
         }
     }
@@ -57,12 +59,8 @@ class CategoryDetailViewModel @Inject constructor(
     fun setTitle(category: Category) {
         _cateogry.value = category
         viewModelScope.launch {
-            getScheduleInCategory(category)
+            getCategoryDetailSchedules()
         }
-    }
-
-    fun getScheduleInCategory(category: Category) {
-        //TODO 카테고리 모든 일정 가져오기
     }
 
     fun checkBoxChange(schedule: Schedule, isCheck: Boolean) {
@@ -83,13 +81,30 @@ class CategoryDetailViewModel @Inject constructor(
     fun getCategoryDetailSchedules() {
         Log.d("PLANJDEBUG", "getCategoryDetailSchedules call")
         viewModelScope.launch {
-            mainRepository.getCategorySchedulesApi(_cateogry.value.categoryUuid)
-                .catch {
-                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules Error ${it.message}")
+            if (category.value.categoryName == "전체 일정") {
+                mainRepository.getSearchSchedules("").catch {
+                    Log.d("PLANJDEBUG","getCategoryDetailSchedules All Schedule Error ${it.message}")
                 }.collectLatest {
-//                    _schedules.value = it
-                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules Success ${it}")
+                    _schedules.value=it
+                    Log.d("PLANJDEBUG","getCategoryDetailSchedules All Schedule Success")
                 }
+            } else {
+                mainRepository.getCategorySchedulesApi(_cateogry.value.categoryUuid)
+                    .catch {
+                        Log.d("PLANJDEBUG", "getCategoryDetailSchedules Error ${it.message}")
+                    }.collectLatest {
+                        _schedules.value = it
+                        Log.d("PLANJDEBUG", "getCategoryDetailSchedules Success")
+                    }
+            }
         }
     }
+
+    fun getCategoryList():List<String>{
+        mainRepository.getCategoryListApi()
+
+
+        return emptyList()
+    }
+
 }
