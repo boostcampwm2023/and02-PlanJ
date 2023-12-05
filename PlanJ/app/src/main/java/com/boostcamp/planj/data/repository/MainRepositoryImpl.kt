@@ -228,6 +228,7 @@ class MainRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.d("PLANJDEBUG", "getDetailSchedule error  ${e.message}")
         }
+    }
 
     override suspend fun getUserImageRemove() {
         return api.patchUserImageRemove()

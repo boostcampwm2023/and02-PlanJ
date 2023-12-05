@@ -88,7 +88,7 @@ class CategoryDetailViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "getCategoryDetailSchedules Error ${it.message}")
                 }.collectLatest {
 //                    _schedules.value = it
-                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules Success ${it.date}")
+                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules Success ${it}")
                 }
         }
     }
