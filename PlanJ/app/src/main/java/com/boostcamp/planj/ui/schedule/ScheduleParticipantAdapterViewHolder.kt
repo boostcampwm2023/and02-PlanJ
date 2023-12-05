@@ -21,6 +21,7 @@ class ScheduleParticipantAdapterViewHolder(private val binding: ItemParticipantB
         if (isEditMode) {
             binding.layoutParticipant.visibility = View.VISIBLE
             binding.cbParticipantCheck.isChecked = friendState.isParticipated
+            if (friendState.participant.currentUser) binding.cbParticipantCheck.isEnabled = false
             binding.cbParticipantCheck.visibility = View.VISIBLE
             binding.imgParticipantDone.visibility = View.GONE
             binding.imgParticipantNotDone.visibility = View.GONE
