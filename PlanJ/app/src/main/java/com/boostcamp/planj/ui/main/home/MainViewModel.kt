@@ -46,6 +46,9 @@ class MainViewModel @Inject constructor(
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
 
+    private val _allSchedules = MutableStateFlow<List<Schedule>>(emptyList())
+    val allSchedule = _allSchedules.asStateFlow()
+
     fun postSchedule(category: String, title: String) {
 
         val date = _selectDate.value.split("-").map { it.toInt() }
@@ -71,6 +74,18 @@ class MainViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _schedules.value = it
+                }
+        }
+    }
+
+    fun getAllSchedule(){
+        viewModelScope.launch {
+            mainRepository.searchSchedule("")
+                .catch {
+                    Log.d("PLANJDEBUG", "getAllSchedule error ${it.message}")
+                }
+                .collectLatest {
+                    _allSchedules.value = it
                 }
         }
     }
@@ -110,7 +125,6 @@ class MainViewModel @Inject constructor(
             mainRepository.getCategoryListApi().catch {
                 Log.d("PLANJDEBUG", "getCategories Error ${it.message}")
             }.collect {
-                Log.d("PLANJDEBUG", "getCategories Success $it")
                 val list = it.toMutableList()
                 list.add(0, Category("default", "미분류"))
                 _categories.value = list
@@ -129,7 +143,16 @@ class MainViewModel @Inject constructor(
                 }
                 getScheduleDaily("${_selectDate.value}T00:00:00")
             }
+        }
+    }
 
+    fun postScheduleAddMemo(schedule: Schedule, memo : String){
+        viewModelScope.launch {
+            try {
+                mainRepository.postScheduleAddMemo(schedule.scheduleId, memo)
+            }catch (e: Exception){
+                Log.d("PLANJDEBUG", "postScheduleAddMemo error ${e.message}")
+            }
         }
     }
 

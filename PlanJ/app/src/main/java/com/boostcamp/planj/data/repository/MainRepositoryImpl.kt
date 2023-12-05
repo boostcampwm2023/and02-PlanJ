@@ -22,6 +22,7 @@ import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
+import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
@@ -233,6 +234,47 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getUserImageRemove() {
         return api.patchUserImageRemove()
 
+    }
+
+    override fun searchSchedule(query: String): Flow<List<Schedule>> = flow {
+        try {
+            val scheduleInfo = api.getSearchSchedule(query)
+
+            val scheduleDummy = scheduleInfo.data.map {
+
+                val startAt =
+                    it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
+                val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
+
+                Schedule(
+                    scheduleId = it.scheduleUuid,
+                    title = it.title,
+                    startAt = if (startAt.isEmpty()) null else DateTime(
+                        startAt[0],
+                        startAt[1],
+                        startAt[2],
+                        startAt[3],
+                        startAt[4],
+                        startAt[5]
+                    ),
+                    endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+                    isFinished = it.isFinished,
+                    isFailed = it.isFailed,
+                    repeated = it.repeated,
+                    hasRetrospectiveMemo = it.hasRetrospectiveMemo,
+                    shared = it.shared,
+                    participantCount = it.participantCount,
+                    participantSuccessCount = it.participantSuccessCount
+                )
+            }
+            emit(scheduleDummy)
+        } catch (e: Exception) {
+            Log.d("PLANJDEBUG", "searchSchedule error  ${e.message}")
+        }
+    }
+
+    override suspend fun postScheduleAddMemo(scheduleId: String, memo : String) {
+        return api.postScheduleAddMemo(PostScheduleAddMemoBody(scheduleId, memo))
     }
 }
 

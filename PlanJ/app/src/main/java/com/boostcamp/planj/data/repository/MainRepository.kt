@@ -12,6 +12,7 @@ import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import com.boostcamp.planj.data.model.dto.ScheduleDetail
@@ -60,4 +61,8 @@ interface MainRepository {
     suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule>
 
     suspend fun getUserImageRemove()
+
+    fun searchSchedule(query : String) : Flow<List<Schedule>>
+
+    suspend fun postScheduleAddMemo(scheduleId: String, memo : String)
 }

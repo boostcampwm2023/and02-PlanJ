@@ -29,7 +29,7 @@ import java.util.Locale
 
 class ScheduleFailDialog(
     private val schedule : Schedule,
-    private val successListener : (Schedule) -> Unit
+    private val successListener : (Schedule, String) -> Unit
 ) : DialogFragment() {
 
     private var _binding: DialogFailWriteBinding? = null
@@ -70,13 +70,13 @@ class ScheduleFailDialog(
 
     private fun setListener(){
         binding.tvDialogScheduleSuccess.setOnClickListener {
-            Log.d("PLANJDEBUG", "tvDialogScheduleSuccess clicked")
-            if(binding.tietDialogScheduleInputTitleSchedule.text.isNullOrEmpty()){
+            val text = binding.tietDialogScheduleInputTitleSchedule.text
+            if(text.isNullOrEmpty()){
                 binding.tilDialogScheduleInputSchedule.error = "10자 이상 입력해 주세요"
                 return@setOnClickListener
             }
             if(binding.tilDialogScheduleInputSchedule.error == null){
-                successListener(schedule)
+                successListener(schedule, text.toString())
                 dismiss()
             }
         }

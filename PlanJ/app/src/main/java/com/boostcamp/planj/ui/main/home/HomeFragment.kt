@@ -84,6 +84,7 @@ class HomeFragment : Fragment() {
         val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
         viewModel.setCalendarTitle(currentDate)
         viewModel.getCategories()
+        viewModel.getAllSchedule()
         val calendarAdapter = CalendarFragmentStateAdapter(onClickListener, requireActivity())
         initViewPager(calendarAdapter)
 
@@ -99,8 +100,8 @@ class HomeFragment : Fragment() {
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
             viewModel.scheduleFinishChange(schedule) {
-                val dialog = ScheduleFailDialog(it){
-                    Toast.makeText(requireContext(), "사유 클릭", Toast.LENGTH_SHORT).show()
+                val dialog = ScheduleFailDialog(it){ schedule, memo ->
+                    viewModel.postScheduleAddMemo(schedule, memo)
                 }
                 dialog.show(
                     parentFragmentManager, tag
@@ -130,12 +131,11 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.schedules.collectLatest {
-                    Log.d("PLANDEBUG", "schedules collectLatest")
                     val list = listOf("일정", "완료", "실패")
                     val schedules = listOf(
-                        it.filter { scheduleInfo -> !scheduleInfo.isFinished },
-                        it.filter { scheduleInfo -> scheduleInfo.isFinished && !scheduleInfo.isFailed },
-                        it.filter { scheduleInfo -> scheduleInfo.isFinished && scheduleInfo.isFailed }
+                        it.filter { schedule -> !schedule.isFinished },
+                        it.filter { schedule -> schedule.isFinished && !schedule.isFailed },
+                        it.filter { schedule -> schedule.isFinished && schedule.isFailed }
                     )
 
                     val segmentList = mutableListOf<ScheduleSegment>()
@@ -143,6 +143,23 @@ class HomeFragment : Fragment() {
                         segmentList.add(ScheduleSegment(list[index], schedules[index]))
                     }
                     segmentScheduleAdapter.submitList(segmentList)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.allSchedule.collectLatest {
+                    if(it.isNotEmpty()){
+                        it.find {schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }?.let { schedule ->
+                            val dialog = ScheduleFailDialog(schedule){ s, memo ->
+                                viewModel.postScheduleAddMemo(s, memo)
+                            }
+                            dialog.show(
+                                parentFragmentManager, tag
+                            )
+                        }
+                    }
                 }
             }
         }
