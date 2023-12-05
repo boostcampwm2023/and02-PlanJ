@@ -14,6 +14,7 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.naver.NaverResponse
+import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +42,8 @@ sealed class AlarmEvent {
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    private val naverRepository: NaverRepository
+    private val naverRepository: NaverRepository,
+    private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     private lateinit var scheduleId: String
@@ -165,8 +167,8 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // 등록된 알림이 있다면 삭제
-                mainRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-                mainRepository.getAlarmMode().collectLatest { alarmMode ->
+                loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
+                loginRepository.getAlarmMode().collectLatest { alarmMode ->
                     if (alarmMode) {
                         _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
                     }
@@ -217,8 +219,8 @@ class ScheduleViewModel @Inject constructor(
     private fun setAlarmInfo() {
         if (scheduleAlarm.value == null) {
             viewModelScope.launch {
-                mainRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-                mainRepository.getAlarmMode().collectLatest { alarmMode ->
+                loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
+                loginRepository.getAlarmMode().collectLatest { alarmMode ->
                     if (alarmMode) {
                         _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
                     }
@@ -241,8 +243,8 @@ class ScheduleViewModel @Inject constructor(
 
             // db에는 무조건 알람 정보 저장
             viewModelScope.launch {
-                mainRepository.insertAlarmInfo(alarmInfo)
-                mainRepository.getAlarmMode().collectLatest { alarmMode ->
+                loginRepository.insertAlarmInfo(alarmInfo)
+                loginRepository.getAlarmMode().collectLatest { alarmMode ->
                     // 알람 모드 켜져 있을 경우에만 알람매니저를 통해 알람 설정
                     if (alarmMode) {
                         _alarmEventFlow.emit(AlarmEvent.Set(alarmInfo))

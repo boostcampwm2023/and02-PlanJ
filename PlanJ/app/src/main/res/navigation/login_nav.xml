@@ -17,6 +17,8 @@
         tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_signInFragment_to_mainActivity"
+            app:popUpToInclusive="true"
+            app:popUpTo="@layout/fragment_home"
             app:destination="@id/mainActivity"
             app:enterAnim="@anim/from_right_to_left" />
         <action

@@ -7,6 +7,7 @@ import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -23,8 +24,6 @@ interface MainRepository {
 
     fun postSchedule(categoryId: String, title: String, endTime: DateTime): Flow<PostScheduleResponse>
 
-    fun getToken(): Flow<String>
-
     suspend fun emptyToken()
 
     suspend fun deleteScheduleApi(scheduleUuid: String)
@@ -38,7 +37,7 @@ interface MainRepository {
         categoryName: String
     ): Flow<CategoryResponse>
 
-    suspend fun getCategoryListApi(): Flow<List<Category>>
+    fun getCategoryListApi(): Flow<List<Category>>
 
     suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
 
@@ -56,21 +55,9 @@ interface MainRepository {
 
     fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
-    suspend fun saveAlarmMode(mode: Boolean)
-
-    suspend fun getAlarmMode(): Flow<Boolean>
-
-    suspend fun deleteAllData()
-
-    suspend fun insertAlarmInfo(alarmInfo: AlarmInfo)
-
-    suspend fun getAllAlarmInfo(): List<AlarmInfo>
-
-    suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
-
-    suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
-
-    suspend fun updateAlarmInfo(curTimeMillis: Long)
-
     suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail
+
+    fun getScheduleChecked(scheduleId: String):Flow<GetScheduleCheckedResponse>
+
+    suspend fun getUserImageRemove()
 }

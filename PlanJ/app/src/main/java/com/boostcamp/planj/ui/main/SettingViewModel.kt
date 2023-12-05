@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.repository.LoginRepository
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,12 +27,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     private val mainRepository: MainRepository,
+    private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     private var imageFile: MultipartBody.Part? = null
     private var nickName: String = ""
 
-    private val _isAlarmOn = MutableStateFlow(false)
+    private val _isAlarmOn = MutableStateFlow(true)
     val isAlarmOn = _isAlarmOn.asStateFlow()
 
     private val _userInfo = MutableStateFlow<User?>(null)
@@ -70,8 +72,8 @@ class SettingViewModel @Inject constructor(
     fun getAllAlarmInfo(): List<AlarmInfo> {
         var alarmList: List<AlarmInfo> = emptyList()
         viewModelScope.launch {
-            mainRepository.updateAlarmInfo(System.currentTimeMillis())
-            alarmList = mainRepository.getAllAlarmInfo()
+            loginRepository.updateAlarmInfo(System.currentTimeMillis())
+            alarmList = loginRepository.getAllAlarmInfo()
         }
         return alarmList
     }
@@ -82,8 +84,8 @@ class SettingViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     mainRepository.deleteAccount()
                     mainRepository.emptyToken()
-                    mainRepository.deleteAllData()
-                    mainRepository.saveAlarmMode(false)
+                    loginRepository.deleteAllData()
+                    loginRepository.saveAlarmMode(false)
                 }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
@@ -98,8 +100,8 @@ class SettingViewModel @Inject constructor(
             try {
                 withContext(Dispatchers.IO) {
                     mainRepository.emptyToken()
-                    mainRepository.deleteAllData()
-                    mainRepository.saveAlarmMode(false)
+                    loginRepository.deleteAllData()
+                    loginRepository.saveAlarmMode(false)
                 }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
@@ -138,12 +140,30 @@ class SettingViewModel @Inject constructor(
     }
 
     private suspend fun getAlarmMode() = withContext(Dispatchers.IO) {
-        mainRepository.getAlarmMode().first()
+        loginRepository.getAlarmMode().first()
     }
 
     private fun saveAlarmMode(mode: Boolean) {
         viewModelScope.launch {
-            mainRepository.saveAlarmMode(mode)
+            loginRepository.saveAlarmMode(mode)
+        }
+    }
+
+    fun getUserImageRemove(){
+        viewModelScope.launch {
+            try {
+                mainRepository.getUserImageRemove()
+                mainRepository.getMyInfo()
+                    .catch {
+                        Log.d("PLANJDEBUG", "initUser error ${it.message}")
+                    }
+                    .collectLatest { user ->
+                        _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
+                        nickName = user.nickname
+                    }
+            }catch (e: Exception){
+                Log.d("PLANJDEBUG", "getUserImageRemove ${e.message}")
+            }
         }
     }
 

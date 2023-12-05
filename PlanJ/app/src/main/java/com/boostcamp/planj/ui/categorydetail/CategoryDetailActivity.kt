@@ -21,8 +21,8 @@ class CategoryDetailActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
-        val title = args.categoryId
-        viewModel.setTitle(title)
+        val category = args.category
+        viewModel.setTitle(category)
     }
 
 }

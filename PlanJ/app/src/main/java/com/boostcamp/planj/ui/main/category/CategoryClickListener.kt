@@ -1,5 +1,7 @@
 package com.boostcamp.planj.ui.main.category
 
+import com.boostcamp.planj.data.model.Category
+
 fun interface CategoryClickListener {
-    fun onClick(categoryName: String)
+    fun onClick(category: Category)
 }

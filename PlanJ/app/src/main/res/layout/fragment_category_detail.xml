@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{viewmodel.title}"
+                android:text="@{viewmodel.category.categoryName}"
                 android:textColor="@color/main1"
                 android:textSize="24sp"
                 android:textStyle="bold" />
