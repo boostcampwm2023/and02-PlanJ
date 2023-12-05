@@ -35,6 +35,8 @@
                 android:background="@drawable/round_white_stroke"
                 android:maxLines="1"
                 android:paddingHorizontal="8dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:text="@={viewModel.userInput}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
