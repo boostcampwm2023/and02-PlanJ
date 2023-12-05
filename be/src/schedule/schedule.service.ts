@@ -48,7 +48,11 @@ export class ScheduleService {
     return await this.scheduleRepository.getMetadataIdByScheduleUuid(scheduleUuid);
   }
 
-  async updateSchedule(dto: UpdateScheduleDto, scheduleMetadata: ScheduleMetadataEntity): Promise<string> {
+  async updateSchedule(
+    dto: UpdateScheduleDto,
+    scheduleMetadata: ScheduleMetadataEntity,
+    repetitionChanged: boolean,
+  ): Promise<string> {
     const { scheduleUuid, startAt, endAt } = dto;
     const record = await this.scheduleRepository.findOne({ where: { scheduleUuid } });
     record.startAt = startAt;
@@ -60,8 +64,11 @@ export class ScheduleService {
 
     try {
       await this.scheduleRepository.save(record);
+      if (repetitionChanged) {
+        this.removeRepeatedSchedules(record);
+      }
       if (scheduleMetadata.repeated) {
-        await this.addRepeatedSchedule(record, dto.repetition);
+        this.addRepeatedSchedule(record, dto.repetition);
       }
       return scheduleUuid;
     } catch (error) {
@@ -164,5 +171,9 @@ export class ScheduleService {
       return;
     }
     await this.scheduleRepository.save(updatedSchedules);
+  }
+
+  private removeRepeatedSchedules(record: ScheduleEntity) {
+    this.scheduleRepository.removeRepeatedSchedules(record);
   }
 }

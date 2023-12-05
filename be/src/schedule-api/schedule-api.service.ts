@@ -78,7 +78,7 @@ export class ScheduleApiService {
 
     const participantsInfo = await this.getParticipantSuccess(participants, scheduleEntity.endAt, user);
     const scheduleDetailResponse: ScheduleDetailResponse = {
-      categoryName: categoryEntity.categoryName,
+      categoryName: !!categoryEntity ? categoryEntity.categoryName : "미분류",
       scheduleUuid: scheduleEntity.scheduleUuid,
       title: scheduleMetadata.title,
       description: scheduleMetadata.description,
@@ -114,8 +114,9 @@ export class ScheduleApiService {
     const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(dto.scheduleUuid);
     const scheduleMeta = await this.scheduleMetaService.updateScheduleMetadata(dto, category, metadataId);
     await this.scheduleLocationService.updateLocation(dto, scheduleMeta);
-    await this.repetitionService.updateRepetition(dto.repetition, scheduleMeta);
-    await this.scheduleService.updateSchedule(dto, scheduleMeta);
+    const repetitionChanged = await this.repetitionService.updateRepetition(dto.repetition, scheduleMeta);
+    // 따로 해야할 듯
+    await this.scheduleService.updateSchedule(dto, scheduleMeta, repetitionChanged);
     await this.scheduleAlarmService.addScheduleAlarm(dto, scheduleMeta);
 
     const authorGroup = await this.participateService.getAuthorGroup(metadataId);
@@ -224,6 +225,8 @@ export class ScheduleApiService {
 
         const result: ParticipantResponse = {
           nickname: userEntity.nickname,
+          email: userEntity.email,
+          author: participant.authorId === participant.participantId,
           profileUrl: userEntity.profileUrl,
           finished: success,
           currentUser: user.userId === scheduleMeta.userId,
@@ -345,8 +348,8 @@ export class ScheduleApiService {
     );
 
     await this.scheduleLocationService.updateLocation(updateScheduleDto, invitedScheduleMeta);
-    await this.scheduleService.updateSchedule(updateScheduleDto, invitedScheduleMeta);
-    await this.repetitionService.updateRepetition(repetition, invitedScheduleMeta);
+    const repetitionChanged = await this.repetitionService.updateRepetition(repetition, invitedScheduleMeta);
+    await this.scheduleService.updateSchedule(updateScheduleDto, invitedScheduleMeta, repetitionChanged);
 
     if (invitedStatus === InviteStatus.NEW) {
       await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
