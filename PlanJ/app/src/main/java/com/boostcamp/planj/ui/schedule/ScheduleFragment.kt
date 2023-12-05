@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -38,17 +39,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private val args: ScheduleFragmentArgs by navArgs()
 
-    private val repetitionSettingDialog by lazy {
-        RepetitionSettingDialog()
-    }
-
-    private val alarmSettingDialog by lazy {
-        AlarmSettingDialog()
-    }
-
-    private val participantDialog by lazy {
-        ScheduleParticipantDialog()
-    }
+    private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
+    private var alarmSettingDialog = AlarmSettingDialog(null, this)
+    private var participantDialog = ScheduleParticipantDialog(emptyList())
 
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -81,43 +74,32 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.getCategories()
 
-        initAdapter()
         setObserver()
         setListener()
-
 
         if (args.startLocation != null || args.location != null) {
             viewModel.setLocation(args.startLocation, args.location)
         }
 
-        repetitionSettingDialog.setRepetitionDialogListener(this)
-        alarmSettingDialog.setAlarmSettingDialogListener(this)
-
         binding.executePendingBindings()
     }
-
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
 
-
-    private fun initAdapter() {
-        val adapter = ScheduleParticipantAdapter(viewModel.members.value)
-        binding.rvScheduleParticipants.adapter = adapter
-    }
-
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isEditMode.collect { isEditMode ->
+            viewModel.isEditMode.collectLatest { isEditMode ->
                 updateToolbar(isEditMode)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isComplete.collect { isComplete ->
+            viewModel.isComplete.collectLatest { isComplete ->
                 if (isComplete) activity?.finish()
             }
         }
@@ -138,16 +120,19 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.categoryList.collect { categoryList ->
+            viewModel.categoryList.collectLatest { categoryList ->
                 val arrayAdapter =
-                    ArrayAdapter(requireContext(), R.layout.item_dropdown, categoryList)
+                    ArrayAdapter(
+                        requireContext(),
+                        R.layout.item_dropdown,
+                        categoryList.map { it.categoryName })
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.scheduleAlarm.collect { alarm ->
+                viewModel.scheduleAlarm.collectLatest { alarm ->
 
                     if (alarm != null && alarm.alarmType == "DEPARTURE") {
                         binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
@@ -160,6 +145,27 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.participants.collectLatest {
+                    initAdapter()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collectLatest {message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun initAdapter() {
+        val adapter = ScheduleParticipantProfileAdapter(viewModel.participants.value)
+        binding.rvScheduleParticipants.adapter = adapter
     }
 
     private fun setListener() {
@@ -192,20 +198,18 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable("repetitionInfo", viewModel.scheduleRepetition.value)
-            repetitionSettingDialog.arguments = bundle
             if (!repetitionSettingDialog.isAdded) {
+                repetitionSettingDialog =
+                    RepetitionSettingDialog(viewModel.scheduleRepetition.value, this)
                 repetitionSettingDialog.show(childFragmentManager, "반복 설정")
             }
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable("alarmInfo", viewModel.scheduleAlarm.value)
-            alarmSettingDialog.arguments = bundle
             if (!alarmSettingDialog.isAdded) {
-                alarmSettingDialog.show(childFragmentManager, "알림 설정")
+                alarmSettingDialog =
+                    AlarmSettingDialog(viewModel.scheduleAlarm.value, this)
+                alarmSettingDialog.show(childFragmentManager, "알람 설정")
             }
         }
 
@@ -225,10 +229,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleAllParticipants.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putParcelableArrayList("participantsInfo", ArrayList(viewModel.members.value))
-            participantDialog.arguments = bundle
             if (!participantDialog.isAdded) {
+                participantDialog = ScheduleParticipantDialog(viewModel.participants.value)
                 participantDialog.show(childFragmentManager, "전체 참가자")
             }
         }
@@ -240,10 +242,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                     viewModel.startScheduleLocation.value ?: return@setOnClickListener
                 val endLocation = viewModel.endScheduleLocation.value ?: return@setOnClickListener
                 val url =
-                    "nmap://route/public?slat=${startLocation.latitude}&slng=${startLocation.longitude}&sname=${startLocation.placeName}&dlat=${endLocation.latitude}&dlng=${endLocation.longitude}&dname=${endLocation.placeName}&appname=com.boostcamp.planj";
+                    "nmap://route/public?slat=${startLocation.latitude}&slng=${startLocation.longitude}&sname=${startLocation.placeName}&dlat=${endLocation.latitude}&dlng=${endLocation.longitude}&dname=${endLocation.placeName}&appname=com.boostcamp.planj"
 
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.addCategory(Intent.CATEGORY_BROWSABLE)
 
                 try {
                     it.startActivity(intent)

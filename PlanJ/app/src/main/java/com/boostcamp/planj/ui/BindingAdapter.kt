@@ -11,6 +11,7 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.naver.NaverResponse
@@ -90,6 +91,12 @@ fun ImageView.setImage(url: String?) {
         .error(R.drawable.ic_circle_person)
         .apply(RequestOptions.circleCropTransform())
         .into(this)
+}
+
+@BindingAdapter("participantsNum")
+fun TextView.setParticipantsNum(participants: List<Participant>) {
+    val successNum = participants.filter { it.isFinished }.size
+    text = "$successNum / ${participants.size}"
 }
 
 @BindingAdapter("participation")

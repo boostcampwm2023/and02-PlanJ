@@ -1,6 +1,5 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,13 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.databinding.DialogAlarmSettingBinding
 
-class AlarmSettingDialog : DialogFragment() {
+class AlarmSettingDialog(
+    private val alarm: Alarm?,
+    private val alarmSettingDialogListener: AlarmSettingDialogListener
+) : DialogFragment() {
 
     private var _binding: DialogAlarmSettingBinding? = null
     private val binding get() = _binding!!
-
-    private var alarmSettingDialogListener: AlarmSettingDialogListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,15 +30,9 @@ class AlarmSettingDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val alarm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("alarmInfo", Alarm::class.java)
-        } else {
-            arguments?.getParcelable("alarmInfo")
-        }
-
         setVisibility()
         setListener()
-        setBtnClicked(alarm)
+        setBtnClicked()
     }
 
     override fun onResume() {
@@ -77,27 +71,23 @@ class AlarmSettingDialog : DialogFragment() {
                 } else {
                     Alarm("DEPARTURE", binding.etDialogAlarmBeforeDeparture.text.toString().toInt())
                 }
-                alarmSettingDialogListener?.onClickComplete(alarm)
+                alarmSettingDialogListener.onClickComplete(alarm)
                 dismiss()
             }
         }
     }
 
-    private fun setBtnClicked(alarm: Alarm?) {
+    private fun setBtnClicked() {
         with(binding) {
-            if (alarm !=null && alarm.alarmType=="END") {
+            if (alarm != null && alarm.alarmType == "END") {
                 rbDialogAlarmEnd.isChecked = true
                 etDialogAlarmBeforeEnd.setText(alarm.alarmTime.toString())
-            } else if (alarm !=null && alarm.alarmType=="DEPARTURE") {
+            } else if (alarm != null && alarm.alarmType == "DEPARTURE") {
                 rbDialogAlarmDeparture.isChecked = true
                 etDialogAlarmBeforeDeparture.setText(alarm.alarmTime.toString())
             } else {
                 rbDialogAlarmNo.isChecked = true
             }
         }
-    }
-
-    fun setAlarmSettingDialogListener(listener: AlarmSettingDialogListener) {
-        alarmSettingDialogListener = listener
     }
 }

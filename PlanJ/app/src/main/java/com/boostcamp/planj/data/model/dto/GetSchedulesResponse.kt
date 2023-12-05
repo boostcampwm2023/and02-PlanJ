@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class GetSchedulesResponse(
     @SerializedName("message") val message: String,
-    @SerializedName("data") val date: List<ScheduleInfo>
+    @SerializedName("data") val data: List<ScheduleInfo>
 )

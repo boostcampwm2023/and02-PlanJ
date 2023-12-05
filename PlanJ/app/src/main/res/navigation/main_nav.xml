@@ -9,8 +9,7 @@
         android:id="@+id/fragment_home"
         android:name="com.boostcamp.planj.ui.main.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"
-        >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_fragment_home_to_scheduleActivity"
             app:destination="@id/scheduleActivity" />
@@ -19,8 +18,7 @@
         android:id="@+id/fragment_user"
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
         android:label="SettingFragment"
-        tools:layout="@layout/fragment_setting"
-        >
+        tools:layout="@layout/fragment_setting">
         <action
             android:id="@+id/action_fragment_user_to_loginActivity"
             app:destination="@id/loginActivity"
@@ -32,8 +30,7 @@
         android:id="@+id/fragment_friend_list"
         android:name="com.boostcamp.planj.ui.main.friendlist.FriendListFragment"
         android:label="FriendListFragment"
-        tools:layout="@layout/fragment_friend_list"
-        />
+        tools:layout="@layout/fragment_friend_list" />
     <activity
         android:id="@+id/activity_search"
         android:name="com.boostcamp.planj.ui.search.SearchActivity"
@@ -43,8 +40,7 @@
         android:id="@+id/categoryActivity"
         android:name="com.boostcamp.planj.ui.categorydetail.CategoryDetailActivity"
         android:label="CategoryActivity"
-        tools:layout="@layout/activity_category"
-        >
+        tools:layout="@layout/activity_category">
         <argument
             android:name="category"
             app:argType="com.boostcamp.planj.data.model.Category" />
@@ -66,9 +62,9 @@
     <activity
         android:id="@+id/scheduleActivity"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleActivity"
-        android:label="ScheduleActivity" >
+        android:label="ScheduleActivity">
         <argument
-            android:name="scheduleUuid"
+            android:name="scheduleId"
             app:argType="string" />
     </activity>
     <activity

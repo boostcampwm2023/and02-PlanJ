@@ -71,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initAdapter() {
         val intent = Intent(this, ScheduleActivity::class.java)
         val listener = ScheduleClickListener { schedule ->
-            intent.putExtra("schedule", schedule)
+            intent.putExtra("scheduleId", schedule)
             startActivity(intent)
         }
         scheduleAdapter = ScheduleAdapter(listener, ScheduleDoneListener{ schdeule -> })

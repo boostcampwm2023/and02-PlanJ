@@ -2,6 +2,7 @@ package com.boostcamp.planj.data.model.dto
 
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Location
+import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.google.gson.annotations.SerializedName
 
@@ -20,13 +21,6 @@ data class ScheduleDetail(
     @SerializedName("startLocation") val startLocation: Location?,
     @SerializedName("endLocation") val endLocation: Location?,
     @SerializedName("repetition") val repetition: Repetition?,
-    @SerializedName("participant") val participant: ParticipantInfo?,
+    @SerializedName("participants") val participants: List<Participant> = emptyList(),
     @SerializedName("alarm") val alarm: Alarm?
-)
-
-data class ParticipantInfo(
-    @SerializedName("nickname") val nickname: String,
-    @SerializedName("profileUrl") val profileUrl: String,
-    @SerializedName("finished") val finished: Boolean,
-    @SerializedName("currentUser") val currentUser: Boolean
 )

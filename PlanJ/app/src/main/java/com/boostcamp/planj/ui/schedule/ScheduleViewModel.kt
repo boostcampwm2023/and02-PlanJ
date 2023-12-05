@@ -10,8 +10,6 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Location
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
-import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.data.repository.LoginRepository
@@ -21,16 +19,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -47,69 +41,82 @@ class ScheduleViewModel @Inject constructor(
 ) : ViewModel() {
 
     private lateinit var scheduleId: String
-    private val isFinished = MutableStateFlow(false)
-    private val isFailed = MutableStateFlow(false)
 
     val scheduleCategory = MutableStateFlow("")
     val scheduleTitle = MutableStateFlow("")
 
+    private val _participants = MutableStateFlow<List<Participant>>(emptyList())
+    val participants = _participants.asStateFlow()
+
     private val _scheduleStartTime = MutableStateFlow<DateTime?>(null)
-    val scheduleStartTime: StateFlow<DateTime?> = _scheduleStartTime
+    val scheduleStartTime = _scheduleStartTime.asStateFlow()
 
     private val _scheduleEndTime = MutableStateFlow(DateTime(0, 0, 0, 0, 0))
-    val scheduleEndTime: StateFlow<DateTime> = _scheduleEndTime
-
-    // TODO: Schedule members 자료형 바꾸고 doneMembers 제거해야 함
-    // 어떤 응답이 올지 몰라 Participant data class 추가하여 구현
-    private val _members = MutableStateFlow<List<Participant>>(emptyList())
-    val members: StateFlow<List<Participant>> = _members
-
-    private val _doneMembers = MutableStateFlow<List<User>?>(null)
-    val doneMembers: StateFlow<List<User>?> = _doneMembers
+    val scheduleEndTime = _scheduleEndTime.asStateFlow()
 
     private val _scheduleAlarm = MutableStateFlow<Alarm?>(null)
-    val scheduleAlarm: StateFlow<Alarm?> = _scheduleAlarm
+    val scheduleAlarm = _scheduleAlarm.asStateFlow()
 
     private val _scheduleRepetition = MutableStateFlow<Repetition?>(null)
-    val scheduleRepetition: StateFlow<Repetition?> = _scheduleRepetition
+    val scheduleRepetition = _scheduleRepetition.asStateFlow()
+
+    private val _startScheduleLocation = MutableStateFlow<Location?>(null)
+    val startScheduleLocation = _startScheduleLocation.asStateFlow()
 
     private val _endScheduleLocation = MutableStateFlow<Location?>(null)
     val endScheduleLocation = _endScheduleLocation.asStateFlow()
-    val scheduleMemo = MutableStateFlow<String?>(null)
 
-    val startScheduleLocation = MutableStateFlow<Location?>(null)
+    val scheduleMemo = MutableStateFlow<String?>(null)
 
     private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList = _categoryList.asStateFlow()
 
     private val _isEditMode = MutableStateFlow(false)
-    val isEditMode: StateFlow<Boolean> = _isEditMode
+    val isEditMode = _isEditMode.asStateFlow()
 
     private val _isComplete = MutableStateFlow(false)
-    val isComplete: StateFlow<Boolean> = _isComplete
+    val isComplete = _isComplete.asStateFlow()
 
     private val _response = MutableStateFlow<NaverResponse?>(null)
-    val response: StateFlow<NaverResponse?> = _response.asStateFlow()
+    val response = _response.asStateFlow()
 
     private val _alarmEventFlow = MutableSharedFlow<AlarmEvent>()
-    val alarmEventFlow: SharedFlow<AlarmEvent> = _alarmEventFlow
+    val alarmEventFlow = _alarmEventFlow.asSharedFlow()
 
-    fun setScheduleInfo(schedule: Schedule?) {
-        schedule?.let { schedule ->
-            scheduleId = schedule.scheduleId
-            scheduleCategory.value = schedule.categoryName
-            scheduleTitle.value = schedule.title
-            _scheduleStartTime.value = schedule.startAt
-            _scheduleEndTime.value = schedule.endAt
-            _scheduleRepetition.value = schedule.repetition
-            _scheduleAlarm.value = schedule.alarm
-            //_doneMembers.value = schedule.doneMembers
-            //_members.value = schedule.members
-            _endScheduleLocation.value = schedule.endLocation
-            startScheduleLocation.value = schedule.startLocation
-            isFinished.value = schedule.isFinished
-            isFailed.value = schedule.isFailed
-            //scheduleMemo.value = schedule.remindMemo
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast = _showToast.asSharedFlow()
+
+    fun setScheduleId(newScheduleId: String?) {
+        scheduleId = newScheduleId ?: ""
+        getScheduleInfo()
+    }
+
+    private fun getScheduleInfo() {
+        viewModelScope.launch {
+            mainRepository.getDetailSchedule(scheduleId)
+                .catch {
+                    Log.d("PLANJDEBUG", "scheduleFragment getScheduleDetail error ${it.message}")
+                }
+                .collectLatest { schedule ->
+                    scheduleCategory.value = schedule.categoryName
+                    scheduleTitle.value = schedule.title
+                    _scheduleStartTime.value = schedule.startAt
+                    _scheduleEndTime.value = schedule.endAt
+                    _scheduleRepetition.value = schedule.repetition
+                    _scheduleAlarm.value = schedule.alarm
+                    _participants.value = schedule.participants
+                    _endScheduleLocation.value = schedule.endLocation
+                    _startScheduleLocation.value = schedule.startLocation
+                    scheduleMemo.value = schedule.description
+                }
+        }
+    }
+
+    fun getCategories() {
+        viewModelScope.launch {
+            mainRepository.getCategoryListApi().collectLatest { categories ->
+                _categoryList.value = listOf(Category("default", "미분류")) + categories
+            }
         }
     }
 
@@ -145,7 +152,7 @@ class ScheduleViewModel @Inject constructor(
 
     fun setLocation(startLocation: Location?, endLocation: Location?) {
         _endScheduleLocation.value = endLocation
-        startScheduleLocation.value = startLocation
+        _startScheduleLocation.value = startLocation
     }
 
     private fun changeMillisToDate(millis: Long): Triple<Int, Int, Int> {
@@ -164,7 +171,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun deleteSchedule() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 // 등록된 알림이 있다면 삭제
                 loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
@@ -182,37 +189,64 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun completeEditingSchedule() {
-        // 시작시간 > 종료시간
-        if (scheduleStartTime.value != null && (scheduleStartTime.value!!.toMilliseconds() > scheduleEndTime.value.toMilliseconds())) return
+        scheduleStartTime.value?.let { startTime ->
+            // 시작시간 > 종료시간
+            if (startTime.toMilliseconds() > scheduleEndTime.value.toMilliseconds()) {
+                viewModelScope.launch {
+                    _showToast.emit("종료 시각이 시작 시간보다 빠릅니다.")
+                }
+                return
+            }
+
+            // 반복 주기 < 일정 시간
+            scheduleRepetition.value?.let { repetition ->
+                val oneDayMillis = 24 * 60 * 60 * 1000L
+                val interval =
+                    if (repetition.cycleType == "DAILY") repetition.cycleCount else repetition.cycleCount * 7
+                if (interval * oneDayMillis < scheduleEndTime.value.toMilliseconds() - startTime.toMilliseconds()) {
+                    viewModelScope.launch {
+                        _showToast.emit("일정 반복 주기가 일정보다 짧습니다.")
+                    }
+                    return
+                }
+            }
+        }
         // 현재 > 종료시간
-        if (System.currentTimeMillis() > scheduleEndTime.value.toMilliseconds()) return
+        if (System.currentTimeMillis() > scheduleEndTime.value.toMilliseconds()) {
+            viewModelScope.launch {
+                _showToast.emit("종료 시각이 현재 시간보다 빠릅니다.")
+            }
+            return
+        }
 
         setAlarmInfo()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            //TODO 카테고리 id 찾기
-            val getCategory = ""
+        viewModelScope.launch {
+            categoryList.value.find { it.categoryName == scheduleCategory.value }?.let { category ->
+                val patchScheduleBody = PatchScheduleBody(
+                    categoryUuid = category.categoryUuid,
+                    scheduleUuid = scheduleId,
+                    title = scheduleTitle.value,
+                    description = scheduleMemo.value,
+                    startAt = scheduleStartTime.value?.toFormattedString(),
+                    endAt = scheduleEndTime.value.toFormattedString(),
+                    startLocation = startScheduleLocation.value,
+                    endLocation = endScheduleLocation.value,
+                    repetition = scheduleRepetition.value,
+                    participants = participants.value,
+                    alarm = scheduleAlarm.value
+                )
 
-            val patchScheduleBody = PatchScheduleBody(
-                getCategory,
-                scheduleId,
-                scheduleTitle.value,
-                scheduleMemo.value,
-                scheduleStartTime.value?.toFormattedString(),
-                scheduleEndTime.value.toFormattedString(),
-                startScheduleLocation.value,
-                endScheduleLocation.value,
-                scheduleRepetition.value
-            )
-
-            mainRepository.patchSchedule(patchScheduleBody)
-                .catch {
-                    Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
-                }
-                .collect {
-                    _isEditMode.value = false
-                    Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
-                }
+                mainRepository.patchSchedule(patchScheduleBody)
+                    .catch {
+                        Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
+                    }
+                    .collect {
+                        _isEditMode.value = false
+                        _showToast.emit("일정을 수정했습니다.")
+                        Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
+                    }
+            }
         }
     }
 
@@ -265,9 +299,8 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun startMapDelete() {
-        startScheduleLocation.value = null
+        _startScheduleLocation.value = null
     }
-
 
     fun getNaverRoute(startLocation: Location?, endLocation: Location) {
         if (startLocation == null) return
@@ -288,6 +321,6 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun emptyStartLocation() {
-        startScheduleLocation.value = null
+        _startScheduleLocation.value = null
     }
 }

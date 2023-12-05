@@ -85,9 +85,9 @@ class HomeFragment : Fragment() {
             viewModel.deleteSchedule(schedule.scheduleId)
 
         }
-        val scheduleClickListener = ScheduleClickListener {
+        val scheduleClickListener = ScheduleClickListener { scheduleId ->
             val action =
-                HomeFragmentDirections.actionFragmentHomeToScheduleActivity(it.scheduleId)
+                HomeFragmentDirections.actionFragmentHomeToScheduleActivity(scheduleId)
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
@@ -118,13 +118,13 @@ class HomeFragment : Fragment() {
                     Log.d("PLANDEBUG", "schedules collectLatest")
                     val list = listOf("일정", "완료", "실패")
                     val schedules = listOf(
-                        it.filter { scheduleInfo ->  !scheduleInfo.isFinished },
-                        it.filter { scheduleInfo ->  scheduleInfo.isFinished && !scheduleInfo.isFailed },
-                        it.filter { scheduleInfo ->  scheduleInfo.isFinished && scheduleInfo.isFailed }
+                        it.filter { scheduleInfo -> !scheduleInfo.isFinished },
+                        it.filter { scheduleInfo -> scheduleInfo.isFinished && !scheduleInfo.isFailed },
+                        it.filter { scheduleInfo -> scheduleInfo.isFinished && scheduleInfo.isFailed }
                     )
 
                     val segmentList = mutableListOf<ScheduleSegment>()
-                    repeat(3){index ->
+                    repeat(3) { index ->
                         segmentList.add(ScheduleSegment(list[index], schedules[index]))
                     }
                     segmentScheduleAdapter.submitList(segmentList)

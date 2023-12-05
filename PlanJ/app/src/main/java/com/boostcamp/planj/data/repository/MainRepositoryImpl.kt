@@ -1,6 +1,5 @@
 package com.boostcamp.planj.data.repository
 
-
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -26,7 +25,6 @@ import com.boostcamp.planj.data.model.dto.PostFriendRequest
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
-import com.boostcamp.planj.data.model.dto.ScheduleDetail
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -36,7 +34,6 @@ import okhttp3.MultipartBody
 import java.io.IOException
 import java.util.Calendar
 import javax.inject.Inject
-
 
 class MainRepositoryImpl @Inject constructor(
     private val api: MainApi,
@@ -72,7 +69,6 @@ class MainRepositoryImpl @Inject constructor(
         api.deleteSchedule(DeleteScheduleBody(scheduleUuid))
     }
 
-
     override fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse> =
         flow {
             emit(api.patchSchedule(patchScheduleBody))
@@ -81,7 +77,6 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun deleteCategoryApi(categoryUuid: String): Flow<CategoryResponse> = flow {
         emit(api.deleteCategory(categoryUuid))
     }
-
 
     override suspend fun updateCategoryApi(
         categoryUuid: String,
@@ -141,7 +136,7 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>> = flow {
         try {
             val scheduleInfo = api.getDailySchedule(date)
-            val scheduleDummy = scheduleInfo.date.map {
+            val scheduleDummy = scheduleInfo.data.map {
 
                 val startAt =
                     it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
@@ -172,7 +167,6 @@ class MainRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.d("PLANJDEBUG", "getDailyScheduleApi error  ${e.message}")
         }
-
     }
 
     override suspend fun postFriendApi(friendEmail: String) {
@@ -198,16 +192,46 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.patchUser(nickName, imageFile))
     }
 
-
-    override suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail {
-        return api.getDetailSchedule(scheduleId).scheduleDetail
-    }
-
     override fun getScheduleChecked(scheduleId: String): Flow<GetScheduleCheckedResponse> =
         flow { emit(api.getScheduleChecked(scheduleId)) }
 
+    override suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule> = flow {
+        try {
+            val scheduleDetail = api.getDetailSchedule(scheduleId).scheduleDetail
+
+            val startAt =
+                scheduleDetail.startAt?.split("T", "-", ":")?.map { time -> time.toInt() }
+                    ?: emptyList()
+            val endAt = scheduleDetail.endAt.split("T", "-", ":").map { time -> time.toInt() }
+
+            val schedule = Schedule(
+                scheduleId = scheduleDetail.scheduleUuid,
+                categoryName = scheduleDetail.categoryName,
+                title = scheduleDetail.title,
+                description = scheduleDetail.description,
+                startAt = if (startAt.isEmpty()) null else DateTime(
+                    startAt[0],
+                    startAt[1],
+                    startAt[2],
+                    startAt[3],
+                    startAt[4],
+                    startAt[5]
+                ),
+                endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+                startLocation = scheduleDetail.startLocation,
+                endLocation = scheduleDetail.endLocation,
+                repetition = scheduleDetail.repetition,
+                participants = scheduleDetail.participants,
+                alarm = scheduleDetail.alarm
+            )
+            emit(schedule)
+        } catch (e: Exception) {
+            Log.d("PLANJDEBUG", "getDetailSchedule error  ${e.message}")
+        }
+
     override suspend fun getUserImageRemove() {
         return api.patchUserImageRemove()
+
     }
 }
 

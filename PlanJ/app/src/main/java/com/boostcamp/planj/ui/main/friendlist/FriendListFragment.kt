@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -81,8 +82,16 @@ class FriendListFragment : Fragment() {
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userList.collectLatest { userList ->
-                    friendAdapter.submitList(userList)
+                viewModel.friendList.collectLatest { friendList ->
+                    friendAdapter.submitList(friendList)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collectLatest { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -90,7 +99,7 @@ class FriendListFragment : Fragment() {
 
     private fun setListener() {
         binding.layoutFriendListAdd.setOnClickListener {
-            if(!addFriendDialog.isAdded){
+            if (!addFriendDialog.isAdded) {
                 addFriendDialog.show(childFragmentManager, "친구 추가")
             }
         }

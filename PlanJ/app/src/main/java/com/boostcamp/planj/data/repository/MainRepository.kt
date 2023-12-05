@@ -55,9 +55,9 @@ interface MainRepository {
 
     fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
-    suspend fun getDetailSchedule(scheduleId: String): ScheduleDetail
-
     fun getScheduleChecked(scheduleId: String):Flow<GetScheduleCheckedResponse>
+
+    suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule>
 
     suspend fun getUserImageRemove()
 }
