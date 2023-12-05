@@ -41,7 +41,7 @@ export class ScheduleMetaService {
       await this.scheduleMetaRepository.save(scheduleMetadata);
       return scheduleMetadata;
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -60,6 +60,10 @@ export class ScheduleMetaService {
 
     if (!record) {
       throw new BadRequestException("해당하는 일정이 없습니다.");
+    }
+
+    if (startAt > endAt) {
+      throw new BadRequestException("종료 시각이 시작 시각보다 빠릅니다.");
     }
 
     record.category = category;

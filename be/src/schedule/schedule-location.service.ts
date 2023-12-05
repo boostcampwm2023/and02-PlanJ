@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
@@ -7,6 +7,7 @@ import { ScheduleLocationEntity } from "./entity/schedule-location.entity";
 
 @Injectable()
 export class ScheduleLocationService {
+  private readonly logger = new Logger(ScheduleLocationService.name);
   constructor(
     @InjectRepository(ScheduleLocationEntity)
     private scheduleLocationRepository: Repository<ScheduleLocationEntity>,
@@ -66,7 +67,7 @@ export class ScheduleLocationService {
     try {
       await this.scheduleLocationRepository.save(record);
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }

@@ -1,4 +1,4 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource, MoreThan, Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { ScheduleEntity } from "./entity/schedule.entity";
 import { DeleteScheduleDto } from "./dto/delete-schedule.dto";
@@ -20,5 +20,13 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
     await this.softDelete({ scheduleUuid });
 
     return record.metadataId;
+  }
+
+  removeRepeatedSchedules(record: ScheduleEntity) {
+    const { metadataId, endAt } = record;
+    this.softDelete({
+      metadataId: metadataId,
+      endAt: MoreThan(endAt),
+    });
   }
 }
