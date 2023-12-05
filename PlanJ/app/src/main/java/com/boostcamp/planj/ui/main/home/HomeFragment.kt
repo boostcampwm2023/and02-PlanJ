@@ -1,10 +1,16 @@
 package com.boostcamp.planj.ui.main.home
 
+import android.content.Context
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -22,6 +28,7 @@ import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.schedule.ScheduleDialog
+import com.boostcamp.planj.ui.schedule.ScheduleFailDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -91,7 +98,15 @@ class HomeFragment : Fragment() {
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
-            viewModel.scheduleFinishChange(schedule)
+            viewModel.scheduleFinishChange(schedule) {
+                val dialog = ScheduleFailDialog(it){
+                    Toast.makeText(requireContext(), "사유 클릭", Toast.LENGTH_SHORT).show()
+                }
+                dialog.show(
+                    parentFragmentManager, tag
+                )
+
+            }
         }
         val segmentScheduleAdapter = SegmentScheduleAdapter(
             swipeListener = swipeListener,
@@ -189,4 +204,5 @@ class HomeFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
+
 }

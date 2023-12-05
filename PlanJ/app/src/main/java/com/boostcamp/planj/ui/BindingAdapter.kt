@@ -187,6 +187,34 @@ fun TextView.setDateTime(schedule: Schedule) {
 }
 
 
+@BindingAdapter("failedTime")
+fun TextView.failedTime(schedule: Schedule) {
+    val start = if(schedule.startAt == null) null else String.format(
+        "%04d-%02d-%02d %02d:%02d",
+        schedule.startAt.year,
+        schedule.startAt.month,
+        schedule.startAt.day,
+        schedule.startAt.hour,
+        schedule.startAt.minute
+    )
+
+    val end = String.format(
+        "%04d-%02d-%02d %02d:%02d",
+        schedule.endAt.year,
+        schedule.endAt.month,
+        schedule.endAt.day,
+        schedule.endAt.hour,
+        schedule.endAt.minute
+    )
+
+    text = if(start == null){
+        end
+    }else{
+        "$start - $end"
+    }
+}
+
+
 @BindingAdapter("setTime")
 fun TextView.setTime(response: NaverResponse?) {
     response?.let {

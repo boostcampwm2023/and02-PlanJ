@@ -68,6 +68,7 @@ class SignInViewModel @Inject constructor(
                 }
                 .collectLatest {
                     Log.d("PLANJDEBUG", "postSignInNaver success : $it")
+                    _isSuccess.value = true
                     saveId(it.uid.token)
                     _showToast.emit("로그인이 완료되었습니다.")
                 }

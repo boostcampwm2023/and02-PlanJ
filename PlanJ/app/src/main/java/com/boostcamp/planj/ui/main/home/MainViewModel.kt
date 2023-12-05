@@ -1,6 +1,11 @@
 package com.boostcamp.planj.ui.main.home
 
+import android.content.Context
+import android.graphics.Point
+import android.os.Build
 import android.util.Log
+import android.view.WindowManager
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Category
@@ -52,7 +57,6 @@ class MainViewModel @Inject constructor(
                         Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
                     }
                     .collectLatest {
-                        Log.d("PLANJDEBUG", "postSchedule success ${it}")
                         getScheduleDaily(dateTime.toFormattedString())
                     }
             }
@@ -66,7 +70,6 @@ class MainViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "getScheduleDaily Error ${it.message}")
                 }
                 .collectLatest {
-                    Log.d("PLANJDEBUG", "getScheduleDaily Success")
                     _schedules.value = it
                 }
         }
@@ -116,20 +119,19 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun scheduleFinishChange(schedule: Schedule) {
+    fun scheduleFinishChange(schedule: Schedule, showDialog : (Schedule) -> Unit) {
         viewModelScope.launch {
             mainRepository.getScheduleChecked(schedule.scheduleId).catch {
                 Log.d("PLANJDEBUG","getScheduleChecked Error ${it.message}")
             }.collectLatest {
-                if(it.isFail&&!it.isWrite){
-                    //TODO: 일정 실패시 실패이유 작성해야함
+                if(it.data.failed&& !it.data.hasRetrospectiveMemo){
+                    showDialog(schedule)
                 }
                 getScheduleDaily("${_selectDate.value}T00:00:00")
             }
 
         }
     }
-
 
 }
 
