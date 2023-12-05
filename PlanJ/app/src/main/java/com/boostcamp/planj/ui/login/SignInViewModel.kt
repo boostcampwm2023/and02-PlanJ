@@ -9,13 +9,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,9 +22,6 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
-
-    val user =
-        loginRepository.getUser().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val userEmail = MutableStateFlow("")
     val userPwd = MutableStateFlow("")
@@ -77,5 +72,9 @@ class SignInViewModel @Inject constructor(
                     _showToast.emit("로그인이 완료되었습니다.")
                 }
         }
+    }
+
+    suspend fun getToken() = withContext(Dispatchers.IO){
+        loginRepository.getToken().first()
     }
 }

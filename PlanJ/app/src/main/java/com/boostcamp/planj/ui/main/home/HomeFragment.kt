@@ -13,6 +13,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
@@ -34,7 +36,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
 
-    private var categoryList = emptyList<Category>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,21 +76,22 @@ class HomeFragment : Fragment() {
         calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
         val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
         viewModel.setCalendarTitle(currentDate)
-
+        viewModel.getCategories()
         val calendarAdapter = CalendarFragmentStateAdapter(onClickListener, requireActivity())
         initViewPager(calendarAdapter)
 
 
-        val swipeListener = SwipeListener {
-            //viewModel.deleteSchedule(it)
+        val swipeListener = SwipeListener {schedule: Schedule ->
+            viewModel.deleteSchedule(schedule.scheduleId)
+
         }
         val scheduleClickListener = ScheduleClickListener { scheduleId ->
             val action =
                 HomeFragmentDirections.actionFragmentHomeToScheduleActivity(scheduleId)
             findNavController().navigate(action)
         }
-        val checkBoxListener = ScheduleDoneListener { schedule, isCheck ->
-            //viewModel.checkBoxChange(schedule, isCheck)
+        val checkBoxListener = ScheduleDoneListener { schedule ->
+            viewModel.scheduleFinishChange(schedule)
         }
         val segmentScheduleAdapter = SegmentScheduleAdapter(
             swipeListener = swipeListener,
@@ -100,13 +102,6 @@ class HomeFragment : Fragment() {
         segmentScheduleAdapter.submitList(emptyList())
 
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.categories.collectLatest {
-                    categoryList = it.filter { c -> c.categoryName != "전체 일정" }
-                }
-            }
-        }
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -164,7 +159,7 @@ class HomeFragment : Fragment() {
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
-                categoryList.map { it.categoryName },
+                viewModel.categories.value.map{it.categoryName},
                 "미분류"
             ) { category, title, _ ->
 

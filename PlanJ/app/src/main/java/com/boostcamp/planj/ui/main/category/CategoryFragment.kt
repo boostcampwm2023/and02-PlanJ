@@ -40,6 +40,16 @@ class CategoryFragment : Fragment() {
         viewModel.getCategory()
         initAdapter()
         setObserver()
+
+        binding.layoutCategoryDefault.setOnClickListener {
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(Category("default", "미분류"))
+            findNavController().navigate(action)
+        }
+
+        binding.layoutCategoryAll.setOnClickListener {
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(Category("all", "전체 일정"))
+            findNavController().navigate(action)
+        }
     }
 
     private fun setObserver() {

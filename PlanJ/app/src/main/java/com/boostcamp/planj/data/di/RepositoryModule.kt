@@ -21,19 +21,5 @@ abstract class RepositoryModule {
     abstract fun provideLoginRepository(
         loginRepositoryImpl: LoginRepositoryImpl
     ): LoginRepository
-
-    @Binds
-    abstract fun provideMainRepository(
-        mainRepositoryImpl: MainRepositoryImpl
-    ): MainRepository
-
-    @Binds
-    abstract fun provideSearchRepository(
-        searchRepositoryImpl: SearchRepositoryImpl
-    ): SearchRepository
-
-    @Binds
-    abstract fun provideNaverRepository(
-        naverRepository: NaverRepositoryImpl
-    ): NaverRepository
+    
 }

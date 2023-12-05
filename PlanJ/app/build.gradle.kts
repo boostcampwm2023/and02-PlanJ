@@ -80,11 +80,6 @@ android {
         correctErrorTypes = true
     }
 
-    packagingOptions {
-        exclude ("com/navercorp/nid/NaverIdLoginSDK.class")
-        exclude ("com/navercorp/nid/cookie/NidOAuthCookieManager.class")
-        exclude ("com/navercorp/nid/exception/NaverIdLoginSDKNotInitializedException.class")
-    }
 
     configurations.all {
         resolutionStrategy {

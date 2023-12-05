@@ -19,8 +19,8 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
         itemView.setOnClickListener {
             clickListener.onClick(item.scheduleId)
         }
-        binding.cbDone.setOnCheckedChangeListener { _, isChecked ->
-            checkBoxListener.onClick(item, isChecked)
+        binding.cbDone.setOnCheckedChangeListener { _ , _ ->
+            checkBoxListener.onClick(item)
         }
     }
 
