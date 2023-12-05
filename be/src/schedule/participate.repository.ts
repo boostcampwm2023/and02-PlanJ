@@ -1,5 +1,5 @@
-import { InviteStatus } from "./../utils/domain/invite-status.enum";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { InviteStatus } from "../utils/domain/invite-status.enum";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { Repository, DataSource } from "typeorm";
 import { ParticipantEntity } from "./entity/participant.entity";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
@@ -7,6 +7,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 
 @Injectable()
 export class ParticipateRepository extends Repository<ParticipantEntity> {
+  private readonly logger = new Logger(ParticipateRepository.name);
   constructor(dataSource: DataSource) {
     super(ParticipantEntity, dataSource.createEntityManager());
   }
@@ -26,7 +27,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
       await this.save(participantRecord);
       return;
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -41,7 +42,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     try {
       await this.softDelete({ authorId: authorMetadataId, participantId: invitedMetadataId });
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -82,7 +83,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
       }
     }
 
-    console.log(invitedStatus);
+    this.logger.verbose("Invited Status: " + invitedStatus);
     const invitedStatusArray: [string, InviteStatus][] = Object.entries(invitedStatus);
     return invitedStatusArray;
   }
