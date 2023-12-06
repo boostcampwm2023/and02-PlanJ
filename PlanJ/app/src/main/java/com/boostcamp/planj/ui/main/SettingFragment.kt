@@ -85,6 +85,7 @@ class SettingFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.initUser()
+        viewModel.getTotalSchedules()
 
         binding.ivSettingIconCamera.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

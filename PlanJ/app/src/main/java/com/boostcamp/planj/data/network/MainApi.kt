@@ -1,6 +1,7 @@
 package com.boostcamp.planj.data.network
 
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
@@ -89,4 +90,6 @@ interface MainApi {
     @GET("/api/schedule/check")
     suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
 
+    @GET("/api/schedule/search")
+    suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
 }

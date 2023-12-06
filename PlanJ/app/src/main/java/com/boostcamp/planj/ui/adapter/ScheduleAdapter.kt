@@ -7,13 +7,14 @@ import com.boostcamp.planj.data.model.Schedule
 
 class ScheduleAdapter(
     private val clickListener: ScheduleClickListener,
-    private val checkBoxListener: ScheduleDoneListener
+    private val checkBoxListener: ScheduleDoneListener,
+    private val isCheckMode: Boolean = true
 ) : ListAdapter<Schedule, ScheduleAdapterViewHolder>(
     diffUtil
 ) {
 
     override fun onBindViewHolder(holder: ScheduleAdapterViewHolder, position: Int) {
-        holder.bind(currentList[position], clickListener, checkBoxListener)
+        holder.bind(currentList[position], clickListener, checkBoxListener, isCheckMode)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleAdapterViewHolder {

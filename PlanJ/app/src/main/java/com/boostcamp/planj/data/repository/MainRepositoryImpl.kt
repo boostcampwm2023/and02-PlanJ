@@ -5,10 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.boostcamp.planj.data.db.AlarmInfoDao
-import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
@@ -27,12 +24,8 @@ import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
-import java.io.IOException
-import java.util.Calendar
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -89,44 +82,51 @@ class MainRepositoryImpl @Inject constructor(
         emit(api.getCategoryList().data)
     }
 
-    override suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse> =
+    override suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<List<Schedule>> =
         flow {
-//            try {
-//                val scheduleInfo = api.getCategorySchedule(categoryUuid)
-//                val scheduleDummy = scheduleInfo.date.map {
-//
-//                    Log.d("PLANJDEBUG", "${it.startAt}, ${it.endAt}")
-//
-//                    val startAt =
-//                        it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
-//                    val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
-//                    Schedule(
-//                        scheduleId = it.scheduleUuid,
-//                        title = it.title,
-//                        startAt = if (startAt.isEmpty()) null else DateTime(
-//                            startAt[0],
-//                            startAt[1],
-//                            startAt[2],
-//                            startAt[3],
-//                            startAt[4],
-//                            startAt[5]
-//                        ),
-//                        endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
-//                        isFinished = it.isFinished,
-//                        isFailed = it.isFailed,
-//                        repeated = it.repeated,
-//                        hasRetrospectiveMemo = it.hasRetrospectiveMemo,
-//                        shared = it.shared,
-//                        participantCount = it.participantCount,
-//                        participantSuccessCount = it.participantSuccessCount
-//                    )
-//                }
-//                emit(scheduleDummy)
-//
-//            } catch (e: Exception) {
-//                Log.d("PLANJDEBUG", "getCategorySchedulesApi error ${e.message}")
-//            }
-            emit(api.getCategorySchedule(categoryUuid))
+            try {
+                val scheduleInfo = api.getCategorySchedule(categoryUuid)
+                val scheduleReformat = scheduleInfo.data.map {
+
+                    Log.d("PLANJDEBUG", "${it.startAt}, ${it.endAt}")
+
+                    val startAt =
+                        it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() }
+                            ?: emptyList()
+                    val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
+                    Schedule(
+                        scheduleId = it.scheduleUuid,
+                        title = it.title,
+                        startAt = if (startAt.isEmpty()) null else DateTime(
+                            startAt[0],
+                            startAt[1],
+                            startAt[2],
+                            startAt[3],
+                            startAt[4],
+                            startAt[5]
+                        ),
+                        endAt = DateTime(
+                            endAt[0],
+                            endAt[1],
+                            endAt[2],
+                            endAt[3],
+                            endAt[4],
+                            endAt[5]
+                        ),
+                        isFinished = it.isFinished,
+                        isFailed = it.isFailed,
+                        repeated = it.repeated,
+                        hasRetrospectiveMemo = it.hasRetrospectiveMemo,
+                        shared = it.shared,
+                        participantCount = it.participantCount,
+                        participantSuccessCount = it.participantSuccessCount
+                    )
+                }
+                emit(scheduleReformat)
+
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "getCategorySchedulesApi error ${e.message}")
+            }
         }
 
     override suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
@@ -136,7 +136,7 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>> = flow {
         try {
             val scheduleInfo = api.getDailySchedule(date)
-            val scheduleDummy = scheduleInfo.data.map {
+            val scheduleReformat = scheduleInfo.data.map {
 
                 val startAt =
                     it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
@@ -163,7 +163,7 @@ class MainRepositoryImpl @Inject constructor(
                     participantSuccessCount = it.participantSuccessCount
                 )
             }
-            emit(scheduleDummy)
+            emit(scheduleReformat)
         } catch (e: Exception) {
             Log.d("PLANJDEBUG", "getDailyScheduleApi error  ${e.message}")
         }
@@ -234,5 +234,42 @@ class MainRepositoryImpl @Inject constructor(
         return api.patchUserImageRemove()
 
     }
+
+    override fun getSearchSchedules(keyword: String): Flow<List<Schedule>> = flow {
+        try {
+            val scheduleInfo = api.getSearchSchedules(keyword)
+            val scheduleDummy = scheduleInfo.data.map {
+
+                val startAt =
+                    it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
+                val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
+
+                Schedule(
+                    scheduleId = it.scheduleUuid,
+                    title = it.title,
+                    startAt = if (startAt.isEmpty()) null else DateTime(
+                        startAt[0],
+                        startAt[1],
+                        startAt[2],
+                        startAt[3],
+                        startAt[4],
+                        startAt[5]
+                    ),
+                    endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+                    isFinished = it.isFinished,
+                    isFailed = it.isFailed,
+                    repeated = it.repeated,
+                    hasRetrospectiveMemo = it.hasRetrospectiveMemo,
+                    shared = it.shared,
+                    participantCount = it.participantCount,
+                    participantSuccessCount = it.participantSuccessCount
+                )
+            }
+            emit(scheduleDummy)
+        } catch (e: Exception) {
+            Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
+        }
+    }
 }
+
 

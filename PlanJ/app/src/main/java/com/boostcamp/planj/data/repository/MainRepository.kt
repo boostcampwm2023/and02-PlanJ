@@ -39,7 +39,7 @@ interface MainRepository {
 
     fun getCategoryListApi(): Flow<List<Category>>
 
-    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
+    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<List<Schedule>>
 
     suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
 
@@ -55,9 +55,11 @@ interface MainRepository {
 
     fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
-    fun getScheduleChecked(scheduleId: String):Flow<GetScheduleCheckedResponse>
+    fun getScheduleChecked(scheduleId: String): Flow<GetScheduleCheckedResponse>
 
     suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule>
 
     suspend fun getUserImageRemove()
+
+    fun getSearchSchedules(name: String): Flow<List<Schedule>>
 }
