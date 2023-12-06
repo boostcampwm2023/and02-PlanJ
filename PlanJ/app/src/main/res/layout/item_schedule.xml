@@ -20,8 +20,8 @@
         android:layout_height="70dp"
         android:layout_margin="4dp"
         android:background="@drawable/round_white_stroke"
-        android:padding="4dp"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:padding="4dp">
 
 
         <CheckBox
@@ -42,14 +42,14 @@
             android:id="@+id/tv_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="16sp"
-            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_main_date"
             app:layout_constraintStart_toEndOf="@id/cb_done"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tv_main_date"
             app:layout_constraintVertical_chainStyle="packed"
             app:setTitle="@{schedule}" />
 
@@ -57,15 +57,14 @@
             android:id="@+id/tv_main_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="12sp"
-            android:layout_marginStart="8dp"
-            app:setDateTime="@{schedule}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/cb_done"
             app:layout_constraintTop_toBottomOf="@id/tv_main_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:setDateTime="@{schedule}" />
 
 
         <ImageView

@@ -154,7 +154,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/btn_week_finish"
+                    android:id="@+id/btn_setting_finish"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_marginStart="16dp"
@@ -162,7 +162,7 @@
                     android:background="@drawable/round_light_gray"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/tv_setting_alarm"
-                    app:layout_constraintEnd_toStartOf="@id/btn_week_fail"
+                    app:layout_constraintEnd_toStartOf="@id/btn_setting_fail"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +178,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_week_finish_count"
+                        android:id="@+id/tv_setting_finish_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -189,16 +189,16 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/btn_week_fail"
+                    android:id="@+id/btn_setting_fail"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:background="@drawable/round_light_gray"
                     android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@id/btn_week_have"
+                    app:layout_constraintEnd_toStartOf="@id/btn_setting_have"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintHorizontal_weight="1"
-                    app:layout_constraintStart_toEndOf="@id/btn_week_finish"
-                    app:layout_constraintTop_toTopOf="@id/btn_week_finish">
+                    app:layout_constraintStart_toEndOf="@id/btn_setting_finish"
+                    app:layout_constraintTop_toTopOf="@id/btn_setting_finish">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -210,7 +210,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_week_fail_count"
+                        android:id="@+id/tv_setting_fail_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -222,7 +222,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/btn_week_have"
+                    android:id="@+id/btn_setting_have"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_marginStart="16dp"
@@ -232,8 +232,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintHorizontal_weight="1"
-                    app:layout_constraintStart_toEndOf="@id/btn_week_fail"
-                    app:layout_constraintTop_toTopOf="@id/btn_week_fail">
+                    app:layout_constraintStart_toEndOf="@id/btn_setting_fail"
+                    app:layout_constraintTop_toTopOf="@id/btn_setting_fail">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -245,7 +245,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_week_have_count"
+                        android:id="@+id/tv_setting_have_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -260,7 +260,7 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_week_fail" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_setting_fail" />
 
                 <TextView
                     android:id="@+id/tv_setting_alarm"
@@ -274,7 +274,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_week_fail" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_setting_fail" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:layout_width="wrap_content"

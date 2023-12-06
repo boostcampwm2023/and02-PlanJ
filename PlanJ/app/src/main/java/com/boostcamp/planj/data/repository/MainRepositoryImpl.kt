@@ -86,7 +86,7 @@ class MainRepositoryImpl @Inject constructor(
         flow {
             try {
                 val scheduleInfo = api.getCategorySchedule(categoryUuid)
-                val scheduleDummy = scheduleInfo.data.map {
+                val scheduleReformat = scheduleInfo.data.map {
 
                     Log.d("PLANJDEBUG", "${it.startAt}, ${it.endAt}")
 
@@ -122,7 +122,7 @@ class MainRepositoryImpl @Inject constructor(
                         participantSuccessCount = it.participantSuccessCount
                     )
                 }
-                emit(scheduleDummy)
+                emit(scheduleReformat)
 
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "getCategorySchedulesApi error ${e.message}")
@@ -136,7 +136,7 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>> = flow {
         try {
             val scheduleInfo = api.getDailySchedule(date)
-            val scheduleDummy = scheduleInfo.data.map {
+            val scheduleReformat = scheduleInfo.data.map {
 
                 val startAt =
                     it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
@@ -163,7 +163,7 @@ class MainRepositoryImpl @Inject constructor(
                     participantSuccessCount = it.participantSuccessCount
                 )
             }
-            emit(scheduleDummy)
+            emit(scheduleReformat)
         } catch (e: Exception) {
             Log.d("PLANJDEBUG", "getDailyScheduleApi error  ${e.message}")
         }

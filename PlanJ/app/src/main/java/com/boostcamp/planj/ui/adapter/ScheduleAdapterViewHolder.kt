@@ -13,7 +13,7 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
         item: Schedule,
         clickListener: ScheduleClickListener,
         checkBoxListener: ScheduleDoneListener,
-        isCheck : Boolean
+        isCheck: Boolean
     ) {
         binding.isCheck = isCheck
         binding.schedule = item
@@ -21,7 +21,7 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
         itemView.setOnClickListener {
             clickListener.onClick(item.scheduleId)
         }
-        binding.cbDone.setOnCheckedChangeListener { _ , _ ->
+        binding.cbDone.setOnCheckedChangeListener { _, _ ->
             checkBoxListener.onClick(item)
         }
     }

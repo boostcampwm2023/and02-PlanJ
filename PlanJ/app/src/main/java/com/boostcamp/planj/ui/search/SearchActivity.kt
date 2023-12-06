@@ -74,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
             intent.putExtra("scheduleId", schedule)
             startActivity(intent)
         }
-        scheduleAdapter = ScheduleAdapter(listener, ScheduleDoneListener{ schdeule -> }, false)
+        scheduleAdapter = ScheduleAdapter(listener, ScheduleDoneListener { schdeule -> }, false)
         binding.rvSearchScheduleList.adapter = scheduleAdapter
     }
 }

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
         <variable
             name="isDropDown"
@@ -50,13 +51,13 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="@{isDropDown ? View.VISIBLE : View.INVISIBLE}"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:layout_constraintBottom_toTopOf="@id/til_dialog_schedule_input_schedule"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_dialog_schedule_category_title"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog_schedule_main_title"
-            android:visibility="@{isDropDown ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintVertical_chainStyle="packed">
 
             <AutoCompleteTextView
@@ -66,9 +67,9 @@
                 android:background="@drawable/dialog_category_backgroud"
                 android:inputType="none"
                 android:padding="10dp"
-                android:textStyle="bold"
                 android:textAlignment="center"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,18 +77,17 @@
             android:id="@+id/til_dialog_schedule_input_no_drop_down"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"
+            android:visibility="@{isDropDown ? View.GONE : View.VISIBLE}"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:layout_constraintBottom_toTopOf="@id/til_dialog_schedule_input_schedule"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_dialog_schedule_category_title"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog_schedule_main_title"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:visibility="@{isDropDown ? View.GONE : View.VISIBLE}"
-            >
+            app:layout_constraintVertical_chainStyle="packed">
 
             <AutoCompleteTextView
                 android:id="@+id/actv_dialog_schedule_category_select_no_drop_down"
@@ -96,9 +96,9 @@
                 android:background="@drawable/dialog_category_backgroud"
                 android:inputType="none"
                 android:padding="10dp"
-                android:textStyle="bold"
                 android:textAlignment="center"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,12 +108,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            app:boxStrokeColor="@color/main3"
             app:counterEnabled="true"
             app:counterMaxLength="25"
             app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:boxStrokeColor="@color/main3"
             app:layout_constraintTop_toBottomOf="@id/til_dialog_schedule_input">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -121,14 +121,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="제목"
-                android:textColorHint="@color/main3"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:maxLines="1"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                />
+                android:textColorHint="@color/main3"
+                android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

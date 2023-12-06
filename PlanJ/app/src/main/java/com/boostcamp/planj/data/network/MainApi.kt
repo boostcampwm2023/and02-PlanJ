@@ -91,5 +91,5 @@ interface MainApi {
     suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
 
     @GET("/api/schedule/search")
-    suspend fun getSearchSchedules(@Query("keyword") keyword:String):GetSchedulesResponse
+    suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
 }

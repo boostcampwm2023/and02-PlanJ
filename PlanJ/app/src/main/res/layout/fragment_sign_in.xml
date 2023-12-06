@@ -65,9 +65,9 @@
                 android:id="@+id/tiet_sign_in_pwd_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:maxWidth="488dp"
-                android:imeOptions="actionDone"
                 android:text="@={viewModel.userPwd}" />
         </com.google.android.material.textfield.TextInputLayout>
 

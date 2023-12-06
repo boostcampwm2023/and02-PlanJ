@@ -7,7 +7,6 @@ import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.repository.MainRepository
-import com.boostcamp.planj.data.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,10 +82,13 @@ class CategoryDetailViewModel @Inject constructor(
         viewModelScope.launch {
             if (category.value.categoryName == "전체 일정") {
                 mainRepository.getSearchSchedules("").catch {
-                    Log.d("PLANJDEBUG","getCategoryDetailSchedules All Schedule Error ${it.message}")
+                    Log.d(
+                        "PLANJDEBUG",
+                        "getCategoryDetailSchedules All Schedule Error ${it.message}"
+                    )
                 }.collectLatest {
-                    _schedules.value=it
-                    Log.d("PLANJDEBUG","getCategoryDetailSchedules All Schedule Success")
+                    _schedules.value = it
+                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules All Schedule Success")
                 }
             } else {
                 mainRepository.getCategorySchedulesApi(_cateogry.value.categoryUuid)
@@ -98,13 +100,6 @@ class CategoryDetailViewModel @Inject constructor(
                     }
             }
         }
-    }
-
-    fun getCategoryList():List<String>{
-        mainRepository.getCategoryListApi()
-
-
-        return emptyList()
     }
 
 }

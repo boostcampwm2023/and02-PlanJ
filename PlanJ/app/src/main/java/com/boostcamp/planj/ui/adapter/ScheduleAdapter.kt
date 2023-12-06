@@ -8,7 +8,7 @@ import com.boostcamp.planj.data.model.Schedule
 class ScheduleAdapter(
     private val clickListener: ScheduleClickListener,
     private val checkBoxListener: ScheduleDoneListener,
-    private val isCheckMode : Boolean = true
+    private val isCheckMode: Boolean = true
 ) : ListAdapter<Schedule, ScheduleAdapterViewHolder>(
     diffUtil
 ) {

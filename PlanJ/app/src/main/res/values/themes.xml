@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.PlanJ" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
@@ -18,11 +18,4 @@
         <item name="android:editTextColor">@color/main2</item>
     </style>
 
-    <style name="abc" parent="Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu">
-
-    </style>
-
-    <style name="def" parent="Widget.Material3.TextInputLayout.FilledBox.Dense">
-
-    </style>
 </resources>

@@ -14,14 +14,12 @@ import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.databinding.DialogAddScheduleBinding
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class ScheduleDialog(
     private val categoryNames: List<String>,
     private val initText: String,
-    private val isDropdownMode : Boolean,
+    private val isDropdownMode: Boolean,
     private val listener: (String, String, DateTime) -> Unit
 ) : DialogFragment() {
 
@@ -47,8 +45,10 @@ class ScheduleDialog(
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.isDropDown = isDropdownMode
-        if(!isDropdownMode)
+        if (!isDropdownMode) {
             binding.actvDialogScheduleCategorySelectNoDropDown.setText(initText)
+        }
+
         initAdapter()
         requestFocus()
         setListener()
@@ -60,7 +60,7 @@ class ScheduleDialog(
     }
 
     private fun initAdapter() {
-        if(isDropdownMode){
+        if (isDropdownMode) {
             if (categoryNames.isEmpty()) {
                 binding.actvDialogScheduleCategorySelect.isEnabled = false
             }
@@ -84,7 +84,7 @@ class ScheduleDialog(
         }
 
         binding.tietDialogScheduleInputTitleSchedule.setOnEditorActionListener { _, actionId, _ ->
-            if ( actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 makeSchedule()
                 true
             } else {

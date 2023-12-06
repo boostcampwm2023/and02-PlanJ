@@ -2,7 +2,6 @@ package com.boostcamp.planj.ui.main.category
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.databinding.DialogAddCategoryBinding
 
 enum class CategoryState {
