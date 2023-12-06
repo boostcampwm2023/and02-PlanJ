@@ -8,6 +8,14 @@
         <import type="android.view.View" />
 
         <variable
+            name="isParticipated"
+            type="Boolean" />
+
+        <variable
+            name="isEditMode"
+            type="Boolean" />
+
+        <variable
             name="participant"
             type="com.boostcamp.planj.data.model.Participant" />
     </data>
@@ -24,6 +32,9 @@
             android:id="@+id/cb_participant_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="@{isParticipated}"
+            android:enabled="@{!participant.currentUser}"
+            android:visibility="@{isEditMode ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,6 +69,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/schedule_done"
             android:src="@drawable/ic_done"
+            android:visibility="@{!isEditMode &amp;&amp; participant.isFinished ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -68,6 +80,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/schedule_not_done"
             android:src="@drawable/ic_not_done"
+            android:visibility="@{!isEditMode &amp;&amp; !participant.isFinished ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
