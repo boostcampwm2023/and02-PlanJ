@@ -77,6 +77,20 @@ export class ScheduleApiService {
       ]);
 
     const participantsInfo = await this.getParticipantSuccess(participants, scheduleEntity.endAt, user);
+
+    if (participantsInfo.length === 0) {
+      const response: ParticipantResponse = {
+        nickname: user.nickname,
+        email: user.email,
+        author: true,
+        profileUrl: user.profileUrl,
+        finished: scheduleEntity.finished,
+        currentUser: true,
+      };
+
+      participantsInfo.push(response);
+    }
+
     const scheduleDetailResponse: ScheduleDetailResponse = {
       categoryName: !!categoryEntity ? categoryEntity.categoryName : "미분류",
       scheduleUuid: scheduleEntity.scheduleUuid,
