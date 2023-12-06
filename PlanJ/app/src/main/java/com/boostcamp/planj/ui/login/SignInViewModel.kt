@@ -54,13 +54,13 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveId(id : String){
-        withContext(Dispatchers.IO){
+    private suspend fun saveId(id: String) {
+        withContext(Dispatchers.IO) {
             loginRepository.saveUser(id)
         }
     }
 
-    fun postSignInNaver(accessToken: String){
+    fun postSignInNaver(accessToken: String) {
         viewModelScope.launch {
             loginRepository.postSignInNaver(accessToken)
                 .catch {
@@ -68,13 +68,14 @@ class SignInViewModel @Inject constructor(
                 }
                 .collectLatest {
                     Log.d("PLANJDEBUG", "postSignInNaver success : $it")
+                    _isSuccess.value = true
                     saveId(it.uid.token)
                     _showToast.emit("로그인이 완료되었습니다.")
                 }
         }
     }
 
-    suspend fun getToken() = withContext(Dispatchers.IO){
+    suspend fun getToken() = withContext(Dispatchers.IO) {
         loginRepository.getToken().first()
     }
 }

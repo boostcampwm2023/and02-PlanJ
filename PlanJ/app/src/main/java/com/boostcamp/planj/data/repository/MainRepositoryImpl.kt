@@ -19,6 +19,7 @@ import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
+import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
@@ -267,9 +268,14 @@ class MainRepositoryImpl @Inject constructor(
             }
             emit(scheduleDummy)
         } catch (e: Exception) {
-            Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
+             Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
         }
     }
+
+    override suspend fun postScheduleAddMemo(scheduleId: String, memo : String) {
+        return api.postScheduleAddMemo(PostScheduleAddMemoBody(scheduleId, memo))
+    }
+
 }
 
 

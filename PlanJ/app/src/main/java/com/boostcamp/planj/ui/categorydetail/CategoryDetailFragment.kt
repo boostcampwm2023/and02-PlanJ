@@ -43,6 +43,7 @@ class CategoryDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.getCategoryDetailSchedules()
         initAdapter()
         setObserver()
         setListener()
@@ -86,7 +87,9 @@ class CategoryDetailFragment : Fragment() {
             viewModel.checkBoxChange(schedule, !schedule.isFinished)
         }
         segmentScheduleAdapter =
-            SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
+            SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener) {
+
+            }
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }
