@@ -239,7 +239,7 @@ class ScheduleViewModel @Inject constructor(
                     startLocation = startScheduleLocation.value,
                     endLocation = endScheduleLocation.value,
                     repetition = scheduleRepetition.value,
-                    participants = participants.value.map { it.email },
+                    participants = participants.value.filter { !it.currentUser }.map { it.email },
                     alarm = scheduleAlarm.value
                 )
 

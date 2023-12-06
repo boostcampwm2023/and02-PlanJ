@@ -15,7 +15,6 @@ class ScheduleParticipantAdapterViewHolder(private val binding: ItemParticipantB
         isEditMode: Boolean,
         listener: ScheduleParticipantsListener
     ) {
-        Log.d("scheduleParticipnatsFragment - 뷰홀더", isEditMode.toString())
         binding.participant = friendState.participant
 
         if (isEditMode) {
