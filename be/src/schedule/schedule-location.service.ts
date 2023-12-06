@@ -12,7 +12,7 @@ export class ScheduleLocationService {
     @InjectRepository(ScheduleLocationEntity)
     private scheduleLocationRepository: Repository<ScheduleLocationEntity>,
   ) {}
-  async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity): Promise<void> {
+  async updateLocation(dto: UpdateScheduleDto, scheduleMeta: ScheduleMetadataEntity, author: boolean): Promise<void> {
     let record = await this.scheduleLocationRepository.findOne({ where: { metadataId: scheduleMeta.metadataId } });
 
     // end location 이 null 일 때
@@ -41,27 +41,31 @@ export class ScheduleLocationService {
     } = dto.endLocation;
 
     if (!record) {
-      record = this.scheduleLocationRepository.create({
-        startPlaceName,
-        startPlaceAddress,
-        startLatitude,
-        startLongitude,
-        endPlaceName,
-        endPlaceAddress,
-        endLatitude,
-        endLongitude,
-        metadataId: scheduleMeta.metadataId,
-      });
+      if (author) {
+        record = this.scheduleLocationRepository.create({
+          startPlaceName,
+          startPlaceAddress,
+          startLatitude,
+          startLongitude,
+          endPlaceName,
+          endPlaceAddress,
+          endLatitude,
+          endLongitude,
+          metadataId: scheduleMeta.metadataId,
+        });
+      }
     } else {
       record.startPlaceName = startPlaceName;
       record.startPlaceAddress = startPlaceAddress;
       record.startLatitude = startLatitude;
       record.startLongitude = startLongitude;
 
-      record.endPlaceName = endPlaceName;
-      record.endPlaceAddress = endPlaceAddress;
-      record.endLatitude = endLatitude;
-      record.endLongitude = endLongitude;
+      if (author) {
+        record.endPlaceName = endPlaceName;
+        record.endPlaceAddress = endPlaceAddress;
+        record.endLatitude = endLatitude;
+        record.endLongitude = endLongitude;
+      }
     }
 
     try {

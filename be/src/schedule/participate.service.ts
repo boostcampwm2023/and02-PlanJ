@@ -1,12 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ParticipateRepository } from "./participate.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ParticipantEntity } from "./entity/participant.entity";
 import { UserEntity } from "src/user/entity/user.entity";
+import { rethrow } from "@nestjs/core/helpers/rethrow";
 
 @Injectable()
 export class ParticipateService {
+  private readonly logger = new Logger(ParticipateService.name);
   constructor(
     @InjectRepository(ParticipateRepository)
     private participateRepository: ParticipateRepository,
@@ -34,13 +36,11 @@ export class ParticipateService {
   }
 
   async getAuthorGroup(authorMetadataId: number) {
-    const group = await this.participateRepository
+    return await this.participateRepository
       .createQueryBuilder("participant")
       .leftJoinAndSelect("participant.participant", "schedule_metadata")
       .where("participant.author_id = :authorId", { authorId: authorMetadataId })
       .getMany();
-
-    return group;
   }
 
   async checkInvitedStatus(
@@ -52,7 +52,11 @@ export class ParticipateService {
   }
 
   async deleteAuthor(authorMetadataId: number) {
-    console.log(authorMetadataId);
     await this.participateRepository.softDelete({ authorId: authorMetadataId, participantId: authorMetadataId });
+  }
+
+  async checkIsAuthor(metadataId: number) {
+    const participantEntity = await this.participateRepository.findOne({ where: { participantId: metadataId } });
+    return participantEntity === null || participantEntity.participantId === participantEntity.authorId;
   }
 }

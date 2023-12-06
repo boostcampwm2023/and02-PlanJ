@@ -64,13 +64,15 @@ export class ScheduleService {
     }
 
     try {
-      await this.scheduleRepository.save(record);
       if (repetitionChanged) {
+        record.last = true;
         this.removeRepeatedSchedules(record);
       }
       if (scheduleMetadata.repeated) {
+        record.last = false;
         this.addRepeatedSchedule(record, dto.repetition);
       }
+      await this.scheduleRepository.save(record);
       return scheduleUuid;
     } catch (error) {
       this.logger.error(error);
