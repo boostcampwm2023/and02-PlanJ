@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -49,8 +50,13 @@ class MainViewModel @Inject constructor(
     private val _allSchedules = MutableStateFlow<List<Schedule>>(emptyList())
     val allSchedule = _allSchedules.asStateFlow()
 
-    fun postSchedule(category: String, title: String) {
+    private val _scheduleSegment = MutableStateFlow<List<ScheduleSegment>>(emptyList())
+    val scheduleSegment = _scheduleSegment.asStateFlow()
 
+    val isRefreshing = MutableStateFlow(false)
+
+
+    fun postSchedule(category: String, title: String) {
         val date = _selectDate.value.split("-").map { it.toInt() }
         val dateTime = DateTime(date[0], date[1], date[2], 23, 59)
         viewModelScope.launch(Dispatchers.IO) {
@@ -66,6 +72,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun refresh(){
+        isRefreshing.value = true
+        getScheduleDaily("${_selectDate.value}T00:00:00")
+    }
+
     fun getScheduleDaily(date: String) {
         viewModelScope.launch {
             mainRepository.getDailyScheduleApi(date)
@@ -74,6 +85,7 @@ class MainViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _schedules.value = it
+                    isRefreshing.value = false
                 }
         }
     }
@@ -154,6 +166,16 @@ class MainViewModel @Inject constructor(
                 Log.d("PLANJDEBUG", "postScheduleAddMemo error ${e.message}")
             }
         }
+    }
+
+    fun setScheduleSegment(scheduleSegment: List<ScheduleSegment>){
+        _scheduleSegment.value = scheduleSegment
+    }
+
+    fun changeExpanded(index : Int){
+        val list = _scheduleSegment.value.toMutableList()
+        list[index] = list[index].copy(expanded = !list[index].expanded)
+        _scheduleSegment.value = list
     }
 
 }

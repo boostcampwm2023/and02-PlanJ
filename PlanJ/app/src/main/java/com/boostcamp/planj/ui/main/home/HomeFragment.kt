@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.executePendingBindings()
         val onClickListener = OnClickListener {
             viewModel.setDate(it)
         }
@@ -113,7 +114,9 @@ class HomeFragment : Fragment() {
             swipeListener = swipeListener,
             checkBoxListener = checkBoxListener,
             clickListener = scheduleClickListener
-        )
+        ){
+            viewModel.changeExpanded(it)
+        }
         binding.rvMainHomeDailySchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
 
@@ -142,7 +145,7 @@ class HomeFragment : Fragment() {
                     repeat(3) { index ->
                         segmentList.add(ScheduleSegment(list[index], schedules[index]))
                     }
-                    segmentScheduleAdapter.submitList(segmentList)
+                    viewModel.setScheduleSegment(segmentList)
                 }
             }
         }
@@ -164,8 +167,16 @@ class HomeFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleSegment.collectLatest {
+                    segmentScheduleAdapter.submitList(it)
+                }
+            }
+        }
+
+
         setListener()
-        binding.executePendingBindings()
     }
 
     private fun initViewPager(calendarAdapter: CalendarFragmentStateAdapter) {

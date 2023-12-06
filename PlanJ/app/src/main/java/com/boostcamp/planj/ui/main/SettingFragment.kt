@@ -21,6 +21,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSettingBinding
 import com.boostcamp.planj.ui.PlanjAlarm
@@ -92,6 +93,11 @@ class SettingFragment : Fragment() {
 
         binding.ivSettingIconCancel.setOnClickListener {
             viewModel.getUserImageRemove()
+        }
+
+        binding.tvSettingReadFailMemo.setOnClickListener {
+            val action = SettingFragmentDirections.actionFragmentUserToSettingFailFragment()
+            findNavController().navigate(action)
         }
 
         binding.tvSettingLogout.setOnClickListener {

@@ -86,7 +86,9 @@ class CategoryDetailFragment : Fragment() {
             viewModel.checkBoxChange(schedule, !schedule.isFinished)
         }
         segmentScheduleAdapter =
-            SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener)
+            SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener) {
+
+            }
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
     }

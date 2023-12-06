@@ -2,6 +2,7 @@ package com.boostcamp.planj.ui
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.Image
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
