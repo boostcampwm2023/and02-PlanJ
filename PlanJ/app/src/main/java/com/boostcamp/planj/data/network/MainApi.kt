@@ -91,7 +91,7 @@ interface MainApi {
     @GET("/api/schedule/check")
     suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
 
-    @POST("/api/schedule/add-memo")
+    @POST("/api/schedule/memo")
     suspend fun postScheduleAddMemo(@Body postScheduleAddMemoBody: PostScheduleAddMemoBody)
 
      @GET("/api/schedule/search")
