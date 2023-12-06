@@ -18,8 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
@@ -203,7 +201,8 @@ class HomeFragment : Fragment() {
         binding.fbAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
                 viewModel.categories.value.map { it.categoryName },
-                "미분류"
+                "미분류",
+                true
             ) { category, title, _ ->
 
                 viewModel.postSchedule(category, title)

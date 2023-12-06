@@ -12,8 +12,10 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
     fun bind(
         item: Schedule,
         clickListener: ScheduleClickListener,
-        checkBoxListener: ScheduleDoneListener
+        checkBoxListener: ScheduleDoneListener,
+        isCheck: Boolean
     ) {
+        binding.isCheck = isCheck
         binding.schedule = item
         binding.executePendingBindings()
         itemView.setOnClickListener {

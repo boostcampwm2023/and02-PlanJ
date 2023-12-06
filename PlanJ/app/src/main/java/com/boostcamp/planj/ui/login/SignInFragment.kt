@@ -3,9 +3,11 @@ package com.boostcamp.planj.ui.login
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -115,6 +117,15 @@ class SignInFragment : Fragment() {
         }
         binding.ivSignInNaver.setOnClickListener {
             NaverIdLoginSDK.authenticate(requireContext(), launcher)
+        }
+
+        binding.tietSignInPwdInput.setOnEditorActionListener { _, actionId, _ ->
+            if ( actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.postSignIn()
+                true
+            } else {
+                false
+            }
         }
     }
 }
