@@ -175,4 +175,8 @@ export class ScheduleMetaService {
     const now = new Date();
     return endTime < now;
   }
+
+  async getRetrospectiveMemoByUserId(userId: number) {
+    return await this.scheduleMetaRepository.findByUserId(userId);
+  }
 }

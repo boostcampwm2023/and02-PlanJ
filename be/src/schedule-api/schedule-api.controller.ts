@@ -66,11 +66,19 @@ export class ScheduleApiController {
     return JSON.parse(result);
   }
 
-  @Post("/add-memo")
+  @Post("/memo")
   async addRetrospectiveMemo(@Token() token: string, @Body() dto: AddRetrospectiveMemoDto): Promise<JSON> {
-    this.logger.log("Post /api/schedule");
+    this.logger.log("Post /api/schedule/memo");
     this.logger.verbose("Data: " + JSON.stringify(dto, null, 2));
     const result = await this.scheduleApiService.addRetrospectiveMemo(token, dto);
+    return JSON.parse(result);
+  }
+
+  @Get("/memo")
+  async getRetrospectiveMemo(@Token() token: string): Promise<JSON> {
+    this.logger.log("Get /api/schedule/memo");
+    this.logger.verbose("Token" + token);
+    const result = await this.scheduleApiService.getRetrospectiveMemo(token);
     return JSON.parse(result);
   }
 }

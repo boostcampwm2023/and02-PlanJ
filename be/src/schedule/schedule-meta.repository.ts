@@ -2,6 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { UserEntity } from "src/user/entity/user.entity";
+import { MemoResponse } from "./dto/memo.response";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
@@ -74,5 +75,22 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
       .where("schedule_metadata.user_id = :userId", { userId: userId })
       .andWhere("schedule_metadata.title LIKE :keyword", { keyword: `%${keyword}%` })
       .getMany();
+  }
+
+  async findByUserId(userId: number) {
+    try {
+      const result: MemoResponse = await this.query(
+        `SELECT meta.title as title, s.start_at as startAt, s.end_at as endAt, s.retrospective_memo as retrospectiveMemo
+             FROM schedule_metadata as meta LEFT OUTER JOIN schedule as s
+             ON meta.id = s.metadata_id
+             WHERE meta.user_id=${userId}
+             AND s.retrospective_memo IS NOT NULL
+             ORDER BY s.end_at DESC`,
+      );
+      return result;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
   }
 }

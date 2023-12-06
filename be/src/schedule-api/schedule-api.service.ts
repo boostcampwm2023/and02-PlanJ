@@ -429,4 +429,16 @@ export class ScheduleApiService {
     };
     return JSON.stringify(body);
   }
+
+  async getRetrospectiveMemo(token: string): Promise<string> {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+    const memoResponses = await this.scheduleMetaService.getRetrospectiveMemoByUserId(userEntity.userId);
+
+    const body: HttpResponse = {
+      message: "실패 메모 조회 성공",
+      data: memoResponses,
+    };
+    return JSON.stringify(body);
+  }
 }
