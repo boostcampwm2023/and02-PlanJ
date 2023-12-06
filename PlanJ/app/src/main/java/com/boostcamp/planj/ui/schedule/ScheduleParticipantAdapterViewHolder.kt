@@ -1,8 +1,6 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.databinding.ItemParticipantBinding
