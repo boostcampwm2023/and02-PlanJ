@@ -10,10 +10,11 @@ import com.boostcamp.planj.databinding.ItemDayOfWeekBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class CalendarAdapterViewHolder(private val binding : ItemDayOfWeekBinding) : RecyclerView.ViewHolder(binding.root) {
+class CalendarAdapterViewHolder(private val binding: ItemDayOfWeekBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    fun onBind(item : SaveDate, onClickListener: OnClickListener){
-        val dayOfWeek = when(absoluteAdapterPosition){
+    fun onBind(item: SaveDate, onClickListener: OnClickListener) {
+        val dayOfWeek = when (absoluteAdapterPosition) {
             0 -> "일"
             1 -> "월"
             2 -> "화"
@@ -28,13 +29,20 @@ class CalendarAdapterViewHolder(private val binding : ItemDayOfWeekBinding) : Re
         binding.item = item
 
         itemView.setOnClickListener {
-            onClickListener.onClick("${item.year}-${String.format("%02d", item.month)}-${String.format("%02d", item.day)}")
+            onClickListener.onClick(
+                "${item.year}-${
+                    String.format(
+                        "%02d",
+                        item.month
+                    )
+                }-${String.format("%02d", item.day)}"
+            )
         }
     }
 
 
-    companion object{
-        fun from(parent : ViewGroup) : CalendarAdapterViewHolder {
+    companion object {
+        fun from(parent: ViewGroup): CalendarAdapterViewHolder {
             return CalendarAdapterViewHolder(
                 ItemDayOfWeekBinding.inflate(
                     LayoutInflater.from(parent.context),

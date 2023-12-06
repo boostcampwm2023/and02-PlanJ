@@ -1,6 +1,7 @@
 package com.boostcamp.planj.data.network
 
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
@@ -14,6 +15,7 @@ import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
+import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
@@ -89,4 +91,9 @@ interface MainApi {
     @GET("/api/schedule/check")
     suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
 
+    @POST("/api/schedule/add-memo")
+    suspend fun postScheduleAddMemo(@Body postScheduleAddMemoBody: PostScheduleAddMemoBody)
+
+     @GET("/api/schedule/search")
+    suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
 }

@@ -71,4 +71,8 @@
         android:name="com.boostcamp.planj.ui.login.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/settingFailFragment"
+        android:name="com.boostcamp.planj.ui.main.SettingFailFragment"
+        android:label="SettingFailFragment" />
 </navigation>

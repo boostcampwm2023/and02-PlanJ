@@ -9,6 +9,10 @@
         <variable
             name="schedule"
             type="com.boostcamp.planj.data.model.Schedule" />
+
+        <variable
+            name="isCheck"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +20,8 @@
         android:layout_height="70dp"
         android:layout_margin="4dp"
         android:background="@drawable/round_white_stroke"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:padding="4dp">
 
 
         <CheckBox
@@ -27,6 +32,7 @@
             android:background="@drawable/checkbox"
             android:button="@null"
             android:checked="@{schedule.finished}"
+            android:visibility="@{isCheck ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,24 +42,29 @@
             android:id="@+id/tv_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_main_date"
             app:layout_constraintStart_toEndOf="@id/cb_done"
-            app:layout_constraintTop_toTopOf="@id/cb_done"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             app:setTitle="@{schedule}" />
 
         <TextView
             android:id="@+id/tv_main_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="12sp"
-            app:setDateTime="@{schedule}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/cb_done"
-            app:layout_constraintTop_toBottomOf="@id/tv_main_title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_main_title"
+            app:setDateTime="@{schedule}" />
 
 
         <ImageView

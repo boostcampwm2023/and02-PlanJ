@@ -62,8 +62,10 @@
             app:layout_constraintTop_toBottomOf="@id/til_sign_in_id">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_sign_in_pwd_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:maxWidth="488dp"
                 android:text="@={viewModel.userPwd}" />

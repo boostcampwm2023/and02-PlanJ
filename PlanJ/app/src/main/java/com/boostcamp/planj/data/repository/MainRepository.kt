@@ -12,6 +12,7 @@ import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
+import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import com.boostcamp.planj.data.model.dto.ScheduleDetail
@@ -39,7 +40,7 @@ interface MainRepository {
 
     fun getCategoryListApi(): Flow<List<Category>>
 
-    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
+    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<List<Schedule>>
 
     suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
 
@@ -55,9 +56,13 @@ interface MainRepository {
 
     fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
 
-    fun getScheduleChecked(scheduleId: String):Flow<GetScheduleCheckedResponse>
+    fun getScheduleChecked(scheduleId: String): Flow<GetScheduleCheckedResponse>
 
     suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule>
 
     suspend fun getUserImageRemove()
+
+    suspend fun postScheduleAddMemo(scheduleId: String, memo : String)
+
+    fun getSearchSchedules(name: String): Flow<List<Schedule>>
 }

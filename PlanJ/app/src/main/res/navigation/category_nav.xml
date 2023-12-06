@@ -12,7 +12,7 @@
         tools:layout="@layout/activity_schedule"
         >
         <argument
-            android:name="scheduleUuid"
+            android:name="scheduleId"
             app:argType="string" />
     </activity>
     <fragment

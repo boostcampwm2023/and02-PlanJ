@@ -26,10 +26,10 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
     val binding get() = _binding!!
 
     var pageIndex = 0
-    lateinit var date : Date
+    lateinit var date: Date
     lateinit var adapter: CalendarAdapter
 
-    private val viewModel : MainViewModel by activityViewModels()
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,11 +67,19 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
 
     }
 
-    fun initAdapter(){
+    fun initAdapter() {
         val calendar = Calendar.getInstance()
         calendar.time = date
         val day = calendar.get(Calendar.DAY_OF_WEEK)
-        val getArray = getWeek(day, "${calendar.get(Calendar.YEAR)}-${String.format("%02d", calendar.get(Calendar.MONTH)+1)}-${String.format("%02d", calendar.get(Calendar.DATE))}")
+        val getArray = getWeek(
+            day,
+            "${calendar.get(Calendar.YEAR)}-${
+                String.format(
+                    "%02d",
+                    calendar.get(Calendar.MONTH) + 1
+                )
+            }-${String.format("%02d", calendar.get(Calendar.DATE))}"
+        )
 
         adapter = CalendarAdapter(onClickListener)
         binding.calendarView.adapter = adapter
@@ -79,17 +87,29 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
         adapter.submitList(getArray)
     }
 
-    private fun getWeek(day : Int, selectDate : String) : List<SaveDate>{
+    private fun getWeek(day: Int, selectDate: String): List<SaveDate> {
         val c = Calendar.getInstance()
         c.time = date
-        c.add(Calendar.DATE, 1-day)
+        c.add(Calendar.DATE, 1 - day)
         val list = mutableListOf<SaveDate>()
-        repeat(7){
+        repeat(7) {
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH) + 1
             val dayOfMonth = c.get(Calendar.DAY_OF_MONTH)
             c.add(Calendar.DATE, 1)
-            list.add(SaveDate(year,month, dayOfMonth,"${year}-${String.format("%02d", month)}-${String.format("%02d", dayOfMonth)}" == selectDate))
+            list.add(
+                SaveDate(
+                    year,
+                    month,
+                    dayOfMonth,
+                    "${year}-${String.format("%02d", month)}-${
+                        String.format(
+                            "%02d",
+                            dayOfMonth
+                        )
+                    }" == selectDate
+                )
+            )
         }
 
         return list

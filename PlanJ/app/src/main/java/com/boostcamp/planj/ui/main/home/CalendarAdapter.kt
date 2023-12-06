@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import com.boostcamp.planj.data.model.SaveDate
 
 
-class CalendarAdapter(private val onClickListener: OnClickListener) : ListAdapter<SaveDate,CalendarAdapterViewHolder>(diffUtil) {
+class CalendarAdapter(private val onClickListener: OnClickListener) :
+    ListAdapter<SaveDate, CalendarAdapterViewHolder>(diffUtil) {
 
     override fun onBindViewHolder(holder: CalendarAdapterViewHolder, position: Int) {
-        holder.onBind(currentList[position], onClickListener )
+        holder.onBind(currentList[position], onClickListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarAdapterViewHolder {
@@ -18,7 +19,7 @@ class CalendarAdapter(private val onClickListener: OnClickListener) : ListAdapte
     }
 
 
-    companion object{
+    companion object {
         val diffUtil = object : DiffUtil.ItemCallback<SaveDate>() {
             override fun areContentsTheSame(oldItem: SaveDate, newItem: SaveDate): Boolean {
                 return oldItem == newItem

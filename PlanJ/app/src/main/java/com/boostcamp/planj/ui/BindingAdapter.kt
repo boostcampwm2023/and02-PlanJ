@@ -2,11 +2,13 @@ package com.boostcamp.planj.ui
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.Image
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
@@ -14,7 +16,10 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.data.model.naver.NaverResponse
+import com.boostcamp.planj.ui.adapter.ScheduleAdapter
+import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.bumptech.glide.Glide
@@ -187,6 +192,34 @@ fun TextView.setDateTime(schedule: Schedule) {
 }
 
 
+@BindingAdapter("failedTime")
+fun TextView.failedTime(schedule: Schedule) {
+    val start = if(schedule.startAt == null) null else String.format(
+        "%04d-%02d-%02d %02d:%02d",
+        schedule.startAt.year,
+        schedule.startAt.month,
+        schedule.startAt.day,
+        schedule.startAt.hour,
+        schedule.startAt.minute
+    )
+
+    val end = String.format(
+        "%04d-%02d-%02d %02d:%02d",
+        schedule.endAt.year,
+        schedule.endAt.month,
+        schedule.endAt.day,
+        schedule.endAt.hour,
+        schedule.endAt.minute
+    )
+
+    text = if(start == null){
+        end
+    }else{
+        "$start - $end"
+    }
+}
+
+
 @BindingAdapter("setTime")
 fun TextView.setTime(response: NaverResponse?) {
     response?.let {
@@ -214,5 +247,14 @@ fun TextView.setDistance(response: NaverResponse?) {
             "거리 : ${distance}m "
         }
 
+    }
+}
+
+@BindingAdapter("isExpandable")
+fun ImageView.isExpandable(isExpandable: Boolean) {
+    if (isExpandable) {
+        setImageResource(R.drawable.ic_drop_arrow)
+    } else {
+        setImageResource(R.drawable.ic_arrow_right)
     }
 }
