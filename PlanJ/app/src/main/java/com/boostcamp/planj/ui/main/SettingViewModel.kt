@@ -186,7 +186,7 @@ class SettingViewModel @Inject constructor(
                 Log.d("PLANJDEBUG", "getTotalSchedules Success")
                 _totalSchedules.value = it
                 _completeCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> schedule.isFinished }.size
+                    _totalSchedules.value.filter { schedule: Schedule -> schedule.isFinished && !schedule.isFailed }.size
                 _failCount.value =
                     _totalSchedules.value.filter { schedule: Schedule -> schedule.isFailed }.size
                 _haveCount.value =
