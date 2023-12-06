@@ -8,6 +8,7 @@ import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleResponse } from "./dto/schedule.response";
 import { ScheduleEntity } from "./entity/schedule.entity";
+import { bool } from "aws-sdk/clients/signer";
 
 @Injectable()
 export class ScheduleMetaService {
@@ -160,9 +161,11 @@ export class ScheduleMetaService {
     return { firstDay, lastDay };
   }
 
-  async updateSharedStatus(metadataId: number) {
+  async updateSharedStatus(metadataId: number, isAllUnInvited: boolean) {
     const record = await this.scheduleMetaRepository.findOne({ where: { metadataId } });
-    record.shared = true;
+
+    record.shared = !isAllUnInvited;
+
     await this.scheduleMetaRepository.save(record);
   }
 

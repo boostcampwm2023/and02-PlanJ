@@ -50,4 +50,9 @@ export class ParticipateService {
   ) {
     return await this.participateRepository.checkInvitedStatus(authorMetadata, groupUserEntities, invitedUserEntities);
   }
+
+  async deleteAuthor(authorMetadataId: number) {
+    console.log(authorMetadataId);
+    await this.participateRepository.softDelete({ authorId: authorMetadataId, participantId: authorMetadataId });
+  }
 }
