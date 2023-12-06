@@ -12,7 +12,7 @@ export class ScheduleAlarmService {
     @InjectRepository(ScheduleAlarmEntity) private scheduleAlarmRepository: Repository<ScheduleAlarmEntity>,
   ) {}
 
-  async addScheduleAlarm(dto: UpdateScheduleDto, metadata: ScheduleMetadataEntity) {
+  async updateScheduleAlarm(dto: UpdateScheduleDto, metadata: ScheduleMetadataEntity) {
     let record = await this.scheduleAlarmRepository.findOne({ where: { metadataId: metadata.metadataId } });
     const alarmDto = dto.alarm;
 
@@ -25,13 +25,18 @@ export class ScheduleAlarmService {
       return;
     }
 
-    record = !record
-      ? this.scheduleAlarmRepository.create({
-          alarmType: AlarmType[alarmDto.alarmType],
-          alarmTime: alarmDto.alarmTime,
-          metadataId: metadata.metadataId,
-        })
-      : record;
+    if (!record) {
+      record = this.scheduleAlarmRepository.create({
+        alarmType: AlarmType[alarmDto.alarmType],
+        alarmTime: alarmDto.alarmTime,
+        firstScheduleUuid: alarmDto.firstScheduleUuid,
+        metadataId: metadata.metadataId,
+      });
+    } else {
+      record.firstScheduleUuid = alarmDto.firstScheduleUuid;
+      record.alarmTime = alarmDto.alarmTime;
+      record.alarmType = AlarmType[alarmDto.alarmType];
+    }
 
     try {
       await this.scheduleAlarmRepository.save(record);

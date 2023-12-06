@@ -8,4 +8,7 @@ export class ScheduleAlarmDto {
   @Max(99)
   @Min(0)
   alarmTime: number;
+
+  @IsString()
+  firstScheduleUuid: string;
 }
