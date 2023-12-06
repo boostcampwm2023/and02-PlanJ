@@ -54,6 +54,7 @@ export class UserApiController {
   @UseGuards(AuthGuard)
   @Get("/verify")
   verify(): Promise<JSON> {
+    this.logger.log("Get /api/auth/verify");
     const body: HttpResponse = {
       message: "토큰 검증 완료",
     };
