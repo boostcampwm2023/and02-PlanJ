@@ -92,7 +92,7 @@ class MainViewModel @Inject constructor(
 
     fun getAllSchedule() {
         viewModelScope.launch {
-            mainRepository.searchSchedule("")
+            mainRepository.getSearchSchedules("")
                 .catch {
                     Log.d("PLANJDEBUG", "getAllSchedule error ${it.message}")
                 }
