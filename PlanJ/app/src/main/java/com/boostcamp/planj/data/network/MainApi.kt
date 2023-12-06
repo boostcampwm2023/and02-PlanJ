@@ -9,6 +9,7 @@ import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
 import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.GetFailedMemoResponse
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
@@ -40,7 +41,7 @@ interface MainApi {
     suspend fun postSchedule(@Body postScheduleBody: PostScheduleBody): PostScheduleResponse
 
     @DELETE("/api/category/delete/{categoryUuid}")
-    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String) : CategoryResponse
+    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String): CategoryResponse
 
     @HTTP(method = "DELETE", path = "/api/schedule/delete", hasBody = true)
     suspend fun deleteSchedule(@Body deleteScheduleBody: DeleteScheduleBody)
@@ -94,6 +95,9 @@ interface MainApi {
     @POST("/api/schedule/memo")
     suspend fun postScheduleAddMemo(@Body postScheduleAddMemoBody: PostScheduleAddMemoBody)
 
-     @GET("/api/schedule/search")
+    @GET("/api/schedule/search")
     suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
+
+    @GET("/api/schedule/memo")
+    suspend fun getFailedMemo(): GetFailedMemoResponse
 }
