@@ -58,7 +58,8 @@ class ScheduleParticipantsViewModel @Inject constructor(
                                         email = user.email,
                                         profileUrl = user.profileUrl,
                                         isFinished = false,
-                                        currentUser = false
+                                        currentUser = false,
+                                        isAuthor = false
                                     ), false
                                 )
                             )

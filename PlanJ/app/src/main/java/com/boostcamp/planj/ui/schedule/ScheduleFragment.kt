@@ -39,6 +39,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private val args: ScheduleFragmentArgs by navArgs()
 
+    private var isEditable = false
+
     private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
     private var alarmSettingDialog = AlarmSettingDialog(null, this)
 
@@ -136,7 +138,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.scheduleAlarm.collectLatest { alarm ->
-
                     if (alarm != null && alarm.alarmType == "DEPARTURE") {
                         binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
                         binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
@@ -151,8 +152,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.participants.collectLatest {
+                viewModel.participants.collectLatest { participants ->
                     initAdapter()
+                    isEditable = participants.find { it.currentUser }?.isAuthor ?: false
+                    updateToolbar(viewModel.isEditMode.value)
                 }
             }
         }
@@ -287,9 +290,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private fun updateToolbar(isEditMode: Boolean) {
         with(binding.toolbarSchedule.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
-            findItem(R.id.item_schedule_delete).isVisible = !isEditMode
-            findItem(R.id.item_schedule_complete).isVisible = isEditMode
+            findItem(R.id.item_schedule_edit).isVisible = !isEditMode && isEditable
+            findItem(R.id.item_schedule_delete).isVisible = !isEditMode && isEditable
+            findItem(R.id.item_schedule_complete).isVisible = isEditMode && isEditable
         }
         binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
     }

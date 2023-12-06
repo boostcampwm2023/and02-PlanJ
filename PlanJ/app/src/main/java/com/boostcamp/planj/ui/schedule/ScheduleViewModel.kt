@@ -72,6 +72,9 @@ class ScheduleViewModel @Inject constructor(
     private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList = _categoryList.asStateFlow()
 
+    private val _isAuthor = MutableStateFlow(false)
+    val isAuthor = _isAuthor.asStateFlow()
+
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode = _isEditMode.asStateFlow()
 
@@ -109,6 +112,7 @@ class ScheduleViewModel @Inject constructor(
                     _endScheduleLocation.value = schedule.endLocation
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
+                    _isAuthor.value = schedule.participants.find { it.currentUser }?.isAuthor ?: false
                 }
         }
     }
