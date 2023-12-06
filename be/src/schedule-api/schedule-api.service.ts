@@ -153,13 +153,15 @@ export class ScheduleApiService {
       invitedUserEntities,
     );
 
-    if (!!dto.participants) {
-      for (const [email, invitedStatusEnum] of invitedStatus) {
-        await this.inviteSchedule(email, invitedStatusEnum, dto.scheduleUuid, dto.repetition);
-      }
-
-      await this.scheduleMetaService.updateSharedStatus(metadataId);
+    for (const [email, invitedStatusEnum] of invitedStatus) {
+      await this.inviteSchedule(email, invitedStatusEnum, dto.scheduleUuid, dto.repetition);
     }
+
+    const isAllUnInvited = dto.participants.length === 0;
+    if (isAllUnInvited) {
+      await this.participateService.deleteAuthor(metadataId);
+    }
+    await this.scheduleMetaService.updateSharedStatus(metadataId, isAllUnInvited);
 
     const body: HttpResponse = {
       message: "일정 수정 성공",
@@ -280,8 +282,6 @@ export class ScheduleApiService {
     authorScheduleUuid: string,
     repetition: RepetitionDto,
   ) {
-    // invitedStatusCode 0: not added (new) 1: already added(changed) 2: deleted
-
     const authorMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(authorScheduleUuid);
     const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(authorScheduleUuid);
     const authorScheduleMetadata = authorSchedule.parent;
@@ -323,7 +323,7 @@ export class ScheduleApiService {
       const invitedScheduleMetadata = await this.scheduleMetaService.addScheduleMetadata(addScheduleDto, invitedUser);
       invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
       invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
-      await this.scheduleMetaService.updateSharedStatus(invitedMetadataId);
+      await this.scheduleMetaService.updateSharedStatus(invitedMetadataId, false);
     }
     if (invitedStatus === InviteStatus.CHANGED) {
       invitedMetadataId = await this.participateService.getInvitedMetadataId(authorMetadataId, invitedUser.userId);
