@@ -28,8 +28,8 @@ import java.util.Calendar
 import java.util.Locale
 
 class ScheduleFailDialog(
-    private val schedule : Schedule,
-    private val successListener : (Schedule, String) -> Unit
+    private val schedule: Schedule,
+    private val successListener: (Schedule, String) -> Unit
 ) : DialogFragment() {
 
     private var _binding: DialogFailWriteBinding? = null
@@ -60,7 +60,7 @@ class ScheduleFailDialog(
 
     override fun onResume() {
         super.onResume()
-        dialogFragmentResize(requireContext(), this@ScheduleFailDialog, 0.9f, 0.5f)
+        context?.setDialogSize(this@ScheduleFailDialog, 0.5)
     }
 
     override fun onDestroyView() {
@@ -68,56 +68,26 @@ class ScheduleFailDialog(
         super.onDestroyView()
     }
 
-    private fun setListener(){
-        binding.tvDialogScheduleSuccess.setOnClickListener {
-            val text = binding.tietDialogScheduleInputTitleSchedule.text
-            if(text.isNullOrEmpty()){
-                binding.tilDialogScheduleInputSchedule.error = "10자 이상 입력해 주세요"
+    private fun setListener() {
+        binding.tvDialogFailScheduleSuccess.setOnClickListener {
+            val text = binding.tietDialogFailScheduleInputTitleSchedule.text
+            if (text.isNullOrEmpty()) {
+                binding.tilDialogFailScheduleInputSchedule.error = "10자 이상 입력해 주세요"
                 return@setOnClickListener
             }
-            if(binding.tilDialogScheduleInputSchedule.error == null){
+            if (binding.tilDialogFailScheduleInputSchedule.error == null) {
                 successListener(schedule, text.toString())
                 dismiss()
             }
         }
 
-        binding.tietDialogScheduleInputTitleSchedule.doOnTextChanged { text, _, _, _ ->
-            binding.tilDialogScheduleInputSchedule.error =if(!text.isNullOrEmpty() && text.length >= 10){
-                  null
-            }else {
-                "10자 이상 입력해 주세요"
-            }
-        }
-    }
-
-
-    fun dialogFragmentResize(context: Context, dialogFragment: DialogFragment, width: Float, height: Float) {
-
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        if (Build.VERSION.SDK_INT < 30) {
-
-            val display = windowManager.defaultDisplay
-            val size = Point()
-
-            display.getSize(size)
-
-            val window = dialogFragment.dialog?.window
-
-            val x = (size.x * width).toInt()
-            val y = (size.y * height).toInt()
-            window?.setLayout(x, y)
-
-        } else {
-
-            val rect = windowManager.currentWindowMetrics.bounds
-
-            val window = dialogFragment.dialog?.window
-
-            val x = (rect.width() * width).toInt()
-            val y = (rect.height() * height).toInt()
-
-            window?.setLayout(x, y)
+        binding.tietDialogFailScheduleInputTitleSchedule.doOnTextChanged { text, _, _, _ ->
+            binding.tilDialogFailScheduleInputSchedule.error =
+                if (!text.isNullOrEmpty() && text.length >= 10) {
+                    null
+                } else {
+                    "10자 이상 입력해 주세요"
+                }
         }
     }
 

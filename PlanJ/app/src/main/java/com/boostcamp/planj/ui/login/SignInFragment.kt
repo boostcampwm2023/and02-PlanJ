@@ -68,7 +68,7 @@ class SignInFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             val user = viewModel.getToken()
-            if(user.isNotEmpty()){
+            if (user.isNotEmpty()) {
                 val action = SignInFragmentDirections.actionSignInFragmentToMainActivity()
                 findNavController().navigate(action)
                 requireActivity().finish()

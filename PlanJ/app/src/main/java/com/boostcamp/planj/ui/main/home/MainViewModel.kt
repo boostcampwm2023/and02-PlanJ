@@ -72,7 +72,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun refresh(){
+    fun refresh() {
         isRefreshing.value = true
         getScheduleDaily("${_selectDate.value}T00:00:00")
     }
@@ -90,7 +90,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getAllSchedule(){
+    fun getAllSchedule() {
         viewModelScope.launch {
             mainRepository.searchSchedule("")
                 .catch {
@@ -145,12 +145,12 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun scheduleFinishChange(schedule: Schedule, showDialog : (Schedule) -> Unit) {
+    fun scheduleFinishChange(schedule: Schedule, showDialog: (Schedule) -> Unit) {
         viewModelScope.launch {
             mainRepository.getScheduleChecked(schedule.scheduleId).catch {
-                Log.d("PLANJDEBUG","getScheduleChecked Error ${it.message}")
+                Log.d("PLANJDEBUG", "getScheduleChecked Error ${it.message}")
             }.collectLatest {
-                if(it.data.failed&& !it.data.hasRetrospectiveMemo){
+                if (it.data.failed && !it.data.hasRetrospectiveMemo) {
                     showDialog(schedule)
                 }
                 getScheduleDaily("${_selectDate.value}T00:00:00")
@@ -158,21 +158,21 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun postScheduleAddMemo(schedule: Schedule, memo : String){
+    fun postScheduleAddMemo(schedule: Schedule, memo: String) {
         viewModelScope.launch {
             try {
                 mainRepository.postScheduleAddMemo(schedule.scheduleId, memo)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "postScheduleAddMemo error ${e.message}")
             }
         }
     }
 
-    fun setScheduleSegment(scheduleSegment: List<ScheduleSegment>){
+    fun setScheduleSegment(scheduleSegment: List<ScheduleSegment>) {
         _scheduleSegment.value = scheduleSegment
     }
 
-    fun changeExpanded(index : Int){
+    fun changeExpanded(index: Int) {
         val list = _scheduleSegment.value.toMutableList()
         list[index] = list[index].copy(expanded = !list[index].expanded)
         _scheduleSegment.value = list

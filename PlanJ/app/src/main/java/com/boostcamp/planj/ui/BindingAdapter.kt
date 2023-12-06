@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
@@ -15,7 +16,10 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.data.model.naver.NaverResponse
+import com.boostcamp.planj.ui.adapter.ScheduleAdapter
+import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.bumptech.glide.Glide
@@ -243,5 +247,14 @@ fun TextView.setDistance(response: NaverResponse?) {
             "거리 : ${distance}m "
         }
 
+    }
+}
+
+@BindingAdapter("isExpandable")
+fun ImageView.isExpandable(isExpandable: Boolean) {
+    if (isExpandable) {
+        setImageResource(R.drawable.ic_drop_arrow)
+    } else {
+        setImageResource(R.drawable.ic_arrow_right)
     }
 }

@@ -156,7 +156,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.showToast.collectLatest {message ->
+                viewModel.showToast.collectLatest { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
             }

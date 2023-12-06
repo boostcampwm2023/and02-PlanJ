@@ -26,7 +26,7 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val position = viewHolder.adapterPosition
+                    val position = viewHolder.bindingAdapterPosition
                     listener.swipe(item.scheduleList[position])
 
                 }
@@ -42,25 +42,22 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
         swipeListener: SwipeListener,
         clickListener: ScheduleClickListener,
         checkBoxListener: ScheduleDoneListener,
-        changeExpanded : (Int) -> Unit
+        changeExpanded: (Int) -> Unit
     ) {
         binding.executePendingBindings()
         this.item = item
         this.listener = swipeListener
-
-        binding.tvMainScheduleTitle.text = item.segmentTitle
+        binding.scheduleSegment = item
         val scheduleAdapter = ScheduleAdapter(clickListener, checkBoxListener)
         binding.rvListSchedule.adapter = scheduleAdapter
         binding.ivListToggle.setOnClickListener {
             changeExpanded(bindingAdapterPosition)
         }
 
-        if(item.expanded){
+        if (item.expanded) {
             scheduleAdapter.submitList(this.item.scheduleList)
-            binding.ivListToggle.setImageResource(R.drawable.ic_drop_arrow)
-        }else{
+        } else {
             scheduleAdapter.submitList(emptyList())
-            binding.ivListToggle.setImageResource(R.drawable.ic_arrow_right)
         }
 
     }

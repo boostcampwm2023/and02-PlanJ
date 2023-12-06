@@ -90,7 +90,7 @@ class HomeFragment : Fragment() {
         initViewPager(calendarAdapter)
 
 
-        val swipeListener = SwipeListener {schedule: Schedule ->
+        val swipeListener = SwipeListener { schedule: Schedule ->
             viewModel.deleteSchedule(schedule.scheduleId)
 
         }
@@ -101,7 +101,7 @@ class HomeFragment : Fragment() {
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
             viewModel.scheduleFinishChange(schedule) {
-                val dialog = ScheduleFailDialog(it){ schedule, memo ->
+                val dialog = ScheduleFailDialog(it) { schedule, memo ->
                     viewModel.postScheduleAddMemo(schedule, memo)
                 }
                 dialog.show(
@@ -114,7 +114,7 @@ class HomeFragment : Fragment() {
             swipeListener = swipeListener,
             checkBoxListener = checkBoxListener,
             clickListener = scheduleClickListener
-        ){
+        ) {
             viewModel.changeExpanded(it)
         }
         binding.rvMainHomeDailySchedule.adapter = segmentScheduleAdapter
@@ -153,15 +153,16 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.allSchedule.collectLatest {
-                    if(it.isNotEmpty()){
-                        it.find {schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }?.let { schedule ->
-                            val dialog = ScheduleFailDialog(schedule){ s, memo ->
-                                viewModel.postScheduleAddMemo(s, memo)
+                    if (it.isNotEmpty()) {
+                        it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }
+                            ?.let { schedule ->
+                                val dialog = ScheduleFailDialog(schedule) { s, memo ->
+                                    viewModel.postScheduleAddMemo(s, memo)
+                                }
+                                dialog.show(
+                                    parentFragmentManager, tag
+                                )
                             }
-                            dialog.show(
-                                parentFragmentManager, tag
-                            )
-                        }
                     }
                 }
             }
@@ -174,7 +175,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
 
         setListener()
     }
@@ -202,7 +202,7 @@ class HomeFragment : Fragment() {
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
             val dialog = ScheduleDialog(
-                viewModel.categories.value.map{it.categoryName},
+                viewModel.categories.value.map { it.categoryName },
                 "미분류"
             ) { category, title, _ ->
 

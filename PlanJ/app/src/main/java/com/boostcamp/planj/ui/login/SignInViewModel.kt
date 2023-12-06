@@ -54,13 +54,13 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveId(id : String){
-        withContext(Dispatchers.IO){
+    private suspend fun saveId(id: String) {
+        withContext(Dispatchers.IO) {
             loginRepository.saveUser(id)
         }
     }
 
-    fun postSignInNaver(accessToken: String){
+    fun postSignInNaver(accessToken: String) {
         viewModelScope.launch {
             loginRepository.postSignInNaver(accessToken)
                 .catch {
@@ -75,7 +75,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    suspend fun getToken() = withContext(Dispatchers.IO){
+    suspend fun getToken() = withContext(Dispatchers.IO) {
         loginRepository.getToken().first()
     }
 }

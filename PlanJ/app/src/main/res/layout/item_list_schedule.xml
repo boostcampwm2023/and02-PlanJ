@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="expanded"
-            type="Boolean" />
+            name="scheduleSegment"
+            type="com.boostcamp.planj.data.model.ScheduleSegment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,14 +14,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/white"
-        >
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/iv_list_toggle"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_drop_arrow"
+            app:isExpandable="@{scheduleSegment.expanded}"
             app:layout_constraintBottom_toBottomOf="@id/tv_main_schedule_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_main_schedule_title" />
@@ -30,22 +29,24 @@
             android:id="@+id/tv_main_schedule_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="일정"
+            android:text="@{scheduleSegment.segmentTitle}"
             android:textSize="24sp"
             app:layout_constraintStart_toEndOf="@id/iv_list_toggle"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_list_schedule"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/tv_main_schedule_title"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:itemCount="4"
-                tools:listitem="@layout/item_schedule" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_main_schedule_title"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_schedule"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
