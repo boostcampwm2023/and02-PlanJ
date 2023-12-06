@@ -13,6 +13,7 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
@@ -194,7 +195,7 @@ fun TextView.setDateTime(schedule: Schedule) {
 
 @BindingAdapter("failedTime")
 fun TextView.failedTime(schedule: Schedule) {
-    val start = if(schedule.startAt == null) null else String.format(
+    val start = if (schedule.startAt == null) null else String.format(
         "%04d-%02d-%02d %02d:%02d",
         schedule.startAt.year,
         schedule.startAt.month,
@@ -212,9 +213,9 @@ fun TextView.failedTime(schedule: Schedule) {
         schedule.endAt.minute
     )
 
-    text = if(start == null){
+    text = if (start == null) {
         end
-    }else{
+    } else {
         "$start - $end"
     }
 }
@@ -256,5 +257,17 @@ fun ImageView.isExpandable(isExpandable: Boolean) {
         setImageResource(R.drawable.ic_drop_arrow)
     } else {
         setImageResource(R.drawable.ic_arrow_right)
+    }
+}
+
+@BindingAdapter("failedMemoTime")
+fun TextView.failedMemoTime(failedData: FailedMemo) {
+
+    val endTime = failedData.endAt.replace("-", "/").split("T")
+    text = if (failedData.startAt == null) {
+        "${endTime[0]} ${endTime[1]}"
+    } else {
+        val startTime = failedData.startAt.replace("-", "/").split("T")
+        "${startTime[0]} ${startTime[1]} - ${endTime[0]} ${endTime[1]}"
     }
 }
