@@ -3,7 +3,6 @@ package com.boostcamp.planj.ui.schedule
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -305,7 +304,6 @@ class ScheduleStartMapFragment : Fragment(), OnMapReadyCallback {
         binding.btnScheduleMapSelectPlace.setOnClickListener {
             val action =
                 ScheduleStartMapFragmentDirections.actionScheduleStartMapFragmentToScheduleFragment(
-                    location = args.endLocation,
                     startLocation = viewModel.startLocation.value
                 )
             findNavController().navigate(action)

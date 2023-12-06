@@ -3,7 +3,6 @@ package com.boostcamp.planj.data.repository
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.model.Category
@@ -36,7 +35,6 @@ class MainRepositoryImpl @Inject constructor(
 
     companion object {
         val USER = stringPreferencesKey("User")
-        val ALARM_MODE = booleanPreferencesKey("alarm")
     }
 
     override fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse> =
@@ -233,7 +231,6 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getUserImageRemove() {
         return api.patchUserImageRemove()
-
     }
 
     override fun getSearchSchedules(keyword: String): Flow<List<Schedule>> = flow {

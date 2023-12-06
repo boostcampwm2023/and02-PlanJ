@@ -118,8 +118,6 @@ class HomeFragment : Fragment() {
         binding.rvMainHomeDailySchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
 
-
-
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectDate.collectLatest {

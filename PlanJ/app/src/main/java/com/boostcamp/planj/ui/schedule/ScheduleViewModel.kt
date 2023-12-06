@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -71,6 +72,9 @@ class ScheduleViewModel @Inject constructor(
     private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList = _categoryList.asStateFlow()
 
+    private val _isAuthor = MutableStateFlow(false)
+    val isAuthor = _isAuthor.asStateFlow()
+
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode = _isEditMode.asStateFlow()
 
@@ -108,6 +112,7 @@ class ScheduleViewModel @Inject constructor(
                     _endScheduleLocation.value = schedule.endLocation
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
+                    _isAuthor.value = schedule.participants.find { it.currentUser }?.isAuthor ?: false
                 }
         }
     }
@@ -150,9 +155,16 @@ class ScheduleViewModel @Inject constructor(
         _scheduleAlarm.value = alarm
     }
 
-    fun setLocation(startLocation: Location?, endLocation: Location?) {
-        _endScheduleLocation.value = endLocation
+    fun setStartLocation(startLocation: Location) {
         _startScheduleLocation.value = startLocation
+    }
+
+    fun setEndLocation(endLocation: Location) {
+        _endScheduleLocation.value = endLocation
+    }
+
+    fun setParticipants(participants: List<Participant>) {
+        _participants.value = participants
     }
 
     private fun changeMillisToDate(millis: Long): Triple<Int, Int, Int> {
@@ -175,10 +187,8 @@ class ScheduleViewModel @Inject constructor(
             try {
                 // 등록된 알림이 있다면 삭제
                 loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-                loginRepository.getAlarmMode().collectLatest { alarmMode ->
-                    if (alarmMode) {
-                        _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
-                    }
+                if (loginRepository.getAlarmMode().first()) {
+                    _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
                 }
 
                 mainRepository.deleteScheduleApi(scheduleId)
@@ -233,7 +243,7 @@ class ScheduleViewModel @Inject constructor(
                     startLocation = startScheduleLocation.value,
                     endLocation = endScheduleLocation.value,
                     repetition = scheduleRepetition.value,
-                    participants = participants.value,
+                    participants = participants.value.filter { !it.currentUser }.map { it.email },
                     alarm = scheduleAlarm.value
                 )
 

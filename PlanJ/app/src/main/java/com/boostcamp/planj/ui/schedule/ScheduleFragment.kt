@@ -39,9 +39,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private val args: ScheduleFragmentArgs by navArgs()
 
+    private var isEditable = false
+
     private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
     private var alarmSettingDialog = AlarmSettingDialog(null, this)
-    private var participantDialog = ScheduleParticipantDialog(emptyList())
 
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -74,14 +75,18 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
+        if (args.startLocation != null) {
+            viewModel.setStartLocation(args.startLocation!!)
+        } else if (args.endLocation != null) {
+            viewModel.setEndLocation(args.endLocation!!)
+        } else if (args.participants != null) {
+            viewModel.setParticipants(args.participants!!.toList())
+        }
+
         viewModel.getCategories()
 
         setObserver()
         setListener()
-
-        if (args.startLocation != null || args.location != null) {
-            viewModel.setLocation(args.startLocation, args.location)
-        }
 
         binding.executePendingBindings()
     }
@@ -133,7 +138,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.scheduleAlarm.collectLatest { alarm ->
-
                     if (alarm != null && alarm.alarmType == "DEPARTURE") {
                         binding.tvScheduleLocationAlarm.text = "위치 알람 해제"
                         binding.tvScheduleLocationAlarm.setBackgroundResource(R.drawable.round_r8_red)
@@ -148,8 +152,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.participants.collectLatest {
+                viewModel.participants.collectLatest { participants ->
                     initAdapter()
+                    isEditable = participants.find { it.currentUser }?.isAuthor ?: false
+                    updateToolbar(viewModel.isEditMode.value)
                 }
             }
         }
@@ -229,10 +235,12 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleAllParticipants.setOnClickListener {
-            if (!participantDialog.isAdded) {
-                participantDialog = ScheduleParticipantDialog(viewModel.participants.value)
-                participantDialog.show(childFragmentManager, "전체 참가자")
-            }
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToScheduleParticipantsFragment(
+                    viewModel.participants.value.toTypedArray(),
+                    viewModel.isEditMode.value
+                )
+            findNavController().navigate(action)
         }
 
         binding.tvScheduleLocationUrlScheme.setOnClickListener {
@@ -282,9 +290,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private fun updateToolbar(isEditMode: Boolean) {
         with(binding.toolbarSchedule.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
-            findItem(R.id.item_schedule_delete).isVisible = !isEditMode
-            findItem(R.id.item_schedule_complete).isVisible = isEditMode
+            findItem(R.id.item_schedule_edit).isVisible = !isEditMode && isEditable
+            findItem(R.id.item_schedule_delete).isVisible = !isEditMode && isEditable
+            findItem(R.id.item_schedule_complete).isVisible = isEditMode && isEditable
         }
         binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
     }

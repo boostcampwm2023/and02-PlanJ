@@ -23,11 +23,7 @@
             android:id="@+id/action_fragment_user_to_loginActivity"
             app:destination="@id/loginActivity"
             app:popUpTo="@layout/fragment_home"
-            app:popUpToInclusive="true"
-            />
-        <action
-            android:id="@+id/action_fragment_user_to_settingFailFragment"
-            app:destination="@id/settingFailFragment" />
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/fragment_friend_list"
