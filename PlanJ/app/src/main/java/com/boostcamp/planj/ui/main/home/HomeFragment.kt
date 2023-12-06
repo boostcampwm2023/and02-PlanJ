@@ -12,8 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
@@ -100,8 +98,6 @@ class HomeFragment : Fragment() {
         )
         binding.rvMainHomeDailySchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
-
-
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

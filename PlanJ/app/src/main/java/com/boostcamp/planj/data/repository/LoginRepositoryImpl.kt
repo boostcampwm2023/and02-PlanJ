@@ -3,14 +3,15 @@ package com.boostcamp.planj.data.repository
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.DateTime
-import com.boostcamp.planj.data.model.dto.SignInNaverRequest
 import com.boostcamp.planj.data.model.dto.LoginResponse
+import com.boostcamp.planj.data.model.dto.SignInNaverRequest
 import com.boostcamp.planj.data.model.dto.SignInRequest
 import com.boostcamp.planj.data.model.dto.SignUpRequest
 import com.boostcamp.planj.data.network.ApiResult
@@ -32,6 +33,7 @@ class LoginRepositoryImpl @Inject constructor(
 
     companion object {
         val USER = stringPreferencesKey("User")
+        val ALARM_MODE = booleanPreferencesKey("alarm")
     }
 
     override suspend fun postSignUp(
@@ -149,7 +151,7 @@ class LoginRepositoryImpl @Inject constructor(
 
     override suspend fun saveAlarmMode(mode: Boolean) {
         dataStore.edit { prefs ->
-            prefs[MainRepositoryImpl.ALARM_MODE] = mode
+            prefs[ALARM_MODE] = mode
         }
     }
 
@@ -165,7 +167,7 @@ class LoginRepositoryImpl @Inject constructor(
 
             }
             .map { prefs ->
-                prefs[MainRepositoryImpl.ALARM_MODE] ?: true
+                prefs[ALARM_MODE] ?: true
             }
     }
 }

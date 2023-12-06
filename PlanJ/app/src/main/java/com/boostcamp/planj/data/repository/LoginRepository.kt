@@ -38,6 +38,4 @@ interface LoginRepository {
     suspend fun saveAlarmMode(mode: Boolean)
 
     fun getAlarmMode(): Flow<Boolean>
-
-
 }
