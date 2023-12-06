@@ -1,4 +1,4 @@
-import { IsDecimal, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class ScheduleLocationDto {
   @IsOptional()
@@ -10,10 +10,10 @@ export class ScheduleLocationDto {
   placeAddress: string | null;
 
   @IsOptional()
-  @IsDecimal()
+  @IsNumber()
   latitude: number | null;
 
   @IsOptional()
-  @IsDecimal()
+  @IsNumber()
   longitude: number | null;
 }

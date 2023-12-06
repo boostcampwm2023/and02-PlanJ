@@ -15,6 +15,9 @@ export class ScheduleAlarmEntity extends BaseEntity {
   @Column({ name: "alarm_time", type: "int" })
   alarmTime: number;
 
+  @Column({ name: "first_schedule_uuid", length: 26 })
+  firstScheduleUuid: string;
+
   @OneToOne(() => ScheduleMetadataEntity, (scheduleMetadata) => scheduleMetadata.metadataId)
   @JoinColumn({ name: "metadata_id" })
   scheduleMetadata: ScheduleMetadataEntity;

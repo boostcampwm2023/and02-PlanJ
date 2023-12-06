@@ -8,7 +8,6 @@ import { CategoryEntity } from "src/category/entity/category.entity";
 import { UpdateScheduleDto } from "./dto/update-schedule.dto";
 import { ScheduleResponse } from "./dto/schedule.response";
 import { ScheduleEntity } from "./entity/schedule.entity";
-import { bool } from "aws-sdk/clients/signer";
 
 @Injectable()
 export class ScheduleMetaService {
@@ -51,6 +50,7 @@ export class ScheduleMetaService {
     dto: UpdateScheduleDto,
     category: CategoryEntity,
     metadataId: number,
+    author: boolean,
   ): Promise<ScheduleMetadataEntity> {
     const { title, description, startAt, endAt } = dto;
 
@@ -70,11 +70,15 @@ export class ScheduleMetaService {
     record.category = category;
     record.title = title;
     record.description = description;
-    record.startTime = startTime;
-    record.endTime = endTime;
-    record.hasLocation = !!dto.endLocation;
-    record.repeated = !!dto.repetition;
     record.hasAlarm = !!dto.alarm;
+
+    if (author) {
+      record.startTime = startTime;
+      record.endTime = endTime;
+      record.shared = dto.participants.length !== 0;
+      record.hasLocation = !!dto.endLocation;
+      record.repeated = !!dto.repetition;
+    }
 
     try {
       await this.scheduleMetaRepository.save(record);

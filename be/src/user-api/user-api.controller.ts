@@ -18,6 +18,7 @@ import { UserApiService } from "./user-api.service";
 import { AuthGuard } from "../guard/auth.guard";
 import { Token } from "../utils/token.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { HttpResponse } from "../utils/http.response";
 
 @Controller("/api/auth")
 export class UserApiController {
@@ -48,6 +49,16 @@ export class UserApiController {
     this.logger.verbose("User login dto: " + JSON.stringify(dto, null, 2));
     const result = await this.userApiService.login(dto);
     return JSON.parse(result);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("/verify")
+  verify(): Promise<JSON> {
+    this.logger.log("Get /api/auth/verify");
+    const body: HttpResponse = {
+      message: "토큰 검증 완료",
+    };
+    return JSON.parse(JSON.stringify(body));
   }
 
   @UseGuards(AuthGuard)

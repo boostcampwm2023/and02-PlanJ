@@ -83,7 +83,7 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
       }
     }
 
-    this.logger.verbose("Invited Status: " + invitedStatus);
+    this.logger.verbose("Invited Status: " + JSON.stringify(invitedStatus, null, 2));
     const invitedStatusArray: [string, InviteStatus][] = Object.entries(invitedStatus);
     return invitedStatusArray;
   }
