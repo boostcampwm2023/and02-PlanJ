@@ -19,13 +19,16 @@ import { AuthGuard } from "../guard/auth.guard";
 import { Token } from "../utils/token.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { HttpResponse } from "../utils/http.response";
+import { ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("사용자")
 @Controller("/api/auth")
 export class UserApiController {
   private readonly logger = new Logger(UserApiController.name);
 
   constructor(private userApiService: UserApiService) {}
 
+  @ApiOperation({ summary: "회원 가입" })
   @Post("/register")
   async register(@Body() dto: CreateUserDto): Promise<JSON> {
     this.logger.log("Post /api/auth/register");
@@ -34,6 +37,7 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @ApiOperation({ summary: "네이버 로그인" })
   @Post("/naver")
   async loginByNaver(@Body("accessToken") accessToken: string): Promise<JSON> {
     this.logger.log("Post /api/auth/naver");
@@ -42,6 +46,7 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @ApiOperation({ summary: "로그인" })
   @Post("/login")
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: UserLoginDto): Promise<JSON> {
@@ -51,6 +56,7 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @ApiOperation({ summary: "토큰 검증" })
   @UseGuards(AuthGuard)
   @Get("/verify")
   verify(): Promise<JSON> {
@@ -61,6 +67,7 @@ export class UserApiController {
     return JSON.parse(JSON.stringify(body));
   }
 
+  @ApiOperation({ summary: "프로필 이미지 기본으로 설정" })
   @UseGuards(AuthGuard)
   @Patch("/set-default-image")
   async setProfileImageDefault(@Token() token: string): Promise<JSON> {
@@ -70,6 +77,7 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @ApiOperation({ summary: "회원 탈퇴" })
   @UseGuards(AuthGuard)
   @Delete()
   async deleteUser(@Token() token: string): Promise<JSON> {
@@ -79,6 +87,7 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @ApiOperation({ summary: "사용자 정보 조회" })
   @UseGuards(AuthGuard)
   @Get()
   async getUserInfo(@Token() token: string): Promise<JSON> {
@@ -88,6 +97,8 @@ export class UserApiController {
     return JSON.parse(result);
   }
 
+  @ApiOperation({ summary: "사용자 정보 업데이트" })
+  @ApiConsumes("multipart/form-data")
   @UseGuards(AuthGuard)
   @Patch()
   @UseInterceptors(FileInterceptor("profileImage"))

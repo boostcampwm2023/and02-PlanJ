@@ -10,6 +10,17 @@
       }
     ],
     "watchAssets": true,
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": true,
+          "introspectComments": true,
+          "controllerKeyOfComment": "summary",
+          "dtoFileNameSuffix": [".dto.ts", ".entity.ts", ".response.ts"]
+        }
+      }
+    ]
   }
 }
