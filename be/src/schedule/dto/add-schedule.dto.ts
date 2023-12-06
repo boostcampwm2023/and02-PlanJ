@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsObject, IsOptional, IsString, Matches } from "class-validator";
-import { RepetitionDto } from "./repetition.dto";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
+import { ApiHideProperty } from "@nestjs/swagger";
 
 export class AddScheduleDto {
+  @ApiHideProperty()
   userUuid: string;
 
   @IsString()

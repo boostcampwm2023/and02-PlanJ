@@ -27,6 +27,7 @@
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.1.16",
     "@nestjs/typeorm": "^10.0.0",
     "aws-sdk": "^2.1506.0",
     "axios": "^1.6.2",
@@ -39,6 +40,7 @@
     "mysql2": "^3.6.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.17",
     "ulid": "^2.3.0"
   },

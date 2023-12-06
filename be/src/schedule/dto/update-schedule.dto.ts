@@ -3,8 +3,10 @@ import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
 import { RepetitionDto } from "./repetition.dto";
 import { ScheduleAlarmDto } from "./schedule-alarm.dto";
 import { Type } from "class-transformer";
+import { ApiHideProperty } from "@nestjs/swagger";
 
 export class UpdateScheduleDto {
+  @ApiHideProperty()
   userUuid?: string;
 
   @IsString()
