@@ -13,7 +13,7 @@ export class TypeOrmConfigService {
       password: config.password,
       database: config.database,
       entities: [__dirname + "/../**/*.entity{.ts,.js}"],
-      synchronize: true,
+      synchronize: false,
       charset: "utf8mb4",
     };
   }

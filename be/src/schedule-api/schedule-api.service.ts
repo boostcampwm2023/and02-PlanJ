@@ -77,6 +77,20 @@ export class ScheduleApiService {
       ]);
 
     const participantsInfo = await this.getParticipantSuccess(participants, scheduleEntity.endAt, user);
+
+    if (participantsInfo.length === 0) {
+      const response: ParticipantResponse = {
+        nickname: user.nickname,
+        email: user.email,
+        author: true,
+        profileUrl: user.profileUrl,
+        finished: scheduleEntity.finished,
+        currentUser: true,
+      };
+
+      participantsInfo.push(response);
+    }
+
     const scheduleDetailResponse: ScheduleDetailResponse = {
       categoryName: !!categoryEntity ? categoryEntity.categoryName : "미분류",
       scheduleUuid: scheduleEntity.scheduleUuid,
@@ -412,6 +426,18 @@ export class ScheduleApiService {
     const body: HttpResponse = {
       message: "일정 검색 성공",
       data: scheduleResponses,
+    };
+    return JSON.stringify(body);
+  }
+
+  async getRetrospectiveMemo(token: string): Promise<string> {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+    const memoResponses = await this.scheduleMetaService.getRetrospectiveMemoByUserId(userEntity.userId);
+
+    const body: HttpResponse = {
+      message: "실패 메모 조회 성공",
+      data: memoResponses,
     };
     return JSON.stringify(body);
   }
