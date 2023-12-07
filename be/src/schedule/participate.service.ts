@@ -54,6 +54,10 @@ export class ParticipateService {
     await this.participateRepository.softDelete({ authorId: authorMetadataId, participantId: authorMetadataId });
   }
 
+  async deleteGroup(authorMetadataId: number) {
+    await this.participateRepository.softDelete({ authorId: authorMetadataId });
+  }
+
   async checkIsAuthor(metadataId: number) {
     const participantEntity = await this.participateRepository.findOne({ where: { participantId: metadataId } });
     return participantEntity === null || participantEntity.participantId === participantEntity.authorId;
