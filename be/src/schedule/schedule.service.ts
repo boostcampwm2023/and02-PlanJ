@@ -66,11 +66,11 @@ export class ScheduleService {
     try {
       if (repetitionChanged) {
         record.last = true;
-        this.removeRepeatedSchedules(record);
+        await this.removeRepeatedSchedules(record);
       }
       if (scheduleMetadata.repeated && repetitionChanged) {
         record.last = false;
-        this.addRepeatedSchedule(record, dto.repetition);
+        await this.addRepeatedSchedule(record, dto.repetition);
       }
       await this.scheduleRepository.save(record);
       return scheduleUuid;
@@ -183,7 +183,7 @@ export class ScheduleService {
     await this.scheduleRepository.save(updatedSchedules);
   }
 
-  private removeRepeatedSchedules(record: ScheduleEntity) {
-    this.scheduleRepository.removeRepeatedSchedules(record);
+  private async removeRepeatedSchedules(record: ScheduleEntity) {
+    await this.scheduleRepository.removeRepeatedSchedules(record);
   }
 }
