@@ -75,6 +75,7 @@
     <string name="schedule_done">일정 완료</string>
     <string name="post_notifications_allowed">알림을 허용했습니다.</string>
     <string name="post_notifications_denied">알림을 거부했습니다.</string>
+    <string name="departure">출발</string>
     <string-array name="today_list">
         <item>일정</item>
         <item>완료</item>

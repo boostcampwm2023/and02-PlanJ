@@ -78,8 +78,10 @@ class ScheduleParticipantsViewModel @Inject constructor(
     }
 
     fun addParticipant(participant: Participant) {
-        _participantList.update { participants ->
-            participants + participant
+        if (!_participantList.value.contains(participant)) {
+            _participantList.update { participants ->
+                participants + participant
+            }
         }
     }
 

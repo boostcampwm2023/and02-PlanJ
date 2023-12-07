@@ -90,6 +90,8 @@ class ScheduleViewModel @Inject constructor(
     private val _showToast = MutableSharedFlow<String>()
     val showToast = _showToast.asSharedFlow()
 
+    private var firstAlarmUuid: String? = null
+
     fun setScheduleId(newScheduleId: String?) {
         scheduleId = newScheduleId ?: ""
         getScheduleInfo()
@@ -112,7 +114,11 @@ class ScheduleViewModel @Inject constructor(
                     _endScheduleLocation.value = schedule.endLocation
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
-                    _isAuthor.value = schedule.participants.find { it.currentUser }?.isAuthor ?: false
+                    _isAuthor.value =
+                        schedule.participants.find { it.currentUser }?.isAuthor ?: false
+                    schedule.alarm?.let { alarm ->
+                        firstAlarmUuid = alarm.firstScheduleUuid
+                    }
                 }
         }
     }
@@ -152,7 +158,9 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun setAlarm(alarm: Alarm?) {
-        _scheduleAlarm.value = alarm
+        _scheduleAlarm.update{
+            alarm?.copy(firstScheduleUuid = scheduleId) ?: alarm
+        }
     }
 
     fun setStartLocation(startLocation: Location) {
@@ -229,8 +237,6 @@ class ScheduleViewModel @Inject constructor(
             return
         }
 
-        setAlarmInfo()
-
         viewModelScope.launch {
             categoryList.value.find { it.categoryName == scheduleCategory.value }?.let { category ->
                 val patchScheduleBody = PatchScheduleBody(
@@ -252,6 +258,7 @@ class ScheduleViewModel @Inject constructor(
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
                     }
                     .collect {
+                        setAlarmInfo()
                         _isEditMode.value = false
                         _showToast.emit("일정을 수정했습니다.")
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
@@ -261,16 +268,18 @@ class ScheduleViewModel @Inject constructor(
     }
 
     private fun setAlarmInfo() {
-        if (scheduleAlarm.value == null) {
+        firstAlarmUuid?.let { alarmId ->
             viewModelScope.launch {
-                loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
+                loginRepository.deleteAlarmInfoUsingScheduleId(alarmId)
                 loginRepository.getAlarmMode().collectLatest { alarmMode ->
                     if (alarmMode) {
-                        _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
+                        _alarmEventFlow.emit(AlarmEvent.Delete(alarmId))
                     }
                 }
             }
-        } else {
+        }
+
+        if (scheduleAlarm.value != null) {
             val estimatedTimeInMillis = if (response.value != null) {
                 response.value!!.route.trafast[0].summary.duration
             } else {
