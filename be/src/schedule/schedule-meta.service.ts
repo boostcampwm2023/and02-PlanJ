@@ -92,7 +92,7 @@ export class ScheduleMetaService {
   async getAllScheduleByDate(
     user: UserEntity,
     date: Date,
-  ): Promise<[ScheduleResponse[], ScheduleEntity[], ScheduleEntity[]]> {
+  ): Promise<[ScheduleResponse[], ScheduleEntity[], [number, ScheduleEntity][]]> {
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByDate(user, date);
     return this.convertRawDataToResponse(rawSchedules);
   }
@@ -100,7 +100,7 @@ export class ScheduleMetaService {
   async getAllScheduleByWeek(
     user: UserEntity,
     date: Date,
-  ): Promise<[ScheduleResponse[], ScheduleEntity[], ScheduleEntity[]]> {
+  ): Promise<[ScheduleResponse[], ScheduleEntity[], [number, ScheduleEntity][]]> {
     const { firstDay, lastDay } = this.getWeekRange(date);
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByWeek(user, firstDay, lastDay);
     return this.convertRawDataToResponse(rawSchedules);
@@ -127,13 +127,15 @@ export class ScheduleMetaService {
 
   private convertRawDataToResponse(
     rawSchedules: ScheduleMetadataEntity[],
-  ): [ScheduleResponse[], ScheduleEntity[], ScheduleEntity[]] {
+  ): [ScheduleResponse[], ScheduleEntity[], [number, ScheduleEntity][]] {
     const updatedSchedules: ScheduleEntity[] = [];
-    const repeatedSchedules: ScheduleEntity[] = [];
+    const repeatedSchedules: [number, ScheduleEntity][] = [];
     const scheduleResponses: ScheduleResponse[] = rawSchedules.flatMap((scheduleMeta) => {
       return scheduleMeta.children.map((schedule) => {
         if (scheduleMeta.repeated && schedule.last) {
-          repeatedSchedules.push(schedule);
+          schedule.last = false;
+          updatedSchedules.push(schedule);
+          repeatedSchedules.push([scheduleMeta.metadataId, schedule]);
         }
         if (!schedule.finished && !schedule.failed) {
           schedule.failed = this.checkFailed(schedule.endAt);

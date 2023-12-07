@@ -84,14 +84,15 @@ export class ScheduleService {
     return await this.scheduleRepository.deleteSchedule(dto);
   }
 
-  private async addRepeatedSchedule(record: ScheduleEntity, repetition: RepetitionDto) {
+  async addRepeatedSchedule(record: ScheduleEntity, repetition: RepetitionDto) {
     const result: ScheduleEntity[] = [];
+    const endCount: number = repetition.cycleType === "WEEKLY" ? 30 : 90;
     let startDateTime = !!record.startAt ? new Date(record.startAt) : null;
     let endDateTime = new Date(record.endAt);
     startDateTime = !!startDateTime ? add(startDateTime, { hours: 9 }) : null;
     endDateTime = add(endDateTime, { hours: 9 });
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < endCount; i++) {
       const scheduleUuid = ulid();
       if (repetition.cycleType === "WEEKLY") {
         startDateTime = !!startDateTime ? addWeeks(startDateTime, repetition.cycleCount) : null;
