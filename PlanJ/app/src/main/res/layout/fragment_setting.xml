@@ -129,6 +129,8 @@
                     android:background="@{viewModel.isEditMode() ? @drawable/round_r8_stroke_w1 : null }"
                     android:enabled="@{viewModel.isEditMode()}"
                     android:maxLength="12"
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
                     android:paddingHorizontal="36dp"
                     android:text="@{viewModel.userInfo.nickname}"
                     android:textColor="@color/black"

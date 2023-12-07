@@ -17,6 +17,8 @@ class ScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        viewModel.setScheduleId(args.scheduleId)
+        intent.getStringExtra("scheduleId")?.let {
+            viewModel.setScheduleId(it)
+        } ?: viewModel.setScheduleId(args.scheduleId)
     }
 }
