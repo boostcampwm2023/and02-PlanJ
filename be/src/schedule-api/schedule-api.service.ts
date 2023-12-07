@@ -184,14 +184,14 @@ export class ScheduleApiService {
     const [scheduleResponses, updatedSchedules, repeatedSchedules]: [
       ScheduleResponse[],
       ScheduleEntity[],
-      ScheduleEntity[],
+      [number, ScheduleEntity][],
     ] = await this.scheduleMetaService.getAllScheduleByDate(user, date);
 
-    // this.scheduleService
     await Promise.all([
       this.getParticipantInformation(scheduleResponses),
       this.scheduleService.updateScheduleEntities(updatedSchedules),
     ]);
+    this.updateRepeatedSchedules(repeatedSchedules);
 
     const body: HttpResponse = {
       message: "하루 일정 조회 성공",
@@ -206,13 +206,14 @@ export class ScheduleApiService {
     const [scheduleResponses, updatedSchedules, repeatedSchedules]: [
       ScheduleResponse[],
       ScheduleEntity[],
-      ScheduleEntity[],
+      [number, ScheduleEntity][],
     ] = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
 
     await Promise.all([
       this.getParticipantInformation(scheduleResponses),
       this.scheduleService.updateScheduleEntities(updatedSchedules),
     ]);
+    this.updateRepeatedSchedules(repeatedSchedules);
 
     const body: HttpResponse = {
       message: "주간 일정 조회 성공",
@@ -450,5 +451,17 @@ export class ScheduleApiService {
       data: memoResponses,
     };
     return JSON.stringify(body);
+  }
+
+  private updateRepeatedSchedules(repeatedSchedules: [number, ScheduleEntity][]) {
+    repeatedSchedules.map(async ([metadataId, schedule]) => {
+      const repetitionEntity = await this.repetitionService.getRepetitionByMetadataId(metadataId);
+      const repetition: RepetitionDto = {
+        cycleType: repetitionEntity.cycleType,
+        cycleCount: repetitionEntity.cycleCount,
+      };
+
+      this.scheduleService.addRepeatedSchedule(schedule, repetition);
+    });
   }
 }
