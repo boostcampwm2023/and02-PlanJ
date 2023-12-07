@@ -4,7 +4,6 @@ import { ParticipateRepository } from "./participate.repository";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { ParticipantEntity } from "./entity/participant.entity";
 import { UserEntity } from "src/user/entity/user.entity";
-import { rethrow } from "@nestjs/core/helpers/rethrow";
 
 @Injectable()
 export class ParticipateService {
