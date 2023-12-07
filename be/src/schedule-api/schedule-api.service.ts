@@ -141,9 +141,7 @@ export class ScheduleApiService {
 
     if (author) {
       const repetitionChanged = await this.repetitionService.updateRepetition(dto.repetition, scheduleMeta);
-
       await this.scheduleService.updateSchedule(dto, scheduleMeta, repetitionChanged);
-
       const authorGroup = await this.participateService.getAuthorGroup(metadataId);
 
       const groupUserEntities: UserEntity[] = await Promise.all(
@@ -183,9 +181,13 @@ export class ScheduleApiService {
   async getDailySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    const [scheduleResponses, updatedSchedules]: [ScheduleResponse[], ScheduleEntity[]] =
-      await this.scheduleMetaService.getAllScheduleByDate(user, date);
+    const [scheduleResponses, updatedSchedules, repeatedSchedules]: [
+      ScheduleResponse[],
+      ScheduleEntity[],
+      ScheduleEntity[],
+    ] = await this.scheduleMetaService.getAllScheduleByDate(user, date);
 
+    // this.scheduleService
     await Promise.all([
       this.getParticipantInformation(scheduleResponses),
       this.scheduleService.updateScheduleEntities(updatedSchedules),
@@ -201,8 +203,11 @@ export class ScheduleApiService {
   async getWeeklySchedule(token: string, date: Date): Promise<string> {
     const userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(userUuid);
-    const [scheduleResponses, updatedSchedules]: [ScheduleResponse[], ScheduleEntity[]] =
-      await this.scheduleMetaService.getAllScheduleByWeek(user, date);
+    const [scheduleResponses, updatedSchedules, repeatedSchedules]: [
+      ScheduleResponse[],
+      ScheduleEntity[],
+      ScheduleEntity[],
+    ] = await this.scheduleMetaService.getAllScheduleByWeek(user, date);
 
     await Promise.all([
       this.getParticipantInformation(scheduleResponses),

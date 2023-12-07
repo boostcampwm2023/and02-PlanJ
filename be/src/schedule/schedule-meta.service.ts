@@ -89,12 +89,18 @@ export class ScheduleMetaService {
     }
   }
 
-  async getAllScheduleByDate(user: UserEntity, date: Date): Promise<[ScheduleResponse[], ScheduleEntity[]]> {
+  async getAllScheduleByDate(
+    user: UserEntity,
+    date: Date,
+  ): Promise<[ScheduleResponse[], ScheduleEntity[], ScheduleEntity[]]> {
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByDate(user, date);
     return this.convertRawDataToResponse(rawSchedules);
   }
 
-  async getAllScheduleByWeek(user: UserEntity, date: Date): Promise<[ScheduleResponse[], ScheduleEntity[]]> {
+  async getAllScheduleByWeek(
+    user: UserEntity,
+    date: Date,
+  ): Promise<[ScheduleResponse[], ScheduleEntity[], ScheduleEntity[]]> {
     const { firstDay, lastDay } = this.getWeekRange(date);
     const rawSchedules = await this.scheduleMetaRepository.getAllScheduleByWeek(user, firstDay, lastDay);
     return this.convertRawDataToResponse(rawSchedules);
@@ -119,10 +125,16 @@ export class ScheduleMetaService {
     return this.convertRawDataToResponse(rawSchedules);
   }
 
-  private convertRawDataToResponse(rawSchedules: ScheduleMetadataEntity[]): [ScheduleResponse[], ScheduleEntity[]] {
+  private convertRawDataToResponse(
+    rawSchedules: ScheduleMetadataEntity[],
+  ): [ScheduleResponse[], ScheduleEntity[], ScheduleEntity[]] {
     const updatedSchedules: ScheduleEntity[] = [];
+    const repeatedSchedules: ScheduleEntity[] = [];
     const scheduleResponses: ScheduleResponse[] = rawSchedules.flatMap((scheduleMeta) => {
       return scheduleMeta.children.map((schedule) => {
+        if (scheduleMeta.repeated && schedule.last) {
+          repeatedSchedules.push(schedule);
+        }
         if (!schedule.finished && !schedule.failed) {
           schedule.failed = this.checkFailed(schedule.endAt);
 
@@ -149,7 +161,7 @@ export class ScheduleMetaService {
       });
     });
 
-    return [scheduleResponses, updatedSchedules];
+    return [scheduleResponses, updatedSchedules, repeatedSchedules];
   }
 
   private getWeekRange(date: Date) {

@@ -56,4 +56,31 @@ export class FriendService {
       throw new InternalServerErrorException();
     }
   }
+
+  async deleteFriend(token: string, email: string) {
+    const userUuid = this.authService.verify(token);
+    const [userEntity, friendEntity] = await Promise.all([
+      this.userService.getUserEntity(userUuid),
+      this.userService.getUserEntityByEmail(email),
+    ]);
+
+    const userId = userEntity.userId;
+    const friendId = friendEntity.userId;
+
+    await Promise.all([
+      this.friendRepository.softDelete({
+        fromId: userId,
+        toId: friendId,
+      }),
+      this.friendRepository.softDelete({
+        fromId: friendId,
+        toId: userId,
+      }),
+    ]);
+
+    const body: HttpResponse = {
+      message: "친구 삭제 완료",
+    };
+    return JSON.stringify(body);
+  }
 }
