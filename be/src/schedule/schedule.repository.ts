@@ -22,9 +22,9 @@ export class ScheduleRepository extends Repository<ScheduleEntity> {
     return record.metadataId;
   }
 
-  removeRepeatedSchedules(record: ScheduleEntity) {
+  async removeRepeatedSchedules(record: ScheduleEntity) {
     const { metadataId, endAt } = record;
-    this.softDelete({
+    await this.softDelete({
       metadataId: metadataId,
       endAt: MoreThan(endAt),
     });
