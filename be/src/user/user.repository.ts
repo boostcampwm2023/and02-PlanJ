@@ -30,4 +30,26 @@ export class UserRepository extends Repository<UserEntity> {
     }
     return user;
   }
+
+  async findById(userId: number) {
+    const user = await this.findOne({
+      where: { userId },
+    });
+
+    if (user === null) {
+      throw new UnauthorizedException("존재하지 않는 user");
+    }
+    return user;
+  }
+
+  async findByEmail(userEmail: string) {
+    const user = await this.findOne({
+      where: { email: userEmail },
+    });
+
+    if (user === null) {
+      throw new UnauthorizedException("존재하지 않는 user");
+    }
+    return user;
+  }
 }

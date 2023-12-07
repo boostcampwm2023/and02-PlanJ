@@ -1,11 +1,7 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class AddFriendDto {
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
-  from: string;
-
-  @IsString()
-  @IsNotEmpty()
-  to: string;
+  friendEmail: string;
 }

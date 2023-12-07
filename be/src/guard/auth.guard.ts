@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, Logger } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { UserService } from "../user/user.service";
@@ -6,6 +6,8 @@ import { Request } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(AuthGuard.name);
+
   constructor(
     private authService: AuthService,
     private userService: UserService,
@@ -18,8 +20,11 @@ export class AuthGuard implements CanActivate {
 
   private async validateUser(request: Request) {
     const token = request.headers.authorization;
-    const userUuid = this.authService.verify(token);
-
-    return await this.userService.validateUser(userUuid);
+    try {
+      const userUuid = this.authService.verify(token);
+      return await this.userService.validateUser(userUuid);
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 }

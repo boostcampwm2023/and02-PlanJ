@@ -1,20 +1,25 @@
 import { Injectable } from "@nestjs/common";
-import { FriendsEntity } from "./entity/friends.entity";
+import { FriendEntity } from "./entity/friend.entity";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "src/user/entity/user.entity";
 
 @Injectable()
-export class FriendRepository extends Repository<FriendsEntity> {
+export class FriendRepository extends Repository<FriendEntity> {
   constructor(dataSource: DataSource) {
-    super(FriendsEntity, dataSource.createEntityManager());
+    super(FriendEntity, dataSource.createEntityManager());
   }
 
-  async add(from: UserEntity, to: UserEntity) {
-    const friend = this.create({ from, to });
+  async add(from: UserEntity, to: UserEntity): Promise<void> {
+    const { userId: fromId } = from;
+    const { userId: toId } = to;
+    const record = this.create({ fromId: fromId, toId: toId });
+    const reverseRecord = this.create({ fromId: toId, toId: fromId });
 
-    console.log(friend);
+    await this.save(record);
+    await this.save(reverseRecord);
+  }
 
-    await this.save(friend.from);
-    await this.save(friend.to);
+  async getAllFriends(userEntity: UserEntity): Promise<FriendEntity[]> {
+    return await this.find({ where: { fromId: userEntity.userId } });
   }
 }

@@ -9,12 +9,13 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { ScheduleEntity } from "./schedule.entity";
-import { UserEntity } from "src/user/entity/user.entity";
 import { CategoryEntity } from "src/category/entity/category.entity";
+import { ParticipantEntity } from "./participant.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 @Entity("schedule_metadata")
 export class ScheduleMetadataEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "metadata_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   metadataId: number;
 
   @Column({ length: 20 })
@@ -29,27 +30,57 @@ export class ScheduleMetadataEntity extends BaseEntity {
   @Column({ name: "end_time", type: "time" })
   endTime: string;
 
+  @Column({ name: "user_id", type: "int" })
+  userId: number;
+
+  @Column({ name: "category_id", type: "int", nullable: true })
+  categoryId: number;
+
+  @Column({ type: "boolean", default: false })
+  repeated: boolean;
+
+  @Column({ type: "boolean", default: false })
+  shared: boolean;
+
+  @Column({ type: "boolean", default: false, name: "has_location" })
+  hasLocation: boolean;
+
+  @Column({ type: "boolean", default: false, name: "has_alarm" })
+  hasAlarm: boolean;
+
   @DeleteDateColumn({ default: null, name: "deleted_at" })
   deletedAt: Date | null;
 
   /*
    * relation
    */
+
+  @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn({ name: "user_id" })
+  user: UserEntity;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.scheduleMeta, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn({ name: "category_id" })
+  category: CategoryEntity;
+
   @OneToMany(() => ScheduleEntity, (schedule) => schedule.parent, {
     cascade: true,
   })
   children: ScheduleEntity[];
 
-  @ManyToOne(() => CategoryEntity, (category) => category.scheduleMeta, {
-    onDelete: "CASCADE",
+  @OneToMany(() => ParticipantEntity, (participant) => participant.author, {
+    cascade: true,
   })
-  @JoinColumn({ name: "category_id" })
-  category: CategoryEntity;
+  author: ParticipantEntity[];
 
-  // participant 추가 시 삭제될 관계
-  @ManyToOne(() => UserEntity, (user) => user.scheduleMeta, {
-    onDelete: "CASCADE",
+  @OneToMany(() => ParticipantEntity, (participant) => participant.participant, {
+    cascade: true,
   })
-  @JoinColumn({ name: "user_id" })
-  user: UserEntity;
+  participant: ParticipantEntity[];
 }

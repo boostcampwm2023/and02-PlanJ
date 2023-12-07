@@ -3,20 +3,35 @@ import { ScheduleMetadataEntity } from "./schedule-metadata.entity";
 
 @Entity("schedule_location")
 export class ScheduleLocationEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "location_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   locationId: number;
 
-  @Column({ name: "place_name" })
-  placeName: string;
+  @Column({ name: "start_place_name", nullable: true, default: null })
+  startPlaceName: string;
 
-  @Column({ name: "place_address" })
-  placeAddress: string;
+  @Column({ name: "start_place_address", nullable: true, default: null })
+  startPlaceAddress: string;
 
-  @Column({ name: "latitude", type: "decimal", precision: 9, scale: 6 })
-  latitude: number;
+  @Column({ name: "start_latitude", type: "decimal", precision: 9, scale: 6, nullable: true, default: null })
+  startLatitude: number;
 
-  @Column({ name: "longitude", type: "decimal", precision: 9, scale: 6 })
-  longitude: number;
+  @Column({ name: "start_longitude", type: "decimal", precision: 9, scale: 6, nullable: true, default: null })
+  startLongitude: number;
+
+  @Column({ name: "end_place_name", nullable: true, default: null })
+  endPlaceName: string;
+
+  @Column({ name: "end_place_address", nullable: true, default: null })
+  endPlaceAddress: string;
+
+  @Column({ name: "end_latitude", type: "decimal", precision: 9, scale: 6, nullable: true, default: null })
+  endLatitude: number;
+
+  @Column({ name: "end_longitude", type: "decimal", precision: 9, scale: 6, nullable: true, default: null })
+  endLongitude: number;
+
+  @Column({ name: "metadata_id", type: "int" })
+  metadataId: number;
 
   /*
    * relation

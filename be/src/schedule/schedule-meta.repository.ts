@@ -1,99 +1,96 @@
 import { DataSource, Repository } from "typeorm";
-import { AddScheduleDto } from "./dto/add-schedule.dto";
 import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { UserEntity } from "src/user/entity/user.entity";
-import { CategoryEntity } from "src/category/entity/category.entity";
-import { UpdateScheduleDto } from "./dto/update-schedule.dto";
+import { MemoResponse } from "./dto/memo.response";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
+  private readonly logger = new Logger(ScheduleMetaRepository.name);
   constructor(dataSource: DataSource) {
     super(ScheduleMetadataEntity, dataSource.createEntityManager());
   }
 
-  async addScheduleMeta(
-    dto: AddScheduleDto,
-    user: UserEntity,
-    category: CategoryEntity,
-  ): Promise<ScheduleMetadataEntity> {
-    const { title, endAt } = dto;
-
-    const description = null;
-    const startTime = null;
-    const [, endTime] = endAt.split("T");
-
-    const scheduleMetadata = this.create({ title, description, startTime, endTime, user, category });
-
-    try {
-      await this.save(scheduleMetadata);
-      return scheduleMetadata;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async updateScheduleMeta(
-    dto: UpdateScheduleDto,
-    category: CategoryEntity,
-    metadataId: number,
-  ): Promise<ScheduleMetadataEntity> {
-    const { title, description, startAt, endAt } = dto;
-
-    const [, startTime] = startAt.split("T");
-    const [, endTime] = endAt.split("T");
-
-    const record = await this.findOne({ where: { metadataId } });
-    record.category = category;
-    record.title = title;
-    record.description = description;
-    record.startTime = startTime;
-    record.endTime = endTime;
-
-    try {
-      await this.save(record);
-      return record;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException();
-    }
-  }
-
   async getAllScheduleByDate(user: UserEntity, date: Date): Promise<ScheduleMetadataEntity[]> {
-    const todayStart = date.toString().split("T")[0] + "T00:00:00";
-    const todayEnd = date.toString().split("T")[0] + "T23:59:59";
+    const [today] = date.toString().split("T");
+    const todayStart = today + "T00:00:00";
+    const todayEnd = today + "T23:59:59";
 
-    const founds = await this.createQueryBuilder("schedule_metadata")
-      .leftJoinAndSelect("schedule_metadata.children", "schedule")
-      .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule", "schedule_metadata.user_id = :userId", {
+        userId: user.userId,
+      })
       .andWhere("schedule.endAt BETWEEN :todayStart AND :todayEnd ", { todayStart, todayEnd })
+      .orWhere(":todayEnd >= schedule.startAt AND :todayStart <= schedule.endAt", { todayEnd, todayStart })
+      .orderBy("schedule.endAt")
       .getMany();
-
-    return founds;
   }
 
   async getAllScheduleByWeek(user: UserEntity, firstDay: Date, lastDay: Date): Promise<ScheduleMetadataEntity[]> {
-    console.log(firstDay, lastDay);
-
     const weekStart = firstDay.toISOString().split("T")[0] + "T00:00:00";
     const weekEnd = lastDay.toISOString().split("T")[0] + "T23:59:59";
 
-    const founds = await this.createQueryBuilder("schedule_metadata")
-      .leftJoinAndSelect("schedule_metadata.children", "schedule")
-      .andWhere("schedule_metadata.user_id = :userId", { userId: user.userId })
-      .andWhere("schedule.endAt BETWEEN :weekStart AND :weekEnd ", { weekStart, weekEnd })
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule", "schedule_metadata.user_id = :userId", {
+        userId: user.userId,
+      })
+      .andWhere(
+        "(schedule.endAt BETWEEN :weekStart AND :weekEnd) OR (schedule.startAt BETWEEN :weekStart AND :weekEnd)",
+        { weekStart, weekEnd },
+      )
+      .orderBy("schedule.endAt")
       .getMany();
+  }
 
-    return founds;
+  async findByCategoryId(categoryId: number, userId: number) {
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .andWhere("schedule_metadata.user_id = :userId", { userId: userId })
+      .andWhere("schedule_metadata.category_id = :categoryId", { categoryId: categoryId })
+      .orderBy("schedule.endAt")
+      .getMany();
   }
 
   async deleteScheduleMeta(metadataId: number): Promise<void> {
     try {
       await this.softDelete({ metadataId });
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException();
+    }
+  }
+
+  async findWhereCategoryIsNull(userId: number) {
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .where("schedule_metadata.user_id = :userId", { userId: userId })
+      .andWhere("schedule_metadata.category_id IS NULL")
+      .orderBy("schedule.endAt")
+      .getMany();
+  }
+
+  async findByKeyword(keyword: string, userId: number) {
+    return await this.createQueryBuilder("schedule_metadata")
+      .leftJoinAndSelect("schedule_metadata.children", "schedule")
+      .where("schedule_metadata.user_id = :userId", { userId: userId })
+      .andWhere("schedule_metadata.title LIKE :keyword", { keyword: `%${keyword}%` })
+      .getMany();
+  }
+
+  async findByUserId(userId: number) {
+    try {
+      const result: MemoResponse = await this.query(
+        `SELECT meta.title as title, s.start_at as startAt, s.end_at as endAt, s.retrospective_memo as retrospectiveMemo
+             FROM schedule_metadata as meta LEFT OUTER JOIN schedule as s
+             ON meta.id = s.metadata_id
+             WHERE meta.user_id=${userId}
+             AND s.retrospective_memo IS NOT NULL
+             ORDER BY s.end_at DESC`,
+      );
+      return result;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
     }
   }
 }

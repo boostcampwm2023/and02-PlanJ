@@ -1,7 +1,13 @@
-import { Allow, IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
+import { Allow, IsArray, IsNotEmpty, IsObject, IsOptional, IsString, Matches, ValidateNested } from "class-validator";
+import { ScheduleLocationDto } from "src/schedule/dto/schedule-location.dto";
+import { RepetitionDto } from "./repetition.dto";
+import { ScheduleAlarmDto } from "./schedule-alarm.dto";
+import { Type } from "class-transformer";
+import { ApiHideProperty } from "@nestjs/swagger";
 
 export class UpdateScheduleDto {
-  userUuid: string;
+  @ApiHideProperty()
+  userUuid?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -28,23 +34,26 @@ export class UpdateScheduleDto {
   @Matches(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$/, { message: "올바른 날짜 및 시간 형식이 아닙니다." })
   endAt: string;
 
-  @IsString()
+  @ValidateNested({ each: true })
+  @Type(() => ScheduleLocationDto)
   @IsOptional()
-  @Allow()
-  placeName: string | null;
+  startLocation: ScheduleLocationDto;
 
-  @IsString()
+  @ValidateNested({ each: true })
+  @Type(() => ScheduleLocationDto)
   @IsOptional()
-  @Allow()
-  placeAddress: string | null;
+  endLocation: ScheduleLocationDto;
 
-  @IsString()
+  @IsObject()
   @IsOptional()
-  @Allow()
-  latitude: string | null;
+  repetition?: RepetitionDto;
 
-  @IsString()
+  @IsArray()
   @IsOptional()
-  @Allow()
-  longitude: string | null;
+  participants?: string[];
+
+  @ValidateNested({ each: true })
+  @Type(() => ScheduleAlarmDto)
+  @IsOptional()
+  alarm?: ScheduleAlarmDto;
 }

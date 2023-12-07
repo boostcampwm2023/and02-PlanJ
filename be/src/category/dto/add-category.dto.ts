@@ -1,6 +1,8 @@
-import { IsNotEmpty, IsString, Matches, MaxLength } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { ApiHideProperty } from "@nestjs/swagger";
 
 export class AddCategoryDto {
+  @ApiHideProperty()
   userUuid: string;
 
   @IsString()

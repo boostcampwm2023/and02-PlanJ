@@ -12,17 +12,20 @@ import { ScheduleMetadataEntity } from "src/schedule/entity/schedule-metadata.en
 
 @Entity("user")
 export class UserEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: "user_id" })
+  @PrimaryGeneratedColumn({ name: "id" })
   userId: number;
 
-  @Column({ length: 26, name: "user_uuid" })
+  @Column({ length: 26, name: "uuid" })
   userUuid: string;
 
   @Column({ length: 60 })
   email: string;
 
-  @Column({ length: 60 })
+  @Column({ length: 60, nullable: true })
   password: string;
+
+  @Column({ length: 256, nullable: true, name: "naver_id" })
+  naverId: string;
 
   @Column({ length: 12 })
   nickname: string;
@@ -39,6 +42,9 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true, name: "accept_notification" })
   acceptNotification: boolean;
 
+  @Column({ nullable: true, default: null, length: 256, name: "profile_url" })
+  profileUrl: string;
+
   /*
    * relation
    * */
@@ -47,7 +53,6 @@ export class UserEntity extends BaseEntity {
   })
   category: CategoryEntity[];
 
-  // participant 추가 시 삭제될 관계
   @OneToMany(() => ScheduleMetadataEntity, (scheduleMeta) => scheduleMeta.user, {
     cascade: true,
   })
