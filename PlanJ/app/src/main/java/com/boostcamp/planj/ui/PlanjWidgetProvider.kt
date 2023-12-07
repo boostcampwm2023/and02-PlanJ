@@ -8,22 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.view.View
 import android.widget.RemoteViews
-import android.widget.Toast
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.repository.LoginRepository
-import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.ui.main.MainActivity
 import com.boostcamp.planj.ui.schedule.ScheduleActivity
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import javax.inject.Inject
 
 class PlanjWidgetProvider : AppWidgetProvider() {
 

@@ -3,14 +3,12 @@ package com.boostcamp.planj.ui
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViewsService
-import com.boostcamp.planj.data.model.ScheduleInfo
 import com.boostcamp.planj.data.repository.ServiceRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
