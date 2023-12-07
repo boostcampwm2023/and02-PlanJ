@@ -272,7 +272,18 @@ export class ScheduleApiService {
   async deleteSchedule(token: string, dto: DeleteScheduleDto): Promise<string> {
     dto.userUuid = this.authService.verify(token);
     const metadataId = await this.scheduleService.deleteSchedule(dto);
+    const metadata = await this.scheduleMetaService.getScheduleMetadataById(metadataId);
     await this.scheduleMetaService.deleteScheduleMeta(metadataId);
+
+    if (metadata.shared) {
+      const participants = await this.participateService.getParticipantGroup(metadataId);
+      await Promise.all([
+        this.participateService.deleteGroup(metadataId),
+        participants.forEach(async (participant) => {
+          await this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
+        }),
+      ]);
+    }
 
     const body: HttpResponse = {
       message: "일정 삭제 성공",
