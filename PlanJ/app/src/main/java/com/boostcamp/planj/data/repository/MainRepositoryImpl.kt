@@ -10,6 +10,7 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
@@ -174,6 +175,14 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getFriendsApi(): Flow<List<User>> = flow {
         emit(api.getFriends().data)
+    }
+
+    override suspend fun deleteFriendApi(email: DeleteFriendBody) {
+        try {
+            api.deleteFriends(email)
+        }catch(e:Exception){
+            Log.d("PLANJDEBUG","deleteFriendApi ${e.message}")
+        }
     }
 
     override suspend fun deleteAccount() {

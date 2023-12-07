@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -47,8 +47,15 @@ class FriendListViewModel @Inject constructor(
     }
 
     fun deleteUser(email: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            //TODO api로 변경
+        viewModelScope.launch {
+            try {
+                mainRepository.deleteFriendApi(DeleteFriendBody(email))
+                getFriends()
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
+            }
+
+
         }
     }
 }

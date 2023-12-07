@@ -1,15 +1,16 @@
 package com.boostcamp.planj.data.network
 
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
+import com.boostcamp.planj.data.model.dto.DeleteFriendResponse
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
-import com.boostcamp.planj.data.model.dto.CategoryResponse
-import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -72,6 +73,9 @@ interface MainApi {
     @GET("/api/friend")
     suspend fun getFriends(): GetFriendResponse
 
+    @HTTP(method = "DELETE", path = "/api/friend", hasBody = true)
+    suspend fun deleteFriends(@Body email: DeleteFriendBody)
+
     @DELETE("/api/auth/delete")
     suspend fun deleteAccount()
 
@@ -94,6 +98,6 @@ interface MainApi {
     @POST("/api/schedule/memo")
     suspend fun postScheduleAddMemo(@Body postScheduleAddMemoBody: PostScheduleAddMemoBody)
 
-     @GET("/api/schedule/search")
+    @GET("/api/schedule/search")
     suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
 }
