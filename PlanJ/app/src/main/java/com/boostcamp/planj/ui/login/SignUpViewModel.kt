@@ -91,7 +91,10 @@ class SignUpViewModel @Inject constructor(
     fun checkNickname() {
         userNickname.value.let { userNickname ->
             _nicknameState.value =
-                if (userNickname.length in 2..12) NicknameState.AVAILABLE else NicknameState.ERROR_LENGTH
+                if (userNickname.length in 2..12 && ("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(
+                        userNickname
+                    )
+                ) NicknameState.AVAILABLE else NicknameState.ERROR_LENGTH
         }
 
         checkEnable()

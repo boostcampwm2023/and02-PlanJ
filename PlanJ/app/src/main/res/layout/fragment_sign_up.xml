@@ -114,9 +114,11 @@
             app:layout_constraintTop_toBottomOf="@id/til_sign_up_pwd_check">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_sign_up_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:afterTextChanged="@{() -> viewModel.checkNickname()}"
+                android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxWidth="488dp"
                 android:text="@={viewModel.userNickname}" />

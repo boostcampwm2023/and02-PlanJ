@@ -85,6 +85,7 @@ class SettingFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.setMode()
         viewModel.initUser()
         viewModel.getTotalSchedules()
 
