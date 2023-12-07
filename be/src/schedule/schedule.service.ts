@@ -109,7 +109,7 @@ export class ScheduleService {
           endAt: endDateTime.toISOString().slice(0, 19),
           finished: false,
           failed: false,
-          retrospectiveMemo: "",
+          retrospectiveMemo: null,
           last: false,
           metadataId: record.metadataId,
         }),
