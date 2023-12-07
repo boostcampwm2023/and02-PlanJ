@@ -190,7 +190,7 @@ class SettingFragment : Fragment() {
                             .forEach { alarmInfo -> planjAlarm.setAlarm(alarmInfo) }
                     } else {
                         viewModel.getAllAlarmInfo()
-                            .forEach { alarmInfo -> planjAlarm.deleteAlarm(alarmInfo.scheduleId.hashCode()) }
+                            .forEach { alarmInfo -> planjAlarm.deleteAlarm(alarmInfo.scheduleId) }
                     }
                 }
             }

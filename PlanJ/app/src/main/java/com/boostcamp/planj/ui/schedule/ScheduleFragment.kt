@@ -116,7 +116,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                     }
 
                     is AlarmEvent.Delete -> {
-                        planjAlarm.deleteAlarm(alarmEvent.scheduleId.hashCode())
+                        planjAlarm.deleteAlarm(alarmEvent.scheduleId)
                     }
                 }
             }
