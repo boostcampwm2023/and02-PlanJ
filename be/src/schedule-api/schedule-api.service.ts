@@ -141,9 +141,7 @@ export class ScheduleApiService {
 
     if (author) {
       const repetitionChanged = await this.repetitionService.updateRepetition(dto.repetition, scheduleMeta);
-
       await this.scheduleService.updateSchedule(dto, scheduleMeta, repetitionChanged);
-
       const authorGroup = await this.participateService.getAuthorGroup(metadataId);
 
       const groupUserEntities: UserEntity[] = await Promise.all(

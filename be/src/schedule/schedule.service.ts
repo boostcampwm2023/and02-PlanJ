@@ -68,7 +68,7 @@ export class ScheduleService {
         record.last = true;
         this.removeRepeatedSchedules(record);
       }
-      if (scheduleMetadata.repeated) {
+      if (scheduleMetadata.repeated && repetitionChanged) {
         record.last = false;
         this.addRepeatedSchedule(record, dto.repetition);
       }
