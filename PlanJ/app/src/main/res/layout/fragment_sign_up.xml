@@ -106,7 +106,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:hint="@string/nickname"
-            app:error="@{viewModel.nicknameState==NicknameState.ERROR ? @string/nickname_length_error : null}"
+            app:error="@{viewModel.nicknameState==NicknameState.ERROR ? @string/nickname_error : null}"
             app:errorEnabled="true"
             app:helperText="@string/nickname_condition"
             app:layout_constraintEnd_toEndOf="parent"

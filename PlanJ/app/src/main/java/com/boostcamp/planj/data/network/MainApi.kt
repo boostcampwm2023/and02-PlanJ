@@ -6,6 +6,7 @@ import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
+import com.boostcamp.planj.data.model.dto.GetFailedMemoResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
