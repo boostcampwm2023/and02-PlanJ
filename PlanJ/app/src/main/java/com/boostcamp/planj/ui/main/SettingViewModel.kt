@@ -145,7 +145,7 @@ class SettingViewModel @Inject constructor(
                 _showToast.emit("닉네임이 비어있습니다.")
                 return@launch
             }else if (!("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(nickName)) {
-                _showToast.emit("닉네임이에 영어, 한글만 사용가능합니다.")
+                _showToast.emit("닉네임엔 영어와 한글, 숫자만 사용가능합니다.")
                 return@launch
             }
             mainRepository.patchUser(nickName, imageFile)

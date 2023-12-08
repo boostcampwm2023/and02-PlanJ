@@ -16,7 +16,7 @@
     <string name="nickname">닉네임</string>
     <string name="password_check">비밀번호 확인</string>
     <string name="password_confirm_error">비밀번호가 일치하지 않습니다.</string>
-    <string name="nickname_length_error">닉네임은 한글과 영어를 조합한 2자 이상 12자 이어야 합니다.</string>
+    <string name="nickname_length_error">닉네임은 한글, 영어, 숫자로 조합해야하고, 길이는 2자 이상 12자 이하이어야 합니다</string>
     <string name="email_condition">*******@****.***</string>
     <string name="password_condition">영문, 숫자, 특수문자 1자이상 포함, 8자 이상 16자 이하</string>
     <string name="nickname_condition">2자 이상 12자 이하</string>

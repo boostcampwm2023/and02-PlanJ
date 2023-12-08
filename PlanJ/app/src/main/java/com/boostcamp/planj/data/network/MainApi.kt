@@ -3,7 +3,6 @@ package com.boostcamp.planj.data.network
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.DeleteFriendBody
-import com.boostcamp.planj.data.model.dto.DeleteFriendResponse
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse

@@ -19,14 +19,7 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
         binding.isCheck = isCheck
         binding.schedule = item
         binding.executePendingBindings()
-        if (item.isFinished && LocalDateTime.now() > LocalDateTime.of(
-                item.endAt.year,
-                item.endAt.month,
-                item.endAt.day,
-                0,
-                0,
-                0
-            ) && !item.isFailed
+        if (System.currentTimeMillis() > item.endAt.toMilliseconds() && !item.isFailed
         ) {
             binding.cbDone.isEnabled = false
         }
