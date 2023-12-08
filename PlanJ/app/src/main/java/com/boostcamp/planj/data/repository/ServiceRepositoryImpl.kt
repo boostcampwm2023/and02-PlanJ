@@ -1,6 +1,5 @@
 package com.boostcamp.planj.data.repository
 
-import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleInfo
 import com.boostcamp.planj.data.network.ServiceApi
 import kotlinx.coroutines.flow.Flow

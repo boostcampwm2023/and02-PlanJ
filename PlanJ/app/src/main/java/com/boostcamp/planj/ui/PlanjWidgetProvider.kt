@@ -30,7 +30,7 @@ class PlanjWidgetProvider : AppWidgetProvider() {
             intent.putExtra("scheduleId", scheduleId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
-        }else{
+        } else {
             Log.d("PLANJDEBUG1234", "refresh Update")
             val ids = AppWidgetManager.getInstance(context)
                 .getAppWidgetIds(ComponentName(context, PlanjWidgetProvider::class.java))
@@ -79,14 +79,21 @@ class PlanjWidgetProvider : AppWidgetProvider() {
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                     data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
 
-                    PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+                    PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        this,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                    )
                 }
                 setPendingIntentTemplate(R.id.lv_widget_list, toastPendingIntent)
 
 
-                setOnClickPendingIntent(R.id.iv_widget_main, Intent(context, MainActivity::class.java).let {
-                    PendingIntent.getActivity(context, 0, it, PendingIntent.FLAG_IMMUTABLE)
-                })
+                setOnClickPendingIntent(
+                    R.id.iv_widget_main,
+                    Intent(context, MainActivity::class.java).let {
+                        PendingIntent.getActivity(context, 0, it, PendingIntent.FLAG_IMMUTABLE)
+                    })
 
                 setOnClickPendingIntent(
                     R.id.iv_widget_refresh,

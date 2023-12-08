@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ServiceRepository {
 
-    fun getDailySchedule(date : String) : Flow<List<ScheduleInfo>>
+    fun getDailySchedule(date: String): Flow<List<ScheduleInfo>>
 }
