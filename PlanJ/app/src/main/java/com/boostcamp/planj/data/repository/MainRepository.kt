@@ -1,22 +1,20 @@
 package com.boostcamp.planj.data.repository
 
-import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
+import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
-import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
-import com.boostcamp.planj.data.model.dto.ScheduleDetail
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 
@@ -54,6 +52,8 @@ interface MainRepository {
     suspend fun postFriendApi(friendEmail: String)
 
     suspend fun getFriendsApi(): Flow<List<User>>
+
+    suspend fun deleteFriendApi(email: DeleteFriendBody)
 
     suspend fun deleteAccount()
 

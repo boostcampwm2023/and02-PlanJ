@@ -106,7 +106,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:hint="@string/nickname"
-            app:error="@{viewModel.nicknameState==NicknameState.ERROR_LENGTH ? @string/nickname_length_error : null}"
+            app:error="@{viewModel.nicknameState==NicknameState.ERROR ? @string/nickname_length_error : null}"
             app:errorEnabled="true"
             app:helperText="@string/nickname_condition"
             app:layout_constraintEnd_toEndOf="parent"
@@ -114,9 +114,11 @@
             app:layout_constraintTop_toBottomOf="@id/til_sign_up_pwd_check">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_sign_up_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:afterTextChanged="@{() -> viewModel.checkNickname()}"
+                android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxWidth="488dp"
                 android:text="@={viewModel.userNickname}" />
