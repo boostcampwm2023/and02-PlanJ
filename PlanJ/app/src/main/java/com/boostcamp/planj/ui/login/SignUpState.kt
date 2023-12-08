@@ -13,5 +13,5 @@ enum class PwdConfirmState {
 }
 
 enum class NicknameState {
-    NONE, AVAILABLE, ERROR_LENGTH
+    NONE, AVAILABLE, ERROR
 }
