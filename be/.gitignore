@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # environment variable
 env/
+
+/docker-deploy.bat
