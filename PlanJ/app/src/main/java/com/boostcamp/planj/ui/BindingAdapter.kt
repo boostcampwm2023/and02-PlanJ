@@ -2,13 +2,11 @@ package com.boostcamp.planj.ui
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.media.Image
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
@@ -17,10 +15,7 @@ import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.data.model.naver.NaverResponse
-import com.boostcamp.planj.ui.adapter.ScheduleAdapter
-import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.bumptech.glide.Glide
@@ -111,7 +106,7 @@ fun TextView.setParticipation(schedule: Schedule) {
         visibility = View.GONE
         return
     }
-    text = "${schedule.participantSuccessCount ?: 0} / ${schedule.participantCount}"
+    text = "${schedule.participantSuccessCount} / ${schedule.participantCount}"
 }
 
 @BindingAdapter("checkFail")
@@ -131,6 +126,8 @@ fun TextView.setTitle(schedule: Schedule) {
     }
     if (schedule.isFailed) {
         setTextColor(Color.RED)
+    } else {
+        setTextColor(Color.BLACK)
     }
     text = schedule.title
 }

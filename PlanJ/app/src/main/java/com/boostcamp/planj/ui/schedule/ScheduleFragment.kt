@@ -39,8 +39,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private val args: ScheduleFragmentArgs by navArgs()
 
-    private var isEditable = false
-
     private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
     private var alarmSettingDialog = AlarmSettingDialog(null, this)
 
@@ -118,7 +116,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                     }
 
                     is AlarmEvent.Delete -> {
-                        planjAlarm.deleteAlarm(alarmEvent.scheduleId.hashCode())
+                        planjAlarm.deleteAlarm(alarmEvent.scheduleId)
                     }
                 }
             }
@@ -154,8 +152,6 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.participants.collectLatest { participants ->
                     initAdapter()
-                    isEditable = participants.find { it.currentUser }?.isAuthor ?: false
-                    updateToolbar(viewModel.isEditMode.value)
                 }
             }
         }
@@ -238,7 +234,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val action =
                 ScheduleFragmentDirections.actionScheduleFragmentToScheduleParticipantsFragment(
                     viewModel.participants.value.toTypedArray(),
-                    viewModel.isEditMode.value
+                    viewModel.isEditMode.value && viewModel.isAuthor.value
                 )
             findNavController().navigate(action)
         }
@@ -280,7 +276,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 } else {
                     val bottomSheet =
                         ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration) { min ->
-                            viewModel.setAlarm(Alarm("DEPARTURE", min))
+                            viewModel.setAlarm(Alarm("DEPARTURE", min, ""))
                         }
                     bottomSheet.show(childFragmentManager, tag)
                 }
@@ -290,9 +286,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private fun updateToolbar(isEditMode: Boolean) {
         with(binding.toolbarSchedule.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode && isEditable
-            findItem(R.id.item_schedule_delete).isVisible = !isEditMode && isEditable
-            findItem(R.id.item_schedule_complete).isVisible = isEditMode && isEditable
+            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
+            findItem(R.id.item_schedule_delete).isVisible = !isEditMode
+            findItem(R.id.item_schedule_complete).isVisible = isEditMode
         }
         binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
     }
