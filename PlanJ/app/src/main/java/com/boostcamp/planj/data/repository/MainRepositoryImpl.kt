@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.CategoryResponse
@@ -274,14 +275,17 @@ class MainRepositoryImpl @Inject constructor(
             }
             emit(scheduleDummy)
         } catch (e: Exception) {
-             Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
+            Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
         }
     }
 
-    override suspend fun postScheduleAddMemo(scheduleId: String, memo : String) {
+    override suspend fun postScheduleAddMemo(scheduleId: String, memo: String) {
         return api.postScheduleAddMemo(PostScheduleAddMemoBody(scheduleId, memo))
     }
 
+    override fun getFailedMemo(): Flow<List<FailedMemo>> = flow {
+        emit(api.getFailedMemo().date)
+    }
 }
 
 

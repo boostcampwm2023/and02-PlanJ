@@ -40,7 +40,7 @@ interface MainApi {
     suspend fun postSchedule(@Body postScheduleBody: PostScheduleBody): PostScheduleResponse
 
     @DELETE("/api/category/delete/{categoryUuid}")
-    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String) : CategoryResponse
+    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String): CategoryResponse
 
     @HTTP(method = "DELETE", path = "/api/schedule/delete", hasBody = true)
     suspend fun deleteSchedule(@Body deleteScheduleBody: DeleteScheduleBody)
@@ -99,4 +99,7 @@ interface MainApi {
 
     @GET("/api/schedule/search")
     suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
+
+    @GET("/api/schedule/memo")
+    suspend fun getFailedMemo(): GetFailedMemoResponse
 }

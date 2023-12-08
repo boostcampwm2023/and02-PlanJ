@@ -1,78 +1,53 @@
 package com.boostcamp.planj.ui.main
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import androidx.fragment.app.Fragment
-import com.boostcamp.planj.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.boostcamp.planj.databinding.FragmentSettingFailBinding
-import com.boostcamp.planj.databinding.ItemFailMemoBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-data class DummyFailData(
-    val title : String,
-    val startTime : String?,
-    val endTime : String,
-    val failMemo : String
-)
 
+@AndroidEntryPoint
 class SettingFailFragment : Fragment() {
-    private var _binding : FragmentSettingFailBinding? = null
+    private var _binding: FragmentSettingFailBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: SettingFailVewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSettingFailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getFailedMemo()
 
-        val dummyFailData = mutableListOf<DummyFailData>()
-        repeat(15){
-            dummyFailData.add(
-                DummyFailData(
-                    "title${it+1}",
-                    null,
-                    "2023-12-06",
-                    "asdfasvasdgwqgasasgwqefgasvabqartqgfabvagglakjsvljasivjbiqaegjioqajfvlkajslvjaosigjoiqawjovjasovja"
-                )
-            )
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.failedMemo.collectLatest {
+                    if (it.isNotEmpty()) {
+                        binding.rvSettingFailMemo.adapter =
+                            SettingFailListAdapter(requireContext(), it)
+                    }
+                }
+            }
         }
-
-        val array = SettingFailListAdapter(requireContext(), dummyFailData)
-        binding.rvSettingFailMemo.adapter = array
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-}
-
-
-class SettingFailListAdapter(
-    private val context : Context,
-    private val list : List<DummyFailData>
-) : BaseAdapter() {
-
-    override fun getItemId(position: Int): Long = position.toLong()
-
-    override fun getItem(position: Int): DummyFailData = list[position]
-
-    override fun getCount(): Int = list.size
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val binding = ItemFailMemoBinding.inflate(LayoutInflater.from(context))
-        binding.data = list[position]
-        return binding.root
-    }
-
 }

@@ -2,6 +2,7 @@ package com.boostcamp.planj.data.repository
 
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.model.dto.CategoryResponse
@@ -21,13 +22,17 @@ interface MainRepository {
 
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
-    fun postSchedule(categoryId: String, title: String, endTime: DateTime): Flow<PostScheduleResponse>
+    fun postSchedule(
+        categoryId: String,
+        title: String,
+        endTime: DateTime
+    ): Flow<PostScheduleResponse>
 
     suspend fun emptyToken()
 
     suspend fun deleteScheduleApi(scheduleUuid: String)
 
-    suspend fun deleteCategoryApi(categoryUuid: String) : Flow<CategoryResponse>
+    suspend fun deleteCategoryApi(categoryUuid: String): Flow<CategoryResponse>
 
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
 
@@ -54,7 +59,7 @@ interface MainRepository {
 
     suspend fun getMyInfo(): Flow<User>
 
-    fun patchUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
+    fun patchUser(nickName: String, imageFile: MultipartBody.Part?): Flow<PostUserResponse>
 
     fun getScheduleChecked(scheduleId: String): Flow<GetScheduleCheckedResponse>
 
@@ -62,7 +67,9 @@ interface MainRepository {
 
     suspend fun getUserImageRemove()
 
-    suspend fun postScheduleAddMemo(scheduleId: String, memo : String)
+    suspend fun postScheduleAddMemo(scheduleId: String, memo: String)
 
     fun getSearchSchedules(name: String): Flow<List<Schedule>>
+
+    fun getFailedMemo(): Flow<List<FailedMemo>>
 }
