@@ -1,11 +1,11 @@
 package com.boostcamp.planj.ui.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,7 +14,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.ActivityMainBinding
-import com.boostcamp.planj.ui.main.home.MainViewModel
+import com.boostcamp.planj.ui.schedule.ScheduleActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,6 +29,13 @@ class MainActivity : AppCompatActivity() {
 
         checkPermission()
         setJetpackNavigation()
+
+        val scheduleId = intent.getStringExtra("scheduleId")
+        if (scheduleId != null) {
+            val intent = Intent(this, ScheduleActivity::class.java)
+            intent.putExtra("scheduleId", scheduleId)
+            startActivity(intent)
+        }
     }
 
     private fun checkPermission() {

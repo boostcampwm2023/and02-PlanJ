@@ -20,14 +20,13 @@ class PlanjAlarm(private val context: Context) {
 
     fun setAlarm(alarmInfo: AlarmInfo) {
         with(alarmInfo) {
-            val requestCode = scheduleId.hashCode()
             val text = if (alarm.alarmType == "DEPARTURE") {
                 "출발 시간 ${alarm.alarmTime}분 전입니다."
             } else {
                 "종료 시간 ${alarm.alarmTime}분 전입니다."
             }
 
-            val pendingIntent = createPendingIntent(requestCode, title, text)
+            val pendingIntent = createPendingIntent(scheduleId, title, text)
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = endTime.toMilliseconds()
@@ -41,8 +40,8 @@ class PlanjAlarm(private val context: Context) {
         }
     }
 
-    fun deleteAlarm(requestCode: Int) {
-        alarmManager.cancel(createPendingIntent(requestCode))
+    fun deleteAlarm(scheduleId: String) {
+        alarmManager.cancel(createPendingIntent(scheduleId))
     }
 
     private fun setOneTimeAlarm(calendar: Calendar, pendingIntent: PendingIntent) {
@@ -72,16 +71,17 @@ class PlanjAlarm(private val context: Context) {
     }
 
     private fun createPendingIntent(
-        requestCode: Int,
+        scheduleId: String,
         title: String = "",
         text: String = ""
     ): PendingIntent {
         return alarmIntent.let { intent ->
             intent.putExtra("title", title)
             intent.putExtra("text", text)
+            intent.putExtra("scheduleId", scheduleId)
             PendingIntent.getBroadcast(
                 context,
-                requestCode,
+                scheduleId.hashCode(),
                 alarmIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
