@@ -25,7 +25,7 @@ import java.io.IOException
 import java.util.Calendar
 import javax.inject.Inject
 
-class LoginRepositoryImpl @Inject constructor(
+class  LoginRepositoryImpl @Inject constructor(
     private val apiService: LoginApi,
     private val dataStore: DataStore<Preferences>,
     private val alarmInfoDao: AlarmInfoDao,
