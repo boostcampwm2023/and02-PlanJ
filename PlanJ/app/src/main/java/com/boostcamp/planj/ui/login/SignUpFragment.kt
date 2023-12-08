@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,6 +38,7 @@ class SignUpFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         setObserver()
+        setListener()
     }
 
     private fun setObserver() {
@@ -49,6 +51,17 @@ class SignUpFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.showToast.collect { message ->
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun setListener() {
+        binding.tietSignUpNickname.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.postSignUp()
+                true
+            } else {
+                false
             }
         }
     }

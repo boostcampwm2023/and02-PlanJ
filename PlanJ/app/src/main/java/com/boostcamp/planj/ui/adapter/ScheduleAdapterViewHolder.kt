@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.databinding.ItemScheduleBinding
+import java.time.LocalDateTime
 
 class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -18,6 +19,11 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
         binding.isCheck = isCheck
         binding.schedule = item
         binding.executePendingBindings()
+        if (System.currentTimeMillis() > item.endAt.toMilliseconds() && !item.isFailed
+        ) {
+            binding.cbDone.isEnabled = false
+        }
+
         itemView.setOnClickListener {
             clickListener.onClick(item.scheduleId)
         }
@@ -25,6 +31,7 @@ class ScheduleAdapterViewHolder(private val binding: ItemScheduleBinding) :
             checkBoxListener.onClick(item)
         }
     }
+
 
     companion object {
         fun from(parent: ViewGroup): ScheduleAdapterViewHolder {
