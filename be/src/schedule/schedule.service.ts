@@ -167,7 +167,7 @@ export class ScheduleService {
     const schedule = await this.scheduleRepository.findOne({ where: { scheduleUuid: scheduleUuid } });
 
     if (!schedule || !schedule.failed) {
-      const message: string = !schedule ? "요청한 스케줄이 없습니다." : "실패한 일정이 아닙니다";
+      const message: string = !schedule ? "해당 일정이 없습니다." : "실패한 일정이 아닙니다";
       this.logger.error(message);
       throw new BadRequestException(message);
     }

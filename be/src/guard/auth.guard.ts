@@ -20,8 +20,10 @@ export class AuthGuard implements CanActivate {
 
   private async validateUser(request: Request) {
     const token = request.headers.authorization;
+    const replacedToken = token.replace(/^Bearer /i, "");
+    this.logger.verbose("Token: " + replacedToken);
     try {
-      const userUuid = this.authService.verify(token);
+      const userUuid = this.authService.verify(replacedToken);
       return await this.userService.validateUser(userUuid);
     } catch (e) {
       this.logger.error(e);
