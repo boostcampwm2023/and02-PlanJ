@@ -3,6 +3,8 @@ import { ScheduleMetadataEntity } from "./entity/schedule-metadata.entity";
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { UserEntity } from "src/user/entity/user.entity";
 import { MemoResponse } from "./dto/memo.response";
+import { add } from "date-fns";
+import { AlarmScheduleResponse } from "./dto/alarm-schedule.response";
 
 @Injectable()
 export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
@@ -79,13 +81,39 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
 
   async findByUserId(userId: number) {
     try {
-      const result: MemoResponse = await this.query(
+      const result: MemoResponse[] = await this.query(
         `SELECT meta.title as title, s.start_at as startAt, s.end_at as endAt, s.retrospective_memo as retrospectiveMemo
              FROM schedule_metadata as meta LEFT OUTER JOIN schedule as s
              ON meta.id = s.metadata_id
-             WHERE meta.user_id=${userId}
+             WHERE meta.user_id=?
              AND s.retrospective_memo IS NOT NULL
              ORDER BY s.end_at DESC`,
+        [userId],
+      );
+      return result;
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
+  async findHasAlarm(userId: number) {
+    const today = add(new Date(), { hours: 9 });
+    const threeDaysAfter = add(today, { days: 3 });
+    const [todayString] = today.toISOString().split("T");
+    const [endDayString] = threeDaysAfter.toISOString().split("T");
+
+    try {
+      const result: AlarmScheduleResponse[] = await this.query(
+        `SELECT meta.title AS title, s.end_at AS endAt, s.uuid AS scheduleUuid, a.alarm_time AS alarmTime,
+             a.alarm_type AS alarmType, a.estimated_time AS estimatedTime
+             FROM schedule_metadata AS meta 
+             LEFT OUTER JOIN schedule AS s ON meta.id = s.metadata_id
+             LEFT OUTER JOIN schedule_alarm AS a ON meta.id = a.metadata_id
+             WHERE meta.user_id=?
+             AND meta.has_alarm = true
+             AND s.end_at BETWEEN ? AND ?`,
+        [userId, todayString, endDayString],
       );
       return result;
     } catch (e) {

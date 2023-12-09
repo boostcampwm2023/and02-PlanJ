@@ -29,13 +29,13 @@ export class ScheduleAlarmService {
       record = this.scheduleAlarmRepository.create({
         alarmType: AlarmType[alarmDto.alarmType],
         alarmTime: alarmDto.alarmTime,
-        firstScheduleUuid: alarmDto.firstScheduleUuid,
+        estimatedTime: alarmDto.estimatedTime ?? 0,
         metadataId: metadata.metadataId,
       });
     } else {
-      record.firstScheduleUuid = alarmDto.firstScheduleUuid;
       record.alarmTime = alarmDto.alarmTime;
       record.alarmType = AlarmType[alarmDto.alarmType];
+      record.estimatedTime = alarmDto.estimatedTime ?? 0;
     }
 
     try {

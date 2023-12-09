@@ -1,4 +1,4 @@
-import { IsInt, IsString, Max, Min } from "class-validator";
+import { IsInt, IsOptional, IsString, Max, Min } from "class-validator";
 
 export class ScheduleAlarmDto {
   @IsString()
@@ -9,6 +9,7 @@ export class ScheduleAlarmDto {
   @Min(0)
   alarmTime: number;
 
-  @IsString()
-  firstScheduleUuid: string;
+  @IsInt()
+  @IsOptional()
+  estimatedTime: number;
 }

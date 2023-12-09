@@ -112,7 +112,7 @@ export class ScheduleApiService {
         ? {
             alarmType: scheduleAlarmEntity.alarmType,
             alarmTime: scheduleAlarmEntity.alarmTime,
-            firstScheduleUuid: scheduleAlarmEntity.firstScheduleUuid,
+            estimatedTime: scheduleAlarmEntity.estimatedTime,
           }
         : null,
     };
@@ -474,5 +474,17 @@ export class ScheduleApiService {
 
       this.scheduleService.addRepeatedSchedule(schedule, repetition);
     });
+  }
+
+  async getScheduleHasAlarm(token: string) {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+    const records = await this.scheduleMetaService.getScheduleHasAlarm(userEntity.userId);
+
+    const body: HttpResponse = {
+      message: "알람 일정 조회 성공",
+      data: records,
+    };
+    return JSON.stringify(body);
   }
 }
