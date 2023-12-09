@@ -99,10 +99,13 @@ export class UserApiController {
     },
   })
   @Post("/naver")
-  async loginByNaver(@Body("accessToken") accessToken: string): Promise<JSON> {
+  async loginByNaver(
+    @Body("accessToken") accessToken: string,
+    @Body("deviceToken") deviceToken: string,
+  ): Promise<JSON> {
     this.logger.log("Post /api/auth/naver");
     this.logger.verbose("Access Token: " + accessToken);
-    const result = await this.userApiService.loginByNaver(accessToken);
+    const result = await this.userApiService.loginByNaver(accessToken, deviceToken);
     return JSON.parse(result);
   }
 
@@ -304,6 +307,36 @@ export class UserApiController {
     this.logger.verbose("Image" + profileImage);
     nickname = nickname.replace(/"/g, "");
     const result = await this.userApiService.updateUserInfo(token, profileImage, nickname);
+    return JSON.parse(result);
+  }
+
+  @Get("/logout")
+  @ApiOperation({ summary: "로그아웃" })
+  @ApiBearerAuth("access-token")
+  @ApiOkResponse({
+    description: "로그아웃 성공",
+    schema: {
+      example: {
+        message: "로그아웃 성공",
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "유효한 토큰이 아닐 때",
+    schema: {
+      example: {
+        message: "유효하지 않은 사용자입니다.",
+        error: "Unauthorized",
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiOkResponse({})
+  @UseGuards(AuthGuard)
+  async logout(@Token() token: string): Promise<JSON> {
+    this.logger.log("Get /api/auth/logout");
+    this.logger.verbose("Token: " + token);
+    const result = await this.userApiService.logout(token);
     return JSON.parse(result);
   }
 }
