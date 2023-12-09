@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # environment variable
 env/
+
+# secrets
+src/config/firebase.config.json
