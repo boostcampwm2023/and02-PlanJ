@@ -4,6 +4,7 @@ import { AddFriendDto } from "./dto/add-friend.dto";
 import { UserService } from "src/user/user.service";
 import { HttpResponse } from "src/utils/http.response";
 import { AuthService } from "src/auth/auth.service";
+import { PushService } from "../push/push.service";
 
 @Injectable()
 export class FriendService {
@@ -12,6 +13,7 @@ export class FriendService {
     private userService: UserService,
     private authService: AuthService,
     private friendRepository: FriendRepository,
+    private pushService: PushService,
   ) {}
 
   async add(token: string, dto: AddFriendDto): Promise<string> {
@@ -36,6 +38,12 @@ export class FriendService {
 
     try {
       await this.friendRepository.add(from, to);
+
+      if (!!to.deviceToken) {
+        const message = `${from.nickname}님이 친구 추가하였습니다.`;
+        this.pushService.sendPush(to.deviceToken, message);
+      }
+
       const body: HttpResponse = {
         message: "친구가 되었습니다",
       };
