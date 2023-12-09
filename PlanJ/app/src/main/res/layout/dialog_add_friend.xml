@@ -38,7 +38,7 @@
             android:imeOptions="actionDone"
             android:inputType="textEmailAddress"
             android:maxLines="1"
-            android:textColorHint="@color/dark_gray" />
+            android:textColorHint="@color/hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/cancel"
-        android:textColor="@color/red"
+        android:textColor="@color/red80"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tv_dialog_add_friend_complete"
         app:layout_constraintTop_toTopOf="@id/tv_dialog_add_friend_complete" />

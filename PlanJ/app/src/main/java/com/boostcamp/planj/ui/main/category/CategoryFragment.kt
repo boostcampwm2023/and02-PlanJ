@@ -42,12 +42,22 @@ class CategoryFragment : Fragment() {
         setObserver()
 
         binding.layoutCategoryDefault.setOnClickListener {
-            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(Category("default", "미분류"))
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(
+                Category(
+                    "default",
+                    "미분류"
+                )
+            )
             findNavController().navigate(action)
         }
 
         binding.layoutCategoryAll.setOnClickListener {
-            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(Category("all", "전체 일정"))
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(
+                Category(
+                    "all",
+                    "전체 일정"
+                )
+            )
             findNavController().navigate(action)
         }
     }
@@ -64,7 +74,8 @@ class CategoryFragment : Fragment() {
 
     private fun initAdapter() {
         val clickListener = CategoryClickListener {
-            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(it)
+            val action =
+                CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(it)
             findNavController().navigate(action)
         }
         val popUpMenuListener = object : CategoryPopUpMenuListener {

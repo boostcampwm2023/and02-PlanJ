@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="8dp">
@@ -20,7 +20,8 @@
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/img_logo" />
+            android:src="@drawable/img_logo"
+            android:contentDescription="@string/application_logo" />
 
         <TextView
             android:id="@+id/tv_widget_today"
@@ -29,19 +30,19 @@
             android:layout_gravity="center"
             android:layout_weight="9"
             android:padding="8dp"
-            android:paddingStart="8dp"
-            android:textColor="@color/black"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/text"
             android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/iv_widget_refresh"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
+            android:layout_gravity="center|start"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
+            android:contentDescription="@string/refresh"
             android:src="@drawable/ic_refresh" />
-
     </LinearLayout>
 
     <ListView

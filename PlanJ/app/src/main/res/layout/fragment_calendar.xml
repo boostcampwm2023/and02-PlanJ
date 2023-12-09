@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/calendar_layout"
+    <LinearLayout
+        android:id="@+id/calendar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/calendar_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/calendar_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:spanCount="7"
-                android:adjustViewBounds="true"
-                app:layout_constrainedHeight="true"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                android:orientation="vertical"
-                />
-        </LinearLayout>
-
-
-
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constrainedHeight="true"
+            app:spanCount="7" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

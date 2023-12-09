@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/round_main1" android:state_enabled="true" />
-    <item android:drawable="@drawable/round_gray" />
+    <item android:drawable="@drawable/round_r10_main1" android:state_enabled="true" />
+    <item android:drawable="@drawable/round_r10_gray2" />
 </selector>

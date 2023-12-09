@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/background">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tb_home_main"
@@ -28,13 +28,14 @@
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/img_logo" />
+                android:src="@drawable/img_logo"
+                android:contentDescription="@string/application_logo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Home"
+                android:text="@string/home"
                 android:textColor="@color/main1"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -63,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="center"
-            android:text="일정이 존재하지 않습니다."
+            android:text="@string/no_schedule_exists"
             android:visibility="@{viewModel.schedules.size() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/tv_calendar_title"
             app:layout_constraintTop_toBottomOf="@id/tb_home_main" />
@@ -75,7 +76,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="8dp"
             android:text="@{viewModel.calendarTitle}"
-            android:textColor="@color/black"
+            android:textColor="@color/text"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/layout_main_calendar"
@@ -88,7 +89,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/round_r8_main2"
-            android:text="오늘"
+            android:text="@string/today"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -121,7 +122,7 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/main1"
             app:icon="@drawable/ic_add"
-            app:iconTint="@color/white"
+            app:iconTint="@color/background"
             app:layout_constraintBottom_toTopOf="@id/layout_main_calendar"
             app:layout_constraintEnd_toEndOf="parent" />
 

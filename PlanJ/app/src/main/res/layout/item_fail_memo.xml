@@ -18,7 +18,7 @@
             android:id="@+id/layout_schedule_fail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/background"
             android:orientation="vertical"
             android:padding="16dp"
             app:layout_constraintTop_toTopOf="parent">
@@ -27,34 +27,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{data.title}"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/schedule_title"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:failedMemoTime="@{data}" />
+                app:failedMemoTime="@{data}"
+                tools:text="@string/end_time" />
 
             <TextView
                 android:id="@+id/tv_schedule_fail_memo"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="8dp"
-                android:background="@color/light_gray"
+                android:background="@drawable/round_r10_gray1"
+                android:textColor="@color/text"
                 android:ellipsize="end"
                 android:gravity="top"
                 android:padding="12dp"
                 android:text="@{data.retrospectiveMemo}"
                 android:textSize="16sp" />
-
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -32,10 +33,10 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:text="1"
                 android:textColor="@{item.selected ? @color/white : @color/black }"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="1" />
 
             <TextView
                 android:id="@+id/tv_day"
@@ -43,10 +44,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:text="1"
                 android:textColor="@{item.selected ? @color/white : @color/black }"
-                android:textSize="12sp" />
-
+                android:textSize="12sp"
+                tools:text="1" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

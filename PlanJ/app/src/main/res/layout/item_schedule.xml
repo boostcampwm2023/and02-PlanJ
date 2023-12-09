@@ -23,7 +23,6 @@
         android:elevation="2dp"
         android:padding="4dp">
 
-
         <CheckBox
             android:id="@+id/cb_done"
             android:layout_width="wrap_content"
@@ -36,7 +35,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <TextView
             android:id="@+id/tv_main_title"
@@ -60,18 +58,19 @@
             android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/text"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/cb_done"
             app:layout_constraintTop_toBottomOf="@id/tv_main_title"
             app:setDateTime="@{schedule}" />
 
-
         <ImageView
             android:id="@+id/iv_main_repeat"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_margin="8dp"
+            android:contentDescription="@string/repetition"
             android:src="@drawable/ic_repeat"
             android:visibility="@{schedule.repeated ? View.VISIBLE : View.GONE }"
             app:layout_constraintBottom_toBottomOf="@id/tv_main_date"
@@ -83,6 +82,7 @@
             android:layout_height="36dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
+            android:contentDescription="@string/fail"
             android:src="@drawable/ic_fail"
             android:visibility="invisible"
             app:checkFail="@{schedule}"
@@ -95,6 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:contentDescription="@string/participants"
             android:src="@drawable/id_group"
             android:visibility="@{schedule.participantCount > 1 ? View.VISIBLE : View.GONE }"
             app:layout_constraintBottom_toTopOf="@id/tv_main_group_participation"
@@ -106,6 +107,7 @@
             android:id="@+id/tv_main_group_participation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/text"
             android:textSize="8sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/iv_main_group"

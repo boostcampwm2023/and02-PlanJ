@@ -1,11 +1,9 @@
 package com.boostcamp.planj.ui.main.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -15,10 +13,8 @@ import com.boostcamp.planj.data.model.SaveDate
 import com.boostcamp.planj.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 class CalendarFragment(private val onClickListener: OnClickListener) : Fragment() {
 

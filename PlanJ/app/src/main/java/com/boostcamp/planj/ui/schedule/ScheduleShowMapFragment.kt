@@ -164,7 +164,7 @@ class ScheduleShowMapFragment : Fragment(), OnMapReadyCallback {
                         }
                         path.map = null
                         path.coords = latLngList
-                        path.color = resources.getColor(R.color.red, null)
+                        path.color = resources.getColor(R.color.red80, null)
                         path.map = naverMap
 
                         val start = LatLng(

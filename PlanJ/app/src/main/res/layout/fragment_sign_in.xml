@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         tools:context=".ui.login.SignInFragment">
 
         <ImageView
@@ -35,6 +35,7 @@
             android:layout_marginVertical="40dp"
             android:hint="@string/email"
             app:endIconMode="clear_text"
+            android:textColor="@color/text"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +58,7 @@
             android:hint="@string/password"
             app:endIconMode="clear_text"
             app:errorEnabled="true"
+            android:textColor="@color/text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_sign_in_id">
@@ -76,7 +78,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/round_main1"
+            android:background="@drawable/round_r10_main1"
             android:onClick="@{() -> viewModel.postSignIn()}"
             android:text="@string/login"
             android:textColor="@color/white"
@@ -91,7 +93,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/round_white_stroke"
             android:text="@string/sign_up"
-            android:textColor="@color/black"
+            android:textColor="@color/main1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_sign_in_login" />
@@ -99,7 +101,7 @@
         <View
             android:layout_width="100dp"
             android:layout_height="1dp"
-            android:background="@color/gray"
+            android:background="@color/gray2"
             app:layout_constraintBottom_toBottomOf="@id/tv_sign_in_easy"
             app:layout_constraintRight_toLeftOf="@id/tv_sign_in_easy"
             app:layout_constraintTop_toTopOf="@id/tv_sign_in_easy" />
@@ -111,7 +113,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="32dp"
             android:text="@string/easy_login"
-            android:textColor="@color/gray"
+            android:textColor="@color/gray2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_sign_in_sign_up" />
@@ -119,7 +121,7 @@
         <View
             android:layout_width="100dp"
             android:layout_height="1dp"
-            android:background="@color/gray"
+            android:background="@color/gray2"
             app:layout_constraintBottom_toBottomOf="@id/tv_sign_in_easy"
             app:layout_constraintLeft_toRightOf="@id/tv_sign_in_easy"
             app:layout_constraintTop_toTopOf="@id/tv_sign_in_easy" />
