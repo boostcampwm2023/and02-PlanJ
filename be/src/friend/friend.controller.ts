@@ -4,15 +4,28 @@ import { AddFriendDto } from "./dto/add-friend.dto";
 import { AuthGuard } from "src/guard/auth.guard";
 import { Token } from "src/utils/token.decorator";
 import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
-  ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 @ApiTags("친구")
 @Controller("/api/friend")
+@ApiBearerAuth("access-token")
+@ApiUnauthorizedResponse({
+  description: "유효한 토큰이 아닐 때",
+  schema: {
+    example: {
+      message: "유효하지 않은 사용자입니다.",
+      error: "Unauthorized",
+      statusCode: 401,
+    },
+  },
+})
 @UseGuards(AuthGuard)
 export class FriendController {
   private readonly logger = new Logger(FriendController.name);
@@ -23,7 +36,17 @@ export class FriendController {
     description: "성공 메시지",
     schema: {
       example: {
-        message: "친구가 되었습니다 ^^",
+        message: "친구가 되었습니다",
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: "추가하려는 사용자가 존재하지 않을 때",
+    schema: {
+      example: {
+        message: "존재하지 않는 사용자입니다.",
+        error: "Bad Request",
+        statusCode: 400,
       },
     },
   })
@@ -68,7 +91,6 @@ export class FriendController {
       },
     },
   })
-  @ApiInternalServerErrorResponse()
   @Delete()
   async deleteFriend(@Token() token: string, @Body("email") email: string): Promise<JSON> {
     this.logger.log("Delete /api/friend/");
