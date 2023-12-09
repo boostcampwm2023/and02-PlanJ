@@ -93,4 +93,13 @@ export class ScheduleApiController {
     const result = await this.scheduleApiService.getRetrospectiveMemo(token);
     return JSON.parse(result);
   }
+
+  @ApiOperation({ summary: "알람 일정 조회" })
+  @Get("/alarm")
+  async getScheduleHasAlarm(@Token() token: string): Promise<JSON> {
+    this.logger.log("Get /api/schedule/alarm");
+    this.logger.verbose("Token: " + token);
+    const result = await this.scheduleApiService.getScheduleHasAlarm(token);
+    return JSON.parse(result);
+  }
 }
