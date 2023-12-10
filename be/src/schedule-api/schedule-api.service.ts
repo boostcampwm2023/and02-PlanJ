@@ -25,6 +25,9 @@ import { ScheduleEntity } from "../schedule/entity/schedule.entity";
 import { RepetitionDto } from "src/schedule/dto/repetition.dto";
 import { InviteStatus } from "src/utils/domain/invite-status.enum";
 import { CategoryEntity } from "../category/entity/category.entity";
+import { PushService } from "../push/push.service";
+import { ScheduleAlarmEntity } from "../schedule/entity/schedule-alarm.entity";
+import { RepetitionEntity } from "../schedule/entity/repetition.entity";
 
 @Injectable()
 export class ScheduleApiService {
@@ -40,6 +43,7 @@ export class ScheduleApiService {
     private repetitionService: RepetitionService,
     private participateService: ParticipateService,
     private scheduleAlarmService: ScheduleAlarmService,
+    private pushService: PushService,
   ) {}
 
   async addSchedule(token: string, dto: AddScheduleDto): Promise<string> {
@@ -68,14 +72,19 @@ export class ScheduleApiService {
       throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
     }
 
-    const [scheduleLocationEntity, scheduleAlarmEntity, categoryEntity, repetitionEntity, participants] =
-      await Promise.all([
-        this.scheduleLocationService.getLocationByScheduleMetadataId(scheduleMetadata.metadataId),
-        this.scheduleAlarmService.getAlarmByMetadataId(scheduleMetadata.metadataId),
-        this.categoryService.getCategoryEntityByCategoryId(scheduleMetadata.categoryId),
-        this.repetitionService.getRepetitionByMetadataId(scheduleMetadata.metadataId),
-        this.participateService.getParticipantGroup(scheduleMetadata.metadataId),
-      ]);
+    const [scheduleLocationEntity, scheduleAlarmEntity, categoryEntity, repetitionEntity, participants]: [
+      ScheduleLocationEntity,
+      ScheduleAlarmEntity,
+      CategoryEntity,
+      RepetitionEntity,
+      ParticipantEntity[],
+    ] = await Promise.all([
+      this.scheduleLocationService.getLocationByScheduleMetadataId(scheduleMetadata.metadataId),
+      this.scheduleAlarmService.getAlarmByMetadataId(scheduleMetadata.metadataId),
+      this.categoryService.getCategoryEntityByCategoryId(scheduleMetadata.categoryId),
+      this.repetitionService.getRepetitionByMetadataId(scheduleMetadata.metadataId),
+      this.participateService.getParticipantGroup(scheduleMetadata.metadataId),
+    ]);
 
     const participantsInfo = await this.getParticipantSuccess(participants, scheduleEntity.endAt, user);
 
@@ -314,6 +323,7 @@ export class ScheduleApiService {
     const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(authorScheduleUuid);
     const authorScheduleMetadata = authorSchedule.parent;
     const authorScheduleLocation = await this.scheduleLocationService.getLocationByScheduleMetadataId(authorMetadataId);
+    let message: string;
 
     const invitedUser = await this.userService.getUserEntityByEmail(invitedUserEmail);
 
@@ -321,6 +331,7 @@ export class ScheduleApiService {
     let invitedMetadataId: number;
 
     if (invitedStatus === InviteStatus.DELETED) {
+      message = `공유된 ${authorScheduleMetadata.title} 일정이 삭제되었습니다.`;
       const unInvitedMetadataId = await this.participateService.getInvitedMetadataId(
         authorMetadataId,
         invitedUser.userId,
@@ -341,6 +352,10 @@ export class ScheduleApiService {
     }
 
     if (invitedStatus === InviteStatus.NEW) {
+      message = `새로운 ${authorScheduleMetadata.title} 일정이 공유되었습니다.`;
+      if (!!invitedUser.deviceToken) {
+        this.pushService.sendPush(invitedUser.deviceToken, message);
+      }
       const addScheduleDto: AddScheduleDto = {
         userUuid: invitedUser.userUuid,
         categoryUuid: "default",
@@ -352,6 +367,7 @@ export class ScheduleApiService {
       invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
       invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
     } else if (invitedStatus === InviteStatus.CHANGED) {
+      message = `공유된 ${authorScheduleMetadata.title} 일정이 변경되었습니다.`;
       invitedMetadataId = await this.participateService.getInvitedMetadataId(authorMetadataId, invitedUser.userId);
       invitedScheduleUuid = await this.scheduleService.getFirstScheduleUuidByMetadataId(invitedMetadataId);
     }
@@ -393,6 +409,10 @@ export class ScheduleApiService {
 
     if (invitedStatus === InviteStatus.NEW) {
       await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
+    }
+
+    if (!!invitedUser.deviceToken) {
+      this.pushService.sendPush(invitedUser.deviceToken, message);
     }
   }
 

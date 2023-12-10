@@ -10,4 +10,7 @@ export class UserLoginDto {
   @MinLength(8)
   @MaxLength(16)
   password: string;
+
+  @IsString()
+  deviceToken: string;
 }
