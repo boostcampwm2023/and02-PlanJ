@@ -102,7 +102,6 @@ class HomeFragment : Fragment() {
         val checkBoxListener = ScheduleDoneListener { schedule ->
             viewModel.scheduleFinishChange(schedule) {
                 failScheduleDialog = ScheduleFailDialog(it) { schedule, memo ->
-                    viewModel.saveFailedSchedule("")
                     viewModel.postScheduleAddMemo(schedule, memo)
                 }
                 failScheduleDialog?.show(

@@ -18,6 +18,7 @@ import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.schedule.ScheduleDialog
+import com.boostcamp.planj.ui.schedule.ScheduleFailDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -84,11 +85,19 @@ class CategoryDetailFragment : Fragment() {
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
-            viewModel.checkBoxChange(schedule, !schedule.isFinished)
+            viewModel.scheduleFinishChange(schedule) {
+                val dialog = ScheduleFailDialog(it) { schedule, memo ->
+                    viewModel.postScheduleAddMemo(schedule, memo)
+                }
+                dialog.show(
+                    parentFragmentManager, tag
+                )
+
+            }
         }
         segmentScheduleAdapter =
             SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener) {
-
+                viewModel.changeExpanded(it)
             }
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
@@ -109,7 +118,15 @@ class CategoryDetailFragment : Fragment() {
                     (0..2).forEach { index ->
                         segmentList.add(ScheduleSegment(list[index], segment[index]))
                     }
-                    segmentScheduleAdapter.submitList(segmentList)
+                    viewModel.setScheduleSegment(segmentList)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleSegment.collectLatest {
+                    segmentScheduleAdapter.submitList(it)
                 }
             }
         }

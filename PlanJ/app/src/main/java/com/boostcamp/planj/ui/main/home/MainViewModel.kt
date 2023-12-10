@@ -154,7 +154,6 @@ class MainViewModel @Inject constructor(
                 Log.d("PLANJDEBUG", "getScheduleChecked Error ${it.message}")
             }.collectLatest {
                 if (it.data.failed && !it.data.hasRetrospectiveMemo) {
-                    mainRepository.saveFailedSchedule(schedule.scheduleId)
                     showDialog(schedule)
                 }
                 getScheduleDaily("${_selectDate.value}T00:00:00")
