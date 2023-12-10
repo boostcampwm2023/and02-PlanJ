@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -29,6 +31,9 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
+
+    private val _alarms = MutableStateFlow<List<AlarmInfo>>(emptyList())
+    val alarms = _alarms.asStateFlow()
 
     private val _selectDate = MutableStateFlow("")
     val selectDate = _selectDate.asStateFlow()
@@ -39,10 +44,8 @@ class MainViewModel @Inject constructor(
     private val _calendarTitle = MutableStateFlow("")
     val calendarTitle = _calendarTitle.asStateFlow()
 
-
     private val _isCurrent = MutableStateFlow(true)
     val isCurrent = _isCurrent.asStateFlow()
-
 
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
@@ -54,7 +57,6 @@ class MainViewModel @Inject constructor(
     val scheduleSegment = _scheduleSegment.asStateFlow()
 
     val isRefreshing = MutableStateFlow(false)
-
 
     fun postSchedule(category: String, title: String) {
         val date = _selectDate.value.split("-").map { it.toInt() }
@@ -178,5 +180,14 @@ class MainViewModel @Inject constructor(
         _scheduleSegment.value = list
     }
 
+    fun getAlarms(){
+        viewModelScope.launch {
+            mainRepository.getAlarms().catch {
+                Log.d("PLANJDEBUG", "getAlarms error ${it.message}")
+            }.collectLatest {
+                _alarms.update { it }
+            }
+        }
+    }
 }
 

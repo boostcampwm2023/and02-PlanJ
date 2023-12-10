@@ -20,23 +20,19 @@ class PlanjAlarm(private val context: Context) {
 
     fun setAlarm(alarmInfo: AlarmInfo) {
         with(alarmInfo) {
-            val text = if (alarm.alarmType == "DEPARTURE") {
-                "출발 시간 ${alarm.alarmTime}분 전입니다."
+            val text = if (alarmType == "DEPARTURE") {
+                "출발 시간 ${alarmTime}분 전입니다."
             } else {
-                "종료 시간 ${alarm.alarmTime}분 전입니다."
+                "종료 시간 ${alarmTime}분 전입니다."
             }
 
             val pendingIntent = createPendingIntent(scheduleId, title, text)
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = endTime.toMilliseconds()
-            calendar.add(Calendar.MINUTE, -alarm.alarmTime - estimatedTime)
+            calendar.add(Calendar.MINUTE, -alarmTime - estimatedTime)
 
-            if (repetition == null) {
-                setOneTimeAlarm(calendar, pendingIntent)
-            } else {
-                setRepeatAlarm(calendar, repetition, pendingIntent)
-            }
+            setOneTimeAlarm(calendar, pendingIntent)
         }
     }
 

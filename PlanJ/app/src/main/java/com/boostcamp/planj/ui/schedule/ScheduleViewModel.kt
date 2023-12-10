@@ -90,8 +90,6 @@ class ScheduleViewModel @Inject constructor(
     private val _showToast = MutableSharedFlow<String>()
     val showToast = _showToast.asSharedFlow()
 
-    private var firstAlarmUuid: String? = null
-
     fun setScheduleId(newScheduleId: String?) {
         scheduleId = newScheduleId ?: ""
         getScheduleInfo()
@@ -116,9 +114,6 @@ class ScheduleViewModel @Inject constructor(
                     scheduleMemo.value = schedule.description
                     _isAuthor.value =
                         schedule.participants.find { it.currentUser }?.isAuthor ?: false
-                    schedule.alarm?.let { alarm ->
-                        firstAlarmUuid = alarm.firstScheduleUuid
-                    }
                 }
         }
     }
@@ -158,8 +153,8 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun setAlarm(alarm: Alarm?) {
-        _scheduleAlarm.update{
-            alarm?.copy(firstScheduleUuid = scheduleId) ?: alarm
+        _scheduleAlarm.update {
+            alarm
         }
     }
 
@@ -239,6 +234,18 @@ class ScheduleViewModel @Inject constructor(
 
         viewModelScope.launch {
             categoryList.value.find { it.categoryName == scheduleCategory.value }?.let { category ->
+                _scheduleAlarm.update { alarm ->
+                    if (alarm != null) {
+                        val estimatedTimeInMillis = if (response.value != null) {
+                            response.value!!.route.trafast[0].summary.duration
+                        } else {
+                            0
+                        }
+                        alarm.copy(estimatedTime = estimatedTimeInMillis / (1000 * 60))
+                    } else {
+                        alarm
+                    }
+                }
                 val patchScheduleBody = PatchScheduleBody(
                     categoryUuid = category.categoryUuid,
                     scheduleUuid = scheduleId,
@@ -268,33 +275,24 @@ class ScheduleViewModel @Inject constructor(
     }
 
     private fun setAlarmInfo() {
-        firstAlarmUuid?.let { alarmId ->
-            viewModelScope.launch {
-                loginRepository.deleteAlarmInfoUsingScheduleId(alarmId)
-                loginRepository.getAlarmMode().collectLatest { alarmMode ->
-                    if (alarmMode) {
-                        _alarmEventFlow.emit(AlarmEvent.Delete(alarmId))
-                    }
+        viewModelScope.launch {
+            loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
+            loginRepository.getAlarmMode().collectLatest { alarmMode ->
+                if (alarmMode) {
+                    _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
                 }
             }
         }
 
-        if (scheduleAlarm.value != null) {
-            val estimatedTimeInMillis = if (response.value != null) {
-                response.value!!.route.trafast[0].summary.duration
-            } else {
-                0
-            }
+        scheduleAlarm.value?.let { alarm ->
             val alarmInfo = AlarmInfo(
                 scheduleId,
                 scheduleTitle.value,
                 scheduleEndTime.value,
-                scheduleRepetition.value,
-                scheduleAlarm.value!!,
-                estimatedTimeInMillis / (1000 * 60)
-            )
-
-            // db에는 무조건 알람 정보 저장
+                alarm.alarmType,
+                alarm.alarmTime,
+                alarm.estimatedTime
+            )// db에는 무조건 알람 정보 저장
             viewModelScope.launch {
                 loginRepository.insertAlarmInfo(alarmInfo)
                 loginRepository.getAlarmMode().collectLatest { alarmMode ->
