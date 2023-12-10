@@ -34,16 +34,7 @@ class SignInFragment : Fragment() {
                     val token = NaverIdLoginSDK.getAccessToken()
                     token?.let {
                         Log.d("PLANJDEBUG", "${token}")
-                        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                            if (!task.isSuccessful) {
-                                //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                                return@OnCompleteListener
-                            }
-
-                            // Get new FCM registration token
-                            val token = task.result
-                            viewModel.postSignInNaver(it, token)
-                        })
+                        viewModel.postSignInNaver(it)
                     } ?: Log.d("PLANJDEBUG", "naver Login Token null")
                 }
 
@@ -90,13 +81,25 @@ class SignInFragment : Fragment() {
 
         NaverIdLoginSDK.initialize(
             requireContext(),
-            "${BuildConfig.NAVER_LOGIN_CLIENT_ID}",
-            "${BuildConfig.NAVER_LOGIN_SECRET}",
+            BuildConfig.NAVER_LOGIN_CLIENT_ID,
+            BuildConfig.NAVER_LOGIN_SECRET,
             "PlanJ"
         )
-
+        initFirebaseToken()
         setObserver()
         setListener()
+    }
+
+    private fun initFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("PLANJDEBUG", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            viewModel.deviceToken = task.result
+        })
     }
 
     override fun onDestroyView() {
@@ -108,22 +111,6 @@ class SignInFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isSuccess.collect { isSuccess ->
                 if (isSuccess) {
-
-                    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                        if (!task.isSuccessful) {
-                            Log.w("PLANJDEBUG", "Fetching FCM registration token failed", task.exception)
-                            return@OnCompleteListener
-                        }
-
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        // Log and toast
-                        val msg = token
-                        Log.d("PLANJDEBUG", msg)
-                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    })
-
                     findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
                     requireActivity().finish()
                 }
@@ -146,38 +133,14 @@ class SignInFragment : Fragment() {
             NaverIdLoginSDK.authenticate(requireContext(), launcher)
         }
 
-        binding.btnSignInLogin.setOnClickListener {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
-                }
-
-                // Get new FCM registration token
-                val token = task.result
-                viewModel.postSignIn(token)
-            })
-        }
-
         binding.tietSignInPwdInput.setOnEditorActionListener { _, actionId, _ ->
-            if ( actionId == EditorInfo.IME_ACTION_DONE) {
-                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                        return@OnCompleteListener
-                    }
-
-                    // Get new FCM registration token
-                    val token = task.result
-                    viewModel.postSignIn(token)
-                })
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.postSignIn()
                 true
             } else {
                 false
             }
         }
     }
-
-
 
 }
