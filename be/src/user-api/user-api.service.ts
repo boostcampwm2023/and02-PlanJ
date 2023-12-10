@@ -29,7 +29,9 @@ export class UserApiService {
   async login(dto: UserLoginDto): Promise<string> {
     const userUuid = await this.userService.login(dto);
     const token = this.authService.issue(userUuid);
-    await this.userService.saveDeviceToken(userUuid, dto.deviceToken);
+    if (!!dto.deviceToken) {
+      await this.userService.saveDeviceToken(userUuid, dto.deviceToken);
+    }
 
     const body: HttpResponse = {
       message: "로그인 성공",
