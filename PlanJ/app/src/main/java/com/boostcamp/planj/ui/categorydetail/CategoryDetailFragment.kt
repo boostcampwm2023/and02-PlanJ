@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentCategoryDetailBinding
+import com.boostcamp.planj.ui.UpdateWidget
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
 import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
@@ -58,6 +59,7 @@ class CategoryDetailFragment : Fragment() {
                 false
             ) { category, title, endTime ->
                 viewModel.postSchedule(category, title, endTime)
+                UpdateWidget.updateWidget(requireContext())
             }
             activity?.supportFragmentManager?.let {
                 dialog.show(it, null)
@@ -76,6 +78,7 @@ class CategoryDetailFragment : Fragment() {
     private fun initAdapter() {
         val swipeListener = SwipeListener {
             viewModel.deleteSchedule(it)
+            UpdateWidget.updateWidget(requireContext())
         }
         val scheduleClickListener = ScheduleClickListener { scheduleId ->
             val action =
@@ -92,8 +95,8 @@ class CategoryDetailFragment : Fragment() {
                 dialog.show(
                     parentFragmentManager, tag
                 )
-
             }
+            UpdateWidget.updateWidget(requireContext())
         }
         segmentScheduleAdapter =
             SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener) {

@@ -68,6 +68,7 @@ class HomeFragment : Fragment() {
     private fun initScheduleAdapter() {
         val swipeListener = SwipeListener { schedule: Schedule ->
             viewModel.deleteSchedule(schedule.scheduleId)
+            UpdateWidget.updateWidget(requireContext())
 
         }
         val scheduleClickListener = ScheduleClickListener { scheduleId ->
@@ -83,8 +84,8 @@ class HomeFragment : Fragment() {
                 failScheduleDialog?.show(
                     parentFragmentManager, tag
                 )
-
             }
+            UpdateWidget.updateWidget(requireContext())
         }
         segmentScheduleAdapter = SegmentScheduleAdapter(
             swipeListener = swipeListener,
