@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -89,5 +90,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val REQUEST_CODE = 100
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("PLANJDEBUG", "MainActivity onDestroy call")
     }
 }

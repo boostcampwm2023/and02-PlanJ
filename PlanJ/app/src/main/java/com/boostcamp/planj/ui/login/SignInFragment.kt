@@ -3,7 +3,6 @@ package com.boostcamp.planj.ui.login
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,9 @@ import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSignInBinding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.messaging.FirebaseMessaging
 import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -32,7 +34,16 @@ class SignInFragment : Fragment() {
                     val token = NaverIdLoginSDK.getAccessToken()
                     token?.let {
                         Log.d("PLANJDEBUG", "${token}")
-                        viewModel.postSignInNaver(it)
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                            if (!task.isSuccessful) {
+                                //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                                return@OnCompleteListener
+                            }
+
+                            // Get new FCM registration token
+                            val token = task.result
+                            viewModel.postSignInNaver(it, token)
+                        })
                     } ?: Log.d("PLANJDEBUG", "naver Login Token null")
                 }
 
@@ -97,6 +108,22 @@ class SignInFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isSuccess.collect { isSuccess ->
                 if (isSuccess) {
+
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Log.w("PLANJDEBUG", "Fetching FCM registration token failed", task.exception)
+                            return@OnCompleteListener
+                        }
+
+                        // Get new FCM registration token
+                        val token = task.result
+
+                        // Log and toast
+                        val msg = token
+                        Log.d("PLANJDEBUG", msg)
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    })
+
                     findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
                     requireActivity().finish()
                 }
@@ -119,13 +146,38 @@ class SignInFragment : Fragment() {
             NaverIdLoginSDK.authenticate(requireContext(), launcher)
         }
 
+        binding.btnSignInLogin.setOnClickListener {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                viewModel.postSignIn(token)
+            })
+        }
+
         binding.tietSignInPwdInput.setOnEditorActionListener { _, actionId, _ ->
             if ( actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel.postSignIn()
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                        return@OnCompleteListener
+                    }
+
+                    // Get new FCM registration token
+                    val token = task.result
+                    viewModel.postSignIn(token)
+                })
                 true
             } else {
                 false
             }
         }
     }
+
+
+
 }

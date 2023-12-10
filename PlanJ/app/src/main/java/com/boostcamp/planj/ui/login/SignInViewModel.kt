@@ -32,9 +32,10 @@ class SignInViewModel @Inject constructor(
     private val _showToast = MutableSharedFlow<String>()
     val showToast = _showToast.asSharedFlow()
 
-    fun postSignIn() {
+    fun postSignIn(deviceToken : String) {
+        Log.d("PLANJDEBUG", "deviceToken $deviceToken")
         viewModelScope.launch {
-            val apiResult = loginRepository.postSignIn(userEmail.value, userPwd.value)
+            val apiResult = loginRepository.postSignIn(userEmail.value, userPwd.value, deviceToken)
             when (apiResult) {
                 is ApiResult.Success -> {
                     _isSuccess.value = true
@@ -60,9 +61,10 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun postSignInNaver(accessToken: String) {
+    fun postSignInNaver(accessToken: String, deviceToken : String) {
+        Log.d("PLANJDEBUG", "deviceToken $deviceToken")
         viewModelScope.launch {
-            loginRepository.postSignInNaver(accessToken)
+            loginRepository.postSignInNaver(accessToken, deviceToken)
                 .catch {
                     Log.d("PLANJDEBUG", "postSignInNaver error : ${it.message}")
                 }

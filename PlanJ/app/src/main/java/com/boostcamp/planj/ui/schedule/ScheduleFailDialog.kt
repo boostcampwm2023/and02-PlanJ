@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.schedule
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
@@ -89,6 +90,11 @@ class ScheduleFailDialog(
                     "10자 이상 입력해 주세요"
                 }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        Log.d("PLANJDEBUG", "ScheduleFailDialog onDismiss call")
     }
 
 }

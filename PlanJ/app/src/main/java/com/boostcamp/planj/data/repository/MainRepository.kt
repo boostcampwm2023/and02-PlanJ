@@ -72,4 +72,5 @@ interface MainRepository {
     fun getSearchSchedules(name: String): Flow<List<Schedule>>
 
     fun getFailedMemo(): Flow<List<FailedMemo>>
+
 }

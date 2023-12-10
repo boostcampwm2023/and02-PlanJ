@@ -50,8 +50,8 @@ class  LoginRepositoryImpl @Inject constructor(
         return ApiResult.Error(response.code())
     }
 
-    override suspend fun postSignIn(userEmail: String, userPwd: String): ApiResult<LoginResponse> {
-        val response = apiService.postSignIn(SignInRequest(userEmail, userPwd))
+    override suspend fun postSignIn(userEmail: String, userPwd: String, deviceToken : String): ApiResult<LoginResponse> {
+        val response = apiService.postSignIn(SignInRequest(userEmail, userPwd, deviceToken))
         if (response.isSuccessful) {
             response.body()?.let { loginResponse ->
                 return ApiResult.Success(loginResponse)
@@ -83,8 +83,8 @@ class  LoginRepositoryImpl @Inject constructor(
     }
 
 
-    override fun postSignInNaver(accessToken: String): Flow<LoginResponse> = flow {
-        emit(apiService.postSignInNaver(SignInNaverRequest(accessToken)))
+    override fun postSignInNaver(accessToken: String, deviceToken : String): Flow<LoginResponse> = flow {
+        emit(apiService.postSignInNaver(SignInNaverRequest(accessToken, deviceToken)))
     }
 
     override suspend fun updateAlarmInfo(curTimeMillis: Long) {
