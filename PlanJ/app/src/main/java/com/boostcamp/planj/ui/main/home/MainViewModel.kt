@@ -17,7 +17,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,8 +55,11 @@ class MainViewModel @Inject constructor(
 
     var listener: OnClickListener = OnClickListener { }
 
+    var currentPosition = Int.MAX_VALUE / 2
+
 
     init {
+        initSetDate()
         getAllSchedule()
     }
 
@@ -109,12 +115,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun initSetDate(){
+        val calendar = Calendar.getInstance()
+        setDate(
+            "${calendar.get(Calendar.YEAR)}-${
+                String.format(
+                    "%02d",
+                    calendar.get(Calendar.MONTH) + 1
+                )
+            }-${String.format("%02d", calendar.get(Calendar.DATE))}"
+        )
+        calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
+        val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
+        setCalendarTitle(currentDate)
+    }
+
 
     fun setDate(date: String) {
         _selectDate.value = date
     }
 
     fun setIsCurrent(position: Int) {
+        currentPosition = position
         val now = LocalDate.now()
         _isCurrent.value = (_selectDate.value == "${now.year}-${
             String.format(

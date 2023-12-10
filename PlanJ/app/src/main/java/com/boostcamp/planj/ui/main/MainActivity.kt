@@ -92,8 +92,4 @@ class MainActivity : AppCompatActivity() {
         val REQUEST_CODE = 100
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("PLANJDEBUG", "MainActivity onDestroy call")
-    }
 }

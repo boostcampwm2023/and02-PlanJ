@@ -58,31 +58,7 @@ class HomeFragment : Fragment() {
         viewModel.listener =  OnClickListener {
             viewModel.setDate(it)
         }
-
-        val calendar = Calendar.getInstance()
-        viewModel.setDate(
-            "${calendar.get(Calendar.YEAR)}-${
-                String.format(
-                    "%02d",
-                    calendar.get(Calendar.MONTH) + 1
-                )
-            }-${String.format("%02d", calendar.get(Calendar.DATE))}"
-        )
-        val current = String.format(
-            "%04d-%02d-%02dT%02d:%02d:%02d",
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH) + 1,
-            calendar.get(Calendar.DAY_OF_MONTH),
-            calendar.get(Calendar.HOUR),
-            calendar.get(Calendar.MINUTE),
-            calendar.get(Calendar.SECOND)
-        )
-        viewModel.getScheduleDaily(current)
-        calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
-        val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
-        viewModel.setCalendarTitle(currentDate)
         viewModel.getCategories()
-
         initViewPager()
         initScheduleAdapter()
         setObserver()
@@ -182,14 +158,13 @@ class HomeFragment : Fragment() {
         )
         binding.vpMainCalendarWeek.offscreenPageLimit = 1
         binding.vpMainCalendarWeek.adapter = calendarAdapter
-        binding.vpMainCalendarWeek.setCurrentItem(Int.MAX_VALUE / 2, false)
+        binding.vpMainCalendarWeek.setCurrentItem(viewModel.currentPosition , false)
 
         binding.vpMainCalendarWeek.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.WEEK_OF_MONTH, position - (Int.MAX_VALUE / 2))
                 calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
