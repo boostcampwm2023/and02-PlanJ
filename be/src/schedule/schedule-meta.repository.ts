@@ -111,6 +111,8 @@ export class ScheduleMetaRepository extends Repository<ScheduleMetadataEntity> {
              LEFT OUTER JOIN schedule AS s ON meta.id = s.metadata_id
              LEFT OUTER JOIN schedule_alarm AS a ON meta.id = a.metadata_id
              WHERE meta.user_id=?
+             AND meta.deleted_at IS NULL
+             AND s.deleted_at IS NULL
              AND meta.has_alarm = true
              AND s.end_at BETWEEN ? AND ?`,
         [userId, todayString, endDayString],
