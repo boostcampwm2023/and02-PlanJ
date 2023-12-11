@@ -1,7 +1,11 @@
-# Plan J
-# 일정과 할 일 목록을 적으면 계획을 꼭 지키도록 유도하는 제품입니다.
+[![-----------------------------------------------------](https://user-images.githubusercontent.com/10940214/155750931-fc094349-b6ec-4e1f-9f9a-113e67941119.jpg)]()
 
-## 팀원 소개
+# Plan J
+> [!Tip]
+> 일정과 할 일 목록을 적으면 계획을 꼭 지키도록 유도하는 제품입니다.
+
+
+## 🏹 팀원 소개
 
 <table>
 <tbody>
@@ -16,58 +20,28 @@
 </table>
 
 
-## 협업 전략 (브랜치 구조와 분업하기, 의존적인 작업하기)
-
-## 그라운드룰 (최소한의 규칙, 무엇이 필요한가는 다같이 찾아보세요)
-
-+ 커밋, PR 컨벤션 규칙 지키기
-+ PR은 각자(안드로이드, 백엔드) 팀원이 함께 확인하고 머지하기
-+ 코어 타임 시간 준수, 화,목요일 오프라인 진행
-+ 프로젝트 진행 사항 공유 및 프로젝트 진행 중 질문이 있는 경우 노션, 슬랙에 전달
+## 🎡 주요 기능
+(화면 캡처와 간단한 설명)
 
 
 
+## 📌 기술 스택
+![techstack](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/9f3e0bb8-1b76-4d66-b974-96577831ab17)
 
-## 문서
+
+
+
+
+## 🧶 시스템 아키텍처
+![시스템 아키텍처 with no infra infos](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/b25af1d7-b6da-4656-901f-57d20d0abaa4)
+
+
+
+## 📋 문서
+[github 위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
+
 [피그마](https://www.figma.com/file/KqMXmZMlsOcWORVrjwDlA0/%EC%A0%9C%EC%9D%B4%EC%96%B4%EB%A6%AC-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?type=design&t=Hw8rauNdQrBPUdai-6)
 
 [백로그](https://www.notion.so/7fa14444e88047af8cc3e970d0003171)
 
-[위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
-
-
-<details>
-<summary>2주차</summary>
-<div markdown="1">
-
-  ## 2주 계획
-  - [X] 로그인, 회원가입 백엔드와 연결하여 이메일 로그인만 가능하게 구현
-  - [X] 메인화면 UI 구성
-  - [ ] 오늘, 주간 UI 구성
-  - [X] Room 연결
-  - [ ] 오늘, 주간 일정 요청, 응답
-
-  ## 2주차 결과  
-  - 회원가입 & 로그인  
-    <img src = "https://github.com/boostcampwm2023/and02-PlanJ/assets/101437398/afa95369-f631-4df0-a04a-820d5e404827" width="35%" height="35%">    <img src = "https://github.com/boostcampwm2023/and02-PlanJ/assets/101437398/0e056384-dbae-46b9-875e-de8565ee6337" width="35%" height="35%">
-    
-</div>
-</details>
-<details>
-<summary>3주차</summary>
-<div markdown="1">
-
-</div>
-</details>
-<details>
-<summary>4주차</summary>
-<div markdown="1">
-
-</div>
-</details>
-<details>
-<summary>5주차</summary>
-<div markdown="1">
-
-</div>
-</details>
+[![-----------------------------------------------------](https://user-images.githubusercontent.com/10940214/155750931-fc094349-b6ec-4e1f-9f9a-113e67941119.jpg)]()
