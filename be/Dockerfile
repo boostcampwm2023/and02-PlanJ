@@ -12,16 +12,15 @@ RUN npm run build
 
 FROM node:20-alpine as production
 
-ARG NODE_ENV=stage
-ENV NODE_ENV=${NODE_ENV}
-
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY ecosystem-prod.config.js ./ecosystem.config.js
 
+RUN npm install pm2 -g
 RUN npm install --include=prod
 
 COPY --from=development /usr/src/planj/dist ./dist
 
 EXPOSE 3000
-CMD ["node", "dist/main"]
+CMD ["pm2", "start", "./ecosystem.config.js"]
