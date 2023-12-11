@@ -1,11 +1,6 @@
 package com.boostcamp.planj.ui.main.home
 
-import android.content.Context
-import android.graphics.Point
-import android.os.Build
 import android.util.Log
-import android.view.WindowManager
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Category
@@ -16,13 +11,14 @@ import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,14 +43,23 @@ class MainViewModel @Inject constructor(
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
 
-    private val _allSchedules = MutableStateFlow<List<Schedule>>(emptyList())
-    val allSchedule = _allSchedules.asStateFlow()
+    private val _failedSchedule = MutableStateFlow<Schedule?>(null)
+    val failedSchedule = _failedSchedule.asStateFlow()
 
     private val _scheduleSegment = MutableStateFlow<List<ScheduleSegment>>(emptyList())
     val scheduleSegment = _scheduleSegment.asStateFlow()
 
     val isRefreshing = MutableStateFlow(false)
 
+    var listener: OnClickListener = OnClickListener { }
+
+    var currentPosition = Int.MAX_VALUE / 2
+
+
+    init {
+        initSetDate()
+        getAllSchedule()
+    }
 
     fun postSchedule(category: String, title: String) {
         val date = _selectDate.value.split("-").map { it.toInt() }
@@ -90,20 +95,37 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getAllSchedule() {
+    fun setCalendarTitle(title: String) {
+        _calendarTitle.value = title
+    }
+
+    private fun getAllSchedule() {
         viewModelScope.launch {
             mainRepository.getSearchSchedules("")
                 .catch {
                     Log.d("PLANJDEBUG", "getAllSchedule error ${it.message}")
                 }
                 .collectLatest {
-                    _allSchedules.value = it
+                    it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }?.let { s ->
+                        _failedSchedule.value = s
+                    }
                 }
         }
     }
 
-    fun setCalendarTitle(title: String) {
-        _calendarTitle.value = title
+    private fun initSetDate(){
+        val calendar = Calendar.getInstance()
+        setDate(
+            "${calendar.get(Calendar.YEAR)}-${
+                String.format(
+                    "%02d",
+                    calendar.get(Calendar.MONTH) + 1
+                )
+            }-${String.format("%02d", calendar.get(Calendar.DATE))}"
+        )
+        calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
+        val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
+        setCalendarTitle(currentDate)
     }
 
 
@@ -112,6 +134,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun setIsCurrent(position: Int) {
+        currentPosition = position
         val now = LocalDate.now()
         _isCurrent.value = (_selectDate.value == "${now.year}-${
             String.format(
@@ -162,6 +185,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 mainRepository.postScheduleAddMemo(schedule.scheduleId, memo)
+                _failedSchedule.value = null
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "postScheduleAddMemo error ${e.message}")
             }

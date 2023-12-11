@@ -3,7 +3,6 @@ package com.boostcamp.planj.ui.login
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSignInBinding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -79,13 +80,25 @@ class SignInFragment : Fragment() {
 
         NaverIdLoginSDK.initialize(
             requireContext(),
-            "${BuildConfig.NAVER_LOGIN_CLIENT_ID}",
-            "${BuildConfig.NAVER_LOGIN_SECRET}",
+            BuildConfig.NAVER_LOGIN_CLIENT_ID,
+            BuildConfig.NAVER_LOGIN_SECRET,
             "PlanJ"
         )
-
+        initFirebaseToken()
         setObserver()
         setListener()
+    }
+
+    private fun initFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("PLANJDEBUG", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            viewModel.deviceToken = task.result
+        })
     }
 
     override fun onDestroyView() {
@@ -120,7 +133,7 @@ class SignInFragment : Fragment() {
         }
 
         binding.tietSignInPwdInput.setOnEditorActionListener { _, actionId, _ ->
-            if ( actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewModel.postSignIn()
                 true
             } else {
@@ -128,4 +141,5 @@ class SignInFragment : Fragment() {
             }
         }
     }
+
 }

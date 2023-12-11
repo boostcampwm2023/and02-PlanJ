@@ -139,6 +139,7 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
 
     //naver login
     implementation("com.navercorp.nid:oauth:5.9.0")

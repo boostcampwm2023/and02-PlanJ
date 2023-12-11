@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 
@@ -24,12 +24,14 @@ class CategoryDetailViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    private val _cateogry = MutableStateFlow(Category("", ""))
-    val category: StateFlow<Category> = _cateogry.asStateFlow()
+    private val _category = MutableStateFlow(Category("", ""))
+    val category: StateFlow<Category> = _category.asStateFlow()
 
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
 
+    private val _scheduleSegment = MutableStateFlow<List<ScheduleSegment>>(emptyList())
+    val scheduleSegment = _scheduleSegment.asStateFlow()
 
     fun deleteSchedule(schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,7 +46,7 @@ class CategoryDetailViewModel @Inject constructor(
 
     fun postSchedule(category: String, title: String, endTime: DateTime) {
         viewModelScope.launch(Dispatchers.IO) {
-            val getCategory = _cateogry.value.categoryUuid
+            val getCategory = _category.value.categoryUuid
             mainRepository.postSchedule(getCategory, title, endTime)
                 .catch {
                     Log.d("PLANJDEBUG", "postSchedule error ${it.message}")
@@ -56,25 +58,10 @@ class CategoryDetailViewModel @Inject constructor(
     }
 
     fun setTitle(category: Category) {
-        _cateogry.value = category
+        _category.value = category
         viewModelScope.launch {
             getCategoryDetailSchedules()
         }
-    }
-
-    fun checkBoxChange(schedule: Schedule, isCheck: Boolean) {
-        val calendar = Calendar.getInstance()
-        val endTime = schedule.endAt
-
-        calendar.set(
-            endTime.year,
-            endTime.month - 1,
-            endTime.day,
-            endTime.hour,
-            endTime.minute,
-            endTime.second
-        )
-        val fail = calendar.timeInMillis < System.currentTimeMillis()
     }
 
     fun getCategoryDetailSchedules() {
@@ -88,18 +75,49 @@ class CategoryDetailViewModel @Inject constructor(
                     )
                 }.collectLatest {
                     _schedules.value = it
-                    Log.d("PLANJDEBUG", "getCategoryDetailSchedules All Schedule Success")
                 }
             } else {
-                mainRepository.getCategorySchedulesApi(_cateogry.value.categoryUuid)
+                mainRepository.getCategorySchedulesApi(_category.value.categoryUuid)
                     .catch {
                         Log.d("PLANJDEBUG", "getCategoryDetailSchedules Error ${it.message}")
                     }.collectLatest {
                         _schedules.value = it
-                        Log.d("PLANJDEBUG", "getCategoryDetailSchedules Success")
                     }
             }
         }
+    }
+
+    fun scheduleFinishChange(schedule: Schedule, showDialog: (Schedule) -> Unit) {
+        viewModelScope.launch {
+            mainRepository.getScheduleChecked(schedule.scheduleId).catch {
+                Log.d("PLANJDEBUG", "getScheduleChecked Error ${it.message}")
+            }.collectLatest {
+                if (it.data.failed && !it.data.hasRetrospectiveMemo) {
+                    showDialog(schedule)
+                }
+                getCategoryDetailSchedules()
+            }
+        }
+    }
+
+    fun postScheduleAddMemo(schedule: Schedule, memo: String) {
+        viewModelScope.launch {
+            try {
+                mainRepository.postScheduleAddMemo(schedule.scheduleId, memo)
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "postScheduleAddMemo error ${e.message}")
+            }
+        }
+    }
+
+    fun setScheduleSegment(scheduleSegment: List<ScheduleSegment>) {
+        _scheduleSegment.value = scheduleSegment
+    }
+
+    fun changeExpanded(index: Int) {
+        val list = _scheduleSegment.value.toMutableList()
+        list[index] = list[index].copy(expanded = !list[index].expanded)
+        _scheduleSegment.value = list
     }
 
 }

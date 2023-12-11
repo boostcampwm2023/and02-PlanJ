@@ -13,11 +13,13 @@ import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentCategoryDetailBinding
+import com.boostcamp.planj.ui.UpdateWidget
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
 import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
 import com.boostcamp.planj.ui.adapter.SwipeListener
 import com.boostcamp.planj.ui.schedule.ScheduleDialog
+import com.boostcamp.planj.ui.schedule.ScheduleFailDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -57,6 +59,7 @@ class CategoryDetailFragment : Fragment() {
                 false
             ) { category, title, endTime ->
                 viewModel.postSchedule(category, title, endTime)
+                UpdateWidget.updateWidget(requireContext())
             }
             activity?.supportFragmentManager?.let {
                 dialog.show(it, null)
@@ -75,6 +78,7 @@ class CategoryDetailFragment : Fragment() {
     private fun initAdapter() {
         val swipeListener = SwipeListener {
             viewModel.deleteSchedule(it)
+            UpdateWidget.updateWidget(requireContext())
         }
         val scheduleClickListener = ScheduleClickListener { scheduleId ->
             val action =
@@ -84,11 +88,19 @@ class CategoryDetailFragment : Fragment() {
             findNavController().navigate(action)
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
-            viewModel.checkBoxChange(schedule, !schedule.isFinished)
+            viewModel.scheduleFinishChange(schedule) {
+                val dialog = ScheduleFailDialog(it) { schedule, memo ->
+                    viewModel.postScheduleAddMemo(schedule, memo)
+                }
+                dialog.show(
+                    parentFragmentManager, tag
+                )
+            }
+            UpdateWidget.updateWidget(requireContext())
         }
         segmentScheduleAdapter =
             SegmentScheduleAdapter(swipeListener, scheduleClickListener, checkBoxListener) {
-
+                viewModel.changeExpanded(it)
             }
         binding.rvCategoryDetail.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
@@ -109,7 +121,15 @@ class CategoryDetailFragment : Fragment() {
                     (0..2).forEach { index ->
                         segmentList.add(ScheduleSegment(list[index], segment[index]))
                     }
-                    segmentScheduleAdapter.submitList(segmentList)
+                    viewModel.setScheduleSegment(segmentList)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scheduleSegment.collectLatest {
+                    segmentScheduleAdapter.submitList(it)
                 }
             }
         }
