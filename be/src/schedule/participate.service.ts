@@ -28,7 +28,7 @@ export class ParticipateService {
   async getParticipantGroup(metadataId: number): Promise<ParticipantEntity[]> {
     const record = await this.participateRepository.findOne({ where: { participantId: metadataId } });
     if (record === null) {
-      return null;
+      return [];
     }
 
     return await this.participateRepository.find({ where: { authorId: record.authorId } });
@@ -61,5 +61,12 @@ export class ParticipateService {
   async checkIsAuthor(metadataId: number) {
     const participantEntity = await this.participateRepository.findOne({ where: { participantId: metadataId } });
     return participantEntity === null || participantEntity.participantId === participantEntity.authorId;
+  }
+
+  async deleteParticipant(participantId: number, authorId: number) {
+    await this.participateRepository.softDelete({
+      participantId: participantId,
+      authorId: authorId,
+    });
   }
 }
