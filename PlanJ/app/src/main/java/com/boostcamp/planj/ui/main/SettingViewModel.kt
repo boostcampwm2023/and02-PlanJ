@@ -4,7 +4,6 @@ import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.LoginRepository
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -31,9 +29,6 @@ class SettingViewModel @Inject constructor(
 
     private var imageFile: MultipartBody.Part? = null
     private var nickName: String = ""
-
-    private val _isAlarmOn = MutableStateFlow(true)
-    val isAlarmOn = _isAlarmOn.asStateFlow()
 
     private val _userInfo = MutableStateFlow<User?>(null)
     val userInfo = _userInfo.asStateFlow()
@@ -56,12 +51,6 @@ class SettingViewModel @Inject constructor(
     private var _haveCount = MutableStateFlow(0)
     val haveCount = _haveCount.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            _isAlarmOn.value = getAlarmMode()
-        }
-    }
-
     fun setMode() {
         _isEditMode.value = false
     }
@@ -79,20 +68,6 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun onClickAlarmSwitch() {
-        _isAlarmOn.value = !_isAlarmOn.value
-        saveAlarmMode(_isAlarmOn.value)
-    }
-
-    fun getAllAlarmInfo(): List<AlarmInfo> {
-        var alarmList: List<AlarmInfo> = emptyList()
-        viewModelScope.launch {
-            loginRepository.updateAlarmInfo(System.currentTimeMillis())
-            alarmList = loginRepository.getAllAlarmInfo()
-        }
-        return alarmList
-    }
-
     fun deleteAccount() {
         viewModelScope.launch {
             try {
@@ -100,7 +75,6 @@ class SettingViewModel @Inject constructor(
                     mainRepository.deleteAccount()
                     mainRepository.emptyToken()
                     loginRepository.deleteAllData()
-                    loginRepository.saveAlarmMode(false)
                 }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
@@ -116,7 +90,6 @@ class SettingViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     mainRepository.emptyToken()
                     loginRepository.deleteAllData()
-                    loginRepository.saveAlarmMode(false)
                 }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
@@ -158,16 +131,6 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAlarmMode() = withContext(Dispatchers.IO) {
-        loginRepository.getAlarmMode().first()
-    }
-
-    private fun saveAlarmMode(mode: Boolean) {
-        viewModelScope.launch {
-            loginRepository.saveAlarmMode(mode)
-        }
-    }
-
     fun getUserImageRemove() {
         viewModelScope.launch {
             try {
@@ -185,7 +148,7 @@ class SettingViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "getUserImageRemove ${e.message}")
                 e.message?.let {
-                    when{
+                    when {
                         it.contains("401") -> {}
                         it.contains("404") -> {}
                         it.contains("404") -> {}

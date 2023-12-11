@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="isAlarmEnable"
+            type="Boolean" />
+
         <import type="android.view.View" />
 
         <variable
@@ -105,12 +109,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/edit_profile"
+                    android:elevation="1dp"
                     android:src="@drawable/ic_cancel"
                     android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@id/iv_setting_img"
-                    app:layout_constraintTop_toTopOf="@id/iv_setting_img"
-                    android:elevation="1dp"
-                    />
+                    app:layout_constraintTop_toTopOf="@id/iv_setting_img" />
 
                 <ImageView
                     android:id="@+id/iv_setting_icon_camera"
@@ -165,7 +168,7 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/round_r10_gray1"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@id/tv_setting_alarm"
+                    app:layout_constraintBottom_toTopOf="@id/layout_setting_alarm"
                     app:layout_constraintEnd_toStartOf="@id/btn_setting_fail"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintHorizontal_weight="1"
@@ -270,37 +273,51 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/btn_setting_fail" />
 
-                <TextView
-                    android:id="@+id/tv_setting_alarm"
+                <LinearLayout
+                    android:id="@+id/layout_setting_alarm"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingHorizontal="16dp"
-                    android:text="@string/alarm_setting"
-                    android:textColor="@color/text"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_setting_fail" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_setting_fail">
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:checked="@{viewModel.isAlarmOn()}"
-                    android:onClick="@{() -> viewModel.onClickAlarmSwitch()}"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_setting_alarm"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_setting_alarm" />
+                    <TextView
+                        android:id="@+id/tv_setting_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/alarm"
+                        android:textColor="@color/text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text='@{isAlarmEnable ? "ON" : "OFF"}'
+                        android:textColor="@color/text"
+                        android:textSize="12sp"
+                        tools:text="OFF" />
+
+                    <ImageView
+                        android:id="@+id/iv_setting_app_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/set_alarm"
+                        android:src="@drawable/ic_chevron_right" />
+                </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_setting_alarm" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_setting_alarm" />
 
                 <TextView
                     android:id="@+id/tv_setting_logout"
@@ -314,7 +331,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_setting_alarm" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_setting_alarm" />
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"

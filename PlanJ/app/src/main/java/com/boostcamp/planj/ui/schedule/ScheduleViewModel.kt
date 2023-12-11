@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -188,11 +187,8 @@ class ScheduleViewModel @Inject constructor(
     fun deleteSchedule() {
         viewModelScope.launch {
             try {
-                // 등록된 알림이 있다면 삭제
                 loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-                if (loginRepository.getAlarmMode().first()) {
-                    _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
-                }
+                _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
 
                 mainRepository.deleteScheduleApi(scheduleId)
             } catch (e: Exception) {
@@ -235,15 +231,13 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             categoryList.value.find { it.categoryName == scheduleCategory.value }?.let { category ->
                 _scheduleAlarm.update { alarm ->
-                    if (alarm != null) {
+                    alarm?.let {
                         val estimatedTimeInMillis = if (response.value != null) {
                             response.value!!.route.trafast[0].summary.duration
                         } else {
                             0
                         }
                         alarm.copy(estimatedTime = estimatedTimeInMillis / (1000 * 60))
-                    } else {
-                        alarm
                     }
                 }
                 val patchScheduleBody = PatchScheduleBody(
@@ -277,11 +271,7 @@ class ScheduleViewModel @Inject constructor(
     private fun setAlarmInfo() {
         viewModelScope.launch {
             loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-            loginRepository.getAlarmMode().collectLatest { alarmMode ->
-                if (alarmMode) {
-                    _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
-                }
-            }
+            _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
         }
 
         scheduleAlarm.value?.let { alarm ->
@@ -292,15 +282,10 @@ class ScheduleViewModel @Inject constructor(
                 alarm.alarmType,
                 alarm.alarmTime,
                 alarm.estimatedTime
-            )// db에는 무조건 알람 정보 저장
+            )
             viewModelScope.launch {
                 loginRepository.insertAlarmInfo(alarmInfo)
-                loginRepository.getAlarmMode().collectLatest { alarmMode ->
-                    // 알람 모드 켜져 있을 경우에만 알람매니저를 통해 알람 설정
-                    if (alarmMode) {
-                        _alarmEventFlow.emit(AlarmEvent.Set(alarmInfo))
-                    }
-                }
+                _alarmEventFlow.emit(AlarmEvent.Set(alarmInfo))
             }
         }
     }

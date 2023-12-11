@@ -36,9 +36,26 @@ class MainViewModel @Inject constructor(
             newAlarms.value.forEach {
                 loginRepository.insertAlarmInfo(it)
             }
+            loginRepository.isFirst()
         }
         _deletedAlarms.value = localAlarms.value.filter { localAlarm ->
             newAlarms.value.find { it == localAlarm } == null
+        }
+    }
+
+    fun isFirst(): Boolean {
+        var isFirst = true
+        viewModelScope.launch {
+            loginRepository.isFirst().collectLatest {
+                isFirst = it
+            }
+        }
+        return isFirst
+    }
+
+    fun saveFirst() {
+        viewModelScope.launch {
+            loginRepository.saveFirst(false)
         }
     }
 }

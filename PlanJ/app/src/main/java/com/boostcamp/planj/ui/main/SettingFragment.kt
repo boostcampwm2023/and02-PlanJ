@@ -8,6 +8,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,18 +17,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSettingBinding
-import com.boostcamp.planj.ui.PlanjAlarm
-import com.boostcamp.planj.ui.schedule.collectLatestStateFlow
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -42,6 +41,7 @@ import java.io.File
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
+
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
     val viewModel: SettingViewModel by viewModels()
@@ -69,9 +69,7 @@ class SettingFragment : Fragment() {
             }
         }
 
-    private val planjAlarm by lazy {
-        PlanjAlarm(requireActivity())
-    }
+    private lateinit var notificationManager: NotificationManagerCompat
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,6 +86,9 @@ class SettingFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        notificationManager = NotificationManagerCompat.from(requireContext())
+        binding.isAlarmEnable = notificationManager.areNotificationsEnabled()
+
         viewModel.setMode()
         viewModel.initUser()
         viewModel.getTotalSchedules()
@@ -102,9 +103,11 @@ class SettingFragment : Fragment() {
 
         binding.tvSettingReadFailMemo.setOnClickListener {
             val action = SettingFragmentDirections.actionFragmentUserToSettingFailFragment()
-            findNavController().navigate(action, navOptions { // Use the Kotlin DSL for building NavOptions
+            findNavController().navigate(
+                action,
+                navOptions { // Use the Kotlin DSL for building NavOptions
 
-            })
+                })
         }
 
         binding.tvSettingLogout.setOnClickListener {
@@ -119,6 +122,16 @@ class SettingFragment : Fragment() {
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             activity?.startActivity(mainIntent)
             activity?.finish()
+        }
+
+        binding.layoutSettingAlarm.setOnClickListener {
+            val appDetail = Intent(
+                Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            ).apply {
+                this.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(appDetail)
         }
 
         binding.tvSettingWithdrawal.setOnClickListener {
@@ -177,27 +190,10 @@ class SettingFragment : Fragment() {
             }
         }
 
-
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showToast.collectLatest {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isAlarmOn.collectLatest { isAlarmOn ->
-                    if (isAlarmOn) {
-                        // TODO: 일회성/반복성, 현재시간/알람시간 모두 비교 필요
-                        // 무조건 알람을 set하면 시간이 지난 알람은 바로 울림
-                        viewModel.getAllAlarmInfo()
-                            .forEach { alarmInfo -> planjAlarm.setAlarm(alarmInfo) }
-                    } else {
-                        viewModel.getAllAlarmInfo()
-                            .forEach { alarmInfo -> planjAlarm.deleteAlarm(alarmInfo.scheduleId) }
-                    }
                 }
             }
         }

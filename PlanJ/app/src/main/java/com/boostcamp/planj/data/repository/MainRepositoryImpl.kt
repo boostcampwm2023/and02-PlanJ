@@ -28,6 +28,7 @@ import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
+import java.util.Calendar
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -298,7 +299,10 @@ class MainRepositoryImpl @Inject constructor(
                     estimatedTime = alarm.estimatedTime
                 )
             }.filter { alarmInfo ->
-                alarmInfo.endTime.toMilliseconds() > curMillis
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = alarmInfo.endTime.toMilliseconds()
+                calendar.add(Calendar.MINUTE, -alarmInfo.alarmTime - alarmInfo.estimatedTime)
+                calendar.timeInMillis > curMillis
             }
             emit(alarmInfo)
         } catch (e: Exception) {
