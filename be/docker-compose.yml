@@ -2,14 +2,14 @@ version: "3.7"
 services:
   nest:
     container_name: nest
-    image: "famo1245/planj:v1"
+    image: "famo1245/planj:v2"
     ports:
       - "3000:3000"
     networks:
       - backend
   nginx:
     container_name: nginx
-    image: "famo1245/nginx:test"
+    image: "famo1245/nginx:v1"
     ports:
       - "80:80"
     networks:
