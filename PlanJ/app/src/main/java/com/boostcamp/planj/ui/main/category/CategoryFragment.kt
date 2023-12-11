@@ -43,6 +43,7 @@ class CategoryFragment : Fragment() {
 
         binding.layoutCategoryDefault.setOnClickListener {
             val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(
+
                 Category(
                     "default",
                     "미분류"

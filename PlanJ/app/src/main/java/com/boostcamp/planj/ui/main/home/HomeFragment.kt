@@ -1,16 +1,10 @@
 package com.boostcamp.planj.ui.main.home
 
-import android.content.Context
-import android.graphics.Point
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -42,6 +36,10 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
 
+    private var addScheduleDialog : ScheduleDialog? = null
+    private var failScheduleDialog : ScheduleFailDialog? = null
+
+    private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,40 +55,20 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
-        val onClickListener = OnClickListener {
+        viewModel.listener =  OnClickListener {
             viewModel.setDate(it)
         }
-
-        val calendar = Calendar.getInstance()
-        viewModel.setDate(
-            "${calendar.get(Calendar.YEAR)}-${
-                String.format(
-                    "%02d",
-                    calendar.get(Calendar.MONTH) + 1
-                )
-            }-${String.format("%02d", calendar.get(Calendar.DATE))}"
-        )
-        val current = String.format(
-            "%04d-%02d-%02dT%02d:%02d:%02d",
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH) + 1,
-            calendar.get(Calendar.DAY_OF_MONTH),
-            calendar.get(Calendar.HOUR),
-            calendar.get(Calendar.MINUTE),
-            calendar.get(Calendar.SECOND)
-        )
-        viewModel.getScheduleDaily(current)
-        calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
-        val currentDate = SimpleDateFormat("yyyy년 MM월", Locale.getDefault()).format(calendar.time)
-        viewModel.setCalendarTitle(currentDate)
         viewModel.getCategories()
-        viewModel.getAllSchedule()
-        val calendarAdapter = CalendarFragmentStateAdapter(onClickListener, requireActivity())
-        initViewPager(calendarAdapter)
+        initViewPager()
+        initScheduleAdapter()
+        setObserver()
+        setListener()
+    }
 
-
+    private fun initScheduleAdapter() {
         val swipeListener = SwipeListener { schedule: Schedule ->
             viewModel.deleteSchedule(schedule.scheduleId)
+            UpdateWidget.updateWidget(requireContext())
 
         }
         val scheduleClickListener = ScheduleClickListener { scheduleId ->
@@ -100,16 +78,16 @@ class HomeFragment : Fragment() {
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
             viewModel.scheduleFinishChange(schedule) {
-                val dialog = ScheduleFailDialog(it) { schedule, memo ->
+                failScheduleDialog = ScheduleFailDialog(it) { schedule, memo ->
                     viewModel.postScheduleAddMemo(schedule, memo)
                 }
-                dialog.show(
+                failScheduleDialog?.show(
                     parentFragmentManager, tag
                 )
-
             }
+            UpdateWidget.updateWidget(requireContext())
         }
-        val segmentScheduleAdapter = SegmentScheduleAdapter(
+        segmentScheduleAdapter = SegmentScheduleAdapter(
             swipeListener = swipeListener,
             checkBoxListener = checkBoxListener,
             clickListener = scheduleClickListener
@@ -118,7 +96,9 @@ class HomeFragment : Fragment() {
         }
         binding.rvMainHomeDailySchedule.adapter = segmentScheduleAdapter
         segmentScheduleAdapter.submitList(emptyList())
+    }
 
+    private fun setObserver() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectDate.collectLatest {
@@ -149,17 +129,14 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.allSchedule.collectLatest {
-                    if (it.isNotEmpty()) {
-                        it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }
-                            ?.let { schedule ->
-                                val dialog = ScheduleFailDialog(schedule) { s, memo ->
-                                    viewModel.postScheduleAddMemo(s, memo)
-                                }
-                                dialog.show(
-                                    parentFragmentManager, tag
-                                )
-                            }
+                viewModel.failedSchedule.collectLatest {
+                    it?.let { schedule ->
+                        failScheduleDialog = ScheduleFailDialog(schedule) { s, memo ->
+                            viewModel.postScheduleAddMemo(s, memo)
+                        }
+                        failScheduleDialog?.show(
+                            parentFragmentManager, tag
+                        )
                     }
                 }
             }
@@ -172,19 +149,22 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-        setListener()
     }
 
-    private fun initViewPager(calendarAdapter: CalendarFragmentStateAdapter) {
+    private fun initViewPager() {
+        val calendarAdapter = CalendarFragmentStateAdapter(
+            childFragmentManager,
+            viewLifecycleOwner.lifecycle
+        )
+        binding.vpMainCalendarWeek.offscreenPageLimit = 1
         binding.vpMainCalendarWeek.adapter = calendarAdapter
-        binding.vpMainCalendarWeek.setCurrentItem(Int.MAX_VALUE / 2, false)
+        binding.vpMainCalendarWeek.setCurrentItem(viewModel.currentPosition , false)
+
         binding.vpMainCalendarWeek.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.WEEK_OF_MONTH, position - (Int.MAX_VALUE / 2))
                 calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_WEEK))
@@ -198,7 +178,7 @@ class HomeFragment : Fragment() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            val dialog = ScheduleDialog(
+            addScheduleDialog = ScheduleDialog(
                 viewModel.categories.value.map { it.categoryName },
                 "미분류",
                 true
@@ -206,7 +186,7 @@ class HomeFragment : Fragment() {
                 viewModel.postSchedule(category, title)
                 UpdateWidget.updateWidget(requireContext())
             }
-            dialog.show(
+            addScheduleDialog?.show(
                 parentFragmentManager, null
             )
         }
@@ -230,5 +210,4 @@ class HomeFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
 }

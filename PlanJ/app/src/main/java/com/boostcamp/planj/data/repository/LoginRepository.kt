@@ -14,13 +14,13 @@ interface LoginRepository {
         userNickname: String
     ): ApiResult<LoginResponse>
 
-    suspend fun postSignIn(userEmail: String, userPwd: String): ApiResult<LoginResponse>
+    suspend fun postSignIn(userEmail: String, userPwd: String, deviceToken : String): ApiResult<LoginResponse>
 
     fun getToken() : Flow<String>
 
     suspend fun saveUser(id : String)
 
-    fun postSignInNaver(accessToken : String) : Flow<LoginResponse>
+    fun postSignInNaver(accessToken : String, deviceToken: String) : Flow<LoginResponse>
 
     suspend fun updateAlarmInfo(curTimeMillis: Long)
 

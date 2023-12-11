@@ -1,14 +1,10 @@
 package com.boostcamp.planj.ui.main.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.SaveDate
 import com.boostcamp.planj.databinding.ItemDayOfWeekBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class CalendarAdapterViewHolder(private val binding: ItemDayOfWeekBinding) :
     RecyclerView.ViewHolder(binding.root) {

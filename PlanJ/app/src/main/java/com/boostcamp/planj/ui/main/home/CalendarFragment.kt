@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class CalendarFragment(private val onClickListener: OnClickListener) : Fragment() {
+class CalendarFragment() : Fragment() {
 
     private var _binding: FragmentCalendarBinding? = null
     val binding get() = _binding!!
@@ -26,6 +26,7 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
     lateinit var adapter: CalendarAdapter
 
     private val viewModel: MainViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +39,7 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pageIndex = savedInstanceState?.getInt("pageIndex") ?: pageIndex
         initView()
         initAdapter()
 
@@ -54,8 +56,12 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
 
     }
 
-    fun initView() {
-        pageIndex -= Int.MAX_VALUE / 2
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("pageIndex", pageIndex)
+    }
+
+    private fun initView() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.WEEK_OF_MONTH, pageIndex)
         date = calendar.time
@@ -77,7 +83,7 @@ class CalendarFragment(private val onClickListener: OnClickListener) : Fragment(
             }-${String.format("%02d", calendar.get(Calendar.DATE))}"
         )
 
-        adapter = CalendarAdapter(onClickListener)
+        adapter = CalendarAdapter(viewModel.listener)
         binding.calendarView.adapter = adapter
         binding.calendarView.itemAnimator = null
         adapter.submitList(getArray)

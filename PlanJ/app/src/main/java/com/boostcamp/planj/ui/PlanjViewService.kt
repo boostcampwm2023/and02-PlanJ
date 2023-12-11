@@ -21,8 +21,10 @@ class PlanjViewService : RemoteViewsService() {
 
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         val current = LocalDate.now()
-        val date = String.format("%04d-%02d-%02dT00:00:00",
-            current.year, current.monthValue, current.dayOfMonth)
+        val date = String.format(
+            "%04d-%02d-%02dT00:00:00",
+            current.year, current.monthValue, current.dayOfMonth
+        )
 
         return PlanjRemoteViewsFactory(this.applicationContext) { data ->
             data.clear()

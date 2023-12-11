@@ -54,7 +54,7 @@ class CategoryDialog(
         }
 
         binding.tietDialogCategoryInputCategoryName.setOnEditorActionListener { _, actionId, _ ->
-            if ( actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 makeCategory()
                 true
             } else {

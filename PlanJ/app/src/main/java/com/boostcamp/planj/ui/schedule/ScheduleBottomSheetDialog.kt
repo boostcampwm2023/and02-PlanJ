@@ -1,12 +1,9 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.boostcamp.planj.databinding.ScheduleBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
