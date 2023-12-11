@@ -108,7 +108,9 @@
                     android:src="@drawable/ic_cancel"
                     android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@id/iv_setting_img"
-                    app:layout_constraintTop_toTopOf="@id/iv_setting_img" />
+                    app:layout_constraintTop_toTopOf="@id/iv_setting_img"
+                    android:elevation="1dp"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_setting_icon_camera"

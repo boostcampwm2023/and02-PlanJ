@@ -6,6 +6,13 @@ import android.os.Build
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 fun Context.setDialogSize(dialogFragment: DialogFragment, heightRatio: Double? = null) {
     val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -33,4 +40,12 @@ fun Context.setDialogSize(dialogFragment: DialogFragment, heightRatio: Double? =
     }
 
     dialogFragment.dialog?.window?.attributes = params as WindowManager.LayoutParams
+}
+
+fun <T> Fragment.collectLatestStateFlow(flow: Flow<T>, collect: suspend (T) -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            flow.collectLatest(collect)
+        }
+    }
 }
