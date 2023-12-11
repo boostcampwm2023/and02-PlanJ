@@ -14,6 +14,8 @@ services:
       - "80:80"
     networks:
       - backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks: # 가장 기본적인 bridge 네트워크
   backend:

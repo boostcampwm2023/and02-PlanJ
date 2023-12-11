@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MaxLength, MinLength } from "class-validator";
+import { IsString, IsEmail, MaxLength, MinLength, IsOptional } from "class-validator";
 
 export class UserLoginDto {
   @IsString()
@@ -10,4 +10,8 @@ export class UserLoginDto {
   @MinLength(8)
   @MaxLength(16)
   password: string;
+
+  @IsString()
+  @IsOptional()
+  deviceToken: string;
 }

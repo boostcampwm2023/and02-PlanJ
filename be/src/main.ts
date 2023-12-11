@@ -11,14 +11,21 @@ async function bootstrap() {
     }),
   );
 
+  app.enableShutdownHooks();
+
+  //swagger
   const config = new DocumentBuilder()
     .setTitle("PlanJ API")
     .setDescription("API Docs for PlanJ Service")
     .setVersion("1.0")
     .addTag("PlanJ")
+    .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" }, "access-token")
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
-  await app.listen(3000);
+
+  await app.listen(3000, () => {
+    process.send("ready");
+  });
 }
 bootstrap();

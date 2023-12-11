@@ -5,10 +5,21 @@ import { DeleteCategoryDto } from "src/category/dto/delete-category.dto";
 import { AuthGuard } from "../guard/auth.guard";
 import { Token } from "../utils/token.decorator";
 import { UpdateCategoryDto } from "../category/dto/update-category.dto";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 @ApiTags("카테고리")
 @Controller("/api/category")
+@ApiBearerAuth("access-token")
+@ApiUnauthorizedResponse({
+  description: "유효한 토큰이 아닐 때",
+  schema: {
+    example: {
+      message: "유효하지 않은 사용자입니다.",
+      error: "Unauthorized",
+      statusCode: 401,
+    },
+  },
+})
 @UseGuards(AuthGuard)
 export class CategoryApiController {
   constructor(private categoryApiService: CategoryApiService) {}

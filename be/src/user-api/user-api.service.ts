@@ -29,6 +29,9 @@ export class UserApiService {
   async login(dto: UserLoginDto): Promise<string> {
     const userUuid = await this.userService.login(dto);
     const token = this.authService.issue(userUuid);
+    if (!!dto.deviceToken) {
+      await this.userService.saveDeviceToken(userUuid, dto.deviceToken);
+    }
 
     const body: HttpResponse = {
       message: "로그인 성공",
@@ -81,7 +84,7 @@ export class UserApiService {
     return JSON.stringify(result);
   }
 
-  async loginByNaver(accessToken: string) {
+  async loginByNaver(accessToken: string, deviceToken: string) {
     const response = await axios.get("https://openapi.naver.com/v1/nid/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -96,7 +99,7 @@ export class UserApiService {
       email: data.email,
     };
 
-    const userEntity = await this.userService.loginByNaver(naverResponse);
+    const userEntity = await this.userService.loginByNaver(naverResponse, deviceToken);
     const token = this.authService.issue(userEntity.userUuid);
 
     const body: HttpResponse = {
@@ -114,6 +117,16 @@ export class UserApiService {
 
     const body: HttpResponse = {
       message: "프로필 이미지를 기본 이미지로 변경 하였습니다.",
+    };
+    return JSON.stringify(body);
+  }
+
+  async logout(token: string) {
+    const userUuid = this.authService.verify(token);
+    await this.userService.logout(userUuid);
+
+    const body: HttpResponse = {
+      message: "로그아웃 성공",
     };
     return JSON.stringify(body);
   }

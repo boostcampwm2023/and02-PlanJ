@@ -97,7 +97,7 @@ export class UserService {
     return await this.userRepository.findByEmail(userEmail);
   }
 
-  async loginByNaver(response: NaverResponseDto) {
+  async loginByNaver(response: NaverResponseDto, deviceToken: string) {
     const user = await this.userRepository.findOne({ where: { naverId: response.id } });
 
     if (!user) {
@@ -109,6 +109,7 @@ export class UserService {
         nickname: response.nickname,
         profileUrl: response.profileImage,
         naverId: response.id,
+        deviceToken: deviceToken ?? null,
       });
 
       await this.userRepository.save(newUser);
@@ -137,5 +138,25 @@ export class UserService {
     } catch (e) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async saveDeviceToken(userUuid: string, deviceToken: string) {
+    if (!deviceToken) {
+      return;
+    }
+
+    const record = await this.userRepository.findByUuid(userUuid);
+    record.deviceToken = deviceToken;
+    await this.userRepository.save(record);
+  }
+
+  async logout(userUuid: string) {
+    const user = await this.userRepository.findOne({ where: { userUuid } });
+    if (!user.deviceToken) {
+      return;
+    }
+
+    user.deviceToken = null;
+    await this.userRepository.save(user);
   }
 }

@@ -200,4 +200,8 @@ export class ScheduleMetaService {
   async getRetrospectiveMemoByUserId(userId: number) {
     return await this.scheduleMetaRepository.findByUserId(userId);
   }
+
+  async getScheduleHasAlarm(userId: number) {
+    return await this.scheduleMetaRepository.findHasAlarm(userId);
+  }
 }

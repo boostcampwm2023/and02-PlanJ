@@ -25,6 +25,9 @@ import { ScheduleEntity } from "../schedule/entity/schedule.entity";
 import { RepetitionDto } from "src/schedule/dto/repetition.dto";
 import { InviteStatus } from "src/utils/domain/invite-status.enum";
 import { CategoryEntity } from "../category/entity/category.entity";
+import { PushService } from "../push/push.service";
+import { ScheduleAlarmEntity } from "../schedule/entity/schedule-alarm.entity";
+import { RepetitionEntity } from "../schedule/entity/repetition.entity";
 
 @Injectable()
 export class ScheduleApiService {
@@ -40,6 +43,7 @@ export class ScheduleApiService {
     private repetitionService: RepetitionService,
     private participateService: ParticipateService,
     private scheduleAlarmService: ScheduleAlarmService,
+    private pushService: PushService,
   ) {}
 
   async addSchedule(token: string, dto: AddScheduleDto): Promise<string> {
@@ -68,14 +72,19 @@ export class ScheduleApiService {
       throw new ForbiddenException("해당 사용자에게 권한이 없습니다.");
     }
 
-    const [scheduleLocationEntity, scheduleAlarmEntity, categoryEntity, repetitionEntity, participants] =
-      await Promise.all([
-        this.scheduleLocationService.getLocationByScheduleMetadataId(scheduleMetadata.metadataId),
-        this.scheduleAlarmService.getAlarmByMetadataId(scheduleMetadata.metadataId),
-        this.categoryService.getCategoryEntityByCategoryId(scheduleMetadata.categoryId),
-        this.repetitionService.getRepetitionByMetadataId(scheduleMetadata.metadataId),
-        this.participateService.getParticipantGroup(scheduleMetadata.metadataId),
-      ]);
+    const [scheduleLocationEntity, scheduleAlarmEntity, categoryEntity, repetitionEntity, participants]: [
+      ScheduleLocationEntity,
+      ScheduleAlarmEntity,
+      CategoryEntity,
+      RepetitionEntity,
+      ParticipantEntity[],
+    ] = await Promise.all([
+      this.scheduleLocationService.getLocationByScheduleMetadataId(scheduleMetadata.metadataId),
+      this.scheduleAlarmService.getAlarmByMetadataId(scheduleMetadata.metadataId),
+      this.categoryService.getCategoryEntityByCategoryId(scheduleMetadata.categoryId),
+      this.repetitionService.getRepetitionByMetadataId(scheduleMetadata.metadataId),
+      this.participateService.getParticipantGroup(scheduleMetadata.metadataId),
+    ]);
 
     const participantsInfo = await this.getParticipantSuccess(participants, scheduleEntity.endAt, user);
 
@@ -112,7 +121,7 @@ export class ScheduleApiService {
         ? {
             alarmType: scheduleAlarmEntity.alarmType,
             alarmTime: scheduleAlarmEntity.alarmTime,
-            firstScheduleUuid: scheduleAlarmEntity.firstScheduleUuid,
+            estimatedTime: scheduleAlarmEntity.estimatedTime,
           }
         : null,
     };
@@ -276,13 +285,32 @@ export class ScheduleApiService {
     await this.scheduleMetaService.deleteScheduleMeta(metadataId);
 
     if (metadata.shared) {
+      const message = `공유된 ${metadata.title} 일정이 삭제되었습니다.`;
       const participants = await this.participateService.getParticipantGroup(metadataId);
-      await Promise.all([
+      const participantList = participants.filter((participant) => participant.participantId !== participant.authorId);
+      const [metadataLists, ,] = await Promise.all([
+        Promise.all(
+          participantList.map(async (participant) => {
+            return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
+          }),
+        ),
         this.participateService.deleteGroup(metadataId),
-        participants.forEach(async (participant) => {
-          await this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
+        participants.map(async (participant) => {
+          this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
         }),
       ]);
+
+      const users = await Promise.all(
+        metadataLists.map(async (meta) => {
+          return this.userService.getUserEntityById(meta.userId);
+        }),
+      );
+
+      users.forEach((user) => {
+        if (!!user.deviceToken) {
+          this.pushService.sendPush(user.deviceToken, message);
+        }
+      });
     }
 
     const body: HttpResponse = {
@@ -314,6 +342,7 @@ export class ScheduleApiService {
     const authorSchedule = await this.scheduleService.getScheduleEntityByScheduleUuid(authorScheduleUuid);
     const authorScheduleMetadata = authorSchedule.parent;
     const authorScheduleLocation = await this.scheduleLocationService.getLocationByScheduleMetadataId(authorMetadataId);
+    let message: string;
 
     const invitedUser = await this.userService.getUserEntityByEmail(invitedUserEmail);
 
@@ -341,6 +370,10 @@ export class ScheduleApiService {
     }
 
     if (invitedStatus === InviteStatus.NEW) {
+      message = `새로운 ${authorScheduleMetadata.title} 일정이 공유되었습니다.`;
+      if (!!invitedUser.deviceToken) {
+        this.pushService.sendPush(invitedUser.deviceToken, message);
+      }
       const addScheduleDto: AddScheduleDto = {
         userUuid: invitedUser.userUuid,
         categoryUuid: "default",
@@ -352,6 +385,7 @@ export class ScheduleApiService {
       invitedScheduleUuid = await this.scheduleService.addSchedule(addScheduleDto, invitedScheduleMetadata);
       invitedMetadataId = await this.scheduleService.getMetadataIdByScheduleUuid(invitedScheduleUuid);
     } else if (invitedStatus === InviteStatus.CHANGED) {
+      message = `공유된 ${authorScheduleMetadata.title} 일정이 변경되었습니다.`;
       invitedMetadataId = await this.participateService.getInvitedMetadataId(authorMetadataId, invitedUser.userId);
       invitedScheduleUuid = await this.scheduleService.getFirstScheduleUuidByMetadataId(invitedMetadataId);
     }
@@ -393,6 +427,10 @@ export class ScheduleApiService {
 
     if (invitedStatus === InviteStatus.NEW) {
       await this.participateService.inviteSchedule(authorScheduleMetadata, invitedMetadataId);
+    }
+
+    if (!!invitedUser.deviceToken) {
+      this.pushService.sendPush(invitedUser.deviceToken, message);
     }
   }
 
@@ -474,5 +512,17 @@ export class ScheduleApiService {
 
       this.scheduleService.addRepeatedSchedule(schedule, repetition);
     });
+  }
+
+  async getScheduleHasAlarm(token: string) {
+    const userUuid = this.authService.verify(token);
+    const userEntity = await this.userService.getUserEntity(userUuid);
+    const records = await this.scheduleMetaService.getScheduleHasAlarm(userEntity.userId);
+
+    const body: HttpResponse = {
+      message: "알람 일정 조회 성공",
+      data: records,
+    };
+    return JSON.stringify(body);
   }
 }
