@@ -127,10 +127,6 @@ class MainRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
-        emit(api.getWeeklySchedule(date))
-    }
-
     override suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>> = flow {
         try {
             val scheduleInfo = api.getDailySchedule(date)
@@ -237,39 +233,35 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override fun getSearchSchedules(keyword: String): Flow<List<Schedule>> = flow {
-        try {
-            val scheduleInfo = api.getSearchSchedules(keyword)
-            val scheduleDummy = scheduleInfo.data.map {
+        val scheduleInfo = api.getSearchSchedules(keyword)
+        val scheduleDummy = scheduleInfo.data.map {
 
-                val startAt =
-                    it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
-                val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
+            val startAt =
+                it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
+            val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
 
-                Schedule(
-                    scheduleId = it.scheduleUuid,
-                    title = it.title,
-                    startAt = if (startAt.isEmpty()) null else DateTime(
-                        startAt[0],
-                        startAt[1],
-                        startAt[2],
-                        startAt[3],
-                        startAt[4],
-                        startAt[5]
-                    ),
-                    endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
-                    isFinished = it.isFinished,
-                    isFailed = it.isFailed,
-                    repeated = it.repeated,
-                    hasRetrospectiveMemo = it.hasRetrospectiveMemo,
-                    shared = it.shared,
-                    participantCount = it.participantCount,
-                    participantSuccessCount = it.participantSuccessCount
-                )
-            }
-            emit(scheduleDummy)
-        } catch (e: Exception) {
-            Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
+            Schedule(
+                scheduleId = it.scheduleUuid,
+                title = it.title,
+                startAt = if (startAt.isEmpty()) null else DateTime(
+                    startAt[0],
+                    startAt[1],
+                    startAt[2],
+                    startAt[3],
+                    startAt[4],
+                    startAt[5]
+                ),
+                endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+                isFinished = it.isFinished,
+                isFailed = it.isFailed,
+                repeated = it.repeated,
+                hasRetrospectiveMemo = it.hasRetrospectiveMemo,
+                shared = it.shared,
+                participantCount = it.participantCount,
+                participantSuccessCount = it.participantSuccessCount
+            )
         }
+        emit(scheduleDummy)
     }
 
     override suspend fun postScheduleAddMemo(scheduleId: String, memo: String) {

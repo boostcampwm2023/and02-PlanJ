@@ -51,7 +51,7 @@ class SearchActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showToast.collect { message ->
-                    Toast.makeText(this@SearchActivity, message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@SearchActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
