@@ -14,13 +14,17 @@ interface LoginRepository {
         userNickname: String
     ): ApiResult<LoginResponse>
 
-    suspend fun postSignIn(userEmail: String, userPwd: String, deviceToken : String): ApiResult<LoginResponse>
+    suspend fun postSignIn(
+        userEmail: String,
+        userPwd: String,
+        deviceToken: String
+    ): ApiResult<LoginResponse>
 
-    fun getToken() : Flow<String>
+    fun getToken(): Flow<String>
 
-    suspend fun saveUser(id : String)
+    suspend fun saveUser(id: String)
 
-    fun postSignInNaver(accessToken : String, deviceToken: String) : Flow<LoginResponse>
+    fun postSignInNaver(accessToken: String, deviceToken: String): Flow<LoginResponse>
 
     suspend fun updateAlarmInfo(curTimeMillis: Long)
 
@@ -30,8 +34,9 @@ interface LoginRepository {
 
     suspend fun insertAlarmInfo(alarmInfo: AlarmInfo)
 
-
     suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo)
+
+    suspend fun deleteAllAlarm()
 
     suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
 

@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
@@ -28,11 +26,8 @@ import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
 import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
-import java.io.IOException
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -290,6 +285,7 @@ class MainRepositoryImpl @Inject constructor(
 
     override fun getAlarms(): Flow<List<AlarmInfo>> = flow {
         try {
+            val curMillis = System.currentTimeMillis()
             val alarms = api.getAlarms().data
             val alarmInfo = alarms.map { alarm ->
                 val endAt = alarm.endAt.split("T", "-", ":").map { time -> time.toInt() }
@@ -301,6 +297,8 @@ class MainRepositoryImpl @Inject constructor(
                     alarmTime = alarm.alarmTime,
                     estimatedTime = alarm.estimatedTime
                 )
+            }.filter { alarmInfo ->
+                alarmInfo.endTime.toMilliseconds() > curMillis
             }
             emit(alarmInfo)
         } catch (e: Exception) {

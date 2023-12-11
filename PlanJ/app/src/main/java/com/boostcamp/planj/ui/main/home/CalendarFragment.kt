@@ -25,7 +25,7 @@ class CalendarFragment() : Fragment() {
     lateinit var date: Date
     lateinit var adapter: CalendarAdapter
 
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
 
 
     override fun onCreateView(

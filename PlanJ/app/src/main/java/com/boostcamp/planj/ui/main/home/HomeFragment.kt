@@ -34,7 +34,7 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
 
     private var addScheduleDialog : ScheduleDialog? = null
     private var failScheduleDialog : ScheduleFailDialog? = null
