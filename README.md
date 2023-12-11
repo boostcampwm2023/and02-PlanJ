@@ -26,7 +26,8 @@
 
 
 ## 📌 기술 스택
-![techstack](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/9f3e0bb8-1b76-4d66-b974-96577831ab17)
+![기술스택](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/af2e84de-8ff7-4da5-af5d-9b4610c5eb9e)
+
 
 
 
