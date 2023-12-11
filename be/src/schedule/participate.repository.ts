@@ -51,9 +51,10 @@ export class ParticipateRepository extends Repository<ParticipantEntity> {
     const records = await this.createQueryBuilder("participant")
       .leftJoinAndSelect("participant.participant", "schedule_metadata")
       .where("participant.author_id = :authorId", { authorId: authorMetadataId })
-      .where("schedule_metadata.user_id = :userId", { userId: invitedUserId })
+      .andWhere("schedule_metadata.user_id = :userId", { userId: invitedUserId })
       .getMany();
 
+    this.logger.verbose(JSON.stringify(records, null, 2));
     return records[0].participantId;
   }
 
