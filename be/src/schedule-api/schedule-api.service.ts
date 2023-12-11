@@ -237,6 +237,7 @@ export class ScheduleApiService {
       const group = await this.participateService.getParticipantGroup(metadataId);
 
       if (group === null) {
+        scheduleResponse.isAuthor = true;
         continue;
       }
 
@@ -244,6 +245,8 @@ export class ScheduleApiService {
       scheduleResponse.participantCount = group.length;
 
       for (const participant of group) {
+        scheduleResponse.isAuthor =
+          participant.participantId === metadataId && participant.participantId === participant.authorId;
         const check = await this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(
           participant.participantId,
           endAt,

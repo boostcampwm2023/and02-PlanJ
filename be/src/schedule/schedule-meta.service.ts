@@ -155,6 +155,7 @@ export class ScheduleMetaService {
           shared: scheduleMeta.shared,
           hasAlarm: scheduleMeta.hasAlarm,
           hasRetrospectiveMemo: !!schedule.retrospectiveMemo,
+          isAuthor: false,
           participantCount: 0,
           participantSuccessCount: 0,
         };
