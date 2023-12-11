@@ -3,7 +3,6 @@ package com.boostcamp.planj.ui.schedule
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -109,7 +107,7 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         naverMap.setOnMapClickListener { _, latLng ->
             getMarker(latLng)
         }
-        viewModel.initLocation(args.location)
+        viewModel.initLocation(args.endLocation)
     }
 
     private fun setListener() {
@@ -122,7 +120,9 @@ class ScheduleMapFragment : Fragment(), OnMapReadyCallback {
         }
         binding.btnScheduleMapSelectPlace.setOnClickListener {
             val action =
-                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(location = viewModel.location.value)
+                ScheduleMapFragmentDirections.actionScheduleMapFragmentToScheduleFragment(
+                    endLocation = viewModel.location.value
+                )
             findNavController().navigate(action)
         }
     }

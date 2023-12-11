@@ -15,7 +15,6 @@
         android:paddingHorizontal="20dp"
         android:paddingVertical="20dp">
 
-
         <TextView
             android:id="@+id/tv_dialog_category_main_title"
             android:layout_width="300dp"
@@ -26,7 +25,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_dialog_category_layout"
@@ -44,15 +42,13 @@
                 android:id="@+id/tiet_dialog_category_input_category_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="카테고리 입력"
-                android:textColorHint="@color/black"
+                android:hint="@string/enter_category"
+                android:textColorHint="@color/text"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:maxLines="1" />
-
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <TextView
             android:id="@+id/tv_dialog_category_success"
@@ -71,12 +67,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="취소"
-            android:textColor="#FF5E5E"
+            android:text="@string/cancel"
+            android:textColor="@color/red80"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/tv_dialog_category_success"
             app:layout_constraintTop_toBottomOf="@id/til_dialog_category_layout" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

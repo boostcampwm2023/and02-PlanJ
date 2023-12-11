@@ -11,11 +11,15 @@ import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.FailedMemo
+import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.naver.NaverResponse
 import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -81,13 +85,30 @@ fun TextView.setAlarmInfo(alarmInfo: Alarm?) {
     }
 }
 
+@BindingAdapter("userImg")
+fun ImageView.setImage(url: String?) {
+    Glide.with(this)
+        .load(url)
+        .error(R.drawable.ic_circle_person)
+        .apply(RequestOptions.circleCropTransform())
+        .into(this)
+}
+
+@BindingAdapter("participantsNum")
+fun TextView.setParticipantsNum(participants: List<Participant>) {
+    val successNum = participants.filter { it.isFinished }.size
+    val participantsNum = "$successNum / ${participants.size}"
+    text = participantsNum
+}
+
 @BindingAdapter("participation")
 fun TextView.setParticipation(schedule: Schedule) {
-    if (schedule.members.size < 2) {
+    if (schedule.participantCount < 2) {
         visibility = View.GONE
         return
     }
-    text = "${schedule.doneMembers?.size ?: 0} / ${schedule.members.size}"
+    val participation = "${schedule.participantSuccessCount} / ${schedule.participantCount}"
+    text = participation
 }
 
 @BindingAdapter("checkFail")
@@ -107,6 +128,8 @@ fun TextView.setTitle(schedule: Schedule) {
     }
     if (schedule.isFailed) {
         setTextColor(Color.RED)
+    } else {
+        setTextColor(resources.getColor(R.color.text))
     }
     text = schedule.title
 }
@@ -114,7 +137,7 @@ fun TextView.setTitle(schedule: Schedule) {
 
 @BindingAdapter("setCategoryBackground")
 fun LinearLayout.setBackground(item: Category) {
-    if (item.categoryId == "all")
+    if (item.categoryUuid == "all")
         setBackgroundResource(R.drawable.round_r8_main1)
     else
         setBackgroundResource(R.drawable.round_r8_main2)
@@ -133,18 +156,28 @@ fun TextView.isPopUpMenuVisible(category: Category) {
 fun TextView.setDateTime(schedule: Schedule) {
     val currentDate =
         SimpleDateFormat("yyyy/MM/dd", Locale("kr", "ko")).format(System.currentTimeMillis())
-    val scheduleEndTime = schedule.endTime
-    val endDate = String.format("%04d/%02d/%02d", scheduleEndTime.year, scheduleEndTime.month, scheduleEndTime.day)
+    val scheduleEndTime = schedule.endAt
+    val endDate = String.format(
+        "%04d/%02d/%02d",
+        scheduleEndTime.year,
+        scheduleEndTime.month,
+        scheduleEndTime.day
+    )
     val endTime = String.format("%02d:%02d", scheduleEndTime.hour, scheduleEndTime.minute)
-    if (schedule.startTime == null) {
+    if (schedule.startAt == null) {
         text = if (currentDate == endDate) {
             "오늘 $endTime 까지"
         } else {
             "$endDate $endTime"
         }
     } else {
-        val scheduleStartTime = schedule.startTime
-        val startDate = String.format("%04d/%02d/%02d", scheduleStartTime.year, scheduleStartTime.month, scheduleStartTime.day)
+        val scheduleStartTime = schedule.startAt
+        val startDate = String.format(
+            "%04d/%02d/%02d",
+            scheduleStartTime.year,
+            scheduleStartTime.month,
+            scheduleStartTime.day
+        )
         val startTime = String.format("%02d:%02d", scheduleStartTime.hour, scheduleStartTime.minute)
         text = if (startDate == endDate) {
             if (currentDate == startDate) {
@@ -155,6 +188,34 @@ fun TextView.setDateTime(schedule: Schedule) {
         } else {
             "$startDate - $endDate"
         }
+    }
+}
+
+
+@BindingAdapter("failedTime")
+fun TextView.failedTime(schedule: Schedule) {
+    val start = if (schedule.startAt == null) null else String.format(
+        "%04d-%02d-%02d %02d:%02d",
+        schedule.startAt.year,
+        schedule.startAt.month,
+        schedule.startAt.day,
+        schedule.startAt.hour,
+        schedule.startAt.minute
+    )
+
+    val end = String.format(
+        "%04d-%02d-%02d %02d:%02d",
+        schedule.endAt.year,
+        schedule.endAt.month,
+        schedule.endAt.day,
+        schedule.endAt.hour,
+        schedule.endAt.minute
+    )
+
+    text = if (start == null) {
+        end
+    } else {
+        "$start - $end"
     }
 }
 
@@ -186,5 +247,26 @@ fun TextView.setDistance(response: NaverResponse?) {
             "거리 : ${distance}m "
         }
 
+    }
+}
+
+@BindingAdapter("isExpandable")
+fun ImageView.isExpandable(isExpandable: Boolean) {
+    if (isExpandable) {
+        setImageResource(R.drawable.ic_drop_arrow)
+    } else {
+        setImageResource(R.drawable.ic_arrow_right)
+    }
+}
+
+@BindingAdapter("failedMemoTime")
+fun TextView.failedMemoTime(failedData: FailedMemo) {
+
+    val endTime = failedData.endAt.replace("-", "/").split("T")
+    text = if (failedData.startAt == null) {
+        "${endTime[0]} ${endTime[1]}"
+    } else {
+        val startTime = failedData.startAt.replace("-", "/").split("T")
+        "${startTime[0]} ${startTime[1]} - ${endTime[0]} ${endTime[1]}"
     }
 }

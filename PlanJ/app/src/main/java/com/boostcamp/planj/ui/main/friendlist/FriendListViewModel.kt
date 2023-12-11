@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.User
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,17 +20,16 @@ class FriendListViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    private val _userList = MutableStateFlow<List<User>>(emptyList())
-    val userList: StateFlow<List<User>> = _userList
+    private val _friendList = MutableStateFlow<List<User>>(emptyList())
+    val friendList = _friendList.asStateFlow()
 
-    init {
-        getFriends()
-    }
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast = _showToast.asSharedFlow()
 
-    private fun getFriends() {
+    fun getFriends() {
         viewModelScope.launch {
-            mainRepository.getFriendsApi().collectLatest { userList ->
-                _userList.value = userList
+            mainRepository.getFriendsApi().collectLatest { friends ->
+                _friendList.value = friends
             }
         }
     }
@@ -39,14 +40,22 @@ class FriendListViewModel @Inject constructor(
                 mainRepository.postFriendApi(email)
                 getFriends()
             } catch (e: Exception) {
+                _showToast.emit("친구 추가에 실패했습니다.")
                 Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
             }
         }
     }
 
     fun deleteUser(email: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            mainRepository.deleteUser(email)
+        viewModelScope.launch {
+            try {
+                mainRepository.deleteFriendApi(DeleteFriendBody(email))
+                getFriends()
+            } catch (e: Exception) {
+                Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
+            }
+
+
         }
     }
 }

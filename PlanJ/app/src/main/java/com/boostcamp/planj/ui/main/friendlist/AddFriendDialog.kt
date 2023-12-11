@@ -20,7 +20,7 @@ class AddFriendDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(requireContext())
-        dialog.window?.setBackgroundDrawableResource(R.drawable.round_r8_main2)
+        dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_background)
         return dialog
     }
 
@@ -67,7 +67,8 @@ class AddFriendDialog : DialogFragment() {
                     addFriendDialogListener?.onClickComplete(email.toString())
                     dismiss()
                 } else {
-                    tilDialogAddFriendLayout.error = "이메일 형식이 옳지 않습니다."
+                    tilDialogAddFriendLayout.error =
+                        resources.getString(R.string.email_format_error)
                 }
             }
         }

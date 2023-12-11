@@ -5,10 +5,21 @@
     android:layout_height="450dp"
     android:padding="10dp">
 
+    <TextView
+        android:id="@+id/tv_dialog_schedule_result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="@color/text"
+        android:textSize="35sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/iv_dialog_schedule_result_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/close"
         android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,10 +29,10 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_marginTop="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_dialog_schedule_result_close"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_dialog_schedule_result_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="participant"
+            type="com.boostcamp.planj.data.model.Participant" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:background="@null">
+
+        <ImageView
+            android:id="@+id/iv_participant_profile_img"
+            userImg="@{participant.profileUrl}"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/img_logo"
+            app:layout_constraintBottom_toTopOf="@id/tv_participant_profile_nickname"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/user_profile_image" />
+
+        <TextView
+            android:id="@+id/tv_participant_profile_nickname"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@{participant.nickname}"
+            android:textSize="12sp"
+            android:textColor="@color/text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_participant_profile_img"
+            tools:text="@string/nickname" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

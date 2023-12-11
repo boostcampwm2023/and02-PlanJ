@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -20,16 +21,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:setCategoryBackground="@{category}">
 
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="9"
             android:text="@{category.categoryName}"
-            android:textColor="@color/black"
+            android:textColor="@color/text"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="@string/category" />
 
         <TextView
             android:id="@+id/tv_category_pop_up_menu"
@@ -37,11 +38,11 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
-            android:text="&#8942;"
+            android:text="@string/vertical_ellipsis"
             android:textAlignment="center"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:isPopUpMenuVisible="@{category}" />
-
 
     </LinearLayout>
 </layout>

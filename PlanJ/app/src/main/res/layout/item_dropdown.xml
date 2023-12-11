@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/textView"
     android:layout_width="match_parent"
-    android:textColor="@color/black"
+    android:textColor="@color/text"
     android:textStyle="bold"
     android:padding="14dp"
-    android:layout_height="wrap_content"
-    android:text="TextView" />
+    android:layout_height="wrap_content"/>

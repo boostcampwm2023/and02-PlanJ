@@ -1,5 +1,6 @@
 package com.boostcamp.planj.ui.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Schedule
@@ -7,7 +8,7 @@ import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,10 +27,11 @@ class SearchViewModel @Inject constructor(
     private val isFiltered = MutableStateFlow(false)
 
     fun onClickSearch() {
-        // TODO: userInput.value 이용해서 데이터 요청
         viewModelScope.launch {
-            mainRepository.searchSchedule(userInput.value).collectLatest { resultList ->
-                scheduleList.value = resultList
+            mainRepository.getSearchSchedules(userInput.value).catch {
+                Log.d("PLANJDEBUG","onClickSearch getSearchSchedules Error ${it.message}")
+            }.collectLatest {
+                scheduleList.value=it
                 filterSchedules()
             }
         }

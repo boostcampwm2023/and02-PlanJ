@@ -1,20 +1,14 @@
 package com.boostcamp.planj.data.di
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStoreFile
 import com.boostcamp.planj.BuildConfig
-import com.boostcamp.planj.data.db.AlarmInfoDao
-import com.boostcamp.planj.data.db.AppDatabase
 import com.boostcamp.planj.data.network.MainApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ActivityRetainedComponent
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -23,14 +17,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 object MainModule {
 
 
-    @Singleton
     @Provides
     fun provideInterceptor(datastore: DataStore<Preferences>): Interceptor {
         val user = stringPreferencesKey(BuildConfig.USER)
@@ -52,9 +44,7 @@ object MainModule {
         }
     }
 
-
     //retrofit
-    @Singleton
     @Provides
     fun provideOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -65,7 +55,6 @@ object MainModule {
             .build()
     }
 
-    @Singleton
     @Provides
     fun provideRetrofitInstance(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
@@ -75,36 +64,10 @@ object MainModule {
             .build()
     }
 
-    @Singleton
     @Provides
     fun provideService(retrofit: Retrofit): MainApi {
         return retrofit.create(MainApi::class.java)
     }
 
-    //okhttp
 
-    //room
-    @Singleton
-    @Provides
-    fun provideRoom(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
-    }
-
-    @Singleton
-    @Provides
-    fun provideAlarmDao(appDatabase: AppDatabase): AlarmInfoDao = appDatabase.alarmInfoDao()
-
-    //DataStore
-    @Singleton
-    @Provides
-    fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile(BuildConfig.DATA_STORE_NAME) }
-        )
-
-    @Singleton
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
 }

@@ -24,7 +24,7 @@ android {
         minSdk = 26
         targetSdk = 33
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,6 +39,8 @@ android {
         buildConfigField("String", "BASE_URL", properties["baseUrl"] as String)
         buildConfigField("String", "USER", properties["user"] as String)
         buildConfigField("String", "NAVER_CLIENT_SECRET", properties["naverClientSecret"] as String)
+        buildConfigField("String", "NAVER_LOGIN_CLIENT_ID", properties["naverLoginClientId"] as String)
+        buildConfigField("String", "NAVER_LOGIN_SECRET", properties["naverLoginSecret"] as String)
 
 
         manifestPlaceholders["NAVER_API_KEY"] = properties["naverKey"] as String
@@ -48,6 +50,8 @@ android {
         manifestPlaceholders["BASE_URL"] = properties["baseUrl"] as String
         manifestPlaceholders["USER"] = properties["user"] as String
         manifestPlaceholders["NAVER_CLIENT_SECRET"] = properties["naverClientSecret"] as String
+        manifestPlaceholders["NAVER_LOGIN_CLIENT_ID"] = properties["naverLoginClientId"] as String
+        manifestPlaceholders["NAVER_LOGIN_SECRET"] = properties["naverLoginSecret"] as String
     }
 
     buildTypes {
@@ -75,6 +79,13 @@ android {
     kapt {
         correctErrorTypes = true
     }
+
+
+    configurations.all {
+        resolutionStrategy {
+            force("com.navercorp.nid:oauth:5.9.0")
+        }
+    }
 }
 
 dependencies {
@@ -83,6 +94,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.lifecycle.livedata.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -126,4 +139,12 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
+
+    //naver login
+    implementation("com.navercorp.nid:oauth:5.9.0")
+    implementation ("androidx.core:core-ktx:1.3.0")
+    implementation ("androidx.fragment:fragment-ktx:1.3.6")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+
 }

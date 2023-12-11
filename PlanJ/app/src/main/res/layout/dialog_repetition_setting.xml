@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:text="@string/repetition"
+        android:textColor="@color/text"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="@string/not_set"
+            android:textColor="@color/text"
             android:textSize="16sp" />
 
         <RadioButton
@@ -39,6 +41,7 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="@string/daily"
+            android:textColor="@color/text"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -57,12 +60,14 @@
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 android:maxLength="3"
-                android:minWidth="50dp" />
+                android:minWidth="50dp"
+                android:textColor="@color/text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="일마다 반복"
+                android:text="@string/day_repetition"
+                android:textColor="@color/text"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -71,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/weekly"
+            android:textColor="@color/text"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -89,12 +95,14 @@
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 android:maxLength="2"
-                android:minWidth="50dp" />
+                android:minWidth="50dp"
+                android:textColor="@color/text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="주마다 반복"
+                android:text="@string/week_repetition"
+                android:textColor="@color/text"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -117,7 +125,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/cancel"
-        android:textColor="@color/red"
+        android:textColor="@color/red80"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tv_dialog_repetition_complete"
         app:layout_constraintTop_toTopOf="@id/tv_dialog_repetition_complete" />

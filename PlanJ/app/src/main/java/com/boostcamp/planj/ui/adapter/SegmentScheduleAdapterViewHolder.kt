@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.ItemListScheduleBinding
 
@@ -25,7 +26,7 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val position = viewHolder.adapterPosition
+                    val position = viewHolder.bindingAdapterPosition
                     listener.swipe(item.scheduleList[position])
 
                 }
@@ -40,14 +41,25 @@ class SegmentScheduleAdapterViewHolder(private val binding: ItemListScheduleBind
         item: ScheduleSegment,
         swipeListener: SwipeListener,
         clickListener: ScheduleClickListener,
-        checkBoxListener: ScheduleDoneListener
+        checkBoxListener: ScheduleDoneListener,
+        changeExpanded: (Int) -> Unit
     ) {
+        binding.executePendingBindings()
         this.item = item
         this.listener = swipeListener
-        binding.tvMainScheduleTitle.text = item.segmentTitle
+        binding.scheduleSegment = item
         val scheduleAdapter = ScheduleAdapter(clickListener, checkBoxListener)
         binding.rvListSchedule.adapter = scheduleAdapter
-        scheduleAdapter.submitList(this.item.scheduleList)
+        binding.ivListToggle.setOnClickListener {
+            changeExpanded(bindingAdapterPosition)
+        }
+
+        if (item.expanded) {
+            scheduleAdapter.submitList(this.item.scheduleList)
+        } else {
+            scheduleAdapter.submitList(emptyList())
+        }
+
     }
 
     companion object {

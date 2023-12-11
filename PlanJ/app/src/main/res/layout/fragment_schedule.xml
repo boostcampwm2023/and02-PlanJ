@@ -19,7 +19,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         tools:context=".ui.schedule.ScheduleFragment">
 
         <androidx.appcompat.widget.Toolbar
@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/schedule"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textSize="24sp" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -69,6 +69,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@string/category"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +82,7 @@
                     android:layout_height="60dp"
                     android:enabled="@{viewModel.isEditMode}"
                     android:gravity="center_vertical"
+                    android:textColor="@color/text"
                     app:boxStrokeWidth="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_category"
@@ -112,7 +114,7 @@
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:background="@null"
-                    android:enabled="@{viewModel.isEditMode()}"
+                    android:enabled="@{viewModel.isEditMode() &amp;&amp; viewModel.isAuthor()}"
                     android:gravity="center_vertical"
                     android:hint="@string/schedule_title_condition"
                     android:importantForAutofill="no"
@@ -141,6 +143,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@string/start"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -150,14 +153,14 @@
                     android:id="@+id/tv_schedule_start_empty"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:enabled="@{viewModel.isEditMode}"
+                    android:enabled="@{viewModel.isEditMode &amp;&amp; viewModel.isAuthor()}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
+                    android:onClick="@{() -> fragment.setStartTime()}"
                     android:paddingHorizontal="24dp"
                     android:text="@string/not_set"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
-                    android:onClick="@{() -> fragment.setStartTime()}"
                     android:visibility="@{viewModel.scheduleStartTime == null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_start"
@@ -180,9 +183,9 @@
                         dateTimeInfo="@{viewModel.scheduleStartTime}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> fragment.setStartTime()}"
-                        android:enabled="@{viewModel.isEditMode}"
+                        android:enabled="@{viewModel.isEditMode &amp;&amp; viewModel.isAuthor()}"
                         android:maxLines="1"
+                        android:onClick="@{() -> fragment.setStartTime()}"
                         android:padding="4dp"
                         android:textColor="@color/selector_text_color"
                         android:textSize="16sp"
@@ -197,7 +200,7 @@
                         android:onClick="@{() -> viewModel.resetStartTime()}"
                         android:padding="4dp"
                         android:src="@drawable/ic_delete"
-                        android:visibility="@{viewModel.isEditMode? View.VISIBLE : View.GONE}"
+                        android:visibility="@{(viewModel.isEditMode &amp;&amp; viewModel.isAuthor)? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -218,6 +221,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@string/end"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -229,10 +233,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:enabled="@{viewModel.isEditMode}"
-                    android:onClick="@{() -> fragment.setEndTime()}"
+                    android:enabled="@{viewModel.isEditMode &amp;&amp; viewModel.isAuthor()}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
+                    android:onClick="@{() -> fragment.setEndTime()}"
                     android:paddingHorizontal="4dp"
                     android:textColor="@color/selector_text_color"
                     android:textSize="16sp"
@@ -250,15 +254,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_schedule_participants"
                     android:layout_width="0dp"
-                    android:layout_height="350dp"
+                    android:layout_height="wrap_content"
                     android:maxHeight="150dp"
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end"
-                    android:visibility="gone"
-                    >
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule_end">
 
                     <TextView
                         android:id="@+id/tv_category_participants"
@@ -266,6 +268,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/participants"
+                        android:textColor="@color/text"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -273,10 +276,10 @@
 
                     <TextView
                         android:id="@+id/tv_category_done_total_participants"
+                        participantsNum="@{viewModel.participants}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
-                        android:text='@{viewModel.doneMembers.size + "/" + viewModel.members.size}'
                         android:textColor="@color/main3"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_category_participants"
@@ -289,6 +292,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/see_all"
+                        android:textColor="@color/text"
                         app:layout_constraintBottom_toBottomOf="@id/tv_category_participants"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tv_category_participants" />
@@ -296,15 +300,16 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_schedule_participants"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
+                        android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_category_participants"
-                        tools:listoitem="@layout/item_participant" />
+                        tools:listitem="@layout/item_participant_profile" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -322,6 +327,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@string/alarm"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -357,6 +363,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:text="@string/repetition"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -367,7 +374,7 @@
                     repetitionInfo="@{viewModel.scheduleRepetition}"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:enabled="@{viewModel.isEditMode}"
+                    android:enabled="@{viewModel.isEditMode &amp;&amp; viewModel.isAuthor()}"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
@@ -397,7 +404,8 @@
                     android:layout_height="60dp"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="24sp"
-                    android:text="위치"
+                    android:text="@string/location"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -412,7 +420,8 @@
                     android:background="@drawable/round_r8_main2"
                     android:gravity="center_vertical"
                     android:padding="8dp"
-                    android:text="다른 경로 보기"
+                    android:text="@string/other_route"
+                    android:textColor="@color/text"
                     android:visibility="@{viewModel.startScheduleLocation == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -428,12 +437,12 @@
                     android:background="@drawable/round_r8_main2"
                     android:gravity="center_vertical"
                     android:padding="8dp"
-                    android:text="위치 알림 설정"
+                    android:text="@string/set_departure_alarm"
+                    android:textColor="@color/text"
                     android:visibility="@{(viewModel.startScheduleLocation != null &amp;&amp; viewModel.isEditMode() == true) ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toTopOf="@+id/et_schedule_location_setting"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule_repetition" />
-
 
                 <TextView
                     android:id="@+id/tv_schedule_location"
@@ -443,7 +452,8 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:paddingHorizontal="24dp"
-                    android:text="@string/location"
+                    android:text="@string/arrival"
+                    android:textColor="@color/text"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -457,7 +467,6 @@
                     android:breakStrategy="simple"
                     android:gravity="center_vertical"
                     android:importantForAutofill="no"
-                    android:inputType="text"
                     android:paddingHorizontal="24dp"
                     android:text="@{viewModel.endScheduleLocation.placeName}"
                     android:textColor="@color/selector_text_color"
@@ -475,7 +484,7 @@
                     android:onClick="@{() -> viewModel.endMapDelete()}"
                     android:padding="8dp"
                     android:src="@drawable/ic_delete"
-                    android:visibility="@{(viewModel.endScheduleLocation == null || viewModel.isEditMode() == false) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{(viewModel.endScheduleLocation == null || viewModel.isEditMode() == false || !viewModel.isAuthor()) ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_schedule_location"
                     app:layout_constraintEnd_toStartOf="@id/iv_schedule_map"
                     app:layout_constraintTop_toTopOf="@id/tv_schedule_location" />
@@ -484,7 +493,7 @@
                     android:id="@+id/iv_schedule_map"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:clickable="@{viewModel.isEditMode()}"
+                    android:clickable="@{viewModel.isEditMode() &amp;&amp; viewModel.isAuthor()}"
                     android:contentDescription="@string/location"
                     android:padding="18dp"
                     android:src="@drawable/ic_location"
@@ -513,8 +522,9 @@
                             android:layout_marginStart="8dp"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="24dp"
-                            android:text="출발"
-                            android:textSize="12dp"
+                            android:text="@string/departure"
+                            android:textColor="@color/text"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -526,7 +536,6 @@
                             android:breakStrategy="simple"
                             android:gravity="center_vertical"
                             android:importantForAutofill="no"
-                            android:inputType="text"
                             android:paddingHorizontal="24dp"
                             android:text="@{viewModel.startScheduleLocation.placeName}"
                             android:textColor="@color/selector_text_color"
@@ -540,7 +549,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="60dp"
                             android:clickable="@{viewModel.isEditMode()}"
-                            android:contentDescription="@string/location"
+                            android:contentDescription="@string/departure"
                             android:onClick="@{() -> viewModel.startMapDelete()}"
                             android:padding="8dp"
                             android:src="@drawable/ic_delete"
@@ -551,7 +560,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="60dp"
                             android:clickable="@{viewModel.isEditMode()}"
-                            android:contentDescription="@string/location"
+                            android:contentDescription="@string/departure"
                             android:padding="18dp"
                             android:src="@drawable/ic_location" />
 
@@ -584,6 +593,7 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="4dp"
                     android:text="@string/memo"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -597,6 +607,7 @@
                     android:layout_marginStart="4dp"
                     android:gravity="center_vertical"
                     android:text="@string/memo_length"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/tv_schedule_memo"
                     app:layout_constraintTop_toBottomOf="@id/layout_schedule_start_view" />
@@ -605,7 +616,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:background="@drawable/round_light_gray"
+                    android:background="@drawable/round_r10_gray1"
                     android:enabled="@{viewModel.isEditMode}"
                     android:gravity="top"
                     android:importantForAutofill="no"

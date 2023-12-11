@@ -4,8 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".PlanjApplication"
@@ -29,8 +30,8 @@
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.APP_BROWSER"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.APP_BROWSER" />
             </intent-filter>
 
         </activity>
@@ -38,7 +39,7 @@
             android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
-   
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,18 +49,56 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
 
         <activity
             android:name=".ui.categorydetail.CategoryDetailActivity"
             android:exported="false" />
 
-        <receiver android:name=".data.PlanJReceiver" android:exported="true">
+        <receiver
+            android:name=".ui.PlanJReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".ui.RestartAlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver android:name=".ui.PlanjWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/planj_widget_info" />
+        </receiver>
+
+        <service android:name=".ui.PlanjViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+
+        <service
+            android:name=".ui.PlanjFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/img_logo" />
+        </service>
+
     </application>
 
 </manifest>

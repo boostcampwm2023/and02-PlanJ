@@ -18,12 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:paddingHorizontal="8dp"
         android:onClick="@{() -> listener.onClick(user)}"
+        android:paddingHorizontal="8dp"
         android:paddingVertical="12dp">
 
         <ImageView
             android:id="@+id/iv_friend_img"
+            userImg="@{user.profileUrl}"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
@@ -39,11 +40,12 @@
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
             android:text="@{user.nickname}"
+            android:textColor="@color/text"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_friend_img"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="닉네임" />
+            tools:text="@string/nickname" />
 
         <TextView
             android:id="@+id/tv_friend_menu"
@@ -53,6 +55,7 @@
             android:paddingVertical="5dp"
             android:text="@string/vertical_ellipsis"
             android:textAlignment="center"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

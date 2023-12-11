@@ -8,25 +8,46 @@
         <import type="android.view.View" />
 
         <variable
+            name="isParticipated"
+            type="Boolean" />
+
+        <variable
+            name="isEditMode"
+            type="Boolean" />
+
+        <variable
             name="participant"
             type="com.boostcamp.planj.data.model.Participant" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_participant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
         android:paddingHorizontal="4dp"
         android:paddingVertical="8dp">
 
+        <CheckBox
+            android:id="@+id/cb_participant_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@{isParticipated}"
+            android:enabled="@{!participant.currentUser}"
+            android:visibility="@{isEditMode ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/iv_participant_img"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            userImg="@{participant.profileUrl}"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:contentDescription="@string/user_profile_image"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cb_participant_check"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/img_logo" />
 
@@ -37,6 +58,7 @@
             android:layout_marginStart="8dp"
             android:text="@{participant.nickname}"
             android:textSize="16sp"
+            android:textColor="@color/text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_participant_img"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +70,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/schedule_done"
             android:src="@drawable/ic_done"
-            android:visibility="@{participant.isFinished ? View.VISIBLE : View.GONE}"
+            android:visibility="@{!isEditMode &amp;&amp; participant.isFinished ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +81,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/schedule_not_done"
             android:src="@drawable/ic_not_done"
-            android:visibility="@{participant.isFinished ? View.GONE : View.VISIBLE}"
+            android:visibility="@{!isEditMode &amp;&amp; !participant.isFinished ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

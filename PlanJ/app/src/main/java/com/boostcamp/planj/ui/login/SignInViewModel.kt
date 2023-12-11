@@ -9,11 +9,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,9 +22,6 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
-
-    val user =
-        loginRepository.getUser().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val userEmail = MutableStateFlow("")
     val userPwd = MutableStateFlow("")
@@ -35,9 +32,11 @@ class SignInViewModel @Inject constructor(
     private val _showToast = MutableSharedFlow<String>()
     val showToast = _showToast.asSharedFlow()
 
+    var deviceToken: String = ""
     fun postSignIn() {
+        Log.d("PLANJDEBUG", "deviceToken $deviceToken")
         viewModelScope.launch {
-            val apiResult = loginRepository.postSignIn(userEmail.value, userPwd.value)
+            val apiResult = loginRepository.postSignIn(userEmail.value, userPwd.value, deviceToken)
             when (apiResult) {
                 is ApiResult.Success -> {
                     _isSuccess.value = true
@@ -57,9 +56,29 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveId(id : String){
-        withContext(Dispatchers.IO){
+    private suspend fun saveId(id: String) {
+        withContext(Dispatchers.IO) {
             loginRepository.saveUser(id)
         }
+    }
+
+    fun postSignInNaver(accessToken: String) {
+        Log.d("PLANJDEBUG", "deviceToken $deviceToken")
+        viewModelScope.launch {
+            loginRepository.postSignInNaver(accessToken, deviceToken)
+                .catch {
+                    Log.d("PLANJDEBUG", "postSignInNaver error : ${it.message}")
+                }
+                .collectLatest {
+                    Log.d("PLANJDEBUG", "postSignInNaver success : $it")
+                    _isSuccess.value = true
+                    saveId(it.uid.token)
+                    _showToast.emit("로그인이 완료되었습니다.")
+                }
+        }
+    }
+
+    suspend fun getToken() = withContext(Dispatchers.IO) {
+        loginRepository.getToken().first()
     }
 }

@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:layoutDescription="@xml/item_today_schedule_scene">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/iv_list_toggle"
-        android:layout_width="wrap_content"
+    <data>
+
+        <variable
+            name="scheduleSegment"
+            type="com.boostcamp.planj.data.model.ScheduleSegment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:src="@drawable/ic_drop_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="16dp"
+        android:background="@color/background">
 
-    <TextView
-        android:id="@+id/tv_main_schedule_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="일정"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_list_toggle"
-        app:layout_constraintStart_toEndOf="@id/iv_list_toggle"
-        app:layout_constraintTop_toTopOf="@id/iv_list_toggle" />
+        <ImageView
+            android:id="@+id/iv_list_toggle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:isExpandable="@{scheduleSegment.expanded}"
+            app:layout_constraintBottom_toBottomOf="@id/tv_main_schedule_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_main_schedule_title"
+            android:contentDescription="@string/toggle" />
 
-
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/tv_main_schedule_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{scheduleSegment.segmentTitle}"
+            android:textSize="24sp"
+            android:textColor="@color/text"
+            app:layout_constraintStart_toEndOf="@id/iv_list_toggle"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_main_schedule_title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_main_schedule_title"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_schedule" />
 
-    </FrameLayout>
-
-
-</androidx.constraintlayout.motion.widget.MotionLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

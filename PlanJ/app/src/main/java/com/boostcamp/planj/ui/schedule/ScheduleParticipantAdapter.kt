@@ -1,11 +1,13 @@
 package com.boostcamp.planj.ui.schedule
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.boostcamp.planj.data.model.Participant
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 
-class ScheduleParticipantAdapter(private val members: List<Participant>) :
-    RecyclerView.Adapter<ScheduleParticipantAdapterViewHolder>() {
+class ScheduleParticipantAdapter(private val listener: ScheduleParticipantsListener) :
+    ListAdapter<FriendState, ScheduleParticipantAdapterViewHolder>(diffUtil) {
+
+    var isEditMode = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -14,11 +16,20 @@ class ScheduleParticipantAdapter(private val members: List<Participant>) :
         return ScheduleParticipantAdapterViewHolder.from(parent)
     }
 
-    override fun getItemCount(): Int {
-        return members.size
+    override fun onBindViewHolder(holder: ScheduleParticipantAdapterViewHolder, position: Int) {
+        holder.bind(getItem(position), isEditMode, listener)
     }
 
-    override fun onBindViewHolder(holder: ScheduleParticipantAdapterViewHolder, position: Int) {
-        holder.bind(members[position])
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<FriendState>() {
+            override fun areItemsTheSame(oldItem: FriendState, newItem: FriendState): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: FriendState, newItem: FriendState): Boolean {
+                return oldItem.participant.email == newItem.participant.email
+            }
+
+        }
     }
 }

@@ -12,10 +12,8 @@
         tools:layout="@layout/activity_schedule"
         >
         <argument
-            android:name="schedule"
-            app:argType="com.boostcamp.planj.data.model.Schedule"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            android:name="scheduleId"
+            app:argType="string" />
     </activity>
     <fragment
         android:id="@+id/categoryDetailFragment"

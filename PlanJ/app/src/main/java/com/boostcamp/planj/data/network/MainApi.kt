@@ -1,17 +1,23 @@
 package com.boostcamp.planj.data.network
 
+import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
+import com.boostcamp.planj.data.model.dto.GetAlarmResponse
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
+import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
+import com.boostcamp.planj.data.model.dto.GetFailedMemoResponse
 import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
-import com.boostcamp.planj.data.model.dto.PatchCategoryRequest
-import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
 import com.boostcamp.planj.data.model.dto.PostCategoryResponse
 import com.boostcamp.planj.data.model.dto.PostFriendRequest
+import com.boostcamp.planj.data.model.dto.PostScheduleAddMemoBody
 import com.boostcamp.planj.data.model.dto.PostScheduleBody
 import com.boostcamp.planj.data.model.dto.PostScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostUserResponse
@@ -36,16 +42,19 @@ interface MainApi {
     suspend fun postSchedule(@Body postScheduleBody: PostScheduleBody): PostScheduleResponse
 
     @DELETE("/api/category/delete/{categoryUuid}")
-    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String)
+    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String): CategoryResponse
 
     @HTTP(method = "DELETE", path = "/api/schedule/delete", hasBody = true)
     suspend fun deleteSchedule(@Body deleteScheduleBody: DeleteScheduleBody)
+
+    @GET("/api/schedule")
+    suspend fun getDetailSchedule(@Query("scheduleUuid") scheduleUuid: String): GetDetailScheduleResponse
 
     @PATCH("/api/schedule/update")
     suspend fun patchSchedule(@Body patchScheduleBody: PatchScheduleBody): PatchScheduleResponse
 
     @PATCH("/api/category/update")
-    suspend fun patchCategory(@Body patchCategoryRequest: PatchCategoryRequest): PatchCategoryResponse
+    suspend fun patchCategory(@Body patchCategoryRequest: Category): CategoryResponse
 
     @GET("/api/category/list")
     suspend fun getCategoryList(): GetCategoryResponse
@@ -65,6 +74,9 @@ interface MainApi {
     @GET("/api/friend")
     suspend fun getFriends(): GetFriendResponse
 
+    @HTTP(method = "DELETE", path = "/api/friend", hasBody = true)
+    suspend fun deleteFriends(@Body email: DeleteFriendBody)
+
     @DELETE("/api/auth/delete")
     suspend fun deleteAccount()
 
@@ -77,4 +89,22 @@ interface MainApi {
         @Part("nickname") nickname: String,
         @Part profileImage: MultipartBody.Part?
     ): PostUserResponse
+
+    @PATCH("/api/auth/set-default-image")
+    suspend fun patchUserImageRemove()
+
+    @GET("/api/schedule/check")
+    suspend fun getScheduleChecked(@Query("scheduleUuid") scheduleUuid: String): GetScheduleCheckedResponse
+
+    @POST("/api/schedule/memo")
+    suspend fun postScheduleAddMemo(@Body postScheduleAddMemoBody: PostScheduleAddMemoBody)
+
+    @GET("/api/schedule/search")
+    suspend fun getSearchSchedules(@Query("keyword") keyword: String): GetSchedulesResponse
+
+    @GET("/api/schedule/memo")
+    suspend fun getFailedMemo(): GetFailedMemoResponse
+
+    @GET("/api/schedule/alarm")
+    suspend fun getAlarms(): GetAlarmResponse
 }

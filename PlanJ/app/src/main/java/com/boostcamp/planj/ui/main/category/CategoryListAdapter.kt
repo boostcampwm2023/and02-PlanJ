@@ -30,7 +30,7 @@ class CategoryListAdapter(
             }
 
             override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
-                return oldItem.categoryId == newItem.categoryId
+                return oldItem.categoryUuid == newItem.categoryUuid
             }
 
         }

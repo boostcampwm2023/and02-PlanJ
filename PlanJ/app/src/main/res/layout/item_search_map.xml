@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@{address.placeName}"
-            android:textColor="@color/black"
+            android:textColor="@color/text"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,14 +31,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@{address.addressName}"
-            android:textColor="@color/black"
+            android:textColor="@color/text"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_place_name"
-
-            />
+            app:layout_constraintTop_toBottomOf="@id/tv_place_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

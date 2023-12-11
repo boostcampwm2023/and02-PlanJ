@@ -1,19 +1,17 @@
 package com.boostcamp.planj.data.di
 
-import android.util.Log
 import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.data.network.KaKaoSearchApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -30,7 +28,7 @@ object SearchMapModule {
     @Singleton
     @Provides
     @Map
-    fun provideInterceptor() : Interceptor {
+    fun provideInterceptor(): Interceptor {
         return Interceptor { chain ->
             var request = chain.request()
             request = request.newBuilder()
@@ -63,10 +61,9 @@ object SearchMapModule {
             .build()
     }
 
-
     @Singleton
     @Provides
-    fun provideRetrofit(@Map retrofit: Retrofit) : KaKaoSearchApi {
+    fun provideRetrofit(@Map retrofit: Retrofit): KaKaoSearchApi {
         return retrofit.create(KaKaoSearchApi::class.java)
     }
 

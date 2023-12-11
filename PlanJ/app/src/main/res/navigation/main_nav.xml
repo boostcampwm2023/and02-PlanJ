@@ -9,42 +9,43 @@
         android:id="@+id/fragment_home"
         android:name="com.boostcamp.planj.ui.main.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"
-        >
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_fragment_home_to_scheduleActivity2"
+            android:id="@+id/action_fragment_home_to_scheduleActivity"
             app:destination="@id/scheduleActivity" />
     </fragment>
     <fragment
         android:id="@+id/fragment_user"
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
         android:label="SettingFragment"
-        tools:layout="@layout/fragment_setting"
-        >
+        tools:layout="@layout/fragment_setting">
         <action
             android:id="@+id/action_fragment_user_to_loginActivity"
-            app:destination="@id/loginActivity" />
+            app:destination="@id/loginActivity"
+            app:popUpTo="@layout/fragment_home"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_fragment_user_to_settingFailFragment"
+            app:destination="@id/settingFailFragment" />
     </fragment>
     <fragment
         android:id="@+id/fragment_friend_list"
         android:name="com.boostcamp.planj.ui.main.friendlist.FriendListFragment"
         android:label="FriendListFragment"
-        tools:layout="@layout/fragment_friend_list"
-        />
+        tools:layout="@layout/fragment_friend_list" />
     <activity
         android:id="@+id/activity_search"
         android:name="com.boostcamp.planj.ui.search.SearchActivity"
         android:label="activity_search"
         tools:layout="@layout/activity_search" />
     <activity
-        android:id="@+id/categoryActivity"
+        android:id="@+id/activity_category_detail"
         android:name="com.boostcamp.planj.ui.categorydetail.CategoryDetailActivity"
-        android:label="CategoryActivity"
-        tools:layout="@layout/activity_category"
-        >
+        android:label="activity_category_detail"
+        tools:layout="@layout/activity_category_detail">
         <argument
-            android:name="categoryId"
-            app:argType="string" />
+            android:name="category"
+            app:argType="com.boostcamp.planj.data.model.Category" />
     </activity>
     <fragment
         android:id="@+id/fragment_category"
@@ -52,8 +53,8 @@
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category">
         <action
-            android:id="@+id/action_categoryFragment_to_categoryActivity"
-            app:destination="@id/categoryActivity"
+            android:id="@+id/action_categoryFragment_to_categoryDetailActivity"
+            app:destination="@id/activity_category_detail"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -63,16 +64,18 @@
     <activity
         android:id="@+id/scheduleActivity"
         android:name="com.boostcamp.planj.ui.schedule.ScheduleActivity"
-        android:label="ScheduleActivity" >
+        android:label="ScheduleActivity">
         <argument
-            android:name="schedule"
-            app:argType="com.boostcamp.planj.data.model.Schedule"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            android:name="scheduleId"
+            app:argType="string" />
     </activity>
     <activity
         android:id="@+id/loginActivity"
         android:name="com.boostcamp.planj.ui.login.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/settingFailFragment"
+        android:name="com.boostcamp.planj.ui.main.SettingFailFragment"
+        android:label="SettingFailFragment" />
 </navigation>

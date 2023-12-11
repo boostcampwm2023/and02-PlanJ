@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/background">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_setting"
@@ -29,6 +29,7 @@
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:contentDescription="@string/application_logo"
                 android:src="@drawable/img_logo" />
 
             <TextView
@@ -79,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
-                    android:contentDescription="프로필 수정"
+                    android:contentDescription="@string/edit_profile"
                     android:onClick="@{() -> viewModel.saveUser()}"
                     android:src="@drawable/ic_check"
                     android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
@@ -93,10 +94,21 @@
                     android:layout_marginTop="40dp"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/user_profile_image"
+                    android:scaleType="fitCenter"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_setting_icon_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit_profile"
+                    android:src="@drawable/ic_cancel"
+                    android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="@id/iv_setting_img"
+                    app:layout_constraintTop_toTopOf="@id/iv_setting_img" />
 
                 <ImageView
                     android:id="@+id/iv_setting_icon_camera"
@@ -113,15 +125,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:afterTextChanged="@{(text) -> viewModel.changeText(text)}"
+                    android:autofillHints="false"
                     android:background="@{viewModel.isEditMode() ? @drawable/round_r8_stroke_w1 : null }"
                     android:enabled="@{viewModel.isEditMode()}"
+                    android:inputType="textAutoComplete"
+                    android:maxLength="12"
+                    android:maxLines="1"
+                    android:paddingHorizontal="36dp"
                     android:text="@{viewModel.userInfo.nickname}"
-                    android:afterTextChanged="@{(text) -> viewModel.changeText(text)}"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:maxLength="12"
-                    android:paddingHorizontal="36dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_setting_img"
@@ -133,24 +148,117 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="60dp"
                     android:text="@{viewModel.userInfo.email}"
-                    android:textColor="@color/dark_gray"
+                    android:textColor="@color/gray2"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_setting_nickname"
                     tools:text="boostcamp@planj.com" />
 
-                <TextView
-                    android:id="@+id/tv_setting_statistics"
+                <LinearLayout
+                    android:id="@+id/btn_setting_finish"
                     android:layout_width="0dp"
-                    android:layout_height="200dp"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/round_white_stroke"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/round_r10_gray1"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/tv_setting_alarm"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btn_setting_fail"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_setting_email" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_setting_email">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="@string/completeSchedule"
+                        android:textColor="@color/text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_setting_finish_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@{viewModel.completeCount.toString()}"
+                        android:textColor="@color/green"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_setting_fail"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/round_r10_gray1"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@id/btn_setting_have"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/btn_setting_finish"
+                    app:layout_constraintTop_toTopOf="@id/btn_setting_finish">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="@string/failSchedule"
+                        android:textColor="@color/text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_setting_fail_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@{viewModel.failCount.toString()}"
+                        android:textColor="@color/red"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/btn_setting_have"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/round_r10_gray1"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/btn_setting_fail"
+                    app:layout_constraintTop_toTopOf="@id/btn_setting_fail">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="@string/haveSchedule"
+                        android:textColor="@color/text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_setting_have_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@{viewModel.haveCount.toString()}"
+                        android:textColor="@color/text"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="0dp"
@@ -158,7 +266,7 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_setting_statistics" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_setting_fail" />
 
                 <TextView
                     android:id="@+id/tv_setting_alarm"
@@ -168,18 +276,19 @@
                     android:gravity="center_vertical"
                     android:paddingHorizontal="16dp"
                     android:text="@string/alarm_setting"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_setting_statistics" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_setting_fail" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:onClick="@{() -> viewModel.onClickAlarmSwitch()}"
                     android:checked="@{viewModel.isAlarmOn()}"
+                    android:onClick="@{() -> viewModel.onClickAlarmSwitch()}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_setting_alarm"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_setting_alarm" />
@@ -198,6 +307,7 @@
                     android:gravity="center_vertical"
                     android:paddingHorizontal="16dp"
                     android:text="@string/logout"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -218,6 +328,7 @@
                     android:gravity="center_vertical"
                     android:paddingHorizontal="16dp"
                     android:text="@string/withdrawal"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -238,6 +349,7 @@
                     android:gravity="center_vertical"
                     android:paddingHorizontal="16dp"
                     android:text="@string/read_fail_memo"
+                    android:textColor="@color/text"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"

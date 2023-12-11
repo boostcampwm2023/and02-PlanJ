@@ -8,6 +8,7 @@ data class AlarmInfo(
     @PrimaryKey val scheduleId: String,
     val title: String,
     val endTime: DateTime,
-    val repetition: Repetition?,
-    val alarm: Alarm
+    val alarmType: String,
+    val alarmTime: Int,
+    val estimatedTime: Int = 0
 )

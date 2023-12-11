@@ -2,5 +2,6 @@ package com.boostcamp.planj.data.model
 
 data class ScheduleSegment(
     val segmentTitle: String,
-    val scheduleList: List<Schedule>
+    val scheduleList: List<Schedule>,
+    val expanded : Boolean = true
 )

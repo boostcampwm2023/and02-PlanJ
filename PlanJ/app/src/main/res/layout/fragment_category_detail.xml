@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_category_detail"
@@ -26,13 +27,14 @@
                 android:id="@+id/iv_category_detail_back"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_back" />
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="@string/back" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{viewmodel.title}"
+                android:text="@{viewmodel.category.categoryName}"
                 android:textColor="@color/main1"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -42,11 +44,10 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_category_detail"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_category_detail">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -60,9 +61,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.core.widget.NestedScrollView>
-
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fb_category_detail_add_schedule"
@@ -71,7 +70,7 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/main1"
             app:icon="@drawable/ic_add"
-            app:iconTint="@color/black"
+            app:iconTint="@color/text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

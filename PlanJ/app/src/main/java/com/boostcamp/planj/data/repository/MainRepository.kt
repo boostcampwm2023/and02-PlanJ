@@ -1,12 +1,15 @@
 package com.boostcamp.planj.data.repository
 
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
+import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.model.dto.GetCategoryResponse
-import com.boostcamp.planj.data.model.dto.GetFriendResponse
+import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.DeleteFriendBody
+import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
-import com.boostcamp.planj.data.model.dto.PatchCategoryResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -18,83 +21,58 @@ import okhttp3.MultipartBody
 
 interface MainRepository {
 
-    fun getSchedules(): Flow<List<Schedule>>
-
-    suspend fun insertSchedule(schedule: Schedule)
-
-    suspend fun deleteSchedule(schedule: Schedule)
-
-    suspend fun deleteScheduleUsingId(id: String)
-
-    fun getCategories(): Flow<List<String>>
-
-    fun getAllCategories(): Flow<List<Category>>
-
-    suspend fun insertCategory(category: Category)
-
-    suspend fun deleteCategory(category: Category)
-
-    suspend fun updateCategory(category: Category)
-
-    fun getWeekSchedule(): Flow<List<Schedule>>
-
-    fun getCategoryTitleSchedule(title: String): Flow<List<Schedule>>
-
-    suspend fun insertUser(email: String)
-
-    suspend fun deleteUser(email: String)
-
-    fun getAllUser(): Flow<List<User>>
-
-    fun searchSchedule(input: String): Flow<List<Schedule>>
-
     fun postCategory(postCategoryBody: PostCategoryBody): Flow<PostCategoryResponse>
 
-    fun postSchedule(categoryId: String, title: String, endTime: String): Flow<PostScheduleResponse>
-
-    fun getToken(): Flow<String>
+    fun postSchedule(
+        categoryId: String,
+        title: String,
+        endTime: DateTime
+    ): Flow<PostScheduleResponse>
 
     suspend fun emptyToken()
 
-    fun getCategory(categoryName: String): Category
-
     suspend fun deleteScheduleApi(scheduleUuid: String)
 
-    suspend fun deleteCategoryApi(categoryUuid: String)
-
-    suspend fun updateSchedule(schedule: Schedule)
-
-    suspend fun updateScheduleUsingCategory(categoryNameBefore: String, categoryAfter: String)
+    suspend fun deleteCategoryApi(categoryUuid: String): Flow<CategoryResponse>
 
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
-
-    suspend fun deleteScheduleUsingCategoryName(categoryName: String)
 
     suspend fun updateCategoryApi(
         categoryUuid: String,
         categoryName: String
-    ): Flow<PatchCategoryResponse>
+    ): Flow<CategoryResponse>
 
-    suspend fun getCategoryListApi(): Flow<GetCategoryResponse>
+    fun getCategoryListApi(): Flow<List<Category>>
 
-    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<GetSchedulesResponse>
+    suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<List<Schedule>>
 
     suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
 
-    suspend fun getDailyScheduleApi(date: String): Flow<GetSchedulesResponse>
+    suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>>
 
     suspend fun postFriendApi(friendEmail: String)
 
     suspend fun getFriendsApi(): Flow<List<User>>
 
+    suspend fun deleteFriendApi(email: DeleteFriendBody)
+
     suspend fun deleteAccount()
 
     suspend fun getMyInfo(): Flow<User>
 
-    fun postUser(nickName : String, imageFile : MultipartBody.Part?) : Flow<PostUserResponse>
+    fun patchUser(nickName: String, imageFile: MultipartBody.Part?): Flow<PostUserResponse>
 
-    suspend fun saveAlarmMode(mode: Boolean)
-    suspend fun getAlarmMode(): Flow<Boolean>
+    fun getScheduleChecked(scheduleId: String): Flow<GetScheduleCheckedResponse>
 
-    suspend fun deleteAllData()
+    suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule>
+
+    suspend fun getUserImageRemove()
+
+    suspend fun postScheduleAddMemo(scheduleId: String, memo: String)
+
+    fun getSearchSchedules(name: String): Flow<List<Schedule>>
+
+    fun getFailedMemo(): Flow<List<FailedMemo>>
+
+    fun getAlarms(): Flow<List<AlarmInfo>>
 }

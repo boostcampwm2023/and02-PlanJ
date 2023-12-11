@@ -36,8 +36,31 @@ class CategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.view = this
+        binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.getCategory()
         initAdapter()
         setObserver()
+
+        binding.layoutCategoryDefault.setOnClickListener {
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(
+
+                Category(
+                    "default",
+                    "미분류"
+                )
+            )
+            findNavController().navigate(action)
+        }
+
+        binding.layoutCategoryAll.setOnClickListener {
+            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(
+                Category(
+                    "all",
+                    "전체 일정"
+                )
+            )
+            findNavController().navigate(action)
+        }
     }
 
     private fun setObserver() {
@@ -52,7 +75,8 @@ class CategoryFragment : Fragment() {
 
     private fun initAdapter() {
         val clickListener = CategoryClickListener {
-            val action = CategoryFragmentDirections.actionCategoryFragmentToCategoryActivity(it)
+            val action =
+                CategoryFragmentDirections.actionCategoryFragmentToCategoryDetailActivity(it)
             findNavController().navigate(action)
         }
         val popUpMenuListener = object : CategoryPopUpMenuListener {
@@ -72,11 +96,11 @@ class CategoryFragment : Fragment() {
     fun addCategoryDialog(title: String = "") {
         val dialog = if (title == "") {
             CategoryDialog {
-                viewModel.insertCategory(it)
+                viewModel.postCategory(it)
             }
         } else {
             CategoryDialog(title) {
-                viewModel.updateCategory(it, title)
+                viewModel.patchCategory(it, title)
             }
         }
 
