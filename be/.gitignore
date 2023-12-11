@@ -39,3 +39,5 @@ env/
 
 # secrets
 src/config/firebase.config.json
+
+/docker-deploy.bat
