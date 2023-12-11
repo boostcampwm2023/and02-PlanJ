@@ -158,7 +158,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun setAlarm(alarm: Alarm?) {
-        _scheduleAlarm.update{
+        _scheduleAlarm.update {
             alarm?.copy(firstScheduleUuid = scheduleId) ?: alarm
         }
     }

@@ -32,7 +32,7 @@ class SignInViewModel @Inject constructor(
     private val _showToast = MutableSharedFlow<String>()
     val showToast = _showToast.asSharedFlow()
 
-    var deviceToken : String = ""
+    var deviceToken: String = ""
     fun postSignIn() {
         Log.d("PLANJDEBUG", "deviceToken $deviceToken")
         viewModelScope.launch {

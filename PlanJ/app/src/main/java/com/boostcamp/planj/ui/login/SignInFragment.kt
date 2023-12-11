@@ -17,7 +17,6 @@ import com.boostcamp.planj.BuildConfig
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSignInBinding
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.AndroidEntryPoint

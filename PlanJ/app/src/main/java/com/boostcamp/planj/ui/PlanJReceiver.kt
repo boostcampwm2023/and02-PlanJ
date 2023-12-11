@@ -9,7 +9,6 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.boostcamp.planj.R
 import com.boostcamp.planj.ui.main.MainActivity
-import com.boostcamp.planj.ui.schedule.ScheduleActivity
 
 class PlanJReceiver : BroadcastReceiver() {
 

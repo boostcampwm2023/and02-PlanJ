@@ -153,7 +153,6 @@ class HomeFragment : Fragment() {
 
     private fun initViewPager() {
         val calendarAdapter = CalendarFragmentStateAdapter(
-            viewModel.listener,
             childFragmentManager,
             viewLifecycleOwner.lifecycle
         )

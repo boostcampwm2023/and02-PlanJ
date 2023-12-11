@@ -1,32 +1,16 @@
 package com.boostcamp.planj.ui.schedule
 
-import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Point
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
-import com.boostcamp.planj.databinding.DialogAddScheduleBinding
 import com.boostcamp.planj.databinding.DialogFailWriteBinding
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class ScheduleFailDialog(
     private val schedule: Schedule,

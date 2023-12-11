@@ -9,7 +9,7 @@ import com.boostcamp.planj.databinding.ItemSearchMapBinding
 class ScheduleSearchAdapterViewHolder(private val binding: ItemSearchMapBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun onBind(item : Address, onClickListener: SearchMapClickListener){
+    fun onBind(item: Address, onClickListener: SearchMapClickListener) {
         binding.address = item
         itemView.setOnClickListener {
             onClickListener.onClick(item)

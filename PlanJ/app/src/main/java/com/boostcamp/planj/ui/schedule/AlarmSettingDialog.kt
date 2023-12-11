@@ -69,7 +69,11 @@ class AlarmSettingDialog(
                 } else if (binding.rbDialogAlarmEnd.isChecked) {
                     Alarm("END", binding.etDialogAlarmBeforeEnd.text.toString().toInt(), "")
                 } else {
-                    Alarm("DEPARTURE", binding.etDialogAlarmBeforeDeparture.text.toString().toInt(), "")
+                    Alarm(
+                        "DEPARTURE",
+                        binding.etDialogAlarmBeforeDeparture.text.toString().toInt(),
+                        ""
+                    )
                 }
                 alarmSettingDialogListener.onClickComplete(alarm)
                 dismiss()

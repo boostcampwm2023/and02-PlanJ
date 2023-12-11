@@ -5,7 +5,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class CalendarFragmentStateAdapter(private val onClickListener: OnClickListener ,fragmentActivity: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentActivity, lifecycle) {
+class CalendarFragmentStateAdapter(
+    fragmentActivity: FragmentManager,
+    lifecycle: Lifecycle
+) : FragmentStateAdapter(fragmentActivity, lifecycle) {
 
     override fun getItemCount(): Int = Int.MAX_VALUE
 
