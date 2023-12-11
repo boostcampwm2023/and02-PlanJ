@@ -93,6 +93,53 @@ class SettingFragment : Fragment() {
         viewModel.initUser()
         viewModel.getTotalSchedules()
 
+        setObserver()
+        setListener()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
+    private fun setObserver() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userInfo.collectLatest { user ->
+                    Glide.with(this@SettingFragment)
+                        .load(user?.profileUrl)
+                        .error(R.drawable.ic_circle_person)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(binding.ivSettingImg)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isEditMode.collectLatest { isMode ->
+                    if (isMode) {
+                        val focusView = binding.tvSettingNickname
+                        focusView.isEnabled = true
+                        focusView.requestFocus()
+                        focusView.setSelection(focusView.text.toString().length)
+                        val imm =
+                            context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.showSoftInput(focusView, 0)
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collectLatest { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun setListener() {
         binding.ivSettingIconCamera.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -161,47 +208,6 @@ class SettingFragment : Fragment() {
             dialog.background = resources.getDrawable(R.drawable.round_r8_main2, null)
             dialog.show()
         }
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userInfo.collectLatest { user ->
-                    Glide.with(this@SettingFragment)
-                        .load(user?.profileUrl)
-                        .error(R.drawable.ic_circle_person)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(binding.ivSettingImg)
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isEditMode.collectLatest { isMode ->
-                    if (isMode) {
-                        val focusView = binding.tvSettingNickname
-                        focusView.isEnabled = true
-                        focusView.requestFocus()
-                        focusView.setSelection(focusView.text.toString().length)
-                        val imm =
-                            context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.showSoftInput(focusView, 0)
-                    }
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.showToast.collectLatest {
-                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 
     // 절대경로 변환

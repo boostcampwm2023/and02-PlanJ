@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.boostcamp.planj.data.model.Participant
 import com.boostcamp.planj.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -33,6 +35,9 @@ class ScheduleParticipantsViewModel @Inject constructor(
     private val _friendStateList = MutableStateFlow<List<FriendState>>(emptyList())
     val friendStateList = _friendStateList.asStateFlow()
 
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast = _showToast.asSharedFlow()
+
     fun setParticipants(participants: List<Participant>) {
         _participantList.value = participants
         setFriendStateList()
@@ -47,6 +52,7 @@ class ScheduleParticipantsViewModel @Inject constructor(
                         "PLANJDEBUG",
                         "scheduleParticipantsViewModel getFriends error ${it.message}"
                     )
+                    _showToast.emit("친구 조회를 실패했습니다.")
                 }.collectLatest { friends ->
                     friends.forEach { user ->
                         val participant = _participantList.value.find { it.email == user.email }

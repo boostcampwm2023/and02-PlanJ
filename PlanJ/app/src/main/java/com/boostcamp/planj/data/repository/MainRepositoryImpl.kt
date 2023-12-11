@@ -202,38 +202,34 @@ class MainRepositoryImpl @Inject constructor(
         flow { emit(api.getScheduleChecked(scheduleId)) }
 
     override suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule> = flow {
-        try {
-            val scheduleDetail = api.getDetailSchedule(scheduleId).scheduleDetail
+        val scheduleDetail = api.getDetailSchedule(scheduleId).scheduleDetail
 
-            val startAt =
-                scheduleDetail.startAt?.split("T", "-", ":")?.map { time -> time.toInt() }
-                    ?: emptyList()
-            val endAt = scheduleDetail.endAt.split("T", "-", ":").map { time -> time.toInt() }
+        val startAt =
+            scheduleDetail.startAt?.split("T", "-", ":")?.map { time -> time.toInt() }
+                ?: emptyList()
+        val endAt = scheduleDetail.endAt.split("T", "-", ":").map { time -> time.toInt() }
 
-            val schedule = Schedule(
-                scheduleId = scheduleDetail.scheduleUuid,
-                categoryName = scheduleDetail.categoryName,
-                title = scheduleDetail.title,
-                description = scheduleDetail.description,
-                startAt = if (startAt.isEmpty()) null else DateTime(
-                    startAt[0],
-                    startAt[1],
-                    startAt[2],
-                    startAt[3],
-                    startAt[4],
-                    startAt[5]
-                ),
-                endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
-                startLocation = scheduleDetail.startLocation,
-                endLocation = scheduleDetail.endLocation,
-                repetition = scheduleDetail.repetition,
-                participants = scheduleDetail.participants,
-                alarm = scheduleDetail.alarm
-            )
-            emit(schedule)
-        } catch (e: Exception) {
-            Log.d("PLANJDEBUG", "getDetailSchedule error  ${e.message}")
-        }
+        val schedule = Schedule(
+            scheduleId = scheduleDetail.scheduleUuid,
+            categoryName = scheduleDetail.categoryName,
+            title = scheduleDetail.title,
+            description = scheduleDetail.description,
+            startAt = if (startAt.isEmpty()) null else DateTime(
+                startAt[0],
+                startAt[1],
+                startAt[2],
+                startAt[3],
+                startAt[4],
+                startAt[5]
+            ),
+            endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+            startLocation = scheduleDetail.startLocation,
+            endLocation = scheduleDetail.endLocation,
+            repetition = scheduleDetail.repetition,
+            participants = scheduleDetail.participants,
+            alarm = scheduleDetail.alarm
+        )
+        emit(schedule)
     }
 
     override suspend fun getUserImageRemove() {

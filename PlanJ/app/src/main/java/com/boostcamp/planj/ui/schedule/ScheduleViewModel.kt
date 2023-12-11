@@ -74,6 +74,12 @@ class ScheduleViewModel @Inject constructor(
     private val _isAuthor = MutableStateFlow(false)
     val isAuthor = _isAuthor.asStateFlow()
 
+    private val _isFailed = MutableStateFlow(false)
+    val isFailed = _isFailed.asStateFlow()
+
+    private val _isFinished = MutableStateFlow(false)
+    val isFinished = _isFinished.asStateFlow()
+
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode = _isEditMode.asStateFlow()
 
@@ -99,6 +105,7 @@ class ScheduleViewModel @Inject constructor(
             mainRepository.getDetailSchedule(scheduleId)
                 .catch {
                     Log.d("PLANJDEBUG", "scheduleFragment getScheduleDetail error ${it.message}")
+                    _showToast.emit("일정 조회를 실패했습니다.")
                 }
                 .collectLatest { schedule ->
                     scheduleCategory.value = schedule.categoryName
@@ -111,15 +118,20 @@ class ScheduleViewModel @Inject constructor(
                     _endScheduleLocation.value = schedule.endLocation
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
-                    _isAuthor.value =
-                        schedule.participants.find { it.currentUser }?.isAuthor ?: false
+                    schedule.participants.find { it.currentUser }?.let { author ->
+                        _isAuthor.update { true }
+                        _isFailed.update { author.isFailed }
+                        _isFinished.update { author.isFinished }
+                    }
                 }
         }
     }
 
     fun getCategories() {
         viewModelScope.launch {
-            mainRepository.getCategoryListApi().collectLatest { categories ->
+            mainRepository.getCategoryListApi().catch {
+                Log.d("PLANJDEBUG", "scheduleViewModel getCategories ${it.message}")
+            }.collectLatest { categories ->
                 _categoryList.value = listOf(Category("default", "미분류")) + categories
             }
         }
@@ -184,17 +196,22 @@ class ScheduleViewModel @Inject constructor(
         _isEditMode.value = true
     }
 
-    fun deleteSchedule() {
+    fun deleteSchedule(): Boolean {
+        var result = false
         viewModelScope.launch {
-            try {
+            result = try {
                 loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
                 _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
 
                 mainRepository.deleteScheduleApi(scheduleId)
+                true
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
+                _showToast.emit("일정 삭제를 실패했습니다.")
+                false
             }
         }
+        return result
     }
 
     fun completeEditingSchedule() {
@@ -257,12 +274,13 @@ class ScheduleViewModel @Inject constructor(
                 mainRepository.patchSchedule(patchScheduleBody)
                     .catch {
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
+                        _showToast.emit("일정 수정을 실패했습니다.")
                     }
                     .collect {
                         setAlarmInfo()
                         _isEditMode.value = false
-                        _showToast.emit("일정을 수정했습니다.")
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
+                        _showToast.emit("일정 수정을 완료했습니다.")
                     }
             }
         }

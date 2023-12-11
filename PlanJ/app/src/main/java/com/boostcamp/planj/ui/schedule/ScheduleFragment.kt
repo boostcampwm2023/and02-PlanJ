@@ -159,7 +159,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showToast.collectLatest { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -179,8 +179,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 }
 
                 R.id.item_schedule_delete -> {
-                    viewModel.deleteSchedule()
-                    activity?.finish()
+                    if (viewModel.deleteSchedule()) {
+                        activity?.finish()
+                    }
                     true
                 }
 
