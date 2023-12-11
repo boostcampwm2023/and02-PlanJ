@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class Alarm(
     val alarmType: String,
     val alarmTime: Int,
-    val firstScheduleUuid: String,
+    val estimatedTime: Int = 0
 ) : Parcelable

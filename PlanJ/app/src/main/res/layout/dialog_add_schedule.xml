@@ -23,7 +23,7 @@
             android:id="@+id/tv_dialog_schedule_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="일정 추가"
+            android:text="@string/add_schedule"
             android:textColor="@color/main3"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="카테고리"
+            android:text="@string/category"
             android:textColor="@color/main3"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -68,7 +68,7 @@
                 android:inputType="none"
                 android:padding="10dp"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -97,7 +97,7 @@
                 android:inputType="none"
                 android:padding="10dp"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -120,12 +120,12 @@
                 android:id="@+id/tiet_dialog_schedule_input_title_schedule"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="제목"
+                android:hint="@string/schedule_title"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:maxLines="1"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textColorHint="@color/main3"
                 android:textStyle="bold" />
 
@@ -137,7 +137,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="추가"
+            android:text="@string/add"
             android:textColor="@color/main3"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -149,12 +149,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="취소"
+            android:text="@string/cancel"
             android:textColor="#FF5E5E"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/tv_dialog_schedule_success"
             app:layout_constraintTop_toBottomOf="@id/til_dialog_schedule_input_schedule" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

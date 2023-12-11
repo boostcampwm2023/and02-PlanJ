@@ -20,7 +20,7 @@ class AddFriendDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(requireContext())
-        dialog.window?.setBackgroundDrawableResource(R.drawable.round_r8_main2)
+        dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_background)
         return dialog
     }
 

@@ -150,7 +150,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.participants.collectLatest { participants ->
+                viewModel.participants.collectLatest {
                     initAdapter()
                 }
             }
@@ -276,7 +276,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 } else {
                     val bottomSheet =
                         ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration) { min ->
-                            viewModel.setAlarm(Alarm("DEPARTURE", min, ""))
+                            viewModel.setAlarm(Alarm("DEPARTURE", min, 0))
                         }
                     bottomSheet.show(childFragmentManager, tag)
                 }

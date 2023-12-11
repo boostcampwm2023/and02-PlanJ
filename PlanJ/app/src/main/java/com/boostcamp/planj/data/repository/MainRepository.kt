@@ -1,5 +1,6 @@
 package com.boostcamp.planj.data.repository
 
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.FailedMemo
@@ -73,4 +74,5 @@ interface MainRepository {
 
     fun getFailedMemo(): Flow<List<FailedMemo>>
 
+    fun getAlarms(): Flow<List<AlarmInfo>>
 }

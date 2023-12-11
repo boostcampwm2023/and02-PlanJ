@@ -4,6 +4,7 @@ import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
+import com.boostcamp.planj.data.model.dto.GetAlarmResponse
 import com.boostcamp.planj.data.model.dto.GetCategoryResponse
 import com.boostcamp.planj.data.model.dto.GetDetailScheduleResponse
 import com.boostcamp.planj.data.model.dto.GetFailedMemoResponse
@@ -103,4 +104,7 @@ interface MainApi {
 
     @GET("/api/schedule/memo")
     suspend fun getFailedMemo(): GetFailedMemoResponse
+
+    @GET("/api/schedule/alarm")
+    suspend fun getAlarms(): GetAlarmResponse
 }

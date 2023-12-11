@@ -39,10 +39,10 @@
         android:label="activity_search"
         tools:layout="@layout/activity_search" />
     <activity
-        android:id="@+id/categoryActivity"
+        android:id="@+id/activity_category_detail"
         android:name="com.boostcamp.planj.ui.categorydetail.CategoryDetailActivity"
-        android:label="CategoryActivity"
-        tools:layout="@layout/activity_category">
+        android:label="activity_category_detail"
+        tools:layout="@layout/activity_category_detail">
         <argument
             android:name="category"
             app:argType="com.boostcamp.planj.data.model.Category" />
@@ -53,8 +53,8 @@
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category">
         <action
-            android:id="@+id/action_categoryFragment_to_categoryActivity"
-            app:destination="@id/categoryActivity"
+            android:id="@+id/action_categoryFragment_to_categoryDetailActivity"
+            app:destination="@id/activity_category_detail"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"

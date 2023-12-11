@@ -67,13 +67,9 @@ class AlarmSettingDialog(
                 val alarm = if (binding.rbDialogAlarmNo.isChecked) {
                     null
                 } else if (binding.rbDialogAlarmEnd.isChecked) {
-                    Alarm("END", binding.etDialogAlarmBeforeEnd.text.toString().toInt(), "")
+                    Alarm("END", binding.etDialogAlarmBeforeEnd.text.toString().toInt(), 0)
                 } else {
-                    Alarm(
-                        "DEPARTURE",
-                        binding.etDialogAlarmBeforeDeparture.text.toString().toInt(),
-                        ""
-                    )
+                    Alarm("DEPARTURE", binding.etDialogAlarmBeforeDeparture.text.toString().toInt(), 0)
                 }
                 alarmSettingDialogListener.onClickComplete(alarm)
                 dismiss()

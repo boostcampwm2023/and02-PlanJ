@@ -97,7 +97,8 @@ fun ImageView.setImage(url: String?) {
 @BindingAdapter("participantsNum")
 fun TextView.setParticipantsNum(participants: List<Participant>) {
     val successNum = participants.filter { it.isFinished }.size
-    text = "$successNum / ${participants.size}"
+    val participantsNum = "$successNum / ${participants.size}"
+    text = participantsNum
 }
 
 @BindingAdapter("participation")
@@ -106,7 +107,8 @@ fun TextView.setParticipation(schedule: Schedule) {
         visibility = View.GONE
         return
     }
-    text = "${schedule.participantSuccessCount} / ${schedule.participantCount}"
+    val participation = "${schedule.participantSuccessCount} / ${schedule.participantCount}"
+    text = participation
 }
 
 @BindingAdapter("checkFail")
@@ -127,7 +129,7 @@ fun TextView.setTitle(schedule: Schedule) {
     if (schedule.isFailed) {
         setTextColor(Color.RED)
     } else {
-        setTextColor(Color.BLACK)
+        setTextColor(resources.getColor(R.color.text))
     }
     text = schedule.title
 }

@@ -88,11 +88,11 @@ class  LoginRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateAlarmInfo(curTimeMillis: Long) {
-        val alarmList = alarmInfoDao.getAll()
+        /*val alarmList = alarmInfoDao.getAll()
         val calendar = Calendar.getInstance()
         alarmList.forEach { alarmInfo ->
             calendar.timeInMillis = alarmInfo.endTime.toMilliseconds()
-            calendar.add(Calendar.MINUTE, -alarmInfo.alarm.alarmTime - alarmInfo.estimatedTime)
+            calendar.add(Calendar.MINUTE, -alarmInfo.alarmTime - alarmInfo.estimatedTime)
 
             // 알림 시간 < 현재 시간 -> 알람 삭제 or 업데이트
             if (calendar.timeInMillis < curTimeMillis) {
@@ -126,7 +126,7 @@ class  LoginRepositoryImpl @Inject constructor(
                     )
                 }
             }
-        }
+        }*/
     }
 
     override suspend fun getAllAlarmInfo(): List<AlarmInfo> {

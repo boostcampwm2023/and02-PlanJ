@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.main.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -26,6 +29,9 @@ class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
+    private val _alarms = MutableStateFlow<List<AlarmInfo>>(emptyList())
+    val alarms = _alarms.asStateFlow()
+
     private val _selectDate = MutableStateFlow("")
     val selectDate = _selectDate.asStateFlow()
 
@@ -35,10 +41,8 @@ class MainViewModel @Inject constructor(
     private val _calendarTitle = MutableStateFlow("")
     val calendarTitle = _calendarTitle.asStateFlow()
 
-
     private val _isCurrent = MutableStateFlow(true)
     val isCurrent = _isCurrent.asStateFlow()
-
 
     private val _schedules = MutableStateFlow<List<Schedule>>(emptyList())
     val schedules = _schedules.asStateFlow()
@@ -54,7 +58,6 @@ class MainViewModel @Inject constructor(
     var listener: OnClickListener = OnClickListener { }
 
     var currentPosition = Int.MAX_VALUE / 2
-
 
     init {
         initSetDate()
@@ -202,5 +205,14 @@ class MainViewModel @Inject constructor(
         _scheduleSegment.value = list
     }
 
+    fun getAlarms(){
+        viewModelScope.launch {
+            mainRepository.getAlarms().catch {
+                Log.d("PLANJDEBUG", "getAlarms error ${it.message}")
+            }.collectLatest {
+                _alarms.update { it }
+            }
+        }
+    }
 }
 

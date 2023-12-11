@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
         <variable
             name="viewmodel"
@@ -13,7 +14,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_schedule_map_search"
@@ -59,9 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/til_schedule_map_search" />
-
         </FrameLayout>
-
 
         <FrameLayout
             android:layout_width="0dp"
@@ -78,7 +76,6 @@
                 android:touchscreenBlocksFocus="true" />
         </FrameLayout>
 
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_schedule_map_select_place"
             android:layout_width="0dp"
@@ -88,8 +85,8 @@
             android:background="@drawable/round_r8_main1"
             android:elevation="1dp"
             android:padding="16dp"
-            android:text="위치 등록하기"
-            android:textColor="@color/main2"
+            android:text="@string/set_location"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,38 +96,35 @@
             android:id="@+id/btn_schedule_map_start_time"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:background="@drawable/round_r8_main2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_schedule_map_select_place"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="8dp"
-            android:visibility="@{viewmodel.route == null ? View.GONE : View.VISIBLE}"
+            android:background="@drawable/round_r8_main2"
             android:elevation="1dp"
-            app:setTime="@{viewmodel.route}"
+            android:gravity="center"
             android:textColor="@color/main3"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:gravity="center"
-            />
+            android:visibility="@{viewmodel.route == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/btn_schedule_map_select_place"
+            app:layout_constraintStart_toStartOf="parent"
+            app:setTime="@{viewmodel.route}" />
 
         <TextView
             android:id="@+id/btn_schedule_map_start_distance"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            app:layout_constraintStart_toEndOf="@id/btn_schedule_map_start_time"
-            app:layout_constraintBottom_toTopOf="@id/btn_schedule_map_select_place"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/round_r8_main2"
-            android:visibility="@{viewmodel.route == null ? View.GONE : View.VISIBLE}"
             android:elevation="1dp"
             android:gravity="center"
             android:textColor="@color/main3"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:setDistance="@{viewmodel.route}"
-            />
-
+            android:visibility="@{viewmodel.route == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/btn_schedule_map_select_place"
+            app:layout_constraintStart_toEndOf="@id/btn_schedule_map_start_time"
+            app:setDistance="@{viewmodel.route}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

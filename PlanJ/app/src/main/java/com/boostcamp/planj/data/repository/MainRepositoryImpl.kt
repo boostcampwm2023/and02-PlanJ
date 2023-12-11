@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.FailedMemo
@@ -285,6 +286,26 @@ class MainRepositoryImpl @Inject constructor(
 
     override fun getFailedMemo(): Flow<List<FailedMemo>> = flow {
         emit(api.getFailedMemo().date)
+    }
+
+    override fun getAlarms(): Flow<List<AlarmInfo>> = flow {
+        try {
+            val alarms = api.getAlarms().data
+            val alarmInfo = alarms.map { alarm ->
+                val endAt = alarm.endAt.split("T", "-", ":").map { time -> time.toInt() }
+                AlarmInfo(
+                    scheduleId = alarm.scheduleUuid,
+                    title = alarm.title,
+                    endTime = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+                    alarmType = alarm.alarmType,
+                    alarmTime = alarm.alarmTime,
+                    estimatedTime = alarm.estimatedTime
+                )
+            }
+            emit(alarmInfo)
+        } catch (e: Exception) {
+            Log.d("PLANJDEBUG", "getAlarms error ${e.message}")
+        }
     }
 }
 

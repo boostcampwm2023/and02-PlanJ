@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,18 +16,16 @@
         android:paddingHorizontal="20dp"
         android:paddingVertical="20dp">
 
-
         <TextView
             android:id="@+id/tv_dialog_fail_schedule_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="실패 사유"
+            android:text="@string/failed_reason"
             android:textColor="@color/main3"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <LinearLayout
             android:id="@+id/layout_dialog_fail_schedule_info"
@@ -45,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{schedule.title}"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -54,13 +51,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:failedTime="@{schedule}" />
 
         </LinearLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_dialog_fail_schedule_input_schedule"
@@ -80,23 +76,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:gravity="top"
-                android:hint="사유"
+                android:hint="@string/reason"
                 android:inputType="textMultiLine"
                 android:maxLength="255"
                 android:maxLines="15"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray"
+                android:textColor="@color/text"
+                android:textColorHint="@color/hint"
                 android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <TextView
             android:id="@+id/tv_dialog_fail_schedule_success"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="작성"
+            android:text="@string/write"
             android:textColor="@color/main3"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

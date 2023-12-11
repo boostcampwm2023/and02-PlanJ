@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         tools:context=".ui.search.SearchActivity">
 
         <androidx.appcompat.widget.Toolbar
@@ -32,13 +32,14 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginVertical="4dp"
+                android:autofillHints="false"
                 android:background="@drawable/round_white_stroke"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
                 android:paddingHorizontal="8dp"
                 android:text="@={viewModel.userInput}"
-                android:textColor="@color/black"
+                android:textColor="@color/text"
                 android:textSize="16sp"
                 tools:text="입력">
 
@@ -60,6 +61,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
             android:text="@string/search_result"
+            android:textColor="@color/text"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/rv_search_schedule_list"
@@ -72,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:text="@string/all"
+            android:textColor="@color/text"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/rv_search_schedule_list"
