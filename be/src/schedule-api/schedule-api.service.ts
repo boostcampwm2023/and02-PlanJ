@@ -95,6 +95,7 @@ export class ScheduleApiService {
         author: true,
         profileUrl: user.profileUrl,
         finished: scheduleEntity.finished,
+        failed: scheduleEntity.failed,
         currentUser: true,
       };
 
@@ -247,11 +248,11 @@ export class ScheduleApiService {
       for (const participant of group) {
         scheduleResponse.isAuthor =
           participant.participantId === metadataId && participant.participantId === participant.authorId;
-        const check = await this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(
+        const [failed, finished] = await this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(
           participant.participantId,
           endAt,
         );
-        if (check) {
+        if (!failed && finished) {
           scheduleResponse.participantSuccessCount += 1;
         }
       }
@@ -273,7 +274,8 @@ export class ScheduleApiService {
           email: userEntity.email,
           author: participant.authorId === participant.participantId,
           profileUrl: userEntity.profileUrl,
-          finished: success,
+          finished: success[1],
+          failed: success[0],
           currentUser: user.userId === scheduleMeta.userId,
         };
         return result;
@@ -374,9 +376,6 @@ export class ScheduleApiService {
 
     if (invitedStatus === InviteStatus.NEW) {
       message = `새로운 ${authorScheduleMetadata.title} 일정이 공유되었습니다.`;
-      if (!!invitedUser.deviceToken) {
-        this.pushService.sendPush(invitedUser.deviceToken, message);
-      }
       const addScheduleDto: AddScheduleDto = {
         userUuid: invitedUser.userUuid,
         categoryUuid: "default",
