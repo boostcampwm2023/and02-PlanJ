@@ -36,9 +36,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
 
-    private var addScheduleDialog : ScheduleDialog? = null
-    private var failScheduleDialog : ScheduleFailDialog? = null
-
     private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
     override fun onCreateView(
@@ -55,7 +52,7 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
-        viewModel.listener =  OnClickListener {
+        viewModel.listener = OnClickListener {
             viewModel.setDate(it)
         }
         viewModel.getCategories()
@@ -78,10 +75,10 @@ class HomeFragment : Fragment() {
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
             viewModel.scheduleFinishChange(schedule) {
-                failScheduleDialog = ScheduleFailDialog(it) { schedule, memo ->
+                val dialog = ScheduleFailDialog(it) { schedule, memo ->
                     viewModel.postScheduleAddMemo(schedule, memo)
                 }
-                failScheduleDialog?.show(
+                dialog.show(
                     parentFragmentManager, tag
                 )
             }
@@ -131,10 +128,10 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.failedSchedule.collectLatest {
                     it?.let { schedule ->
-                        failScheduleDialog = ScheduleFailDialog(schedule) { s, memo ->
+                        val dialog = ScheduleFailDialog(schedule) { s, memo ->
                             viewModel.postScheduleAddMemo(s, memo)
                         }
-                        failScheduleDialog?.show(
+                        dialog.show(
                             parentFragmentManager, tag
                         )
                     }
@@ -158,7 +155,7 @@ class HomeFragment : Fragment() {
         )
         binding.vpMainCalendarWeek.offscreenPageLimit = 1
         binding.vpMainCalendarWeek.adapter = calendarAdapter
-        binding.vpMainCalendarWeek.setCurrentItem(viewModel.currentPosition , false)
+        binding.vpMainCalendarWeek.setCurrentItem(viewModel.currentPosition, false)
 
         binding.vpMainCalendarWeek.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
@@ -178,7 +175,7 @@ class HomeFragment : Fragment() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            addScheduleDialog = ScheduleDialog(
+            val dialog = ScheduleDialog(
                 viewModel.categories.value.map { it.categoryName },
                 "미분류",
                 true
@@ -186,9 +183,11 @@ class HomeFragment : Fragment() {
                 viewModel.postSchedule(category, title)
                 UpdateWidget.updateWidget(requireContext())
             }
-            addScheduleDialog?.show(
+            dialog.show(
                 parentFragmentManager, null
             )
+
+
         }
 
         binding.btnMainCurrentDate.setOnClickListener {

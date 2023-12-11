@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSettingFailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -44,7 +46,12 @@ class SettingFailFragment : Fragment() {
                 }
             }
         }
+
+        binding.toolbarScheduleFail.setNavigationOnClickListener{
+            findNavController().popBackStack()
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

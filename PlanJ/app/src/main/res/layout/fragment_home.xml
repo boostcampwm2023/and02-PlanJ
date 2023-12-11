@@ -28,8 +28,8 @@
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/img_logo"
-                android:contentDescription="@string/application_logo" />
+                android:contentDescription="@string/application_logo"
+                android:src="@drawable/img_logo" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -60,14 +60,26 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <TextView
-            android:layout_width="match_parent"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:gravity="center"
-            android:text="@string/no_schedule_exists"
             android:visibility="@{viewModel.schedules.size() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/tv_calendar_title"
-            app:layout_constraintTop_toBottomOf="@id/tb_home_main" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb_home_main"
+            app:onRefreshListener="@{() -> viewModel.refresh()}"
+            app:refreshing="@{viewModel.isRefreshing()}">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="@string/no_schedule_exists"
+                app:layout_constraintBottom_toTopOf="@id/tv_calendar_title"
+                app:layout_constraintTop_toBottomOf="@id/tb_home_main" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/tv_calendar_title"

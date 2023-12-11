@@ -177,11 +177,21 @@ class SettingViewModel @Inject constructor(
                         Log.d("PLANJDEBUG", "initUser error ${it.message}")
                     }
                     .collectLatest { user ->
+                        Log.d("PLANJDEBUG", "getUserImageRemove getMyInfo $user")
                         _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
                         nickName = user.nickname
+                        imageFile = null
                     }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "getUserImageRemove ${e.message}")
+                e.message?.let {
+                    when{
+                        it.contains("401") -> {}
+                        it.contains("404") -> {}
+                        it.contains("404") -> {}
+                        it.contains("404") -> {}
+                    }
+                }
             }
         }
     }

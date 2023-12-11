@@ -21,10 +21,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSettingBinding
 import com.boostcamp.planj.ui.PlanjAlarm
+import com.boostcamp.planj.ui.schedule.collectLatestStateFlow
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -99,7 +102,9 @@ class SettingFragment : Fragment() {
 
         binding.tvSettingReadFailMemo.setOnClickListener {
             val action = SettingFragmentDirections.actionFragmentUserToSettingFailFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(action, navOptions { // Use the Kotlin DSL for building NavOptions
+
+            })
         }
 
         binding.tvSettingLogout.setOnClickListener {
