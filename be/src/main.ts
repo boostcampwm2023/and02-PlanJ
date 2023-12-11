@@ -11,6 +11,9 @@ async function bootstrap() {
     }),
   );
 
+  app.enableShutdownHooks();
+
+  //swagger
   const config = new DocumentBuilder()
     .setTitle("PlanJ API")
     .setDescription("API Docs for PlanJ Service")
@@ -20,6 +23,9 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
-  await app.listen(3000);
+
+  await app.listen(3000, () => {
+    process.send("ready");
+  });
 }
 bootstrap();
