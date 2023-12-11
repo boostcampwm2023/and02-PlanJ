@@ -285,13 +285,32 @@ export class ScheduleApiService {
     await this.scheduleMetaService.deleteScheduleMeta(metadataId);
 
     if (metadata.shared) {
+      const message = `공유된 ${metadata.title} 일정이 삭제되었습니다.`;
       const participants = await this.participateService.getParticipantGroup(metadataId);
-      await Promise.all([
+      const participantList = participants.filter((participant) => participant.participantId !== participant.authorId);
+      const [metadataLists, ,] = await Promise.all([
+        Promise.all(
+          participantList.map(async (participant) => {
+            return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
+          }),
+        ),
         this.participateService.deleteGroup(metadataId),
-        participants.forEach(async (participant) => {
-          await this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
+        participants.map(async (participant) => {
+          this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
         }),
       ]);
+
+      const users = await Promise.all(
+        metadataLists.map(async (meta) => {
+          return this.userService.getUserEntityById(meta.userId);
+        }),
+      );
+
+      users.forEach((user) => {
+        if (!!user.deviceToken) {
+          this.pushService.sendPush(user.deviceToken, message);
+        }
+      });
     }
 
     const body: HttpResponse = {
@@ -331,7 +350,6 @@ export class ScheduleApiService {
     let invitedMetadataId: number;
 
     if (invitedStatus === InviteStatus.DELETED) {
-      message = `공유된 ${authorScheduleMetadata.title} 일정이 삭제되었습니다.`;
       const unInvitedMetadataId = await this.participateService.getInvitedMetadataId(
         authorMetadataId,
         invitedUser.userId,

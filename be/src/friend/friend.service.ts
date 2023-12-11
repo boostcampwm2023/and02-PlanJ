@@ -40,7 +40,7 @@ export class FriendService {
       await this.friendRepository.add(from, to);
 
       if (!!to.deviceToken) {
-        const message = `${from.nickname}님이 친구 추가하였습니다.`;
+        const message = `${from.nickname}님과 친구가 되었습니다.`;
         this.pushService.sendPush(to.deviceToken, message);
       }
 
