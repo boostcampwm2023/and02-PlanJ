@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.model.AlarmInfo
-import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.model.dto.SignInNaverRequest
 import com.boostcamp.planj.data.model.dto.SignInRequest
@@ -22,10 +21,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import java.util.Calendar
 import javax.inject.Inject
 
-class  LoginRepositoryImpl @Inject constructor(
+class LoginRepositoryImpl @Inject constructor(
     private val apiService: LoginApi,
     private val dataStore: DataStore<Preferences>,
     private val alarmInfoDao: AlarmInfoDao,
@@ -50,7 +48,11 @@ class  LoginRepositoryImpl @Inject constructor(
         return ApiResult.Error(response.code())
     }
 
-    override suspend fun postSignIn(userEmail: String, userPwd: String, deviceToken : String): ApiResult<LoginResponse> {
+    override suspend fun postSignIn(
+        userEmail: String,
+        userPwd: String,
+        deviceToken: String
+    ): ApiResult<LoginResponse> {
         val response = apiService.postSignIn(SignInRequest(userEmail, userPwd, deviceToken))
         if (response.isSuccessful) {
             response.body()?.let { loginResponse ->
@@ -83,9 +85,10 @@ class  LoginRepositoryImpl @Inject constructor(
     }
 
 
-    override fun postSignInNaver(accessToken: String, deviceToken : String): Flow<LoginResponse> = flow {
-        emit(apiService.postSignInNaver(SignInNaverRequest(accessToken, deviceToken)))
-    }
+    override fun postSignInNaver(accessToken: String, deviceToken: String): Flow<LoginResponse> =
+        flow {
+            emit(apiService.postSignInNaver(SignInNaverRequest(accessToken, deviceToken)))
+        }
 
     override suspend fun updateAlarmInfo(curTimeMillis: Long) {
         /*val alarmList = alarmInfoDao.getAll()
@@ -143,6 +146,10 @@ class  LoginRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAlarmInfo(alarmInfo: AlarmInfo) {
         alarmInfoDao.deleteAlarmInfo(alarmInfo)
+    }
+
+    override suspend fun deleteAllAlarm() {
+        alarmInfoDao.deleteAllAlarmInfo()
     }
 
     override suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String) {

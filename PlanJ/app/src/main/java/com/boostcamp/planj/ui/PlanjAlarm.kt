@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.boostcamp.planj.data.model.AlarmInfo
-import com.boostcamp.planj.data.model.Repetition
 import java.util.Calendar
 
 class PlanjAlarm(private val context: Context) {
@@ -44,24 +43,6 @@ class PlanjAlarm(private val context: Context) {
         alarmManager.set(
             AlarmManager.RTC,
             calendar.timeInMillis,
-            pendingIntent
-        )
-    }
-
-    private fun setRepeatAlarm(
-        calendar: Calendar,
-        repetition: Repetition,
-        pendingIntent: PendingIntent
-    ) {
-        val interval = if (repetition.cycleType == "DAILY") {
-            repetition.cycleCount
-        } else {
-            repetition.cycleCount * 7
-        }
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY * interval,
             pendingIntent
         )
     }

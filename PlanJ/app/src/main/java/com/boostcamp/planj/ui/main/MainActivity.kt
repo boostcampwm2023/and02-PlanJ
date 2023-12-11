@@ -10,14 +10,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.ActivityMainBinding
-import com.boostcamp.planj.ui.main.home.MainViewModel
+import com.boostcamp.planj.ui.PlanjAlarm
 import com.boostcamp.planj.ui.schedule.ScheduleActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -25,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private val viewModel: MainViewModel by viewModels()
+    private val planjAlarm by lazy {
+        PlanjAlarm(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         checkPermission()
         setJetpackNavigation()
+        setObserver()
 
         val scheduleId = intent.getStringExtra("scheduleId")
         if (scheduleId != null) {
@@ -40,7 +49,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("scheduleId", scheduleId)
             startActivity(intent)
         }
-        viewModel.getAlarms()
     }
 
     private fun checkPermission() {
@@ -90,6 +98,26 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.planj_nav_host_fragment) as NavHostFragment
         navController = host.navController
         binding.bottomNavigation.setupWithNavController(navController)
+    }
+
+    private fun setObserver() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.deletedAlarms.collectLatest { deletedAlarms ->
+                    deletedAlarms.forEach { planjAlarm.deleteAlarm(it.scheduleId) }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.newAlarms.collectLatest { newAlarms ->
+                    newAlarms.forEach {
+                        planjAlarm.setAlarm(it)
+                    }
+                }
+            }
+        }
     }
 
     companion object {

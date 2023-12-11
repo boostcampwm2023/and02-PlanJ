@@ -3,7 +3,6 @@ package com.boostcamp.planj.ui.main.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
@@ -15,8 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -25,12 +22,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
-
-    private val _alarms = MutableStateFlow<List<AlarmInfo>>(emptyList())
-    val alarms = _alarms.asStateFlow()
 
     private val _selectDate = MutableStateFlow("")
     val selectDate = _selectDate.asStateFlow()
@@ -109,14 +103,15 @@ class MainViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "getAllSchedule error ${it.message}")
                 }
                 .collectLatest {
-                    it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }?.let { s ->
-                        _failedSchedule.value = s
-                    }
+                    it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }
+                        ?.let { s ->
+                            _failedSchedule.value = s
+                        }
                 }
         }
     }
 
-    private fun initSetDate(){
+    private fun initSetDate() {
         val calendar = Calendar.getInstance()
         setDate(
             "${calendar.get(Calendar.YEAR)}-${
@@ -203,16 +198,6 @@ class MainViewModel @Inject constructor(
         val list = _scheduleSegment.value.toMutableList()
         list[index] = list[index].copy(expanded = !list[index].expanded)
         _scheduleSegment.value = list
-    }
-
-    fun getAlarms(){
-        viewModelScope.launch {
-            mainRepository.getAlarms().catch {
-                Log.d("PLANJDEBUG", "getAlarms error ${it.message}")
-            }.collectLatest {
-                _alarms.update { it }
-            }
-        }
     }
 }
 
