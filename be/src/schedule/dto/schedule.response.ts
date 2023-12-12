@@ -11,4 +11,5 @@ export interface ScheduleResponse {
   hasRetrospectiveMemo: boolean;
   participantCount: number;
   participantSuccessCount: number;
+  isAuthor: boolean;
 }

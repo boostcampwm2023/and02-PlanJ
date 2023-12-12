@@ -116,6 +116,8 @@ export class UserService {
       return newUser;
     }
 
+    user.deviceToken = deviceToken;
+    await this.userRepository.save(user);
     return user;
   }
 

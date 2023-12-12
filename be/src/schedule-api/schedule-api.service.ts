@@ -95,6 +95,7 @@ export class ScheduleApiService {
         author: true,
         profileUrl: user.profileUrl,
         finished: scheduleEntity.finished,
+        failed: scheduleEntity.failed,
         currentUser: true,
       };
 
@@ -237,6 +238,7 @@ export class ScheduleApiService {
       const group = await this.participateService.getParticipantGroup(metadataId);
 
       if (group === null) {
+        scheduleResponse.isAuthor = true;
         continue;
       }
 
@@ -244,11 +246,13 @@ export class ScheduleApiService {
       scheduleResponse.participantCount = group.length;
 
       for (const participant of group) {
-        const check = await this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(
+        scheduleResponse.isAuthor =
+          participant.participantId === metadataId && participant.participantId === participant.authorId;
+        const [failed, finished] = await this.scheduleService.checkScheduleSuccessByMetadataIdAndEndAt(
           participant.participantId,
           endAt,
         );
-        if (check) {
+        if (!failed && finished) {
           scheduleResponse.participantSuccessCount += 1;
         }
       }
@@ -270,7 +274,8 @@ export class ScheduleApiService {
           email: userEntity.email,
           author: participant.authorId === participant.participantId,
           profileUrl: userEntity.profileUrl,
-          finished: success,
+          finished: success[1],
+          failed: success[0],
           currentUser: user.userId === scheduleMeta.userId,
         };
         return result;
@@ -280,25 +285,54 @@ export class ScheduleApiService {
 
   async deleteSchedule(token: string, dto: DeleteScheduleDto): Promise<string> {
     dto.userUuid = this.authService.verify(token);
+    const user = await this.userService.getUserEntity(dto.userUuid);
     const metadataId = await this.scheduleService.deleteSchedule(dto);
     const metadata = await this.scheduleMetaService.getScheduleMetadataById(metadataId);
     await this.scheduleMetaService.deleteScheduleMeta(metadataId);
 
     if (metadata.shared) {
-      const message = `공유된 ${metadata.title} 일정이 삭제되었습니다.`;
+      const isAuthor = await this.participateService.checkIsAuthor(metadataId);
+      const message = isAuthor
+        ? `공유된 ${metadata.title} 일정이 삭제되었습니다.`
+        : `${user.nickname}님이 ${metadata.title} 일정에서 나갔습니다.`;
+
       const participants = await this.participateService.getParticipantGroup(metadataId);
-      const participantList = participants.filter((participant) => participant.participantId !== participant.authorId);
-      const [metadataLists, ,] = await Promise.all([
-        Promise.all(
-          participantList.map(async (participant) => {
-            return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
+      const participantList = participants.filter((participant) => {
+        if (isAuthor) {
+          if (participant.participantId !== participant.authorId) {
+            return participant;
+          }
+        } else {
+          if (participant.participantId !== metadataId) {
+            return participant;
+          }
+        }
+      });
+      const authorMetadataId = participantList[0].authorId;
+
+      if (isAuthor) {
+        await Promise.all([
+          this.participateService.deleteGroup(metadataId),
+          participants.map(async (participant) => {
+            this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
           }),
-        ),
-        this.participateService.deleteGroup(metadataId),
-        participants.map(async (participant) => {
-          this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
+        ]);
+      } else {
+        await this.participateService.deleteParticipant(metadataId, authorMetadataId);
+
+        if (participantList.length === 1) {
+          await Promise.all([
+            this.participateService.deleteParticipant(authorMetadataId, authorMetadataId),
+            this.scheduleMetaService.updateSharedStatus(authorMetadataId, false),
+          ]);
+        }
+      }
+
+      const metadataLists = await Promise.all(
+        participantList.map(async (participant) => {
+          return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
         }),
-      ]);
+      );
 
       const users = await Promise.all(
         metadataLists.map(async (meta) => {
@@ -306,6 +340,7 @@ export class ScheduleApiService {
         }),
       );
 
+      this.logger.verbose(message);
       users.forEach((user) => {
         if (!!user.deviceToken) {
           this.pushService.sendPush(user.deviceToken, message);
@@ -371,9 +406,6 @@ export class ScheduleApiService {
 
     if (invitedStatus === InviteStatus.NEW) {
       message = `새로운 ${authorScheduleMetadata.title} 일정이 공유되었습니다.`;
-      if (!!invitedUser.deviceToken) {
-        this.pushService.sendPush(invitedUser.deviceToken, message);
-      }
       const addScheduleDto: AddScheduleDto = {
         userUuid: invitedUser.userUuid,
         categoryUuid: "default",

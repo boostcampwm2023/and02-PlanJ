@@ -155,6 +155,7 @@ export class ScheduleMetaService {
           shared: scheduleMeta.shared,
           hasAlarm: scheduleMeta.hasAlarm,
           hasRetrospectiveMemo: !!schedule.retrospectiveMemo,
+          isAuthor: false,
           participantCount: 0,
           participantSuccessCount: 0,
         };
@@ -179,10 +180,10 @@ export class ScheduleMetaService {
     return { firstDay, lastDay };
   }
 
-  async updateSharedStatus(metadataId: number, isAllUnInvited: boolean) {
+  async updateSharedStatus(metadataId: number, shared: boolean) {
     const record = await this.scheduleMetaRepository.findOne({ where: { metadataId } });
 
-    record.shared = !isAllUnInvited;
+    record.shared = shared;
 
     await this.scheduleMetaRepository.save(record);
   }

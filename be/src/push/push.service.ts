@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common
 import * as admin from "firebase-admin";
 import firebaseConfig from "../config/firebase.config";
 
-// TODO: User provider
+// TODO: Use provider
 admin.initializeApp({
   credential: admin.credential.cert(firebaseConfig),
 });

@@ -4,5 +4,6 @@ export interface ParticipantResponse {
   email: string;
   author: boolean;
   finished: boolean;
+  failed: boolean;
   currentUser: boolean;
 }
