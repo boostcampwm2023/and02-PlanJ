@@ -31,7 +31,7 @@ class LoginRepositoryImpl @Inject constructor(
 
     companion object {
         val USER = stringPreferencesKey("User")
-        val ALARM_MODE = booleanPreferencesKey("alarm")
+        val FIRST_START = booleanPreferencesKey("isFirst")
     }
 
     override suspend fun postSignUp(
@@ -114,13 +114,13 @@ class LoginRepositoryImpl @Inject constructor(
         alarmInfoDao.deleteAlarmInfoUsingScheduleId(scheduleId)
     }
 
-    override suspend fun saveAlarmMode(mode: Boolean) {
+    override suspend fun saveFirst(isFirst: Boolean) {
         dataStore.edit { prefs ->
-            prefs[ALARM_MODE] = mode
+            prefs[FIRST_START] = isFirst
         }
     }
 
-    override fun getAlarmMode(): Flow<Boolean> {
+    override fun isFirst(): Flow<Boolean> {
         return dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -132,7 +132,7 @@ class LoginRepositoryImpl @Inject constructor(
 
             }
             .map { prefs ->
-                prefs[ALARM_MODE] ?: true
+                prefs[FIRST_START] ?: true
             }
     }
 }

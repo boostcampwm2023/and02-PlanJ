@@ -118,7 +118,7 @@ class SignUpViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     when (apiResult.statusCode) {
                         409 -> _emailState.value = EmailState.ERROR_EXIST
-                        else -> _showToast.emit("Error")
+                        else -> _showToast.emit("회원가입을 실패했습니다.")
                     }
                 }
             }

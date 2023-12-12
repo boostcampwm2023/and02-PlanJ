@@ -38,7 +38,7 @@ interface LoginRepository {
 
     suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String)
 
-    suspend fun saveAlarmMode(mode: Boolean)
+    suspend fun saveFirst(isFirst: Boolean)
 
-    fun getAlarmMode(): Flow<Boolean>
+    fun isFirst(): Flow<Boolean>
 }

@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.boostcamp.planj.R
 import com.boostcamp.planj.ui.main.MainActivity
 
@@ -39,7 +40,12 @@ class PlanJReceiver : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        val notificationManagerCompat = NotificationManagerCompat.from(context)
+
+        if (notificationManagerCompat.areNotificationsEnabled()) {
+            notificationManager.notify(NOTIFICATION_ID, builder.build())
+        }
+
     }
 
     companion object {

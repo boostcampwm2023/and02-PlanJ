@@ -46,8 +46,6 @@ interface MainRepository {
 
     suspend fun getCategorySchedulesApi(categoryUuid: String): Flow<List<Schedule>>
 
-    suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse>
-
     suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>>
 
     suspend fun postFriendApi(friendEmail: String)

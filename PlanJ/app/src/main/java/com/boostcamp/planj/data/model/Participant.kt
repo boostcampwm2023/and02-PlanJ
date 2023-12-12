@@ -10,6 +10,7 @@ data class Participant(
     @SerializedName("email") val email: String,
     @SerializedName("profileUrl") val profileUrl: String?,
     @SerializedName("finished") val isFinished: Boolean,
+    @SerializedName("failed") val isFailed: Boolean,
     @SerializedName("currentUser") val currentUser: Boolean,
     @SerializedName("author") val isAuthor: Boolean
 ) : Parcelable
