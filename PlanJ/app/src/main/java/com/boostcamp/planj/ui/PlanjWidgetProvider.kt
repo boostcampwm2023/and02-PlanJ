@@ -26,7 +26,7 @@ class PlanjWidgetProvider : AppWidgetProvider() {
 
         if (intent.action == TOAST_ACTION) {
             val scheduleId = intent.getStringExtra(EXTRA_ITEM)
-            val intent = Intent(context, ScheduleActivity::class.java)
+            val intent = Intent(context, MainActivity::class.java)
             intent.putExtra("scheduleId", scheduleId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)

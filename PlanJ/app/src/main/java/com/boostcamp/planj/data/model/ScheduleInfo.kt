@@ -13,5 +13,6 @@ data class ScheduleInfo(
     @SerializedName("hasRetrospectiveMemo") val hasRetrospectiveMemo : Boolean,
     @SerializedName("shared") val shared: Boolean,
     @SerializedName("participantCount") val participantCount: Int,
+    @SerializedName("isAuthor") val isAuthor : Boolean,
     @SerializedName("participantSuccessCount") val participantSuccessCount: Int,
 )

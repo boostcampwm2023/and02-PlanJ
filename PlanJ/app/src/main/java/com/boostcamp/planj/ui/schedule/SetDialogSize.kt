@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.schedule
 import android.content.Context
 import android.graphics.Point
 import android.os.Build
+import android.util.Log
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
@@ -10,6 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.boostcamp.planj.data.model.DateTime
+import com.boostcamp.planj.data.model.Schedule
+import com.boostcamp.planj.data.model.ScheduleInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -49,3 +53,4 @@ fun <T> Fragment.collectLatestStateFlow(flow: Flow<T>, collect: suspend (T) -> U
         }
     }
 }
+

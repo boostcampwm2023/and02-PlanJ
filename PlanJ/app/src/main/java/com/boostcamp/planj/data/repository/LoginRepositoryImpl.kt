@@ -90,48 +90,6 @@ class LoginRepositoryImpl @Inject constructor(
             emit(apiService.postSignInNaver(SignInNaverRequest(accessToken, deviceToken)))
         }
 
-    override suspend fun updateAlarmInfo(curTimeMillis: Long) {
-        /*val alarmList = alarmInfoDao.getAll()
-        val calendar = Calendar.getInstance()
-        alarmList.forEach { alarmInfo ->
-            calendar.timeInMillis = alarmInfo.endTime.toMilliseconds()
-            calendar.add(Calendar.MINUTE, -alarmInfo.alarmTime - alarmInfo.estimatedTime)
-
-            // 알림 시간 < 현재 시간 -> 알람 삭제 or 업데이트
-            if (calendar.timeInMillis < curTimeMillis) {
-                // 일회성 -> 알림 DB에서 삭제
-                // 반복 -> DB 업데이트
-                if (alarmInfo.repetition == null) {
-                    alarmInfoDao.deleteAlarmInfo(alarmInfo)
-                } else {
-                    val oneDayMillis = 24 * 60 * 60 * 1000L
-                    val interval = if (alarmInfo.repetition.cycleType == "DAILY") {
-                        alarmInfo.repetition.cycleCount
-                    } else {
-                        alarmInfo.repetition.cycleCount * 7
-                    }
-                    while (calendar.timeInMillis < curTimeMillis) {
-                        calendar.timeInMillis += (interval * oneDayMillis)
-                    }
-                    calendar.add(
-                        Calendar.MINUTE,
-                        alarmInfo.alarm.alarmTime + alarmInfo.estimatedTime
-                    )
-                    val endTime = DateTime(
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1,
-                        calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE)
-                    )
-                    alarmInfoDao.updateAlarmInfo(
-                        alarmInfo.copy(endTime = endTime)
-                    )
-                }
-            }
-        }*/
-    }
-
     override suspend fun getAllAlarmInfo(): List<AlarmInfo> {
         return alarmInfoDao.getAll()
     }

@@ -25,7 +25,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object LogInModule {
+object InitModule {
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)

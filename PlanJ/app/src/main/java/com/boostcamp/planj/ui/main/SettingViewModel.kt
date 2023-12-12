@@ -87,7 +87,6 @@ class SettingViewModel @Inject constructor(
     fun getAllAlarmInfo(): List<AlarmInfo> {
         var alarmList: List<AlarmInfo> = emptyList()
         viewModelScope.launch {
-            loginRepository.updateAlarmInfo(System.currentTimeMillis())
             alarmList = loginRepository.getAllAlarmInfo()
         }
         return alarmList

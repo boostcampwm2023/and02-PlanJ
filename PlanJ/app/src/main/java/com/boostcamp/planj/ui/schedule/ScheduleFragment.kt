@@ -73,6 +73,9 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         binding.fragment = this
         binding.lifecycleOwner = viewLifecycleOwner
 
+//        args.startLocation?.let { viewModel.setStartLocation(it) }
+//        args.endLocation?.let { viewModel.setEndLocation(it) }
+//        args.participants?.let { viewModel.setParticipants(it.toList()) }
         if (args.startLocation != null) {
             viewModel.setStartLocation(args.startLocation!!)
         } else if (args.endLocation != null) {
