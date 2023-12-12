@@ -3,6 +3,7 @@ package com.boostcamp.planj.ui.search
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -43,6 +44,14 @@ class SearchActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.filteredScheduleList.collect { scheduleList ->
                     scheduleAdapter.submitList(scheduleList)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collect { message ->
+                    Toast.makeText(this@SearchActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

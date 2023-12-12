@@ -28,6 +28,7 @@ import com.boostcamp.planj.data.network.MainApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
+import java.util.Calendar
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -126,10 +127,6 @@ class MainRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getWeeklyScheduleApi(date: String): Flow<GetSchedulesResponse> = flow {
-        emit(api.getWeeklySchedule(date))
-    }
-
     override suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>> = flow {
         try {
             val scheduleInfo = api.getDailySchedule(date)
@@ -201,19 +198,51 @@ class MainRepositoryImpl @Inject constructor(
         flow { emit(api.getScheduleChecked(scheduleId)) }
 
     override suspend fun getDetailSchedule(scheduleId: String): Flow<Schedule> = flow {
-        try {
-            val scheduleDetail = api.getDetailSchedule(scheduleId).scheduleDetail
+        val scheduleDetail = api.getDetailSchedule(scheduleId).scheduleDetail
+
+        val startAt =
+            scheduleDetail.startAt?.split("T", "-", ":")?.map { time -> time.toInt() }
+                ?: emptyList()
+        val endAt = scheduleDetail.endAt.split("T", "-", ":").map { time -> time.toInt() }
+
+        val schedule = Schedule(
+            scheduleId = scheduleDetail.scheduleUuid,
+            categoryName = scheduleDetail.categoryName,
+            title = scheduleDetail.title,
+            description = scheduleDetail.description,
+            startAt = if (startAt.isEmpty()) null else DateTime(
+                startAt[0],
+                startAt[1],
+                startAt[2],
+                startAt[3],
+                startAt[4],
+                startAt[5]
+            ),
+            endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
+            startLocation = scheduleDetail.startLocation,
+            endLocation = scheduleDetail.endLocation,
+            repetition = scheduleDetail.repetition,
+            participants = scheduleDetail.participants,
+            alarm = scheduleDetail.alarm
+        )
+        emit(schedule)
+    }
+
+    override suspend fun getUserImageRemove() {
+        return api.patchUserImageRemove()
+    }
+
+    override fun getSearchSchedules(keyword: String): Flow<List<Schedule>> = flow {
+        val scheduleInfo = api.getSearchSchedules(keyword)
+        val scheduleDummy = scheduleInfo.data.map {
 
             val startAt =
-                scheduleDetail.startAt?.split("T", "-", ":")?.map { time -> time.toInt() }
-                    ?: emptyList()
-            val endAt = scheduleDetail.endAt.split("T", "-", ":").map { time -> time.toInt() }
+                it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
+            val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
 
-            val schedule = Schedule(
-                scheduleId = scheduleDetail.scheduleUuid,
-                categoryName = scheduleDetail.categoryName,
-                title = scheduleDetail.title,
-                description = scheduleDetail.description,
+            Schedule(
+                scheduleId = it.scheduleUuid,
+                title = it.title,
                 startAt = if (startAt.isEmpty()) null else DateTime(
                     startAt[0],
                     startAt[1],
@@ -223,56 +252,16 @@ class MainRepositoryImpl @Inject constructor(
                     startAt[5]
                 ),
                 endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
-                startLocation = scheduleDetail.startLocation,
-                endLocation = scheduleDetail.endLocation,
-                repetition = scheduleDetail.repetition,
-                participants = scheduleDetail.participants,
-                alarm = scheduleDetail.alarm
+                isFinished = it.isFinished,
+                isFailed = it.isFailed,
+                repeated = it.repeated,
+                hasRetrospectiveMemo = it.hasRetrospectiveMemo,
+                shared = it.shared,
+                participantCount = it.participantCount,
+                participantSuccessCount = it.participantSuccessCount
             )
-            emit(schedule)
-        } catch (e: Exception) {
-            Log.d("PLANJDEBUG", "getDetailSchedule error  ${e.message}")
         }
-    }
-
-    override suspend fun getUserImageRemove() {
-        return api.patchUserImageRemove()
-    }
-
-    override fun getSearchSchedules(keyword: String): Flow<List<Schedule>> = flow {
-        try {
-            val scheduleInfo = api.getSearchSchedules(keyword)
-            val scheduleDummy = scheduleInfo.data.map {
-
-                val startAt =
-                    it.startAt?.split("T", "-", ":")?.map { time -> time.toInt() } ?: emptyList()
-                val endAt = it.endAt.split("T", "-", ":").map { time -> time.toInt() }
-
-                Schedule(
-                    scheduleId = it.scheduleUuid,
-                    title = it.title,
-                    startAt = if (startAt.isEmpty()) null else DateTime(
-                        startAt[0],
-                        startAt[1],
-                        startAt[2],
-                        startAt[3],
-                        startAt[4],
-                        startAt[5]
-                    ),
-                    endAt = DateTime(endAt[0], endAt[1], endAt[2], endAt[3], endAt[4], endAt[5]),
-                    isFinished = it.isFinished,
-                    isFailed = it.isFailed,
-                    repeated = it.repeated,
-                    hasRetrospectiveMemo = it.hasRetrospectiveMemo,
-                    shared = it.shared,
-                    participantCount = it.participantCount,
-                    participantSuccessCount = it.participantSuccessCount
-                )
-            }
-            emit(scheduleDummy)
-        } catch (e: Exception) {
-            Log.d("PLANJDEBUG", "getSearchSchedules error  ${e.message}")
-        }
+        emit(scheduleDummy)
     }
 
     override suspend fun postScheduleAddMemo(scheduleId: String, memo: String) {
@@ -298,7 +287,10 @@ class MainRepositoryImpl @Inject constructor(
                     estimatedTime = alarm.estimatedTime
                 )
             }.filter { alarmInfo ->
-                alarmInfo.endTime.toMilliseconds() > curMillis
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = alarmInfo.endTime.toMilliseconds()
+                calendar.add(Calendar.MINUTE, -alarmInfo.alarmTime - alarmInfo.estimatedTime)
+                calendar.timeInMillis > curMillis
             }
             emit(alarmInfo)
         } catch (e: Exception) {

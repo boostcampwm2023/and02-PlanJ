@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boostcamp.planj.R
@@ -41,7 +40,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        checkPermission()
+        if (viewModel.isFirst()) {
+            checkPermission()
+            viewModel.saveFirst()
+        }
         setJetpackNavigation()
         setObserver()
 
@@ -83,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                         resources.getString(R.string.post_notifications_allowed),
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
+                } else if (grantResults.isNotEmpty()) {
                     Toast.makeText(
                         this,
                         resources.getString(R.string.post_notifications_denied),
@@ -133,5 +135,4 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val REQUEST_CODE = 100
     }
-
 }
