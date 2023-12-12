@@ -27,8 +27,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentSettingBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -49,21 +47,8 @@ class SettingFragment : Fragment() {
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                Log.d("PLANJDEBUG", "url : ${uri.toString()}")
-                val file = File(absolutelyPath(uri, requireContext()))
-                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                viewModel.setImageFile(
-                    MultipartBody.Part.createFormData(
-                        "profileImage",
-                        file.name,
-                        requestFile
-                    )
-                )
-                Glide.with(this)
-                    .load(uri)
-                    .error(R.drawable.ic_circle_person)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(binding.ivSettingImg)
+                Log.d("PLANJDEBUG", "url : ${uri}")
+                viewModel.setUserImg(uri.toString())
             } else {
                 Log.d("PhotoPicker", "No media selected")
             }
@@ -91,7 +76,7 @@ class SettingFragment : Fragment() {
 
         viewModel.setMode()
         viewModel.initUser()
-        viewModel.getTotalSchedules()
+        viewModel.getAllSchedules()
 
         setObserver()
         setListener()
@@ -103,17 +88,6 @@ class SettingFragment : Fragment() {
     }
 
     private fun setObserver() {
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userInfo.collectLatest { user ->
-                    Glide.with(this@SettingFragment)
-                        .load(user?.profileUrl)
-                        .error(R.drawable.ic_circle_person)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(binding.ivSettingImg)
-                }
-            }
-        }
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isEditMode.collectLatest { isMode ->
@@ -155,6 +129,20 @@ class SettingFragment : Fragment() {
                 navOptions { // Use the Kotlin DSL for building NavOptions
 
                 })
+        }
+
+        binding.ivSettingIconCheck.setOnClickListener {
+            viewModel.userImg.value?.let { userImg ->
+                val file = File(absolutelyPath(Uri.parse(userImg), requireContext()))
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                viewModel.saveUser(
+                    MultipartBody.Part.createFormData(
+                        "profileImage",
+                        file.name,
+                        requestFile
+                    )
+                )
+            } ?: viewModel.saveUser()
         }
 
         binding.tvSettingLogout.setOnClickListener {

@@ -18,8 +18,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Alarm
-import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
 import com.boostcamp.planj.ui.PlanjAlarm
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -198,12 +196,14 @@ class ScheduleFragment : Fragment() {
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
-            val action = ScheduleFragmentDirections.actionScheduleFragmentToRepetitionSettingDialog(viewModel.scheduleRepetition.value)
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToRepetitionSettingDialog(viewModel.scheduleRepetition.value)
             findNavController().navigate(action)
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
-            val action = ScheduleFragmentDirections.actionScheduleFragmentToAlarmSettingDialog(viewModel.scheduleAlarm.value)
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToAlarmSettingDialog(viewModel.scheduleAlarm.value)
             findNavController().navigate(action)
         }
 
@@ -266,7 +266,10 @@ class ScheduleFragment : Fragment() {
                 if (binding.tvScheduleLocationAlarm.text == "위치 알람 해제") {
                     viewModel.setAlarm(null)
                 } else {
-                    val action = ScheduleFragmentDirections.actionScheduleFragmentToScheduleBottomSheetDialog(it.route.trafast[0].summary.duration)
+                    val action =
+                        ScheduleFragmentDirections.actionScheduleFragmentToScheduleBottomSheetDialog(
+                            it.route.trafast[0].summary.duration
+                        )
                     findNavController().navigate(action)
                 }
             }
@@ -301,7 +304,7 @@ class ScheduleFragment : Fragment() {
 
     fun setEndTime() {
         var dateMillis = 0L
-        val datePicker = setDatePicker(viewModel.getEndDate())
+        val datePicker = setDatePicker(viewModel.getEndDate() + KST_MILLIS)
         datePicker.show(childFragmentManager, "시작 날짜 설정")
 
         val scheduleEndTime = viewModel.scheduleEndTime.value
@@ -327,5 +330,9 @@ class ScheduleFragment : Fragment() {
         timePickerBuilder.setHour(hour)
         timePickerBuilder.setMinute(minute)
         return timePickerBuilder.build()
+    }
+
+    companion object {
+        const val KST_MILLIS = 1000 * 60 * 60 * 9
     }
 }

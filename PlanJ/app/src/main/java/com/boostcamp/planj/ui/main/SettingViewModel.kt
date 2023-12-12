@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -27,11 +28,13 @@ class SettingViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
-    private var imageFile: MultipartBody.Part? = null
-    private var nickName: String = ""
+    private var nickname: String = ""
 
     private val _userInfo = MutableStateFlow<User?>(null)
     val userInfo = _userInfo.asStateFlow()
+
+    private val _userImg = MutableStateFlow<String?>(null)
+    val userImg = _userImg.asStateFlow()
 
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode = _isEditMode.asStateFlow()
@@ -41,15 +44,6 @@ class SettingViewModel @Inject constructor(
 
     private val _totalSchedules = MutableStateFlow<List<Schedule>>(emptyList())
     val totalSchedules = _totalSchedules.asStateFlow()
-
-    private var _completeCount = MutableStateFlow(0)
-    val completeCount = _completeCount.asStateFlow()
-
-    private var _failCount = MutableStateFlow(0)
-    val failCount = _failCount.asStateFlow()
-
-    private var _haveCount = MutableStateFlow(0)
-    val haveCount = _haveCount.asStateFlow()
 
     fun setMode() {
         _isEditMode.value = false
@@ -63,9 +57,14 @@ class SettingViewModel @Inject constructor(
                 }
                 .collectLatest { user ->
                     _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
-                    nickName = user.nickname
+                    nickname = user.nickname
+                    _userImg.update { userInfo.value?.profileUrl }
                 }
         }
+    }
+
+    fun setUserImg(uri: String) {
+        _userImg.update { uri }
     }
 
     fun deleteAccount() {
@@ -95,7 +94,6 @@ class SettingViewModel @Inject constructor(
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
                 throw e
             }
-
         }
     }
 
@@ -104,24 +102,19 @@ class SettingViewModel @Inject constructor(
     }
 
     fun changeText(text: Editable) {
-        nickName = text.toString()
+        nickname = text.toString()
     }
 
-    fun setImageFile(imageFile: MultipartBody.Part?) {
-        this.imageFile = imageFile
-    }
-
-    fun saveUser() {
+    fun saveUser(img: MultipartBody.Part? = null) {
         viewModelScope.launch {
-
-            if (nickName.isEmpty()) {
+            if (nickname.isEmpty()) {
                 _showToast.emit("닉네임이 비어있습니다.")
                 return@launch
-            } else if (!("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(nickName)) {
+            } else if (!("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(nickname)) {
                 _showToast.emit("닉네임엔 영어와 한글, 숫자만 사용가능합니다.")
                 return@launch
             }
-            mainRepository.patchUser(nickName, imageFile)
+            mainRepository.patchUser(nickname, img)
                 .catch {
                     _isEditMode.value = false
                 }
@@ -142,8 +135,8 @@ class SettingViewModel @Inject constructor(
                     .collectLatest { user ->
                         Log.d("PLANJDEBUG", "getUserImageRemove getMyInfo $user")
                         _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
-                        nickName = user.nickname
-                        imageFile = null
+                        nickname = user.nickname
+                        _userImg.update { userInfo.value?.profileUrl }
                     }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "getUserImageRemove ${e.message}")
@@ -151,27 +144,19 @@ class SettingViewModel @Inject constructor(
                     when {
                         it.contains("401") -> {}
                         it.contains("404") -> {}
-                        it.contains("404") -> {}
-                        it.contains("404") -> {}
                     }
                 }
             }
         }
     }
 
-    fun getTotalSchedules() {
+    fun getAllSchedules() {
         viewModelScope.launch {
             mainRepository.getSearchSchedules("").catch {
                 Log.d("PLANJDEBUG", "getTotalSchedules Error ${it.message}")
             }.collectLatest {
                 Log.d("PLANJDEBUG", "getTotalSchedules Success")
                 _totalSchedules.value = it
-                _completeCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> schedule.isFinished && !schedule.isFailed }.size
-                _failCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> schedule.isFailed }.size
-                _haveCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> !schedule.isFinished }.size
             }
         }
     }
