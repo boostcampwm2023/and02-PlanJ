@@ -33,10 +33,26 @@ export class FriendController {
 
   @ApiOperation({ summary: "친구 추가" })
   @ApiCreatedResponse({
-    description: "성공 메시지",
+    description: "친구 추가 성공 했을 때",
     schema: {
       example: {
         message: "친구가 되었습니다",
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: "이미 친구인 경우",
+    schema: {
+      example: {
+        message: "이미 친구인 사용자입니다.",
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: "자기 자신을 추가하려 했을 때",
+    schema: {
+      example: {
+        message: "자기 자신과는 영원한 친구 입니다.",
       },
     },
   })
