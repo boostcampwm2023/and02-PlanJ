@@ -5,17 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Alarm
 import com.boostcamp.planj.databinding.DialogAlarmSettingBinding
 
-class AlarmSettingDialog(
-    private val alarm: Alarm?,
-    private val alarmSettingDialogListener: AlarmSettingDialogListener
-) : DialogFragment() {
+class AlarmSettingDialog : DialogFragment() {
 
     private var _binding: DialogAlarmSettingBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: ScheduleViewModel by activityViewModels()
+    private val args: AlarmSettingDialogArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +34,7 @@ class AlarmSettingDialog(
 
         setVisibility()
         setListener()
-        setBtnClicked()
+        setBtnClicked(args.alarmInfo)
     }
 
     override fun onResume() {
@@ -69,15 +71,19 @@ class AlarmSettingDialog(
                 } else if (binding.rbDialogAlarmEnd.isChecked) {
                     Alarm("END", binding.etDialogAlarmBeforeEnd.text.toString().toInt(), 0)
                 } else {
-                    Alarm("DEPARTURE", binding.etDialogAlarmBeforeDeparture.text.toString().toInt(), 0)
+                    Alarm(
+                        "DEPARTURE",
+                        binding.etDialogAlarmBeforeDeparture.text.toString().toInt(),
+                        0
+                    )
                 }
-                alarmSettingDialogListener.onClickComplete(alarm)
+                viewModel.setAlarm(alarm)
                 dismiss()
             }
         }
     }
 
-    private fun setBtnClicked() {
+    private fun setBtnClicked(alarm : Alarm?) {
         with(binding) {
             if (alarm != null && alarm.alarmType == "END") {
                 rbDialogAlarmEnd.isChecked = true

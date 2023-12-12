@@ -5,17 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.DialogRepetitionSettingBinding
 
-class RepetitionSettingDialog(
-    private val repetition: Repetition?,
-    private val repetitionSettingDialogListener: RepetitionSettingDialogListener
-) : DialogFragment() {
+class RepetitionSettingDialog : DialogFragment() {
 
     private var _binding: DialogRepetitionSettingBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: ScheduleViewModel by activityViewModels()
+    private val args: RepetitionSettingDialogArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +34,7 @@ class RepetitionSettingDialog(
 
         setVisibility()
         setListener()
-        setBtnClicked()
+        setBtnClicked(args.repetitionInfo)
     }
 
     override fun onResume() {
@@ -41,9 +43,9 @@ class RepetitionSettingDialog(
         context?.setDialogSize(this)
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         _binding = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     private fun setVisibility() {
@@ -81,14 +83,14 @@ class RepetitionSettingDialog(
                     } else {
                         Repetition("WEEKLY", etDialogRepetitionWeek.text.toString().toInt())
                     }
-                    repetitionSettingDialogListener.onClickComplete(repetition)
+                    viewModel.setRepetition(repetition)
                     dismiss()
                 }
             }
         }
     }
 
-    private fun setBtnClicked() {
+    private fun setBtnClicked(repetition: Repetition?) {
         with(binding) {
             if (repetition == null) {
                 rbDialogRepetitionNo.isChecked = true
