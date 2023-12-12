@@ -132,7 +132,7 @@ class HomeFragment : Fragment() {
                             viewModel.postScheduleAddMemo(s, memo)
                         }
                         dialog.show(
-                            parentFragmentManager, tag
+                            childFragmentManager, tag
                         )
                     }
                 }
@@ -155,7 +155,7 @@ class HomeFragment : Fragment() {
         )
         binding.vpMainCalendarWeek.offscreenPageLimit = 1
         binding.vpMainCalendarWeek.adapter = calendarAdapter
-        binding.vpMainCalendarWeek.setCurrentItem(viewModel.currentPosition, false)
+        binding.vpMainCalendarWeek.setCurrentItem(Int.MAX_VALUE / 2, false)
 
         binding.vpMainCalendarWeek.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
@@ -184,7 +184,7 @@ class HomeFragment : Fragment() {
                 UpdateWidget.updateWidget(requireContext())
             }
             dialog.show(
-                parentFragmentManager, null
+                childFragmentManager, null
             )
 
 

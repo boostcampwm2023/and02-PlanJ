@@ -62,7 +62,6 @@
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/round_r8_stroke_w1"
                     android:gravity="center_vertical"
-                    android:onClick="@{() -> view.addCategoryDialog(``)}"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     app:layout_constraintEnd_toEndOf="parent"

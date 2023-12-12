@@ -86,6 +86,7 @@ class HomeViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "getScheduleDaily Error ${it.message}")
                 }
                 .collectLatest {
+                    Log.d("PLANJDEBUG", "getScheduleDaily success ${it}")
                     _schedules.value = it
                     isRefreshing.value = false
                 }
@@ -171,7 +172,7 @@ class HomeViewModel @Inject constructor(
             mainRepository.getScheduleChecked(schedule.scheduleId).catch {
                 Log.d("PLANJDEBUG", "getScheduleChecked Error ${it.message}")
             }.collectLatest {
-                if (it.data.failed && !it.data.hasRetrospectiveMemo) {
+                if ( it.data.failed && !it.data.hasRetrospectiveMemo) {
                     showDialog(schedule)
                 }
                 getScheduleDaily("${_selectDate.value}T00:00:00")

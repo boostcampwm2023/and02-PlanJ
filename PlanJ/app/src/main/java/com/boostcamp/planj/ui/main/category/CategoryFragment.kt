@@ -61,6 +61,11 @@ class CategoryFragment : Fragment() {
             )
             findNavController().navigate(action)
         }
+
+        binding.layoutCategoryAddCategory.setOnClickListener {
+            val action = CategoryFragmentDirections.actionFragmentCategoryToCategoryDialog()
+            findNavController().navigate(action)
+        }
     }
 
     private fun setObserver() {
@@ -94,17 +99,19 @@ class CategoryFragment : Fragment() {
     }
 
     fun addCategoryDialog(title: String = "") {
-        val dialog = if (title == "") {
-            CategoryDialog {
-                viewModel.postCategory(it)
-            }
-        } else {
-            CategoryDialog(title) {
-                viewModel.patchCategory(it, title)
-            }
-        }
-
-        activity?.supportFragmentManager?.let { dialog.show(it, null) }
+//        val dialog = if (title == "") {
+//            CategoryDialog {
+//                viewModel.postCategory(it)
+//            }
+//        } else {
+//            CategoryDialog(title) {
+//                viewModel.patchCategory(it, title)
+//            }
+//        }
+//
+//        activity?.supportFragmentManager?.let { dialog.show(it, null) }
+        val action = CategoryFragmentDirections.actionFragmentCategoryToCategoryDialog()
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

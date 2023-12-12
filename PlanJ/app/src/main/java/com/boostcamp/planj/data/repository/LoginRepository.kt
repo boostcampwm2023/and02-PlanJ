@@ -26,8 +26,6 @@ interface LoginRepository {
 
     fun postSignInNaver(accessToken: String, deviceToken: String): Flow<LoginResponse>
 
-    suspend fun updateAlarmInfo(curTimeMillis: Long)
-
     suspend fun getAllAlarmInfo(): List<AlarmInfo>
 
     suspend fun deleteAllData()
