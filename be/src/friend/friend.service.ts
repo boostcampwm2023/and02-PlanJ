@@ -27,6 +27,14 @@ export class FriendService {
       throw new BadRequestException("존재하지 않는 사용자입니다.");
     }
 
+    if (from.userId === to.userId) {
+      // 자기 자신일 경우
+      const body: HttpResponse = {
+        message: "자기 자신과는 영원한 친구 입니다.",
+      };
+      return JSON.stringify(body);
+    }
+
     const exist = await this.friendRepository.findOne({ where: { fromId: from.userId, toId: to.userId } });
     if (exist) {
       //이미 친구일 경우
