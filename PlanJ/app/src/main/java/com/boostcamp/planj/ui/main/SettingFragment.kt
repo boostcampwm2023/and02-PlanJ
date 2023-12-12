@@ -1,5 +1,6 @@
 package com.boostcamp.planj.ui.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -55,6 +56,13 @@ class SettingFragment : Fragment() {
         }
 
     private lateinit var notificationManager: NotificationManagerCompat
+
+    private val getNotificationSettingResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                binding.isAlarmEnable = notificationManager.areNotificationsEnabled()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -166,7 +174,7 @@ class SettingFragment : Fragment() {
                 this.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            startActivity(appDetail)
+            getNotificationSettingResult.launch(appDetail)
         }
 
         binding.tvSettingWithdrawal.setOnClickListener {
