@@ -10,11 +10,10 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.model.dto.CategoryResponse
+import com.boostcamp.planj.data.model.dto.MessageResponse
 import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
-import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -67,14 +66,14 @@ class MainRepositoryImpl @Inject constructor(
             emit(api.patchSchedule(patchScheduleBody))
         }
 
-    override suspend fun deleteCategoryApi(categoryUuid: String): Flow<CategoryResponse> = flow {
+    override suspend fun deleteCategoryApi(categoryUuid: String): Flow<MessageResponse> = flow {
         emit(api.deleteCategory(categoryUuid))
     }
 
     override suspend fun updateCategoryApi(
         categoryUuid: String,
         categoryName: String
-    ): Flow<CategoryResponse> = flow {
+    ): Flow<MessageResponse> = flow {
         emit(api.patchCategory(Category(categoryUuid, categoryName)))
     }
 
@@ -111,17 +110,17 @@ class MainRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postFriendApi(friendEmail: String) {
-        api.postFriend(PostFriendRequest(friendEmail))
+    override suspend fun postFriendApi(friendEmail: String): Flow<String> = flow {
+        emit(api.postFriend(PostFriendRequest(friendEmail)).message)
     }
 
     override suspend fun getFriendsApi(): Flow<List<User>> = flow {
         emit(api.getFriends().data)
     }
 
-    override suspend fun deleteFriendApi(email: DeleteFriendBody) {
+    override suspend fun deleteFriendApi(email: String) {
         try {
-            api.deleteFriends(email)
+            api.deleteFriends(DeleteFriendBody(email))
         } catch (e: Exception) {
             Log.d("PLANJDEBUG", "deleteFriendApi ${e.message}")
         }

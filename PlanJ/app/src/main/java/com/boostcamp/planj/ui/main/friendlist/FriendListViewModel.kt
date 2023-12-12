@@ -41,20 +41,22 @@ class FriendListViewModel @Inject constructor(
 
     fun addUser(email: String) {
         viewModelScope.launch {
-            try {
-                mainRepository.postFriendApi(email)
-                getFriends()
-            } catch (e: Exception) {
-                _showToast.emit("친구 추가를 실패했습니다.")
-                Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
-            }
+            mainRepository.postFriendApi(email)
+                .catch {
+                    _showToast.emit("친구 추가를 실패했습니다.")
+                    Log.d("PLANJDEBUG", "friendViewModel error ${it.message}")
+                }
+                .collectLatest { message ->
+                    _showToast.emit(message)
+                    getFriends()
+                }
         }
     }
 
     fun deleteUser(email: String) {
         viewModelScope.launch {
             try {
-                mainRepository.deleteFriendApi(DeleteFriendBody(email))
+                mainRepository.deleteFriendApi(email)
                 _showToast.emit("친구 삭제를 완료했습니다.")
                 getFriends()
             } catch (e: Exception) {
