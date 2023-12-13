@@ -5,7 +5,7 @@ services:
     image: "famo1245/planj:v2"
     networks:
       - backend
-      -
+
   nginx:
     container_name: nginx
     image: "famo1245/nginx:v1"
