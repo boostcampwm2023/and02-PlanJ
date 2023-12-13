@@ -85,7 +85,6 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:contentDescription="@string/edit_profile"
-                    android:onClick="@{() -> viewModel.saveUser()}"
                     android:src="@drawable/ic_check"
                     android:visibility="@{viewModel.isEditMode() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -93,6 +92,7 @@
 
                 <ImageView
                     android:id="@+id/iv_setting_img"
+                    userImg="@{viewModel.userImg}"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginTop="40dp"
@@ -187,10 +187,10 @@
 
                     <TextView
                         android:id="@+id/tv_setting_finish_count"
+                        completeCount="@{viewModel.totalSchedules}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@{viewModel.completeCount.toString()}"
                         android:textColor="@color/green"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -220,10 +220,10 @@
 
                     <TextView
                         android:id="@+id/tv_setting_fail_count"
+                        failCount="@{viewModel.totalSchedules}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@{viewModel.failCount.toString()}"
                         android:textColor="@color/red"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -256,10 +256,10 @@
 
                     <TextView
                         android:id="@+id/tv_setting_have_count"
+                        remainCount="@{viewModel.totalSchedules}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@{viewModel.haveCount.toString()}"
                         android:textColor="@color/text"
                         android:textSize="16sp"
                         android:textStyle="bold" />

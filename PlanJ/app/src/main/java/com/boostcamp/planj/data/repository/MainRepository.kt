@@ -6,10 +6,9 @@ import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.FailedMemo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
-import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
-import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
+import com.boostcamp.planj.data.model.dto.MessageResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -33,14 +32,14 @@ interface MainRepository {
 
     suspend fun deleteScheduleApi(scheduleUuid: String)
 
-    suspend fun deleteCategoryApi(categoryUuid: String): Flow<CategoryResponse>
+    suspend fun deleteCategoryApi(categoryUuid: String): Flow<MessageResponse>
 
     fun patchSchedule(patchScheduleBody: PatchScheduleBody): Flow<PatchScheduleResponse>
 
     suspend fun updateCategoryApi(
         categoryUuid: String,
         categoryName: String
-    ): Flow<CategoryResponse>
+    ): Flow<MessageResponse>
 
     fun getCategoryListApi(): Flow<List<Category>>
 
@@ -48,11 +47,11 @@ interface MainRepository {
 
     suspend fun getDailyScheduleApi(date: String): Flow<List<Schedule>>
 
-    suspend fun postFriendApi(friendEmail: String)
+    suspend fun postFriendApi(friendEmail: String): Flow<String>
 
     suspend fun getFriendsApi(): Flow<List<User>>
 
-    suspend fun deleteFriendApi(email: DeleteFriendBody)
+    suspend fun deleteFriendApi(email: String)
 
     suspend fun deleteAccount()
 

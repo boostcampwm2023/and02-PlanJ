@@ -331,6 +331,7 @@ class ScheduleViewModel @Inject constructor(
             try {
                 _response.value = naverRepository.getNaverRoute(start, end)
             } catch (e: Exception) {
+                _showToast.emit("경로 찾기를 실패했습니다.")
                 Log.d("PLANJDEBUG", "error ${e.message}")
             }
         }

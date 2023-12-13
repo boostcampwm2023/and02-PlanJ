@@ -101,6 +101,22 @@ fun TextView.setParticipantsNum(participants: List<Participant>) {
     text = participantsNum
 }
 
+@BindingAdapter("completeCount")
+fun TextView.setCompleteCount(schedules: List<Schedule>) {
+    text =
+        schedules.filter { schedule -> schedule.isFinished && !schedule.isFailed }.size.toString()
+}
+
+@BindingAdapter("failCount")
+fun TextView.setFailCount(schedules: List<Schedule>) {
+    text = schedules.filter { schedule -> schedule.isFailed }.size.toString()
+}
+
+@BindingAdapter("remainCount")
+fun TextView.setRemainCount(schedules: List<Schedule>) {
+    text = schedules.filter { schedule -> !schedule.isFinished }.size.toString()
+}
+
 @BindingAdapter("participation")
 fun TextView.setParticipation(schedule: Schedule) {
     if (schedule.participantCount < 2) {

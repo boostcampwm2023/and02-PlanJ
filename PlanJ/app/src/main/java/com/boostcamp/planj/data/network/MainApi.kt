@@ -1,7 +1,6 @@
 package com.boostcamp.planj.data.network
 
 import com.boostcamp.planj.data.model.Category
-import com.boostcamp.planj.data.model.dto.CategoryResponse
 import com.boostcamp.planj.data.model.dto.DeleteFriendBody
 import com.boostcamp.planj.data.model.dto.DeleteScheduleBody
 import com.boostcamp.planj.data.model.dto.GetAlarmResponse
@@ -12,6 +11,7 @@ import com.boostcamp.planj.data.model.dto.GetFriendResponse
 import com.boostcamp.planj.data.model.dto.GetScheduleCheckedResponse
 import com.boostcamp.planj.data.model.dto.GetSchedulesResponse
 import com.boostcamp.planj.data.model.dto.GetUserInfoResponse
+import com.boostcamp.planj.data.model.dto.MessageResponse
 import com.boostcamp.planj.data.model.dto.PatchScheduleBody
 import com.boostcamp.planj.data.model.dto.PatchScheduleResponse
 import com.boostcamp.planj.data.model.dto.PostCategoryBody
@@ -42,7 +42,7 @@ interface MainApi {
     suspend fun postSchedule(@Body postScheduleBody: PostScheduleBody): PostScheduleResponse
 
     @DELETE("/api/category/delete/{categoryUuid}")
-    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String): CategoryResponse
+    suspend fun deleteCategory(@Path("categoryUuid") categoryUuid: String): MessageResponse
 
     @HTTP(method = "DELETE", path = "/api/schedule/delete", hasBody = true)
     suspend fun deleteSchedule(@Body deleteScheduleBody: DeleteScheduleBody)
@@ -54,7 +54,7 @@ interface MainApi {
     suspend fun patchSchedule(@Body patchScheduleBody: PatchScheduleBody): PatchScheduleResponse
 
     @PATCH("/api/category/update")
-    suspend fun patchCategory(@Body patchCategoryRequest: Category): CategoryResponse
+    suspend fun patchCategory(@Body patchCategoryRequest: Category): MessageResponse
 
     @GET("/api/category/list")
     suspend fun getCategoryList(): GetCategoryResponse
@@ -62,14 +62,11 @@ interface MainApi {
     @GET("/api/category")
     suspend fun getCategorySchedule(@Query("categoryUuid") categoryUuid: String): GetSchedulesResponse
 
-    @GET("/api/schedule/weekly")
-    suspend fun getWeeklySchedule(@Query("date") date: String): GetSchedulesResponse
-
     @GET("/api/schedule/daily")
     suspend fun getDailySchedule(@Query("date") date: String): GetSchedulesResponse
 
     @POST("/api/friend/add")
-    suspend fun postFriend(@Body postFriendRequest: PostFriendRequest)
+    suspend fun postFriend(@Body postFriendRequest: PostFriendRequest): MessageResponse
 
     @GET("/api/friend")
     suspend fun getFriends(): GetFriendResponse
