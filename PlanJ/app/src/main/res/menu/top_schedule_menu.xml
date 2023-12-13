@@ -19,4 +19,10 @@
         android:title="@string/complete"
         android:icon="@drawable/ic_check"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_schedule_exit"
+        android:title="@string/exit"
+        android:icon="@drawable/ic_exit"
+        app:showAsAction="always" />
 </menu>

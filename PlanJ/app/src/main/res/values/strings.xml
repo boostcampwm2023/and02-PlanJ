@@ -11,6 +11,7 @@
     <string name="fail">실패</string>
     <string name="schedule">일정</string>
     <string name="complete">완료</string>
+    <string name="exit">나가기</string>
     <string name="day">일</string>
     <string name="dayNumber">19</string>
     <string name="nickname">닉네임</string>

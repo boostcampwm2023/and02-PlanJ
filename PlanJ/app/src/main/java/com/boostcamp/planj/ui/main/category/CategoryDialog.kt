@@ -18,8 +18,8 @@ enum class CategoryState {
 }
 
 class CategoryDialog(
-//    private val title: String = "",
-//    private val listener: (String) -> CategoryState
+    private val title: String = "",
+    private val listener: (String) -> CategoryState
 ) :
     DialogFragment() {
     private lateinit var binding: DialogAddCategoryBinding
@@ -43,9 +43,9 @@ class CategoryDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //binding.categoryname = title
+        binding.categoryname = title
         binding.lifecycleOwner = viewLifecycleOwner
-        //binding.tietDialogCategoryInputCategoryName.setText(title)
+        binding.tietDialogCategoryInputCategoryName.setText(title)
         binding.tvDialogCategoryCancel.setOnClickListener {
             dismiss()
         }
@@ -71,21 +71,21 @@ class CategoryDialog(
 
     private fun makeCategory() {
         val title = binding.tietDialogCategoryInputCategoryName.text.toString()
-//        when (listener(title)) {
-//            CategoryState.EXIST -> {
-//                binding.tietDialogCategoryInputCategoryName.error = "같은 카테고리가 존재합니다."
-//                getFocus()
-//            }
-//
-//            CategoryState.EMPTY -> {
-//                binding.tietDialogCategoryInputCategoryName.error = "값이 비어있습니다."
-//                getFocus()
-//            }
-//
-//            CategoryState.SUCCESS -> {
-//                dismiss()
-//            }
-//        }
+        when (listener(title)) {
+            CategoryState.EXIST -> {
+                binding.tietDialogCategoryInputCategoryName.error = "같은 카테고리가 존재합니다."
+                getFocus()
+            }
+
+            CategoryState.EMPTY -> {
+                binding.tietDialogCategoryInputCategoryName.error = "값이 비어있습니다."
+                getFocus()
+            }
+
+            CategoryState.SUCCESS -> {
+                dismiss()
+            }
+        }
     }
 
     private fun getFocus() {

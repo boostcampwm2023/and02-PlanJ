@@ -143,10 +143,10 @@ class HomeViewModel @Inject constructor(
         }-${String.format("%02d", now.dayOfMonth)}") && (position == Int.MAX_VALUE / 2)
     }
 
-    fun deleteSchedule(scheduleId: String) {
+    fun deleteSchedule(schedule: Schedule) {
         viewModelScope.launch {
             try {
-                mainRepository.deleteScheduleApi(scheduleId)
+                mainRepository.deleteScheduleApi(schedule.scheduleId)
                 getScheduleDaily("${_selectDate.value}T00:00:00")
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "deleteSchedule Error ${e.message}")
