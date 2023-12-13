@@ -9,9 +9,7 @@ class ScheduleAdapter(
     private val clickListener: ScheduleClickListener,
     private val checkBoxListener: ScheduleDoneListener,
     private val isCheckMode: Boolean = true
-) : ListAdapter<Schedule, ScheduleAdapterViewHolder>(
-    diffUtil
-) {
+) : ListAdapter<Schedule, ScheduleAdapterViewHolder>(diffUtil) {
 
     override fun onBindViewHolder(holder: ScheduleAdapterViewHolder, position: Int) {
         holder.bind(currentList[position], clickListener, checkBoxListener, isCheckMode)
