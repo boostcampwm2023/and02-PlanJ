@@ -20,6 +20,7 @@ import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -284,5 +285,19 @@ fun TextView.failedMemoTime(failedData: FailedMemo) {
     } else {
         val startTime = failedData.startAt.replace("-", "/").split("T")
         "${startTime[0]} ${startTime[1]} - ${endTime[0]} ${endTime[1]}"
+    }
+}
+
+@BindingAdapter("setFloatingButtonVisible")
+fun ExtendedFloatingActionButton.setFloatingButtonVisible(date : String){
+    val setDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)?.time
+    val current = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(current)?.time
+    setDate ?: return
+    currentDate ?: return
+    visibility = if(setDate < currentDate){
+        View.GONE
+    }else{
+        View.VISIBLE
     }
 }
