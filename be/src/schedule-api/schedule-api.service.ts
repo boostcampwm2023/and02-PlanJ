@@ -237,7 +237,7 @@ export class ScheduleApiService {
       const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(scheduleResponse.scheduleUuid);
       const group = await this.participateService.getParticipantGroup(metadataId);
 
-      if (group.length === 1) {
+      if (group.length === 0) {
         scheduleResponse.isAuthor = true;
         continue;
       }
