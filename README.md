@@ -24,7 +24,7 @@
 |일정 생성 및 변경|일정 실패 회고글 작성|친구 추가|출발 알림|
 |:-:|:-:|:-:|:-:|
 | ![일정 생성변경 resized](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/8acf0e4c-9c51-4475-8b14-33c9f2f8be8e)|![일정 실패 사글 resized](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/526bbfa2-3365-490f-9b50-4435836ab6fd)|![친구 추가(에뮬)](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/dfcdd823-b90f-4402-905a-7eda94d325b7) |![출발 알림 resized](https://github.com/boostcampwm2023/and02-PlanJ/assets/35479251/ae1b2f84-88ce-4e88-b65e-cdd498414867)
- |
+ 
 
 
 
@@ -44,8 +44,6 @@
 ## 📋 문서
 [github 위키](https://github.com/boostcampwm2023/and02-MyTodoList/wiki)
 
-[백로그](https://www.notion.so/7fa14444e88047af8cc3e970d0003171)
-
-[노션](https://www.notion.so/Plan-J-dd283b9bfff24ac7817d79e304acbd4e)
+[프로젝트 노션](https://www.notion.so/Plan-J-dd283b9bfff24ac7817d79e304acbd4e)
 
 [![-----------------------------------------------------](https://user-images.githubusercontent.com/10940214/155750931-fc094349-b6ec-4e1f-9f9a-113e67941119.jpg)]()
