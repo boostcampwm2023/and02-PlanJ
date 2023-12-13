@@ -54,6 +54,7 @@ class SettingViewModel @Inject constructor(
             mainRepository.getMyInfo()
                 .catch {
                     Log.d("PLANJDEBUG", "initUser error ${it.message}")
+                    _showToast.emit("사용자 정보 조희를 실패했습니다.")
                 }
                 .collectLatest { user ->
                     _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
@@ -77,6 +78,7 @@ class SettingViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
+                _showToast.emit("회원 탈퇴를 실패했습니다.")
                 throw e
             }
 
@@ -91,7 +93,8 @@ class SettingViewModel @Inject constructor(
                     loginRepository.deleteAllData()
                 }
             } catch (e: Exception) {
-                Log.d("PLANJDEBUG", "delete error ${e.message}")
+                Log.d("PLANJDEBUG", "logout error ${e.message}")
+                _showToast.emit("로그아웃을 실패했습니다.")
                 throw e
             }
         }
@@ -111,15 +114,16 @@ class SettingViewModel @Inject constructor(
                 _showToast.emit("닉네임이 비어있습니다.")
                 return@launch
             } else if (!("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(nickname)) {
-                _showToast.emit("닉네임엔 영어와 한글, 숫자만 사용가능합니다.")
+                _showToast.emit("닉네임에는 영어와 한글, 숫자만 사용가능합니다.")
                 return@launch
             }
             mainRepository.patchUser(nickname, img)
                 .catch {
-                    _isEditMode.value = false
+                    _showToast.emit("프로필 수정을 실패했습니다.")
                 }
                 .collectLatest {
                     _isEditMode.value = false
+                    _showToast.emit("프로필 수정을 성공했습니다.")
                 }
         }
     }
@@ -140,6 +144,7 @@ class SettingViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "getUserImageRemove ${e.message}")
+                _showToast.emit("프로필 사진 삭제를 실패했습니다.")
                 e.message?.let {
                     when {
                         it.contains("401") -> {}
