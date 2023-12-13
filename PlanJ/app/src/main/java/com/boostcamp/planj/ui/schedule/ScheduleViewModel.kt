@@ -17,6 +17,7 @@ import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -118,10 +119,10 @@ class ScheduleViewModel @Inject constructor(
                     _endScheduleLocation.value = schedule.endLocation
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
-                    schedule.participants.find { it.currentUser }?.let { author ->
-                        _isAuthor.update { true }
-                        _isFailed.update { author.isFailed }
-                        _isFinished.update { author.isFinished }
+                    schedule.participants.find { it.currentUser }?.let { currentUser ->
+                        _isAuthor.update { currentUser.isAuthor }
+                        _isFailed.update { currentUser.isFailed }
+                        _isFinished.update { currentUser.isFinished }
                     }
                 }
         }
@@ -196,13 +197,12 @@ class ScheduleViewModel @Inject constructor(
         _isEditMode.value = true
     }
 
-    fun deleteSchedule(): Boolean {
+    suspend fun deleteSchedule(): Boolean {
         var result = false
-        viewModelScope.launch {
+        val job = viewModelScope.async {
             result = try {
                 loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
                 _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
-
                 mainRepository.deleteScheduleApi(scheduleId)
                 true
             } catch (e: Exception) {
@@ -211,6 +211,7 @@ class ScheduleViewModel @Inject constructor(
                 false
             }
         }
+        job.await()
         return result
     }
 
