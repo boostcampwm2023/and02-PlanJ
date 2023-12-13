@@ -101,8 +101,21 @@ class ScheduleFragment : Fragment() {
                 if (isComplete) activity?.finish()
             }
         }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isAuthor.collectLatest { b ->
+            viewModel.isDeletable.collectLatest { _ ->
+                updateToolbar(viewModel.isEditMode.value)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isEditable.collectLatest { _ ->
+                updateToolbar(viewModel.isEditMode.value)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isAuthor.collectLatest { _ ->
                 updateToolbar(viewModel.isEditMode.value)
             }
         }
@@ -293,9 +306,9 @@ class ScheduleFragment : Fragment() {
 
     private fun updateToolbar(isEditMode: Boolean) {
         with(binding.toolbarSchedule.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
-            findItem(R.id.item_schedule_delete).isVisible = (!isEditMode && viewModel.isAuthor.value)
-            findItem(R.id.item_schedule_exit).isVisible = (!isEditMode && !viewModel.isAuthor.value)
+            findItem(R.id.item_schedule_edit).isVisible = (!isEditMode && viewModel.isEditable.value)
+            findItem(R.id.item_schedule_delete).isVisible = (!isEditMode && viewModel.isAuthor.value && viewModel.isDeletable.value)
+            findItem(R.id.item_schedule_exit).isVisible = (!isEditMode && !viewModel.isAuthor.value && viewModel.isDeletable.value)
             findItem(R.id.item_schedule_complete).isVisible = isEditMode
         }
         binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"

@@ -75,6 +75,12 @@ class ScheduleViewModel @Inject constructor(
     private val _isAuthor = MutableStateFlow(false)
     val isAuthor = _isAuthor.asStateFlow()
 
+    private val _isDeletable = MutableStateFlow(true)
+    val isDeletable = _isDeletable.asStateFlow()
+
+    private val _isEditable = MutableStateFlow(true)
+    val isEditable = _isEditable.asStateFlow()
+
     private val _isFailed = MutableStateFlow(false)
     val isFailed = _isFailed.asStateFlow()
 
@@ -121,8 +127,8 @@ class ScheduleViewModel @Inject constructor(
                     scheduleMemo.value = schedule.description
                     schedule.participants.find { it.currentUser }?.let { currentUser ->
                         _isAuthor.update { currentUser.isAuthor }
-                        _isFailed.update { currentUser.isFailed }
-                        _isFinished.update { currentUser.isFinished }
+                        _isEditable.update { !currentUser.isFailed && !currentUser.isFinished }
+                        _isDeletable.update { !currentUser.isFailed }
                     }
                 }
         }
