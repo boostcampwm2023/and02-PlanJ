@@ -127,7 +127,7 @@
 
                 <EditText
                     android:id="@+id/tv_setting_nickname"
-                    android:layout_width="wrap_content"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:afterTextChanged="@{(text) -> viewModel.changeText(text)}"
@@ -137,6 +137,7 @@
                     android:inputType="textAutoComplete"
                     android:maxLength="12"
                     android:maxLines="1"
+                    android:gravity="center"
                     android:paddingHorizontal="36dp"
                     android:text="@{viewModel.userInfo.nickname}"
                     android:textColor="@color/text"

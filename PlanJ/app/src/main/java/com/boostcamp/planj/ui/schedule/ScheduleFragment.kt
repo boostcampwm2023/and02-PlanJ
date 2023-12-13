@@ -91,19 +91,14 @@ class ScheduleFragment : Fragment() {
 
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isEditMode.collectLatest { isEditMode ->
-                updateToolbar(isEditMode)
+            viewModel.scheduleState.collectLatest { scheduleState ->
+                updateToolbar(scheduleState)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isComplete.collectLatest { isComplete ->
                 if (isComplete) activity?.finish()
-            }
-        }
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isAuthor.collectLatest { b ->
-                updateToolbar(viewModel.isEditMode.value)
             }
         }
 
@@ -180,7 +175,7 @@ class ScheduleFragment : Fragment() {
 
                 R.id.item_schedule_delete -> {
                     lifecycleScope.launch {
-                        if(viewModel.deleteSchedule()){
+                        if (viewModel.deleteSchedule()) {
                             activity?.finish()
                         }
                     }
@@ -191,9 +186,10 @@ class ScheduleFragment : Fragment() {
                     viewModel.completeEditingSchedule()
                     true
                 }
+
                 R.id.item_schedule_exit -> {
                     lifecycleScope.launch {
-                        if(viewModel.deleteSchedule()){
+                        if (viewModel.deleteSchedule()) {
                             activity?.finish()
                         }
                     }
@@ -241,7 +237,7 @@ class ScheduleFragment : Fragment() {
             val action =
                 ScheduleFragmentDirections.actionScheduleFragmentToScheduleParticipantsFragment(
                     viewModel.participants.value.toTypedArray(),
-                    viewModel.isEditMode.value && viewModel.isAuthor.value
+                    viewModel.scheduleState.value.isEditMode && viewModel.scheduleState.value.isAuthor
                 )
             findNavController().navigate(action)
         }
@@ -291,14 +287,17 @@ class ScheduleFragment : Fragment() {
         }
     }
 
-    private fun updateToolbar(isEditMode: Boolean) {
+    private fun updateToolbar(scheduleState: ScheduleState) {
         with(binding.toolbarSchedule.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
-            findItem(R.id.item_schedule_delete).isVisible = (!isEditMode && viewModel.isAuthor.value)
-            findItem(R.id.item_schedule_exit).isVisible = (!isEditMode && !viewModel.isAuthor.value)
-            findItem(R.id.item_schedule_complete).isVisible = isEditMode
+            findItem(R.id.item_schedule_edit).isVisible =
+                (!scheduleState.isEditMode && scheduleState.isEditable)
+            findItem(R.id.item_schedule_delete).isVisible =
+                (!scheduleState.isEditMode && scheduleState.isAuthor && scheduleState.isDeletable)
+            findItem(R.id.item_schedule_exit).isVisible =
+                (!scheduleState.isEditMode && !scheduleState.isAuthor && scheduleState.isDeletable)
+            findItem(R.id.item_schedule_complete).isVisible = scheduleState.isEditMode
         }
-        binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
+        binding.tvScheduleTop.text = if (!scheduleState.isEditMode) "일정" else "일정 편집"
     }
 
     fun setStartTime() {

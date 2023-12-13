@@ -34,6 +34,13 @@ sealed class AlarmEvent {
     data class Set(val alarmInfo: AlarmInfo) : AlarmEvent()
 }
 
+data class ScheduleState(
+    val isEditMode: Boolean = false,
+    val isAuthor: Boolean = true,
+    val isEditable: Boolean = true,
+    val isDeletable: Boolean = true
+)
+
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
     private val mainRepository: MainRepository,
@@ -72,17 +79,11 @@ class ScheduleViewModel @Inject constructor(
     private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList = _categoryList.asStateFlow()
 
-    private val _isAuthor = MutableStateFlow(false)
-    val isAuthor = _isAuthor.asStateFlow()
-
-    private val _isFailed = MutableStateFlow(false)
-    val isFailed = _isFailed.asStateFlow()
+    private val _scheduleState = MutableStateFlow(ScheduleState())
+    val scheduleState = _scheduleState.asStateFlow()
 
     private val _isFinished = MutableStateFlow(false)
     val isFinished = _isFinished.asStateFlow()
-
-    private val _isEditMode = MutableStateFlow(false)
-    val isEditMode = _isEditMode.asStateFlow()
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete = _isComplete.asStateFlow()
@@ -120,9 +121,13 @@ class ScheduleViewModel @Inject constructor(
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
                     schedule.participants.find { it.currentUser }?.let { currentUser ->
-                        _isAuthor.update { currentUser.isAuthor }
-                        _isFailed.update { currentUser.isFailed }
-                        _isFinished.update { currentUser.isFinished }
+                        _scheduleState.update {
+                            it.copy(
+                                isAuthor = currentUser.isAuthor,
+                                isEditable = !currentUser.isFailed && !currentUser.isFinished,
+                                isDeletable = !currentUser.isFailed
+                            )
+                        }
                     }
                 }
         }
@@ -194,7 +199,9 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun startEditingSchedule() {
-        _isEditMode.value = true
+        _scheduleState.update {
+            it.copy(isEditMode = true)
+        }
     }
 
     suspend fun deleteSchedule(): Boolean {
@@ -279,7 +286,7 @@ class ScheduleViewModel @Inject constructor(
                     }
                     .collect {
                         setAlarmInfo()
-                        _isEditMode.value = false
+                        _scheduleState.update { it.copy(isEditMode = false) }
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
                         _showToast.emit("일정 수정을 완료했습니다.")
                     }
