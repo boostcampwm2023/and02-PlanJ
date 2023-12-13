@@ -17,11 +17,9 @@ export class PushService {
   async sendPush(token: string, body: string, data: string = null) {
     const payload = {
       token: token,
-      notification: {
+      data: {
         title: this.title,
         body: body,
-      },
-      data: {
         index: data,
       },
     };
