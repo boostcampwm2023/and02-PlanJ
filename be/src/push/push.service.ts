@@ -14,12 +14,15 @@ export class PushService {
 
   constructor() {}
 
-  async sendPush(token: string, body: string) {
+  async sendPush(token: string, body: string, data: string = null) {
     const payload = {
       token: token,
       notification: {
         title: this.title,
         body: body,
+      },
+      data: {
+        index: data,
       },
     };
 
