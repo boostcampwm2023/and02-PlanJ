@@ -39,6 +39,11 @@ class SearchActivity : AppCompatActivity() {
         binding.etSearchInputText.requestFocus()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onClickSearch()
+    }
+
     private fun setObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
