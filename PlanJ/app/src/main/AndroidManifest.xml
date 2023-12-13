@@ -49,7 +49,8 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.categorydetail.CategoryDetailActivity"
@@ -73,18 +74,21 @@
         </receiver>
 
 
-        <receiver android:name=".ui.PlanjWidgetProvider"
+        <receiver
+            android:name=".ui.PlanjWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/planj_widget_info" />
         </receiver>
 
-        <service android:name=".ui.PlanjViewService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false" />
+        <service
+            android:name=".ui.PlanjViewService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 
         <service

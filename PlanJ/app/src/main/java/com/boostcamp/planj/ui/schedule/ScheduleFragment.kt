@@ -109,6 +109,11 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 if (isComplete) activity?.finish()
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isAuthor.collectLatest { b ->
+                updateToolbar(viewModel.isEditMode.value)
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.alarmEventFlow.collectLatest { alarmEvent ->
@@ -182,8 +187,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 }
 
                 R.id.item_schedule_delete -> {
-                    if (viewModel.deleteSchedule()) {
-                        activity?.finish()
+                    lifecycleScope.launch {
+                        if(viewModel.deleteSchedule()){
+                            activity?.finish()
+                        }
                     }
                     true
                 }
@@ -193,8 +200,10 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                     true
                 }
                 R.id.item_schedule_exit -> {
-                    if (viewModel.deleteSchedule()) {
-                        activity?.finish()
+                    lifecycleScope.launch {
+                        if(viewModel.deleteSchedule()){
+                            activity?.finish()
+                        }
                     }
                     true
                 }

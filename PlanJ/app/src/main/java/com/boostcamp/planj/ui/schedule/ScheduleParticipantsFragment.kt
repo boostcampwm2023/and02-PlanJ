@@ -103,6 +103,7 @@ class ScheduleParticipantsFragment : Fragment() {
             findItem(R.id.item_schedule_edit).isVisible = !isEditMode && isScheduleEditMode
             findItem(R.id.item_schedule_delete).isVisible = false
             findItem(R.id.item_schedule_complete).isVisible = isEditMode && isScheduleEditMode
+            findItem(R.id.item_schedule_exit).isVisible = false
         }
     }
 
