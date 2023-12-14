@@ -61,7 +61,7 @@
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name=".ui.PlanJReceiver"
+            android:name=".ui.alarm.PlanJReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -69,7 +69,7 @@
         </receiver>
 
         <receiver
-            android:name=".ui.RestartAlarmReceiver"
+            android:name=".ui.alarm.RestartAlarmReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -79,7 +79,7 @@
 
 
         <receiver
-            android:name=".ui.PlanjWidgetProvider"
+            android:name=".ui.widget.PlanjWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -90,13 +90,13 @@
         </receiver>
 
         <service
-            android:name=".ui.PlanjViewService"
+            android:name=".ui.widget.PlanjViewService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 
         <service
-            android:name=".ui.PlanjFirebaseMessagingService"
+            android:name=".ui.alarm.PlanjFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

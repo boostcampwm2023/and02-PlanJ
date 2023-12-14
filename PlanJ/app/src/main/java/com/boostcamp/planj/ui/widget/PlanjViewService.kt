@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui
+package com.boostcamp.planj.ui.widget
 
 import android.content.Intent
 import android.util.Log

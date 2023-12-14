@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui
+package com.boostcamp.planj.ui.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName

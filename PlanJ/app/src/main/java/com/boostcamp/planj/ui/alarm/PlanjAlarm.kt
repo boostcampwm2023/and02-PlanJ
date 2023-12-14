@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui
+package com.boostcamp.planj.ui.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
