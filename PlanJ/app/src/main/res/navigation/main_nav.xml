@@ -13,6 +13,12 @@
         <action
             android:id="@+id/action_fragment_home_to_scheduleActivity"
             app:destination="@id/scheduleActivity" />
+        <action
+            android:id="@+id/action_fragment_home_to_fragment_friend_list"
+            app:destination="@id/fragment_friend_list" />
+        <action
+            android:id="@+id/action_fragment_home_self"
+            app:destination="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/fragment_user"

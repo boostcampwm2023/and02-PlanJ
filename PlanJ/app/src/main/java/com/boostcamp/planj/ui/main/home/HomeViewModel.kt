@@ -200,5 +200,15 @@ class HomeViewModel @Inject constructor(
         list[index] = list[index].copy(expanded = !list[index].expanded)
         _scheduleSegment.value = list
     }
+
+    fun setFcm(date : String){
+        val getDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date.split("T").first())
+        val today = Calendar.getInstance()
+        val calcuDate = ((getDate?.time ?: today.time.time) - today.time.time) / (60 * 60 * 24 * 1000)
+        val index = ( today.get(Calendar.DAY_OF_WEEK) + calcuDate ) / 7
+        Log.d("PLANJDEBUG", "index : $index")
+        currentPosition = (Int.MAX_VALUE / 2) + index.toInt()
+        setDate(date.split("T").first())
+    }
 }
 

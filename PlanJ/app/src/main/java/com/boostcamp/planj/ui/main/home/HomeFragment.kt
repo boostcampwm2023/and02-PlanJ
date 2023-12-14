@@ -52,6 +52,7 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
+
         viewModel.listener = OnClickListener {
             viewModel.setDate(it)
         }
@@ -60,6 +61,10 @@ class HomeFragment : Fragment() {
         initScheduleAdapter()
         setObserver()
         setListener()
+        arguments?.let {
+            it.getString("index")?.let { date -> viewModel.setFcm(date) }
+            binding.vpMainCalendarWeek.currentItem = viewModel.currentPosition
+        }
     }
 
     private fun initScheduleAdapter() {
@@ -155,7 +160,7 @@ class HomeFragment : Fragment() {
         )
         binding.vpMainCalendarWeek.offscreenPageLimit = 1
         binding.vpMainCalendarWeek.adapter = calendarAdapter
-        binding.vpMainCalendarWeek.setCurrentItem(Int.MAX_VALUE / 2, false)
+        binding.vpMainCalendarWeek.setCurrentItem(viewModel.currentPosition , false)
 
         binding.vpMainCalendarWeek.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {

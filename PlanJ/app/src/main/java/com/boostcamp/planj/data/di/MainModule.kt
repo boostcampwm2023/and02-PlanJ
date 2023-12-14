@@ -31,14 +31,14 @@ object MainModule {
             pref[user] ?: ""
         }
 
-        val userToken = runBlocking {
+        val data = runBlocking {
             dataUserFlow.first()
         }
 
         return Interceptor { chain ->
             var request = chain.request()
             request = request.newBuilder()
-                .addHeader("Authorization", userToken)
+                .addHeader("Authorization", data)
                 .build()
             chain.proceed(request)
         }
