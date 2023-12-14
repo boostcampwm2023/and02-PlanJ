@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.main.friendlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,9 +50,7 @@ class FriendListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.getFriends()
-
         initAdapter()
         setObserver()
         setListener()
