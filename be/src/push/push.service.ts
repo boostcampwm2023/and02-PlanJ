@@ -15,7 +15,7 @@ export class PushService {
 
   constructor() {}
 
-  async sendPush(token: string, body: string, index: string) {
+  async sendPush(token: string, body: string, index: string = undefined) {
     const payload: PayloadDto = {
       token: token,
       data: {
