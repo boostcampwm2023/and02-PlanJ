@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import * as admin from "firebase-admin";
 import firebaseConfig from "../config/firebase.config";
 import { PayloadDto } from "./dto/payload.dto";
@@ -30,7 +30,6 @@ export class PushService {
       await admin.messaging().send(payload);
     } catch (e) {
       this.logger.error(e);
-      throw new InternalServerErrorException(e.message);
     }
   }
 }
