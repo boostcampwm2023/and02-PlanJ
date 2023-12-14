@@ -124,6 +124,7 @@ class ScheduleFragment : Fragment() {
                         requireContext(),
                         R.layout.item_dropdown,
                         categoryList.map { it.categoryName })
+                binding.actvScheduleSelectedCategory.setText(viewModel.scheduleCategory.value)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }
