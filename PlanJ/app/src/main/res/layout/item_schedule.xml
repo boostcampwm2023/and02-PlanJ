@@ -31,34 +31,10 @@
             android:background="@drawable/checkbox"
             android:button="@null"
             android:checked="@{schedule.finished}"
-            android:visibility="@{!isCheck || schedule.finished ? View.INVISIBLE : View.VISIBLE}"
+            android:visibility="@{isCheck ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_done"
-            android:padding="12dp"
-            app:layout_constraintStart_toStartOf="@id/cb_done"
-            app:layout_constraintEnd_toEndOf="@id/cb_done"
-            app:layout_constraintTop_toTopOf="@id/cb_done"
-            android:visibility="@{schedule.finished &amp;&amp; !schedule.failed ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/cb_done"
-            />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_not_done"
-            android:padding="12dp"
-            app:layout_constraintStart_toStartOf="@id/cb_done"
-            app:layout_constraintEnd_toEndOf="@id/cb_done"
-            app:layout_constraintTop_toTopOf="@id/cb_done"
-            android:visibility="@{schedule.failed &amp;&amp; schedule.finished ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/cb_done"
-            />
 
         <TextView
             android:id="@+id/tv_main_title"
