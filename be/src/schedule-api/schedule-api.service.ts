@@ -312,24 +312,6 @@ export class ScheduleApiService {
       });
       const authorMetadataId = participantList[0].authorId;
 
-      if (isAuthor) {
-        await Promise.all([
-          this.participateService.deleteGroup(metadataId),
-          participants.map(async (participant) => {
-            this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
-          }),
-        ]);
-      } else {
-        await this.participateService.deleteParticipant(metadataId, authorMetadataId);
-
-        if (participantList.length === 1) {
-          await Promise.all([
-            this.participateService.deleteParticipant(authorMetadataId, authorMetadataId),
-            this.scheduleMetaService.updateSharedStatus(authorMetadataId, false),
-          ]);
-        }
-      }
-
       const metadataLists = await Promise.all(
         participantList.map(async (participant) => {
           return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
@@ -348,6 +330,24 @@ export class ScheduleApiService {
           this.pushService.sendPush(user.deviceToken, message, data);
         }
       });
+
+      if (isAuthor) {
+        await Promise.all([
+          this.participateService.deleteGroup(metadataId),
+          participants.map(async (participant) => {
+            this.scheduleMetaService.deleteScheduleMeta(participant.participantId);
+          }),
+        ]);
+      } else {
+        await this.participateService.deleteParticipant(metadataId, authorMetadataId);
+
+        if (participantList.length === 1) {
+          await Promise.all([
+            this.participateService.deleteParticipant(authorMetadataId, authorMetadataId),
+            this.scheduleMetaService.updateSharedStatus(authorMetadataId, false),
+          ]);
+        }
+      }
     }
 
     const body: HttpResponse = {
