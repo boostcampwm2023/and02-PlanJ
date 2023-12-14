@@ -327,7 +327,11 @@ export class ScheduleApiService {
       this.logger.verbose(message);
       users.forEach((user) => {
         if (!!user.deviceToken) {
-          this.pushService.sendPush(user.deviceToken, message, data);
+          if (isAuthor) {
+            this.pushService.sendPush(user.deviceToken, message);
+          } else {
+            this.pushService.sendPush(user.deviceToken, message, data);
+          }
         }
       });
 
