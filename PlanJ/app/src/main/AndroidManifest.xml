@@ -54,7 +54,9 @@
 
         <activity
             android:name=".ui.categorydetail.CategoryDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            />
 
         <receiver
             android:name=".ui.PlanJReceiver"
