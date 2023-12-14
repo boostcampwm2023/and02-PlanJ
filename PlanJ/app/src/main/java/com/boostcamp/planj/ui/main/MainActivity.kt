@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setIntent() {
         intent.getStringExtra("index")?.let {
-            Log.d("PLANJDEBUG", "MainActivity intent $it")
+            navController.popBackStack()
             when (it) {
                 "friend" -> {
                     navController.navigate(R.id.fragment_friend_list)
