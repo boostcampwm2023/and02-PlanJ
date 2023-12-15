@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui
+package com.boostcamp.planj.ui.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -11,14 +11,13 @@ import android.util.Log
 import android.widget.RemoteViews
 import com.boostcamp.planj.R
 import com.boostcamp.planj.ui.main.MainActivity
-import com.boostcamp.planj.ui.schedule.ScheduleActivity
 import java.time.LocalDate
 
 class PlanjWidgetProvider : AppWidgetProvider() {
 
     companion object {
-        const val TOAST_ACTION = "com.boostcamp.planj.ui.PlanjWidgetProvider.TOAST_ACTION"
-        const val EXTRA_ITEM = "com.boostcamp.planj.ui.PlanjWidgetProvider.EXTRA_ITEM"
+        const val TOAST_ACTION = "com.boostcamp.planj.ui.widget.PlanjWidgetProvider.TOAST_ACTION"
+        const val EXTRA_ITEM = "com.boostcamp.planj.ui.widget.PlanjWidgetProvider.EXTRA_ITEM"
     }
 
     override fun onReceive(context: Context, intent: Intent) {

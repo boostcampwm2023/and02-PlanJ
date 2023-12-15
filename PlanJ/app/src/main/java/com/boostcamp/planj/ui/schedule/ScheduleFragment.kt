@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
-import com.boostcamp.planj.ui.PlanjAlarm
+import com.boostcamp.planj.ui.alarm.PlanjAlarm
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -124,6 +124,7 @@ class ScheduleFragment : Fragment() {
                         requireContext(),
                         R.layout.item_dropdown,
                         categoryList.map { it.categoryName })
+                binding.actvScheduleSelectedCategory.setText(viewModel.scheduleCategory.value)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }

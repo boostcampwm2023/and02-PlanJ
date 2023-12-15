@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui
+package com.boostcamp.planj.ui.alarm
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -16,16 +15,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.get
-import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.ActivityMainBinding
-import com.boostcamp.planj.ui.PlanjAlarm
-import com.boostcamp.planj.ui.main.home.HomeFragmentDirections
+import com.boostcamp.planj.ui.alarm.PlanjAlarm
 import com.boostcamp.planj.ui.schedule.ScheduleActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -56,9 +50,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setIntent() {
-        intent.getStringExtra("index")?.let {
+        intent.getStringExtra("index")?.let { index ->
             navController.popBackStack()
-            when (it) {
+            when (index) {
                 "friend" -> {
                     navController.navigate(R.id.fragment_friend_list)
                 }
@@ -69,8 +63,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val scheduleId = intent.getStringExtra("scheduleId")
-        if (scheduleId != null) {
+        intent.getStringExtra("scheduleId")?.let { scheduleId ->
             val intent = Intent(this, ScheduleActivity::class.java)
             intent.putExtra("scheduleId", scheduleId)
             startActivity(intent)
