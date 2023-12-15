@@ -3,7 +3,6 @@ package com.boostcamp.planj.ui.main.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Category
 import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.Schedule
@@ -15,8 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -25,12 +22,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
-
-    private val _alarms = MutableStateFlow<List<AlarmInfo>>(emptyList())
-    val alarms = _alarms.asStateFlow()
 
     private val _selectDate = MutableStateFlow("")
     val selectDate = _selectDate.asStateFlow()
@@ -92,6 +86,7 @@ class MainViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "getScheduleDaily Error ${it.message}")
                 }
                 .collectLatest {
+                    Log.d("PLANJDEBUG", "getScheduleDaily success ${it}")
                     _schedules.value = it
                     isRefreshing.value = false
                 }
@@ -109,14 +104,15 @@ class MainViewModel @Inject constructor(
                     Log.d("PLANJDEBUG", "getAllSchedule error ${it.message}")
                 }
                 .collectLatest {
-                    it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }?.let { s ->
-                        _failedSchedule.value = s
-                    }
+                    it.find { schedule -> schedule.isFinished && schedule.isFailed && !schedule.hasRetrospectiveMemo }
+                        ?.let { s ->
+                            _failedSchedule.value = s
+                        }
                 }
         }
     }
 
-    private fun initSetDate(){
+    private fun initSetDate() {
         val calendar = Calendar.getInstance()
         setDate(
             "${calendar.get(Calendar.YEAR)}-${
@@ -147,10 +143,10 @@ class MainViewModel @Inject constructor(
         }-${String.format("%02d", now.dayOfMonth)}") && (position == Int.MAX_VALUE / 2)
     }
 
-    fun deleteSchedule(scheduleId: String) {
+    fun deleteSchedule(schedule: Schedule) {
         viewModelScope.launch {
             try {
-                mainRepository.deleteScheduleApi(scheduleId)
+                mainRepository.deleteScheduleApi(schedule.scheduleId)
                 getScheduleDaily("${_selectDate.value}T00:00:00")
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "deleteSchedule Error ${e.message}")
@@ -176,7 +172,7 @@ class MainViewModel @Inject constructor(
             mainRepository.getScheduleChecked(schedule.scheduleId).catch {
                 Log.d("PLANJDEBUG", "getScheduleChecked Error ${it.message}")
             }.collectLatest {
-                if (it.data.failed && !it.data.hasRetrospectiveMemo) {
+                if ( it.data.failed && !it.data.hasRetrospectiveMemo) {
                     showDialog(schedule)
                 }
                 getScheduleDaily("${_selectDate.value}T00:00:00")
@@ -205,14 +201,14 @@ class MainViewModel @Inject constructor(
         _scheduleSegment.value = list
     }
 
-    fun getAlarms(){
-        viewModelScope.launch {
-            mainRepository.getAlarms().catch {
-                Log.d("PLANJDEBUG", "getAlarms error ${it.message}")
-            }.collectLatest {
-                _alarms.update { it }
-            }
-        }
+    fun setFcm(date : String){
+        val getDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date.split("T").first())
+        val today = Calendar.getInstance()
+        val calcuDate = ((getDate?.time ?: today.time.time) - today.time.time) / (60 * 60 * 24 * 1000)
+        val index = ( today.get(Calendar.DAY_OF_WEEK) + calcuDate ) / 7
+        Log.d("PLANJDEBUG", "index : $index")
+        currentPosition = (Int.MAX_VALUE / 2) + index.toInt()
+        setDate(date.split("T").first())
     }
 }
 

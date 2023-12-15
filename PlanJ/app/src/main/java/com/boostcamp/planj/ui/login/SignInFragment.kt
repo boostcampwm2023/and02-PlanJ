@@ -69,15 +69,6 @@ class SignInFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val user = viewModel.getToken()
-            if (user.isNotEmpty()) {
-                val action = SignInFragmentDirections.actionSignInFragmentToMainActivity()
-                findNavController().navigate(action)
-                requireActivity().finish()
-            }
-        }
-
         NaverIdLoginSDK.initialize(
             requireContext(),
             BuildConfig.NAVER_LOGIN_CLIENT_ID,
@@ -108,6 +99,15 @@ class SignInFragment : Fragment() {
 
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
+            val user = viewModel.getToken()
+            if (user.isNotEmpty()) {
+                val action = SignInFragmentDirections.actionSignInFragmentToMainActivity()
+                findNavController().navigate(action)
+                requireActivity().finish()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isSuccess.collect { isSuccess ->
                 if (isSuccess) {
                     findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
@@ -118,10 +118,9 @@ class SignInFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.showToast.collect { message ->
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     private fun setListener() {

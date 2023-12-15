@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.boostcamp.planj.ui.search.SearchViewModel" />
@@ -93,11 +95,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_search" />
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="@string/no_search_result"
+            android:visibility="@{viewModel.filteredScheduleList.size() == 0 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_search_result" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_search_schedule_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingHorizontal="8dp"
+            android:visibility="@{viewModel.filteredScheduleList.size() == 0 ? View.INVISIBLE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

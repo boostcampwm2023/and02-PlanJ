@@ -23,10 +23,12 @@
 
         <activity
             android:name=".ui.search.SearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.schedule.ScheduleActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
@@ -38,6 +40,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter>
@@ -49,14 +52,16 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.categorydetail.CategoryDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <receiver
-            android:name=".ui.PlanJReceiver"
+            android:name=".ui.alarm.PlanJReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,7 +69,7 @@
         </receiver>
 
         <receiver
-            android:name=".ui.RestartAlarmReceiver"
+            android:name=".ui.alarm.RestartAlarmReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -73,22 +78,25 @@
         </receiver>
 
 
-        <receiver android:name=".ui.PlanjWidgetProvider"
+        <receiver
+            android:name=".ui.widget.PlanjWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/planj_widget_info" />
         </receiver>
 
-        <service android:name=".ui.PlanjViewService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false" />
+        <service
+            android:name=".ui.widget.PlanjViewService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 
         <service
-            android:name=".ui.PlanjFirebaseMessagingService"
+            android:name=".ui.alarm.PlanjFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

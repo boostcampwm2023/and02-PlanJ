@@ -4,7 +4,6 @@ import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.boostcamp.planj.data.model.AlarmInfo
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.User
 import com.boostcamp.planj.data.repository.LoginRepository
@@ -17,7 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -29,14 +28,13 @@ class SettingViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
-    private var imageFile: MultipartBody.Part? = null
-    private var nickName: String = ""
-
-    private val _isAlarmOn = MutableStateFlow(true)
-    val isAlarmOn = _isAlarmOn.asStateFlow()
+    private var nickname: String = ""
 
     private val _userInfo = MutableStateFlow<User?>(null)
     val userInfo = _userInfo.asStateFlow()
+
+    private val _userImg = MutableStateFlow<String?>(null)
+    val userImg = _userImg.asStateFlow()
 
     private val _isEditMode = MutableStateFlow(false)
     val isEditMode = _isEditMode.asStateFlow()
@@ -47,21 +45,6 @@ class SettingViewModel @Inject constructor(
     private val _totalSchedules = MutableStateFlow<List<Schedule>>(emptyList())
     val totalSchedules = _totalSchedules.asStateFlow()
 
-    private var _completeCount = MutableStateFlow(0)
-    val completeCount = _completeCount.asStateFlow()
-
-    private var _failCount = MutableStateFlow(0)
-    val failCount = _failCount.asStateFlow()
-
-    private var _haveCount = MutableStateFlow(0)
-    val haveCount = _haveCount.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            _isAlarmOn.value = getAlarmMode()
-        }
-    }
-
     fun setMode() {
         _isEditMode.value = false
     }
@@ -71,26 +54,18 @@ class SettingViewModel @Inject constructor(
             mainRepository.getMyInfo()
                 .catch {
                     Log.d("PLANJDEBUG", "initUser error ${it.message}")
+                    _showToast.emit("사용자 정보 조희를 실패했습니다.")
                 }
                 .collectLatest { user ->
                     _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
-                    nickName = user.nickname
+                    nickname = user.nickname
+                    _userImg.update { userInfo.value?.profileUrl }
                 }
         }
     }
 
-    fun onClickAlarmSwitch() {
-        _isAlarmOn.value = !_isAlarmOn.value
-        saveAlarmMode(_isAlarmOn.value)
-    }
-
-    fun getAllAlarmInfo(): List<AlarmInfo> {
-        var alarmList: List<AlarmInfo> = emptyList()
-        viewModelScope.launch {
-            loginRepository.updateAlarmInfo(System.currentTimeMillis())
-            alarmList = loginRepository.getAllAlarmInfo()
-        }
-        return alarmList
+    fun setUserImg(uri: String) {
+        _userImg.update { uri }
     }
 
     fun deleteAccount() {
@@ -100,10 +75,10 @@ class SettingViewModel @Inject constructor(
                     mainRepository.deleteAccount()
                     mainRepository.emptyToken()
                     loginRepository.deleteAllData()
-                    loginRepository.saveAlarmMode(false)
                 }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "delete error ${e.message}")
+                _showToast.emit("회원 탈퇴를 실패했습니다.")
                 throw e
             }
 
@@ -116,13 +91,12 @@ class SettingViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     mainRepository.emptyToken()
                     loginRepository.deleteAllData()
-                    loginRepository.saveAlarmMode(false)
                 }
             } catch (e: Exception) {
-                Log.d("PLANJDEBUG", "delete error ${e.message}")
+                Log.d("PLANJDEBUG", "logout error ${e.message}")
+                _showToast.emit("로그아웃을 실패했습니다.")
                 throw e
             }
-
         }
     }
 
@@ -131,40 +105,26 @@ class SettingViewModel @Inject constructor(
     }
 
     fun changeText(text: Editable) {
-        nickName = text.toString()
+        nickname = text.toString()
     }
 
-    fun setImageFile(imageFile: MultipartBody.Part?) {
-        this.imageFile = imageFile
-    }
-
-    fun saveUser() {
+    fun saveUser(img: MultipartBody.Part? = null) {
         viewModelScope.launch {
-
-            if (nickName.isEmpty()) {
+            if (nickname.isEmpty()) {
                 _showToast.emit("닉네임이 비어있습니다.")
                 return@launch
-            } else if (!("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(nickName)) {
-                _showToast.emit("닉네임엔 영어와 한글, 숫자만 사용가능합니다.")
+            } else if (!("^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$".toRegex()).matches(nickname)) {
+                _showToast.emit("닉네임에는 영어와 한글, 숫자만 사용가능합니다.")
                 return@launch
             }
-            mainRepository.patchUser(nickName, imageFile)
+            mainRepository.patchUser(nickname, img)
                 .catch {
-                    _isEditMode.value = false
+                    _showToast.emit("프로필 수정을 실패했습니다.")
                 }
                 .collectLatest {
                     _isEditMode.value = false
+                    _showToast.emit("프로필 수정을 성공했습니다.")
                 }
-        }
-    }
-
-    private suspend fun getAlarmMode() = withContext(Dispatchers.IO) {
-        loginRepository.getAlarmMode().first()
-    }
-
-    private fun saveAlarmMode(mode: Boolean) {
-        viewModelScope.launch {
-            loginRepository.saveAlarmMode(mode)
         }
     }
 
@@ -177,28 +137,31 @@ class SettingViewModel @Inject constructor(
                         Log.d("PLANJDEBUG", "initUser error ${it.message}")
                     }
                     .collectLatest { user ->
+                        Log.d("PLANJDEBUG", "getUserImageRemove getMyInfo $user")
                         _userInfo.value = user.copy(nickname = user.nickname.replace("\"", ""))
-                        nickName = user.nickname
+                        nickname = user.nickname
+                        _userImg.update { userInfo.value?.profileUrl }
                     }
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "getUserImageRemove ${e.message}")
+                _showToast.emit("프로필 사진 삭제를 실패했습니다.")
+                e.message?.let {
+                    when {
+                        it.contains("401") -> {}
+                        it.contains("404") -> {}
+                    }
+                }
             }
         }
     }
 
-    fun getTotalSchedules() {
+    fun getAllSchedules() {
         viewModelScope.launch {
             mainRepository.getSearchSchedules("").catch {
                 Log.d("PLANJDEBUG", "getTotalSchedules Error ${it.message}")
             }.collectLatest {
                 Log.d("PLANJDEBUG", "getTotalSchedules Success")
                 _totalSchedules.value = it
-                _completeCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> schedule.isFinished && !schedule.isFailed }.size
-                _failCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> schedule.isFailed }.size
-                _haveCount.value =
-                    _totalSchedules.value.filter { schedule: Schedule -> !schedule.isFinished }.size
             }
         }
     }

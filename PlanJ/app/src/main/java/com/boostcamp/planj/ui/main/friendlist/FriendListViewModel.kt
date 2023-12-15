@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,34 +29,40 @@ class FriendListViewModel @Inject constructor(
 
     fun getFriends() {
         viewModelScope.launch {
-            mainRepository.getFriendsApi().collectLatest { friends ->
-                _friendList.value = friends
-            }
+            mainRepository.getFriendsApi()
+                .catch {
+                    Log.d("PLANJDEBUG", "friendViewModel error ${it.message}")
+                    _showToast.emit("친구 조회를 실패했습니다.")
+                }.collectLatest { friends ->
+                    _friendList.value = friends
+                }
         }
     }
 
     fun addUser(email: String) {
         viewModelScope.launch {
-            try {
-                mainRepository.postFriendApi(email)
-                getFriends()
-            } catch (e: Exception) {
-                _showToast.emit("친구 추가에 실패했습니다.")
-                Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
-            }
+            mainRepository.postFriendApi(email)
+                .catch {
+                    _showToast.emit("친구 추가를 실패했습니다.")
+                    Log.d("PLANJDEBUG", "friendViewModel error ${it.message}")
+                }
+                .collectLatest { message ->
+                    _showToast.emit(message)
+                    getFriends()
+                }
         }
     }
 
     fun deleteUser(email: String) {
         viewModelScope.launch {
             try {
-                mainRepository.deleteFriendApi(DeleteFriendBody(email))
+                mainRepository.deleteFriendApi(email)
+                _showToast.emit("친구 삭제를 완료했습니다.")
                 getFriends()
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "friendViewModel error ${e.message}")
+                _showToast.emit("친구 삭제를 실패했습니다.")
             }
-
-
         }
     }
 }

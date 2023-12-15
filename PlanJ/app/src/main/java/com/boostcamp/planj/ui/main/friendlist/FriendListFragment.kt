@@ -1,6 +1,7 @@
 package com.boostcamp.planj.ui.main.friendlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,9 +50,7 @@ class FriendListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.getFriends()
-
         initAdapter()
         setObserver()
         setListener()
@@ -91,7 +90,7 @@ class FriendListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showToast.collectLatest { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

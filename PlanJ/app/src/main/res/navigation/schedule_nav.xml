@@ -72,6 +72,32 @@
             android:defaultValue="@null"
             app:argType="com.boostcamp.planj.data.model.Participant[]"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_scheduleFragment_to_repetitionSettingDialog"
+            app:destination="@id/repetitionSettingDialog">
+            <argument
+                android:name="repetitionInfo"
+                android:defaultValue="@null"
+                app:argType="com.boostcamp.planj.data.model.Repetition"
+                app:nullable="true" />
+        </action>
+        <action
+            android:id="@+id/action_scheduleFragment_to_alarmSettingDialog"
+            app:destination="@id/alarmSettingDialog">
+            <argument
+                android:name="alarmInfo"
+                android:defaultValue="@null"
+                app:argType="com.boostcamp.planj.data.model.Alarm"
+                app:nullable="true" />
+        </action>
+        <action
+            android:id="@+id/action_scheduleFragment_to_scheduleBottomSheetDialog"
+            app:destination="@id/scheduleBottomSheetDialog" >
+            <argument
+                android:name="time"
+                app:argType="integer"
+                android:defaultValue="0" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/scheduleMapFragment"
@@ -145,4 +171,33 @@
             android:name="isScheduleEditMode"
             app:argType="boolean" />
     </fragment>
+    <dialog
+        android:id="@+id/repetitionSettingDialog"
+        android:name="com.boostcamp.planj.ui.schedule.RepetitionSettingDialog"
+        android:label="RepetitionSettingDialog">
+        <argument
+            android:name="repetitionInfo"
+            android:defaultValue="@null"
+            app:argType="com.boostcamp.planj.data.model.Repetition"
+            app:nullable="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/alarmSettingDialog"
+        android:name="com.boostcamp.planj.ui.schedule.AlarmSettingDialog"
+        android:label="AlarmSettingDialog">
+        <argument
+            android:name="alarmInfo"
+            android:defaultValue="@null"
+            app:argType="com.boostcamp.planj.data.model.Alarm"
+            app:nullable="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/scheduleBottomSheetDialog"
+        android:name="com.boostcamp.planj.ui.schedule.ScheduleBottomSheetDialog"
+        android:label="ScheduleBottomSheetDialog" >
+        <argument
+            android:name="time"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </dialog>
 </navigation>

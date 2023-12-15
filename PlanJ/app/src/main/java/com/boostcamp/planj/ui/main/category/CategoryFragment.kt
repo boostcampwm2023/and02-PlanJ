@@ -61,6 +61,12 @@ class CategoryFragment : Fragment() {
             )
             findNavController().navigate(action)
         }
+
+        binding.layoutCategoryAddCategory.setOnClickListener {
+            addCategoryDialog()
+//            val action = CategoryFragmentDirections.actionFragmentCategoryToCategoryDialog()
+//            findNavController().navigate(action)
+        }
     }
 
     private fun setObserver() {
@@ -100,7 +106,7 @@ class CategoryFragment : Fragment() {
             }
         } else {
             CategoryDialog(title) {
-                viewModel.patchCategory(it, title)
+                viewModel.patchCategory(title, it)
             }
         }
 

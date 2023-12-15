@@ -5,19 +5,25 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.databinding.ActivityMainBinding
-import com.boostcamp.planj.ui.main.home.MainViewModel
+import com.boostcamp.planj.ui.alarm.PlanjAlarm
 import com.boostcamp.planj.ui.schedule.ScheduleActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -25,22 +31,43 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private val viewModel: MainViewModel by viewModels()
+    private val planjAlarm by lazy {
+        PlanjAlarm(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        checkPermission()
+        if (viewModel.isFirst()) {
+            checkPermission()
+            viewModel.saveFirst()
+        }
         setJetpackNavigation()
+        setObserver()
+        setIntent()
+    }
 
-        val scheduleId = intent.getStringExtra("scheduleId")
-        if (scheduleId != null) {
+    private fun setIntent() {
+        intent.getStringExtra("index")?.let { index ->
+            navController.popBackStack()
+            when (index) {
+                "friend" -> {
+                    navController.navigate(R.id.fragment_friend_list)
+                }
+
+                else -> {
+                    navController.navigate(R.id.fragment_home, intent.extras)
+                }
+            }
+        }
+
+        intent.getStringExtra("scheduleId")?.let { scheduleId ->
             val intent = Intent(this, ScheduleActivity::class.java)
             intent.putExtra("scheduleId", scheduleId)
             startActivity(intent)
         }
-        viewModel.getAlarms()
     }
 
     private fun checkPermission() {
@@ -73,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                         resources.getString(R.string.post_notifications_allowed),
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
+                } else if (grantResults.isNotEmpty()) {
                     Toast.makeText(
                         this,
                         resources.getString(R.string.post_notifications_denied),
@@ -90,10 +117,37 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.planj_nav_host_fragment) as NavHostFragment
         navController = host.navController
         binding.bottomNavigation.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomNavigation.visibility = if (destination.id == R.id.settingFailFragment) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+        }
+    }
+
+    private fun setObserver() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.deletedAlarms.collectLatest { deletedAlarms ->
+                    deletedAlarms.forEach { planjAlarm.deleteAlarm(it.scheduleId) }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.newAlarms.collectLatest { newAlarms ->
+                    newAlarms.forEach {
+                        planjAlarm.setAlarm(it)
+                    }
+                }
+            }
+        }
     }
 
     companion object {
         val REQUEST_CODE = 100
     }
-
 }

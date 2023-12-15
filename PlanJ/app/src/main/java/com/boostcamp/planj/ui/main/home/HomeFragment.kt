@@ -15,7 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.boostcamp.planj.data.model.Schedule
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentHomeBinding
-import com.boostcamp.planj.ui.UpdateWidget
+import com.boostcamp.planj.ui.widget.UpdateWidget
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
 import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter
@@ -34,10 +34,7 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MainViewModel by activityViewModels()
-
-    private var addScheduleDialog : ScheduleDialog? = null
-    private var failScheduleDialog : ScheduleFailDialog? = null
+    private val viewModel: HomeViewModel by activityViewModels()
 
     private lateinit var segmentScheduleAdapter: SegmentScheduleAdapter
 
@@ -55,7 +52,8 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
-        viewModel.listener =  OnClickListener {
+
+        viewModel.listener = OnClickListener {
             viewModel.setDate(it)
         }
         viewModel.getCategories()
@@ -63,11 +61,15 @@ class HomeFragment : Fragment() {
         initScheduleAdapter()
         setObserver()
         setListener()
+        arguments?.let {
+            it.getString("index")?.let { date -> viewModel.setFcm(date) }
+            binding.vpMainCalendarWeek.currentItem = viewModel.currentPosition
+        }
     }
 
     private fun initScheduleAdapter() {
         val swipeListener = SwipeListener { schedule: Schedule ->
-            viewModel.deleteSchedule(schedule.scheduleId)
+            viewModel.deleteSchedule(schedule)
             UpdateWidget.updateWidget(requireContext())
 
         }
@@ -78,10 +80,10 @@ class HomeFragment : Fragment() {
         }
         val checkBoxListener = ScheduleDoneListener { schedule ->
             viewModel.scheduleFinishChange(schedule) {
-                failScheduleDialog = ScheduleFailDialog(it) { schedule, memo ->
+                val dialog = ScheduleFailDialog(it) { schedule, memo ->
                     viewModel.postScheduleAddMemo(schedule, memo)
                 }
-                failScheduleDialog?.show(
+                dialog.show(
                     parentFragmentManager, tag
                 )
             }
@@ -131,11 +133,11 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.failedSchedule.collectLatest {
                     it?.let { schedule ->
-                        failScheduleDialog = ScheduleFailDialog(schedule) { s, memo ->
+                        val dialog = ScheduleFailDialog(schedule) { s, memo ->
                             viewModel.postScheduleAddMemo(s, memo)
                         }
-                        failScheduleDialog?.show(
-                            parentFragmentManager, tag
+                        dialog.show(
+                            childFragmentManager, tag
                         )
                     }
                 }
@@ -178,7 +180,7 @@ class HomeFragment : Fragment() {
 
     private fun setListener() {
         binding.fbAddSchedule.setOnClickListener {
-            addScheduleDialog = ScheduleDialog(
+            val dialog = ScheduleDialog(
                 viewModel.categories.value.map { it.categoryName },
                 "미분류",
                 true
@@ -186,9 +188,11 @@ class HomeFragment : Fragment() {
                 viewModel.postSchedule(category, title)
                 UpdateWidget.updateWidget(requireContext())
             }
-            addScheduleDialog?.show(
-                parentFragmentManager, null
+            dialog.show(
+                childFragmentManager, null
             )
+
+
         }
 
         binding.btnMainCurrentDate.setOnClickListener {

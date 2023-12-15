@@ -18,10 +18,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boostcamp.planj.R
-import com.boostcamp.planj.data.model.Alarm
-import com.boostcamp.planj.data.model.Repetition
 import com.boostcamp.planj.databinding.FragmentScheduleBinding
-import com.boostcamp.planj.ui.PlanjAlarm
+import com.boostcamp.planj.ui.alarm.PlanjAlarm
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -31,16 +29,13 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSettingDialogListener {
+class ScheduleFragment : Fragment() {
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ScheduleViewModel by activityViewModels()
 
     private val args: ScheduleFragmentArgs by navArgs()
-
-    private var repetitionSettingDialog = RepetitionSettingDialog(null, this)
-    private var alarmSettingDialog = AlarmSettingDialog(null, this)
 
     private val datePickerBuilder by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -96,8 +91,8 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     private fun setObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isEditMode.collectLatest { isEditMode ->
-                updateToolbar(isEditMode)
+            viewModel.scheduleState.collectLatest { scheduleState ->
+                updateToolbar(scheduleState)
             }
         }
 
@@ -129,6 +124,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                         requireContext(),
                         R.layout.item_dropdown,
                         categoryList.map { it.categoryName })
+                binding.actvScheduleSelectedCategory.setText(viewModel.scheduleCategory.value)
                 binding.actvScheduleSelectedCategory.setAdapter(arrayAdapter)
             }
         }
@@ -159,7 +155,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.showToast.collectLatest { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -179,13 +175,25 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 }
 
                 R.id.item_schedule_delete -> {
-                    viewModel.deleteSchedule()
-                    activity?.finish()
+                    lifecycleScope.launch {
+                        if (viewModel.deleteSchedule()) {
+                            activity?.finish()
+                        }
+                    }
                     true
                 }
 
                 R.id.item_schedule_complete -> {
                     viewModel.completeEditingSchedule()
+                    true
+                }
+
+                R.id.item_schedule_exit -> {
+                    lifecycleScope.launch {
+                        if (viewModel.deleteSchedule()) {
+                            activity?.finish()
+                        }
+                    }
                     true
                 }
 
@@ -200,19 +208,15 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         }
 
         binding.tvScheduleRepetitionSetting.setOnClickListener {
-            if (!repetitionSettingDialog.isAdded) {
-                repetitionSettingDialog =
-                    RepetitionSettingDialog(viewModel.scheduleRepetition.value, this)
-                repetitionSettingDialog.show(childFragmentManager, "반복 설정")
-            }
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToRepetitionSettingDialog(viewModel.scheduleRepetition.value)
+            findNavController().navigate(action)
         }
 
         binding.tvScheduleAlarmSetting.setOnClickListener {
-            if (!alarmSettingDialog.isAdded) {
-                alarmSettingDialog =
-                    AlarmSettingDialog(viewModel.scheduleAlarm.value, this)
-                alarmSettingDialog.show(childFragmentManager, "알람 설정")
-            }
+            val action =
+                ScheduleFragmentDirections.actionScheduleFragmentToAlarmSettingDialog(viewModel.scheduleAlarm.value)
+            findNavController().navigate(action)
         }
 
         binding.ivScheduleMap.setOnClickListener {
@@ -234,7 +238,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
             val action =
                 ScheduleFragmentDirections.actionScheduleFragmentToScheduleParticipantsFragment(
                     viewModel.participants.value.toTypedArray(),
-                    viewModel.isEditMode.value && viewModel.isAuthor.value
+                    viewModel.scheduleState.value.isEditMode && viewModel.scheduleState.value.isAuthor
                 )
             findNavController().navigate(action)
         }
@@ -274,23 +278,27 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
                 if (binding.tvScheduleLocationAlarm.text == "위치 알람 해제") {
                     viewModel.setAlarm(null)
                 } else {
-                    val bottomSheet =
-                        ScheduleBottomSheetDialog(it.route.trafast[0].summary.duration) { min ->
-                            viewModel.setAlarm(Alarm("DEPARTURE", min, 0))
-                        }
-                    bottomSheet.show(childFragmentManager, tag)
+                    val action =
+                        ScheduleFragmentDirections.actionScheduleFragmentToScheduleBottomSheetDialog(
+                            it.route.trafast[0].summary.duration
+                        )
+                    findNavController().navigate(action)
                 }
             }
         }
     }
 
-    private fun updateToolbar(isEditMode: Boolean) {
+    private fun updateToolbar(scheduleState: ScheduleState) {
         with(binding.toolbarSchedule.menu) {
-            findItem(R.id.item_schedule_edit).isVisible = !isEditMode
-            findItem(R.id.item_schedule_delete).isVisible = !isEditMode
-            findItem(R.id.item_schedule_complete).isVisible = isEditMode
+            findItem(R.id.item_schedule_edit).isVisible =
+                (!scheduleState.isEditMode && scheduleState.isEditable)
+            findItem(R.id.item_schedule_delete).isVisible =
+                (!scheduleState.isEditMode && scheduleState.isAuthor && scheduleState.isDeletable)
+            findItem(R.id.item_schedule_exit).isVisible =
+                (!scheduleState.isEditMode && !scheduleState.isAuthor && scheduleState.isDeletable)
+            findItem(R.id.item_schedule_complete).isVisible = scheduleState.isEditMode
         }
-        binding.tvScheduleTop.text = if (!isEditMode) "일정" else "일정 편집"
+        binding.tvScheduleTop.text = if (!scheduleState.isEditMode) "일정" else "일정 편집"
     }
 
     fun setStartTime() {
@@ -312,7 +320,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
 
     fun setEndTime() {
         var dateMillis = 0L
-        val datePicker = setDatePicker(viewModel.getEndDate())
+        val datePicker = setDatePicker(viewModel.getEndDate() + KST_MILLIS)
         datePicker.show(childFragmentManager, "시작 날짜 설정")
 
         val scheduleEndTime = viewModel.scheduleEndTime.value
@@ -340,11 +348,7 @@ class ScheduleFragment : Fragment(), RepetitionSettingDialogListener, AlarmSetti
         return timePickerBuilder.build()
     }
 
-    override fun onClickComplete(repetition: Repetition?) {
-        viewModel.setRepetition(repetition)
-    }
-
-    override fun onClickComplete(alarm: Alarm?) {
-        viewModel.setAlarm(alarm)
+    companion object {
+        const val KST_MILLIS = 1000 * 60 * 60 * 9
     }
 }

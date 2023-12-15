@@ -1,6 +1,7 @@
 package com.boostcamp.planj.data.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -14,6 +15,7 @@ data class Schedule(
     val hasRetrospectiveMemo: Boolean= false,
     val shared: Boolean = false,
     val repeated: Boolean = false,
+    val isAuthor : Boolean = true,
     val participantCount: Int = 1,
     val participantSuccessCount: Int = 1,
     val startLocation: Location? = null,

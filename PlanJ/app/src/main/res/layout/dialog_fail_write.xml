@@ -24,6 +24,7 @@
             android:textColor="@color/main3"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/layout_dialog_fail_schedule_info"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/til_dialog_fail_schedule_input_schedule"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog_fail_schedule_main_title">
@@ -61,12 +63,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_dialog_fail_schedule_input_schedule"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             app:boxStrokeColor="@color/main3"
             app:counterEnabled="true"
             app:counterMaxLength="255"
             app:hintEnabled="false"
+            app:layout_constraintBottom_toTopOf="@id/tv_dialog_fail_schedule_success"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_dialog_fail_schedule_info">
@@ -74,12 +77,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiet_dialog_fail_schedule_input_title_schedule"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
                 android:gravity="top"
                 android:hint="@string/reason"
                 android:inputType="textMultiLine"
                 android:maxLength="255"
                 android:maxLines="15"
+                android:minHeight="200dp"
                 android:textColor="@color/text"
                 android:textColorHint="@color/hint"
                 android:textStyle="bold" />
@@ -94,6 +98,7 @@
             android:text="@string/write"
             android:textColor="@color/main3"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_dialog_fail_schedule_input_schedule" />
 

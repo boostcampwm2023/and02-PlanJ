@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -87,6 +88,14 @@ class ScheduleParticipantsFragment : Fragment() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showToast.collectLatest { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun updateToolbar(isEditMode: Boolean) {
@@ -94,6 +103,7 @@ class ScheduleParticipantsFragment : Fragment() {
             findItem(R.id.item_schedule_edit).isVisible = !isEditMode && isScheduleEditMode
             findItem(R.id.item_schedule_delete).isVisible = false
             findItem(R.id.item_schedule_complete).isVisible = isEditMode && isScheduleEditMode
+            findItem(R.id.item_schedule_exit).isVisible = false
         }
     }
 

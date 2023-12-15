@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boostcamp.planj.data.db.AlarmInfoDao
 import com.boostcamp.planj.data.model.AlarmInfo
-import com.boostcamp.planj.data.model.DateTime
 import com.boostcamp.planj.data.model.dto.LoginResponse
 import com.boostcamp.planj.data.model.dto.SignInNaverRequest
 import com.boostcamp.planj.data.model.dto.SignInRequest
@@ -22,10 +21,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import java.util.Calendar
 import javax.inject.Inject
 
-class  LoginRepositoryImpl @Inject constructor(
+class LoginRepositoryImpl @Inject constructor(
     private val apiService: LoginApi,
     private val dataStore: DataStore<Preferences>,
     private val alarmInfoDao: AlarmInfoDao,
@@ -33,7 +31,7 @@ class  LoginRepositoryImpl @Inject constructor(
 
     companion object {
         val USER = stringPreferencesKey("User")
-        val ALARM_MODE = booleanPreferencesKey("alarm")
+        val FIRST_START = booleanPreferencesKey("isFirst")
     }
 
     override suspend fun postSignUp(
@@ -50,7 +48,11 @@ class  LoginRepositoryImpl @Inject constructor(
         return ApiResult.Error(response.code())
     }
 
-    override suspend fun postSignIn(userEmail: String, userPwd: String, deviceToken : String): ApiResult<LoginResponse> {
+    override suspend fun postSignIn(
+        userEmail: String,
+        userPwd: String,
+        deviceToken: String
+    ): ApiResult<LoginResponse> {
         val response = apiService.postSignIn(SignInRequest(userEmail, userPwd, deviceToken))
         if (response.isSuccessful) {
             response.body()?.let { loginResponse ->
@@ -83,51 +85,10 @@ class  LoginRepositoryImpl @Inject constructor(
     }
 
 
-    override fun postSignInNaver(accessToken: String, deviceToken : String): Flow<LoginResponse> = flow {
-        emit(apiService.postSignInNaver(SignInNaverRequest(accessToken, deviceToken)))
-    }
-
-    override suspend fun updateAlarmInfo(curTimeMillis: Long) {
-        /*val alarmList = alarmInfoDao.getAll()
-        val calendar = Calendar.getInstance()
-        alarmList.forEach { alarmInfo ->
-            calendar.timeInMillis = alarmInfo.endTime.toMilliseconds()
-            calendar.add(Calendar.MINUTE, -alarmInfo.alarmTime - alarmInfo.estimatedTime)
-
-            // 알림 시간 < 현재 시간 -> 알람 삭제 or 업데이트
-            if (calendar.timeInMillis < curTimeMillis) {
-                // 일회성 -> 알림 DB에서 삭제
-                // 반복 -> DB 업데이트
-                if (alarmInfo.repetition == null) {
-                    alarmInfoDao.deleteAlarmInfo(alarmInfo)
-                } else {
-                    val oneDayMillis = 24 * 60 * 60 * 1000L
-                    val interval = if (alarmInfo.repetition.cycleType == "DAILY") {
-                        alarmInfo.repetition.cycleCount
-                    } else {
-                        alarmInfo.repetition.cycleCount * 7
-                    }
-                    while (calendar.timeInMillis < curTimeMillis) {
-                        calendar.timeInMillis += (interval * oneDayMillis)
-                    }
-                    calendar.add(
-                        Calendar.MINUTE,
-                        alarmInfo.alarm.alarmTime + alarmInfo.estimatedTime
-                    )
-                    val endTime = DateTime(
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1,
-                        calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE)
-                    )
-                    alarmInfoDao.updateAlarmInfo(
-                        alarmInfo.copy(endTime = endTime)
-                    )
-                }
-            }
-        }*/
-    }
+    override fun postSignInNaver(accessToken: String, deviceToken: String): Flow<LoginResponse> =
+        flow {
+            emit(apiService.postSignInNaver(SignInNaverRequest(accessToken, deviceToken)))
+        }
 
     override suspend fun getAllAlarmInfo(): List<AlarmInfo> {
         return alarmInfoDao.getAll()
@@ -145,17 +106,21 @@ class  LoginRepositoryImpl @Inject constructor(
         alarmInfoDao.deleteAlarmInfo(alarmInfo)
     }
 
+    override suspend fun deleteAllAlarm() {
+        alarmInfoDao.deleteAllAlarmInfo()
+    }
+
     override suspend fun deleteAlarmInfoUsingScheduleId(scheduleId: String) {
         alarmInfoDao.deleteAlarmInfoUsingScheduleId(scheduleId)
     }
 
-    override suspend fun saveAlarmMode(mode: Boolean) {
+    override suspend fun saveFirst(isFirst: Boolean) {
         dataStore.edit { prefs ->
-            prefs[ALARM_MODE] = mode
+            prefs[FIRST_START] = isFirst
         }
     }
 
-    override fun getAlarmMode(): Flow<Boolean> {
+    override fun isFirst(): Flow<Boolean> {
         return dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -167,7 +132,7 @@ class  LoginRepositoryImpl @Inject constructor(
 
             }
             .map { prefs ->
-                prefs[ALARM_MODE] ?: true
+                prefs[FIRST_START] ?: true
             }
     }
 }

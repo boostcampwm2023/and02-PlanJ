@@ -1,4 +1,4 @@
-package com.boostcamp.planj.ui
+package com.boostcamp.planj.ui.alarm
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -20,7 +20,6 @@ class RestartAlarmReceiver : BroadcastReceiver() {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
             val alarm = PlanjAlarm(context)
             CoroutineScope(Dispatchers.IO).launch {
-                loginRepository.updateAlarmInfo(System.currentTimeMillis())
                 val alarmList = loginRepository.getAllAlarmInfo()
                 alarmList.forEach { alarmInfo -> alarm.setAlarm(alarmInfo) }
             }

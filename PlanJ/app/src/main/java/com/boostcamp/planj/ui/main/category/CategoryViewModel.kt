@@ -66,11 +66,11 @@ class CategoryViewModel @Inject constructor(
         return if (categoryName.isEmpty()) {
             CategoryState.EMPTY
         } else if (_categories.value.map { c -> c.categoryName }
-                .contains(categoryName)) {
+                .contains(title)) {
             CategoryState.EXIST
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                _categories.value.find { it.categoryName == title }?.let { category ->
+                _categories.value.find { it.categoryName == categoryName }?.let { category ->
                     val categoryId = category.categoryUuid
                     mainRepository.updateCategoryApi(categoryId, title)
                         .catch {

@@ -33,6 +33,7 @@ class SignInViewModel @Inject constructor(
     val showToast = _showToast.asSharedFlow()
 
     var deviceToken: String = ""
+
     fun postSignIn() {
         Log.d("PLANJDEBUG", "deviceToken $deviceToken")
         viewModelScope.launch {
@@ -50,8 +51,6 @@ class SignInViewModel @Inject constructor(
                         else -> _showToast.emit("Error")
                     }
                 }
-
-                else -> {}
             }
         }
     }
@@ -68,6 +67,7 @@ class SignInViewModel @Inject constructor(
             loginRepository.postSignInNaver(accessToken, deviceToken)
                 .catch {
                     Log.d("PLANJDEBUG", "postSignInNaver error : ${it.message}")
+                    _showToast.emit("네이버 로그인을 실패했습니다.")
                 }
                 .collectLatest {
                     Log.d("PLANJDEBUG", "postSignInNaver success : $it")

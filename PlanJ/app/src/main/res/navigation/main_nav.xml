@@ -13,17 +13,18 @@
         <action
             android:id="@+id/action_fragment_home_to_scheduleActivity"
             app:destination="@id/scheduleActivity" />
+        <action
+            android:id="@+id/action_fragment_home_to_fragment_friend_list"
+            app:destination="@id/fragment_friend_list" />
+        <action
+            android:id="@+id/action_fragment_home_self"
+            app:destination="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/fragment_user"
         android:name="com.boostcamp.planj.ui.main.SettingFragment"
         android:label="SettingFragment"
         tools:layout="@layout/fragment_setting">
-        <action
-            android:id="@+id/action_fragment_user_to_loginActivity"
-            app:destination="@id/loginActivity"
-            app:popUpTo="@layout/fragment_home"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_fragment_user_to_settingFailFragment"
             app:destination="@id/settingFailFragment" />
@@ -60,6 +61,9 @@
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_fragment_category_to_categoryDialog"
+            app:destination="@id/categoryDialog" />
     </fragment>
     <activity
         android:id="@+id/scheduleActivity"
@@ -69,13 +73,16 @@
             android:name="scheduleId"
             app:argType="string" />
     </activity>
-    <activity
-        android:id="@+id/loginActivity"
-        android:name="com.boostcamp.planj.ui.login.LoginActivity"
-        android:label="activity_login"
-        tools:layout="@layout/activity_login" />
     <fragment
         android:id="@+id/settingFailFragment"
         android:name="com.boostcamp.planj.ui.main.SettingFailFragment"
-        android:label="SettingFailFragment" />
+        android:label="SettingFailFragment" >
+        <action
+            android:id="@+id/action_settingFailFragment_to_fragment_user"
+            app:destination="@id/fragment_user" />
+    </fragment>
+    <dialog
+        android:id="@+id/categoryDialog"
+        android:name="com.boostcamp.planj.ui.main.category.CategoryDialog"
+        android:label="CategoryDialog" />
 </navigation>

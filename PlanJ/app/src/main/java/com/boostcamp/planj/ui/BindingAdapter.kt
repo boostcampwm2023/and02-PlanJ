@@ -20,6 +20,7 @@ import com.boostcamp.planj.ui.login.EmailState
 import com.boostcamp.planj.ui.login.PwdState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -99,6 +100,22 @@ fun TextView.setParticipantsNum(participants: List<Participant>) {
     val successNum = participants.filter { it.isFinished }.size
     val participantsNum = "$successNum / ${participants.size}"
     text = participantsNum
+}
+
+@BindingAdapter("completeCount")
+fun TextView.setCompleteCount(schedules: List<Schedule>) {
+    text =
+        schedules.filter { schedule -> schedule.isFinished && !schedule.isFailed }.size.toString()
+}
+
+@BindingAdapter("failCount")
+fun TextView.setFailCount(schedules: List<Schedule>) {
+    text = schedules.filter { schedule -> schedule.isFailed }.size.toString()
+}
+
+@BindingAdapter("remainCount")
+fun TextView.setRemainCount(schedules: List<Schedule>) {
+    text = schedules.filter { schedule -> !schedule.isFinished }.size.toString()
 }
 
 @BindingAdapter("participation")
@@ -268,5 +285,19 @@ fun TextView.failedMemoTime(failedData: FailedMemo) {
     } else {
         val startTime = failedData.startAt.replace("-", "/").split("T")
         "${startTime[0]} ${startTime[1]} - ${endTime[0]} ${endTime[1]}"
+    }
+}
+
+@BindingAdapter("setFloatingButtonVisible")
+fun ExtendedFloatingActionButton.setFloatingButtonVisible(date : String){
+    val setDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)?.time
+    val current = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(current)?.time
+    setDate ?: return
+    currentDate ?: return
+    visibility = if(setDate < currentDate){
+        View.GONE
+    }else{
+        View.VISIBLE
     }
 }

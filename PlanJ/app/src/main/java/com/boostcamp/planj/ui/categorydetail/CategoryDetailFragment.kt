@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.boostcamp.planj.R
 import com.boostcamp.planj.data.model.ScheduleSegment
 import com.boostcamp.planj.databinding.FragmentCategoryDetailBinding
-import com.boostcamp.planj.ui.UpdateWidget
+import com.boostcamp.planj.ui.widget.UpdateWidget
 import com.boostcamp.planj.ui.adapter.ScheduleClickListener
 import com.boostcamp.planj.ui.adapter.ScheduleDoneListener
 import com.boostcamp.planj.ui.adapter.SegmentScheduleAdapter

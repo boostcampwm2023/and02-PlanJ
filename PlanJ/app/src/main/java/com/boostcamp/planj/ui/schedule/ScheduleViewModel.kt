@@ -17,13 +17,13 @@ import com.boostcamp.planj.data.repository.MainRepository
 import com.boostcamp.planj.data.repository.NaverRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -33,6 +33,13 @@ sealed class AlarmEvent {
     data class Delete(val scheduleId: String) : AlarmEvent()
     data class Set(val alarmInfo: AlarmInfo) : AlarmEvent()
 }
+
+data class ScheduleState(
+    val isEditMode: Boolean = false,
+    val isAuthor: Boolean = true,
+    val isEditable: Boolean = true,
+    val isDeletable: Boolean = true
+)
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
@@ -72,11 +79,11 @@ class ScheduleViewModel @Inject constructor(
     private val _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList = _categoryList.asStateFlow()
 
-    private val _isAuthor = MutableStateFlow(false)
-    val isAuthor = _isAuthor.asStateFlow()
+    private val _scheduleState = MutableStateFlow(ScheduleState())
+    val scheduleState = _scheduleState.asStateFlow()
 
-    private val _isEditMode = MutableStateFlow(false)
-    val isEditMode = _isEditMode.asStateFlow()
+    private val _isFinished = MutableStateFlow(false)
+    val isFinished = _isFinished.asStateFlow()
 
     private val _isComplete = MutableStateFlow(false)
     val isComplete = _isComplete.asStateFlow()
@@ -100,6 +107,7 @@ class ScheduleViewModel @Inject constructor(
             mainRepository.getDetailSchedule(scheduleId)
                 .catch {
                     Log.d("PLANJDEBUG", "scheduleFragment getScheduleDetail error ${it.message}")
+                    _showToast.emit("일정 조회를 실패했습니다.")
                 }
                 .collectLatest { schedule ->
                     scheduleCategory.value = schedule.categoryName
@@ -112,15 +120,24 @@ class ScheduleViewModel @Inject constructor(
                     _endScheduleLocation.value = schedule.endLocation
                     _startScheduleLocation.value = schedule.startLocation
                     scheduleMemo.value = schedule.description
-                    _isAuthor.value =
-                        schedule.participants.find { it.currentUser }?.isAuthor ?: false
+                    schedule.participants.find { it.currentUser }?.let { currentUser ->
+                        _scheduleState.update {
+                            it.copy(
+                                isAuthor = currentUser.isAuthor,
+                                isEditable = !currentUser.isFailed && !currentUser.isFinished,
+                                isDeletable = !currentUser.isFailed
+                            )
+                        }
+                    }
                 }
         }
     }
 
     fun getCategories() {
         viewModelScope.launch {
-            mainRepository.getCategoryListApi().collectLatest { categories ->
+            mainRepository.getCategoryListApi().catch {
+                Log.d("PLANJDEBUG", "scheduleViewModel getCategories ${it.message}")
+            }.collectLatest { categories ->
                 _categoryList.value = listOf(Category("default", "미분류")) + categories
             }
         }
@@ -182,23 +199,27 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun startEditingSchedule() {
-        _isEditMode.value = true
+        _scheduleState.update {
+            it.copy(isEditMode = true)
+        }
     }
 
-    fun deleteSchedule() {
-        viewModelScope.launch {
-            try {
-                // 등록된 알림이 있다면 삭제
+    suspend fun deleteSchedule(): Boolean {
+        var result = false
+        val job = viewModelScope.async {
+            result = try {
                 loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-                if (loginRepository.getAlarmMode().first()) {
-                    _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
-                }
-
+                _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
                 mainRepository.deleteScheduleApi(scheduleId)
+                true
             } catch (e: Exception) {
                 Log.d("PLANJDEBUG", "scheduleFragment Delete error ${e.message}")
+                _showToast.emit("일정 삭제를 실패했습니다.")
+                false
             }
         }
+        job.await()
+        return result
     }
 
     fun completeEditingSchedule() {
@@ -235,15 +256,13 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             categoryList.value.find { it.categoryName == scheduleCategory.value }?.let { category ->
                 _scheduleAlarm.update { alarm ->
-                    if (alarm != null) {
+                    alarm?.let {
                         val estimatedTimeInMillis = if (response.value != null) {
                             response.value!!.route.trafast[0].summary.duration
                         } else {
                             0
                         }
                         alarm.copy(estimatedTime = estimatedTimeInMillis / (1000 * 60))
-                    } else {
-                        alarm
                     }
                 }
                 val patchScheduleBody = PatchScheduleBody(
@@ -263,12 +282,13 @@ class ScheduleViewModel @Inject constructor(
                 mainRepository.patchSchedule(patchScheduleBody)
                     .catch {
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit error ${it.message}")
+                        _showToast.emit("일정 수정을 실패했습니다.")
                     }
                     .collect {
                         setAlarmInfo()
-                        _isEditMode.value = false
-                        _showToast.emit("일정을 수정했습니다.")
+                        _scheduleState.update { it.copy(isEditMode = false) }
                         Log.d("PLANJDEBUG", "ScheduleFragment Edit Success")
+                        _showToast.emit("일정 수정을 완료했습니다.")
                     }
             }
         }
@@ -277,11 +297,7 @@ class ScheduleViewModel @Inject constructor(
     private fun setAlarmInfo() {
         viewModelScope.launch {
             loginRepository.deleteAlarmInfoUsingScheduleId(scheduleId)
-            loginRepository.getAlarmMode().collectLatest { alarmMode ->
-                if (alarmMode) {
-                    _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
-                }
-            }
+            _alarmEventFlow.emit(AlarmEvent.Delete(scheduleId))
         }
 
         scheduleAlarm.value?.let { alarm ->
@@ -292,15 +308,10 @@ class ScheduleViewModel @Inject constructor(
                 alarm.alarmType,
                 alarm.alarmTime,
                 alarm.estimatedTime
-            )// db에는 무조건 알람 정보 저장
+            )
             viewModelScope.launch {
                 loginRepository.insertAlarmInfo(alarmInfo)
-                loginRepository.getAlarmMode().collectLatest { alarmMode ->
-                    // 알람 모드 켜져 있을 경우에만 알람매니저를 통해 알람 설정
-                    if (alarmMode) {
-                        _alarmEventFlow.emit(AlarmEvent.Set(alarmInfo))
-                    }
-                }
+                _alarmEventFlow.emit(AlarmEvent.Set(alarmInfo))
             }
         }
     }
@@ -328,6 +339,7 @@ class ScheduleViewModel @Inject constructor(
             try {
                 _response.value = naverRepository.getNaverRoute(start, end)
             } catch (e: Exception) {
+                _showToast.emit("경로 찾기를 실패했습니다.")
                 Log.d("PLANJDEBUG", "error ${e.message}")
             }
         }
