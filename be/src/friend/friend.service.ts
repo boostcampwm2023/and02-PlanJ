@@ -49,7 +49,8 @@ export class FriendService {
 
       if (!!to.deviceToken) {
         const message = `${from.nickname}님과 친구가 되었습니다.`;
-        this.pushService.sendPush(to.deviceToken, message);
+        const data = "friend";
+        this.pushService.sendPush(to.deviceToken, message, data);
       }
 
       const body: HttpResponse = {

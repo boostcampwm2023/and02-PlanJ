@@ -237,7 +237,7 @@ export class ScheduleApiService {
       const metadataId = await this.scheduleService.getMetadataIdByScheduleUuid(scheduleResponse.scheduleUuid);
       const group = await this.participateService.getParticipantGroup(metadataId);
 
-      if (group === null) {
+      if (group.length === 0) {
         scheduleResponse.isAuthor = true;
         continue;
       }
@@ -286,6 +286,7 @@ export class ScheduleApiService {
   async deleteSchedule(token: string, dto: DeleteScheduleDto): Promise<string> {
     dto.userUuid = this.authService.verify(token);
     const user = await this.userService.getUserEntity(dto.userUuid);
+    const schedule = await this.scheduleService.getScheduleEntityByScheduleUuid(dto.scheduleUuid);
     const metadataId = await this.scheduleService.deleteSchedule(dto);
     const metadata = await this.scheduleMetaService.getScheduleMetadataById(metadataId);
     await this.scheduleMetaService.deleteScheduleMeta(metadataId);
@@ -295,6 +296,7 @@ export class ScheduleApiService {
       const message = isAuthor
         ? `공유된 ${metadata.title} 일정이 삭제되었습니다.`
         : `${user.nickname}님이 ${metadata.title} 일정에서 나갔습니다.`;
+      const data = isAuthor ? null : schedule.endAt;
 
       const participants = await this.participateService.getParticipantGroup(metadataId);
       const participantList = participants.filter((participant) => {
@@ -309,6 +311,29 @@ export class ScheduleApiService {
         }
       });
       const authorMetadataId = participantList[0].authorId;
+
+      const metadataLists = await Promise.all(
+        participantList.map(async (participant) => {
+          return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
+        }),
+      );
+
+      const users = await Promise.all(
+        metadataLists.map(async (meta) => {
+          return this.userService.getUserEntityById(meta.userId);
+        }),
+      );
+
+      this.logger.verbose(message);
+      users.forEach((user) => {
+        if (!!user.deviceToken) {
+          if (isAuthor) {
+            this.pushService.sendPush(user.deviceToken, message);
+          } else {
+            this.pushService.sendPush(user.deviceToken, message, data);
+          }
+        }
+      });
 
       if (isAuthor) {
         await Promise.all([
@@ -327,25 +352,6 @@ export class ScheduleApiService {
           ]);
         }
       }
-
-      const metadataLists = await Promise.all(
-        participantList.map(async (participant) => {
-          return this.scheduleMetaService.getScheduleMetadataById(participant.participantId);
-        }),
-      );
-
-      const users = await Promise.all(
-        metadataLists.map(async (meta) => {
-          return this.userService.getUserEntityById(meta.userId);
-        }),
-      );
-
-      this.logger.verbose(message);
-      users.forEach((user) => {
-        if (!!user.deviceToken) {
-          this.pushService.sendPush(user.deviceToken, message);
-        }
-      });
     }
 
     const body: HttpResponse = {
@@ -462,7 +468,7 @@ export class ScheduleApiService {
     }
 
     if (!!invitedUser.deviceToken) {
-      this.pushService.sendPush(invitedUser.deviceToken, message);
+      this.pushService.sendPush(invitedUser.deviceToken, message, updateScheduleDto.endAt);
     }
   }
 

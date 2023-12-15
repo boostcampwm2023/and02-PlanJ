@@ -2,6 +2,8 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { GlobalService } from "./utils/middleware/disable-connection.global";
+import { setConnectionHeader } from "./utils/middleware/set-connection-header.middleware";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +13,8 @@ async function bootstrap() {
     }),
   );
 
+  GlobalService.isDisableConnection = false;
+  app.use(setConnectionHeader);
   app.enableShutdownHooks();
 
   //swagger
