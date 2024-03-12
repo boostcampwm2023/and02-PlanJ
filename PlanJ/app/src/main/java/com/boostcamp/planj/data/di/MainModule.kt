@@ -17,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -48,6 +49,7 @@ object MainModule {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
+            .readTimeout(1000, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()

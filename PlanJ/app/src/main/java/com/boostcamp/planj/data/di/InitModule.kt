@@ -16,6 +16,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -39,6 +40,12 @@ object InitModule {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = Request.Builder()
+                    .addHeader("header Name", "header value")
+                    .build()
+                chain.proceed(request = request)
+            }
             .addInterceptor(httpLoggingInterceptor)
             .build()
     }

@@ -26,7 +26,8 @@ class PlanjViewService : RemoteViewsService() {
             current.year, current.monthValue, current.dayOfMonth
         )
 
-        return PlanjRemoteViewsFactory(this.applicationContext) { data ->
+        return PlanjRemoteViewsFactory(this.applicationContext)
+        { data ->
             data.clear()
             CoroutineScope(Dispatchers.IO).launch {
                 serviceRepository.getDailySchedule(date)

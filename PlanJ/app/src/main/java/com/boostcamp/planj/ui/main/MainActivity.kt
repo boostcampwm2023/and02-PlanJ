@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 "friend" -> {
                     navController.navigate(R.id.fragment_friend_list)
                 }
-
+                "null" -> {}
                 else -> {
                     navController.navigate(R.id.fragment_home, intent.extras)
                 }
